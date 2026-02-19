@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}درباره ما - Noorbanoo Life{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" style="min-height: 50vh;">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text-box">
+                <h1 class="hero-title">درباره Noorbanoo Life</h1>
+                <p class="hero-subtitle">
+                    همراه شما در مسیر رشد فردی، سبک زندگی آگاهانه و توسعه شخصی
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Hero Section -->
+
+<!-- About Content -->
+<section class="section">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-10">
+                <div class="text-center mb-5">
+                    <h2 class="section-title">داستان ما</h2>
+                    <p class="lead">
+                        Noorbanoo Life با هدف ایجاد فضایی الهام‌بخش برای بانوان و همراهی آن‌ها در مسیر رشد فردی و 
+                        توسعه شخصی تأسیس شد. ما معتقدیم که هر زن قابلیت تبدیل شدن به بهترین نسخه خودش را دارد.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="{% static 'img/900x900/img2.jpg' %}" alt="Noorbanoo Life" class="img-fluid rounded-xl shadow-medium" style="max-height: 500px; width: 100%; object-fit: cover;">
+            </div>
+            <div class="col-lg-6">
+                <div class="ps-lg-4">
+                    <h3 class="mb-4">ماموریت ما</h3>
+                    <p class="mb-3">
+                        ماموریت ما این است که با ارائه محتوای الهام‌بخش، دوره‌های آموزشی و منابع مفید، 
+                        به بانوان کمک کنیم تا در مسیر رشد فردی و توسعه شخصی قدم بردارند.
+                    </p>
+                    <p class="mb-3">
+                        ما به سبک زندگی آگاهانه، انرژی مثبت و ایجاد فضایی امن و حمایت‌گر برای جامعه بانوان 
+                        اعتقاد داریم و در تمام فعالیت‌هایمان این ارزش‌ها را رعایت می‌کنیم.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0">
+                <img src="{% static 'img/900x900/img3.jpg' %}" alt="Noorbanoo Life" class="img-fluid rounded-xl shadow-medium" style="max-height: 500px; width: 100%; object-fit: cover;">
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <div class="pe-lg-4">
+                    <h3 class="mb-4">چشم‌انداز ما</h3>
+                    <p class="mb-3">
+                        چشم‌انداز ما ایجاد بزرگ‌ترین جامعه بانوان الهام‌بخش در ایران است که در آن هر زن 
+                        بتواند به پتانسیل کامل خود دست یابد و زندگی‌ای پر از معنا و هدف داشته باشد.
+                    </p>
+                    <p>
+                        ما می‌خواهیم Noorbanoo Life به مکانی تبدیل شود که بانوان بتوانند در آن رشد کنند، 
+                        یاد بگیرند، الهام بگیرند و با یکدیگر ارتباط برقرار کنند.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End About Content -->
+
+<!-- Values Section -->
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="section-title">ارزش‌های ما</h2>
+        <div class="row g-4 mt-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card-noorbanoo text-center">
+                    <div class="card-icon mx-auto mb-3">
+                        <i class="bi-gem"></i>
+                    </div>
+                    <h5 class="card-title">اصالت</h5>
+                    <p class="card-text small">ارائه محتوای اصیل و واقعی</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card-noorbanoo text-center">
+                    <div class="card-icon mx-auto mb-3">
+                        <i class="bi-heart-fill"></i>
+                    </div>
+                    <h5 class="card-title">مهربانی</h5>
+                    <p class="card-text small">ایجاد فضایی امن و حمایت‌گر</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card-noorbanoo text-center">
+                    <div class="card-icon mx-auto mb-3">
+                        <i class="bi-lightbulb-fill"></i>
+                    </div>
+                    <h5 class="card-title">الهام</h5>
+                    <p class="card-text small">ارائه محتوای الهام‌بخش</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card-noorbanoo text-center">
+                    <div class="card-icon mx-auto mb-3">
+                        <i class="bi-arrow-up-circle-fill"></i>
+                    </div>
+                    <h5 class="card-title">رشد</h5>
+                    <p class="card-text small">همراهی در مسیر رشد فردی</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Values Section -->
+
+<!-- CTA Section -->
+<section class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="mb-4">به ما بپیوندید</h2>
+                <p class="lead mb-4">
+                    اگر شما هم به رشد فردی و سبک زندگی آگاهانه علاقه‌مند هستید، 
+                    به جامعه Noorbanoo Life بپیوندید و از محتوای الهام‌بخش ما بهره‌مند شوید.
+                </p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="{% url 'website:contact' %}" class="btn btn-primary btn-lg">تماس با ما</a>
+                    <a href="{% url 'shop:product-grid' %}" class="btn btn-outline-primary btn-lg">مشاهده محصولات</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End CTA Section -->
+{% endblock content %}

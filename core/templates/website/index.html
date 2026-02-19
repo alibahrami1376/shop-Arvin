@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load shop_tags %}
+
+{% block title %}Noorbanoo Life - رشد فردی و سبک زندگی آگاهانه{% endblock %}
+
+{% block content %}
+<!-- Banner Slider Section -->
+<section class="banner-slider-section">
+    <div class="js-swiper-banner swiper banner-swiper">
+        <div class="swiper-wrapper">
+            <!-- Slide 1 -->
+            <div class="swiper-slide">
+                <div class="banner-slide" style="background: linear-gradient(135deg, rgba(232, 180, 160, 0.15), rgba(212, 165, 165, 0.15));">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-12 col-lg-6 order-2 order-lg-1">
+                                <div class="banner-content">
+                                    <h2 class="banner-title">رشد فردی و توسعه شخصی</h2>
+                                    <p class="banner-text">همراه شما در مسیر تبدیل شدن به بهترین نسخه خودتان</p>
+                                    <a href="{% url 'shop:product-grid' %}" class="btn btn-primary btn-lg mt-3">شروع کنید</a>
+                            </div>
+                            </div>
+                            <div class="col-12 col-lg-6 order-1 order-lg-2">
+                                <div class="banner-image-wrapper">
+                                    <img src="{% static 'img/900x900/img1.jpg' %}" alt="رشد فردی" class="banner-image">
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="swiper-slide">
+                <div class="banner-slide" style="background: linear-gradient(135deg, rgba(245, 230, 211, 0.2), rgba(232, 180, 160, 0.15));">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-12 col-lg-6 order-2 order-lg-1">
+                                <div class="banner-content">
+                                    <h2 class="banner-title">سبک زندگی آگاهانه</h2>
+                                    <p class="banner-text">یادگیری و تمرین زندگی آگاهانه با تمرکز بر سلامت ذهن، بدن و روح</p>
+                                    <a href="{% url 'website:about' %}" class="btn btn-primary btn-lg mt-3">بیشتر بدانید</a>
+                            </div>
+                            </div>
+                            <div class="col-12 col-lg-6 order-1 order-lg-2">
+                                <div class="banner-image-wrapper">
+                                    <img src="{% static 'img/900x900/img2.jpg' %}" alt="سبک زندگی آگاهانه" class="banner-image">
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="swiper-slide">
+                <div class="banner-slide" style="background: linear-gradient(135deg, rgba(212, 165, 165, 0.15), rgba(245, 230, 211, 0.2));">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-12 col-lg-6 order-2 order-lg-1">
+                                <div class="banner-content">
+                                    <h2 class="banner-title">انرژی مثبت و الهام</h2>
+                                    <p class="banner-text">ایجاد فضایی پر از انرژی مثبت و الهام برای زندگی روزمره شما</p>
+                                    <a href="{% url 'website:contact' %}" class="btn btn-primary btn-lg mt-3">تماس با ما</a>
+                            </div>
+                            </div>
+                            <div class="col-12 col-lg-6 order-1 order-lg-2">
+                                <div class="banner-image-wrapper">
+                                    <img src="{% static 'img/900x900/img3.jpg' %}" alt="انرژی مثبت" class="banner-image">
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Navigation -->
+        <div class="swiper-button-prev banner-nav-prev"></div>
+        <div class="swiper-button-next banner-nav-next"></div>
+        <!-- Pagination -->
+        <div class="swiper-pagination banner-pagination"></div>
+    </div>
+</section>
+<!-- End Banner Slider Section -->
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content fade-in-up">
+            <div class="hero-text-box">
+                <h1 class="hero-title">Noorbanoo Life</h1>
+                <p class="hero-subtitle">
+                    همراه شما در مسیر رشد فردی، سبک زندگی آگاهانه و توسعه شخصی. 
+                    انرژی مثبت و الهام‌های روزانه برای بانوان الهام‌بخش.
+                </p>
+                <div class="hero-cta">
+                    <a href="{% url 'shop:product-grid' %}" class="btn-hero">کشف کنید</a>
+                    <a href="{% url 'website:about' %}" class="btn btn-outline-primary ms-3">درباره ما</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Hero Section -->
+
+<!-- Features Section -->
+<section class="section section-alt">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="feature-card fade-in-up">
+                    <div class="feature-icon">
+                        <i class="bi-heart-fill"></i>
+                    </div>
+                    <h4 class="card-title">رشد فردی</h4>
+                    <p class="card-text">
+                        همراهی در مسیر خودشناسی و توسعه مهارت‌های شخصی برای رسیدن به بهترین نسخه خودتان
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="feature-card fade-in-up">
+                    <div class="feature-icon">
+                        <i class="bi-flower1"></i>
+                    </div>
+                    <h4 class="card-title">سبک زندگی آگاهانه</h4>
+                    <p class="card-text">
+                        یادگیری و تمرین زندگی آگاهانه با تمرکز بر سلامت ذهن، بدن و روح
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="feature-card fade-in-up">
+                    <div class="feature-icon">
+                        <i class="bi-sun-fill"></i>
+                    </div>
+                    <h4 class="card-title">انرژی مثبت</h4>
+                    <p class="card-text">
+                        ایجاد فضایی پر از انرژی مثبت و الهام برای زندگی روزمره شما
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Features Section -->
+
+<!-- About Preview Section -->
+<section class="section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 col-lg-6 mb-4 mb-lg-0">
+                <div class="position-relative">
+                    <img src="{% static 'img/900x900/img1.jpg' %}" alt="Noorbanoo Life" class="img-fluid rounded-xl shadow-medium" style="max-height: 600px; width: 100%; object-fit: cover;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 rounded-xl" style="background: linear-gradient(135deg, rgba(232, 180, 160, 0.1), rgba(212, 165, 165, 0.1)); pointer-events: none;"></div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="ps-lg-5">
+                    <h2 class="section-title text-start mb-4">درباره Noorbanoo Life</h2>
+                    <p class="lead mb-4">
+                        ما معتقدیم که هر زن قابلیت تبدیل شدن به بهترین نسخه خودش را دارد. 
+                        در Noorbanoo Life، ما همراه شما هستیم تا در مسیر رشد فردی و توسعه شخصی قدم بردارید.
+                    </p>
+                    <p class="mb-4">
+                        با تمرکز بر سبک زندگی آگاهانه، انرژی مثبت و الهام‌های روزانه، 
+                        ما محتوایی را ارائه می‌دهیم که به شما کمک می‌کند تا زندگی‌ای پر از معنا و هدف داشته باشید.
+                    </p>
+                    <a href="{% url 'website:about' %}" class="btn btn-primary">بیشتر بدانید</a>
+                </div>
+            </div>
+        </div>
+                    </div>
+</section>
+<!-- End About Preview Section -->
+
+<!-- Products Section -->
+{% show_latest_products %}
+
+<!-- Values Section -->
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="section-title">ارزش‌های ما</h2>
+        <p class="section-subtitle">
+            در Noorbanoo Life، ما به این ارزش‌ها پایبند هستیم و در تمام فعالیت‌هایمان آن‌ها را رعایت می‌کنیم
+        </p>
+        <div class="row g-4 mt-4">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <div class="card-noorbanoo text-center">
+                    <div class="card-icon mx-auto mb-3">
+                        <i class="bi-gem"></i>
+                    </div>
+                    <h5 class="card-title">اصالت</h5>
+                    <p class="card-text small">ارائه محتوای اصیل و واقعی که از قلب و تجربه می‌آید</p>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <div class="card-noorbanoo text-center">
+                    <div class="card-icon mx-auto mb-3">
+                        <i class="bi-people-fill"></i>
+                    </div>
+                    <h5 class="card-title">جامعه‌گرایی</h5>
+                    <p class="card-text small">ایجاد فضایی امن و حمایت‌گر برای بانوان الهام‌بخش</p>
+                </div>
+                        </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <div class="card-noorbanoo text-center">
+                    <div class="card-icon mx-auto mb-3">
+                        <i class="bi-lightbulb-fill"></i>
+                    </div>
+                    <h5 class="card-title">الهام</h5>
+                    <p class="card-text small">ارائه محتوایی که الهام‌بخش و انگیزه‌بخش باشد</p>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <div class="card-noorbanoo text-center">
+                    <div class="card-icon mx-auto mb-3">
+                        <i class="bi-heart-pulse-fill"></i>
+                    </div>
+                    <h5 class="card-title">مراقبت</h5>
+                    <p class="card-text small">توجه به سلامت جسمی، ذهنی و روحی شما</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Values Section -->
+
+<!-- CTA Section -->
+<section class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8">
+                <div class="card-noorbanoo text-center p-5" style="background: linear-gradient(135deg, rgba(232, 180, 160, 0.1), rgba(212, 165, 165, 0.1)); border: none;">
+                    <h2 class="mb-4">آماده شروع سفر رشد فردی خود هستید؟</h2>
+                    <p class="lead mb-4">
+                        به جامعه Noorbanoo Life بپیوندید و از محتوای الهام‌بخش، دوره‌های آموزشی و 
+                        همراهی در مسیر رشد فردی بهره‌مند شوید.
+                    </p>
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="{% url 'shop:product-grid' %}" class="btn btn-primary btn-lg">مشاهده محصولات</a>
+                        <a href="{% url 'website:contact' %}" class="btn btn-outline-primary btn-lg">تماس با ما</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End CTA Section -->
+
+<!-- Newsletter Section -->
+<section class="section section-alt">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="section-title">عضویت در خبرنامه</h2>
+                <p class="section-subtitle mb-4">
+                    برای دریافت آخرین محتوا، الهام‌های روزانه و پیشنهادات ویژه
+                </p>
+                <form method="post" action="#" class="d-flex flex-column flex-md-row gap-2 justify-content-center flex-wrap" style="max-width: 500px; margin: 0 auto;">
+                    {% csrf_token %}
+                    <input type="email" class="form-control flex-grow-1" placeholder="ایمیل شما" name="email" required style="min-width: 200px;">
+                    <button type="submit" class="btn btn-primary">عضویت</button>
+                </form>
+                <p class="text-muted small mt-3">
+                    ما به حریم خصوصی شما احترام می‌گذاریم. می‌توانید در هر زمان عضویت خود را لغو کنید.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Newsletter Section -->
+
+{% block extra_js %}
+<script>
+    // Initialize Banner Swiper
+    document.addEventListener('DOMContentLoaded', function() {
+        var bannerSwiper = new Swiper('.js-swiper-banner', {
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            loop: true,
+            speed: 800,
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
+            },
+            navigation: {
+                nextEl: '.banner-nav-next',
+                prevEl: '.banner-nav-prev',
+            },
+            pagination: {
+                el: '.banner-pagination',
+                clickable: true,
+                renderBullet: function (index, className) {
+                    return '<span class="' + className + '">' + '</span>';
+                },
+            },
+        });
+    });
+</script>
+{% endblock extra_js %}
+{% endblock content %}
