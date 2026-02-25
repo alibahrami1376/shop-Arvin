@@ -35,138 +35,37 @@
 
 <body>
 
-    <!-- ========== HEADER - 3-Layer Architecture ========== -->
-    <header class="header" role="banner" aria-label="Main navigation">
-        
-        <!-- Layer 1: Utility Bar -->
-        <div class="header__utility">
-            <div class="header__utility-container">
-                <div class="header__utility-start">
-                    <span class="header__tagline">مینیمال تن پوشی عاری از پیچیدگی...</span>
-                </div>
-                <div class="header__utility-end">
-                    <nav class="header__utility-nav" aria-label="Utility navigation">
-                        <a href="#" class="header__utility-link" aria-label="Pinterest">
-                            <i class="bi-pinterest"></i>
-                        </a>
-                        <a href="#" class="header__utility-link" aria-label="YouTube">
-                            <i class="bi-youtube"></i>
-                        </a>
-                        <a href="#" class="header__utility-link" aria-label="Instagram">
-                            <i class="bi-instagram"></i>
-                        </a>
-                        <a href="#" class="header__utility-link" aria-label="Twitter">
-                            <i class="bi-twitter-x"></i>
-                        </a>
-                        <a href="#" class="header__utility-link" aria-label="Facebook">
-                            <i class="bi-facebook"></i>
-                        </a>
-                    </nav>
-                </div>
-            </div>
-        </div>
+    <!-- ========== HEADER - Simple ========== -->
+    <header id="header" class="header" role="banner" aria-label="Main navigation">
+        <div class="header__container">
+            <a href="{% url 'website:index' %}" class="header__logo" aria-label="خانه - فروشگاه کامیون">
+                <i class="bi-truck header__logo-icon"></i>
+                <span class="header__logo-text">کامیون</span>
+            </a>
 
-        <!-- Layer 2: Main Header Container -->
-        <div class="header__main">
-            <div class="header__main-container">
-                <!-- Left Tools Area (User Login) -->
-                <div class="header__tools header__tools--left">
-                    <div class="header__user">
-                        {% if request.user.is_authenticated %}
-                        <a href="#" class="header__user-link">
-                            <i class="bi-person"></i>
-                            <span>حساب کاربری</span>
-                        </a>
-                        {% else %}
-                        <a href="{% url 'accounts:login' %}" class="header__user-link">
-                            <i class="bi-person"></i>
-                            <span>ورود / ثبت نام</span>
-                        </a>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Center Focal Element (Circular Badge) -->
-                <div class="header__focal">
-                    <a href="{% url 'website:index' %}" class="header__focal-link" aria-label="Home - نوربانو">
-                        <div class="header__focal-circle">
-                            <div class="header__focal-inner">
-                                <div class="header__focal-icon">
-                                    <svg width="60" height="60" viewBox="0 0 60 60" aria-hidden="true">
-                                        <path d="M30 9 C24 9 19.5 12 19.5 16.5 C19.5 18.75 20.25 21 21.75 22.5 C23.25 24 25.5 24.75 27.75 25.5 C28.5 25.8 29.25 26.25 30 26.7 C30.75 26.25 31.5 25.8 32.25 25.5 C34.5 24.75 36.75 24 38.25 22.5 C39.75 21 40.5 18.75 40.5 16.5 C40.5 12 36 9 30 9 Z" stroke="white" stroke-width="2.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M24 27 Q27 30 30 30 Q33 30 36 27" stroke="white" stroke-width="2.7" fill="none" stroke-linecap="round"/>
-                                        <path d="M24 27 Q25.5 24 27 22.5 Q28.5 21 30 21 Q31.5 21 33 22.5 Q34.5 24 36 27" stroke="white" stroke-width="2.25" fill="none" stroke-linecap="round"/>
-                                        <path d="M25.5 25.5 Q27 22.5 28.5 21" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                                        <path d="M34.5 25.5 Q33 22.5 31.5 21" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                                        <circle cx="30" cy="36" r="4.5" fill="white"/>
-                                        <line x1="30" y1="31.5" x2="30" y2="25.5" stroke="white" stroke-width="2.25" stroke-linecap="round"/>
-                                        <line x1="25.5" y1="36" x2="19.5" y2="36" stroke="white" stroke-width="1.95" stroke-linecap="round"/>
-                                        <line x1="34.5" y1="36" x2="40.5" y2="36" stroke="white" stroke-width="1.95" stroke-linecap="round"/>
-                                        <line x1="27.75" y1="32.25" x2="23.25" y2="27.75" stroke="white" stroke-width="1.95" stroke-linecap="round"/>
-                                        <line x1="32.25" y1="32.25" x2="36.75" y2="27.75" stroke="white" stroke-width="1.95" stroke-linecap="round"/>
-                                        <line x1="27.75" y1="39.75" x2="23.25" y2="44.25" stroke="white" stroke-width="1.95" stroke-linecap="round"/>
-                                        <line x1="32.25" y1="39.75" x2="36.75" y2="44.25" stroke="white" stroke-width="1.95" stroke-linecap="round"/>
-                                    </svg>
-                                </div>
-                                <div class="header__focal-text">
-                                    <div class="header__focal-title">نوربانو</div>
-                                    <div class="header__focal-subtitle">THE MINIMAL COLLECTION</div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Right Tools Area (Cart) -->
-                <div class="header__tools header__tools--right">
-                    <div class="header__cart">
-                        <a href="{% url 'cart:cart-summary' %}" class="header__cart-link" aria-label="سبد خرید">
-                            <i class="bi-basket"></i>
-                            <span class="header__badge" id="total-cart-item-count">{{cart.get_total_quantity|default:"۰"}}</span>
-                        </a>
-                        <span id="cart-total-price" class="header__cart-price">{{cart.get_total_price|default:"۰"}} تومان</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Layer 3: Primary Navigation Bar -->
-        <nav class="header__nav" aria-label="Primary navigation">
-            <div class="header__nav-container">
+            <nav class="header__nav" aria-label="منوی اصلی">
                 <ul class="header__nav-list">
-                    <li class="header__nav-item">
-                        <a href="{% url 'website:index' %}" 
-                           class="header__nav-link {% if request.resolver_match.view_name == 'website:index' %}header__nav-link--active{% endif %}">
-                            صفحه اصلی
-                        </a>
-                    </li>
-                    <li class="header__nav-item">
-                        <a href="{% url 'shop:product-grid' %}" 
-                           class="header__nav-link {% if request.resolver_match.view_name == 'shop:product-grid' %}header__nav-link--active{% endif %}">
-                            فروشگاه
-                        </a>
-                    </li>
-                    <li class="header__nav-item">
-                        <a href="#" 
-                           class="header__nav-link {% if request.resolver_match.view_name == 'dashboard:home' %}header__nav-link--active{% endif %}">
-                            حساب کاربری
-                        </a>
-                    </li>
-                    <li class="header__nav-item">
-                        <a href="#" class="header__nav-link">اکسسوری</a>
-                    </li>
-                    <li class="header__nav-item">
-                        <a href="#" class="header__nav-link">تن پوش ها</a>
-                    </li>
-                    <li class="header__nav-item">
-                        <a href="#" class="header__nav-link">کیف و کفش</a>
-                    </li>
+                    <li><a href="{% url 'website:index' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:index' %}header__nav-link--active{% endif %}">صفحه اصلی</a></li>
+                    <li><a href="{% url 'shop:product-grid' %}" class="header__nav-link {% if request.resolver_match.view_name == 'shop:product-grid' %}header__nav-link--active{% endif %}">فروشگاه</a></li>
+                    <li><a href="{% url 'website:about' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:about' %}header__nav-link--active{% endif %}">درباره ما</a></li>
+                    <li><a href="{% url 'website:contact' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:contact' %}header__nav-link--active{% endif %}">تماس با ما</a></li>
                 </ul>
-            </div>
-        </nav>
+            </nav>
 
+            <div class="header__actions">
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'dashboard:home' %}" class="header__user-link"><i class="bi-person"></i> <span>حساب کاربری</span></a>
+                {% else %}
+                <a href="{% url 'accounts:login' %}" class="header__user-link"><i class="bi-person"></i> <span>ورود / ثبت نام</span></a>
+                {% endif %}
+                <a href="{% url 'cart:cart-summary' %}" class="header__cart-link" aria-label="سبد خرید">
+                    <i class="bi-basket"></i>
+                    <span class="header__badge" id="total-cart-item-count">{{ cart.get_total_quantity|default:"۰" }}</span>
+                </a>
+                <span id="cart-total-price" class="header__cart-price">{{ cart.get_total_price|default:"۰" }} تومان</span>
+            </div>
+        </div>
     </header>
-    <!-- ========== END HEADER ========== -->
     <!-- ========== END HEADER ========== -->
 
     <!-- ========== MAIN CONTENT ========== -->
@@ -180,32 +79,18 @@
                 <div class="col-lg-4 mb-5 mb-lg-0">
                     <div class="d-flex align-items-start flex-column h-100">
                         <!-- Logo -->
-                        <a class="mb-4 navbar-brand" href="{% url 'website:index' %}" aria-label="Noorbanoo Life">
+                        <a class="mb-4 navbar-brand" href="{% url 'website:index' %}" aria-label="فروشگاه لوازم کامیون">
                             <div class="logo-container">
                                 <div class="logo-icon">
-                                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M20 6 C16 6 13 8 13 11 C13 12.5 13.5 14 14.5 15 C15.5 16 17 16.5 18.5 17 C19 17.2 19.5 17.5 20 17.8 C20.5 17.5 21 17.2 21.5 17 C23 16.5 24.5 16 25.5 15 C26.5 14 27 12.5 27 11 C27 8 24 6 20 6 Z" stroke="#E8B4A0" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M16 18 Q18 20 20 20 Q22 20 24 18" stroke="#E8B4A0" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                                        <path d="M16 18 Q17 16 18 15 Q19 14 20 14 Q21 14 22 15 Q23 16 24 18" stroke="#E8B4A0" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                                        <path d="M17 17 Q18 15 19 14" stroke="#E8B4A0" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-                                        <path d="M23 17 Q22 15 21 14" stroke="#E8B4A0" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-                                        <circle cx="20" cy="24" r="3" fill="#E8B4A0"/>
-                                        <line x1="20" y1="21" x2="20" y2="17" stroke="#E8B4A0" stroke-width="1.5" stroke-linecap="round"/>
-                                        <line x1="17" y1="24" x2="13" y2="24" stroke="#E8B4A0" stroke-width="1.3" stroke-linecap="round"/>
-                                        <line x1="23" y1="24" x2="27" y2="24" stroke="#E8B4A0" stroke-width="1.3" stroke-linecap="round"/>
-                                        <line x1="18.5" y1="21.5" x2="15.5" y2="18.5" stroke="#E8B4A0" stroke-width="1.3" stroke-linecap="round"/>
-                                        <line x1="21.5" y1="21.5" x2="24.5" y2="18.5" stroke="#E8B4A0" stroke-width="1.3" stroke-linecap="round"/>
-                                        <line x1="18.5" y1="26.5" x2="15.5" y2="29.5" stroke="#E8B4A0" stroke-width="1.3" stroke-linecap="round"/>
-                                        <line x1="21.5" y1="26.5" x2="24.5" y2="29.5" stroke="#E8B4A0" stroke-width="1.3" stroke-linecap="round"/>
-                                    </svg>
+                                    <i class="bi-truck" style="font-size: 2rem; color: #FF6B35;"></i>
                                 </div>
-                                <span class="logo-text">نوربانو</span>
+                                <span class="logo-text">کامیون</span>
                             </div>
                         </a>
                         <!-- End Logo -->
                         <p class="text-muted mb-4" style="max-width: 300px;">
-                            Noorbanoo Life - همراه شما در مسیر رشد فردی و سبک زندگی آگاهانه. 
-                            انرژی مثبت و توسعه فردی بانوان را با ما تجربه کنید.
+                            فروشگاه لوازم کامیون - تامین قطعات یدکی اصلی و با کیفیت برای انواع کامیون و کامیونت. 
+                            با بیش از ۱۰ سال تجربه در خدمت شما هستیم.
                         </p>
                         <!-- Socials -->
                         <ul class="list-inline mb-0">
@@ -242,16 +127,16 @@
                 <div class="col-6 col-md-4 col-lg-2 mb-5 mb-lg-0">
                     <h5>خدمات</h5>
                     <ul class="list-unstyled list-py-1">
-                        <li><a class="text-secondary" href="#">مشاوره رشد فردی</a></li>
-                        <li><a class="text-secondary" href="#">دوره‌های آموزشی</a></li>
-                        <li><a class="text-secondary" href="#">محتوای الهام‌بخش</a></li>
-                        <li><a class="text-secondary" href="#">جامعه بانوان</a></li>
+                        <li><a class="text-secondary" href="#">مشاوره فنی</a></li>
+                        <li><a class="text-secondary" href="#">نصب و راه‌اندازی</a></li>
+                        <li><a class="text-secondary" href="#">گارانتی محصولات</a></li>
+                        <li><a class="text-secondary" href="#">پشتیبانی ۲۴ ساعته</a></li>
                     </ul>
                 </div>
 
                 <div class="col-md-4 col-lg-3 mb-5 mb-lg-0">
                     <h5>عضویت در خبرنامه</h5>
-                    <p class="text-muted small mb-3">برای دریافت آخرین محتوا و الهام‌های روزانه</p>
+                    <p class="text-muted small mb-3">برای دریافت آخرین محصولات و تخفیف‌های ویژه</p>
                     <form method="post" action="#">
                         {% csrf_token %}
                         <div class="input-group mb-3">
@@ -264,11 +149,11 @@
                 </div>
             </div>
 
-            <hr class="my-4" style="border-color: rgba(232, 180, 160, 0.2);">
+            <hr class="my-4" style="border-color: rgba(30, 58, 95, 0.2);">
 
             <div class="row align-items-center">
                 <div class="col-md-6 mb-3 mb-md-0">
-                    <p class="text-muted small mb-0">&copy; ۱۴۰۳ Noorbanoo Life. تمامی حقوق محفوظ است.</p>
+                    <p class="text-muted small mb-0">&copy; ۱۴۰۳ فروشگاه لوازم کامیون. تمامی حقوق محفوظ است.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <ul class="list-inline mb-0">

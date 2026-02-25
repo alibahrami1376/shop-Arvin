@@ -515,7 +515,7 @@
                 </div>
                 <!-- End Heading -->
 
-                <form method="post" action="{% url 'website:newsletter' %}">
+                <form method="post" action="#">
                     {% csrf_token %}
                     <!-- Input Card -->
                     <div class="input-card input-card-pill input-card-sm border mb-3">
@@ -550,7 +550,7 @@
             </div>
 
             <div class="modal-body">
-                <form action="{% url 'review:submit-review' %}" method="post" id="review-form">
+                <form action="#" method="post" id="review-form">
                     {% csrf_token %}
                     <input hidden name="product" value="{{object.id}}">
                     <div class="row">

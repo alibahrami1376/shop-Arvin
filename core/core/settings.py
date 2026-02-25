@@ -44,8 +44,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'website',
     'accounts',
+    'dashboard',
     'shop',
     'cart',
+    'order',
+    'payment',
+    'review'
 ]
 
 MIDDLEWARE = [
@@ -146,3 +150,5 @@ STATICFILES_DIRS =  [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+MERCHANT_ID = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
