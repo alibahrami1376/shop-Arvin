@@ -152,3 +152,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 
 MERCHANT_ID = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/"

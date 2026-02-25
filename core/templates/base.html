@@ -137,7 +137,7 @@
                 <div class="col-md-4 col-lg-3 mb-5 mb-lg-0">
                     <h5>عضویت در خبرنامه</h5>
                     <p class="text-muted small mb-3">برای دریافت آخرین محصولات و تخفیف‌های ویژه</p>
-                    <form method="post" action="#">
+                    <form method="post" action="{% url 'website:newsletter' %}">
                         {% csrf_token %}
                         <div class="input-group mb-3">
                             <input type="email" class="form-control" placeholder="ایمیل شما" name="email" required>
