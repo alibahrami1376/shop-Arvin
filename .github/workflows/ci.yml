@@ -1,0 +1,78 @@
+# name: CI
+
+# on:
+#   push:
+#     branches: [main, master]
+#   pull_request:
+#     branches: [main, master]
+
+# env:
+#   SECRET_KEY: ci-secret-key-for-testing-only
+#   DEBUG: "False"
+#   ALLOWED_HOSTS: localhost,127.0.0.1
+#   PGDB_NAME: postgres
+#   PGDB_USER: postgres
+#   PGDB_PASSWORD: postgres
+#   PGDB_HOST: localhost
+#   PGDB_PORT: 5432
+
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#     services:
+#       postgres:
+#         image: postgres:15
+#         env:
+#           POSTGRES_USER: postgres
+#           POSTGRES_PASSWORD: postgres
+#           POSTGRES_DB: postgres
+#         ports:
+#           - 5432:5432
+#         options: >-
+#           --health-cmd pg_isready
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 5
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Set up Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: "3.12"
+
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install -r requirements.txt
+
+#       - name: Run Django checks
+#         working-directory: core
+#         run: python manage.py check --no-input
+
+#       - name: Run migrations
+#         working-directory: core
+#         run: python manage.py migrate --no-input
+
+#       - name: Run tests
+#         working-directory: core
+#         run: python manage.py test --no-input -v 2
+
+#   docker:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v3
+
+#       - name: Build Docker image
+#         uses: docker/build-push-action@v6
+#         with:
+#           context: .
+#           push: false
+#           load: true
+#           tags: shop-arvin:ci
+#           cache-from: type=gha
+#           cache-to: type=gha,mode=max
