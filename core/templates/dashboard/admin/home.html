@@ -5,31 +5,114 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb breadcrumb-light mb-0">
         <li class="breadcrumb-item">حساب</li>
-        <li class="breadcrumb-item active" aria-current="page">
-            داشبورد ادمین
-        </li>
+        <li class="breadcrumb-item active" aria-current="page">داشبورد ادمین</li>
     </ol>
 </nav>
 {% endblock %}
 
 {% block content %}
-<!-- Card -->
-<div class="card">
-    <!-- Header -->
-    <div class="card-header border-bottom">
-        <h5 class="card-header-title">خلاصه داشبورد</h5>
-    </div>
-    <!-- End Header -->
-
-    <!-- Body -->
-    <div class="card-body">
-        <div class="row">
-
+<!-- خلاصه آمار -->
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-lg-4 col-xl-3">
+        <div class="card card-borderless h-100">
+            <div class="card-body">
+                <span class="text-muted small">کل سفارشات</span>
+                <h4 class="mb-0">{{ orders_count }}</h4>
+                <a href="{% url 'dashboard:admin:order-list' %}" class="btn btn-soft-primary btn-sm mt-2">مشاهده</a>
+            </div>
         </div>
-        <!-- End Row -->
-
     </div>
-    <!-- End Body -->
+    <div class="col-sm-6 col-lg-4 col-xl-3">
+        <div class="card card-borderless h-100">
+            <div class="card-body">
+                <span class="text-muted small">سفارشات موفق</span>
+                <h4 class="mb-0 text-success">{{ orders_success_count }}</h4>
+                <a href="{% url 'dashboard:admin:order-list' %}?status=2" class="btn btn-soft-success btn-sm mt-2">مشاهده</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-4 col-xl-3">
+        <div class="card card-borderless h-100">
+            <div class="card-body">
+                <span class="text-muted small">در انتظار پرداخت</span>
+                <h4 class="mb-0 text-warning">{{ orders_pending_count }}</h4>
+                <a href="{% url 'dashboard:admin:order-list' %}?status=1" class="btn btn-soft-warning btn-sm mt-2">مشاهده</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-4 col-xl-3">
+        <div class="card card-borderless h-100">
+            <div class="card-body">
+                <span class="text-muted small">کاربران (مشتری)</span>
+                <h4 class="mb-0">{{ users_count }}</h4>
+                <a href="{% url 'dashboard:admin:user-list' %}" class="btn btn-soft-info btn-sm mt-2">مشاهده</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-4 col-xl-3">
+        <div class="card card-borderless h-100">
+            <div class="card-body">
+                <span class="text-muted small">محصولات</span>
+                <h4 class="mb-0">{{ products_count }}</h4>
+                <a href="{% url 'dashboard:admin:product-list' %}" class="btn btn-soft-secondary btn-sm mt-2">مشاهده</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-4 col-xl-3">
+        <div class="card card-borderless h-100">
+            <div class="card-body">
+                <span class="text-muted small">تماس‌ها</span>
+                <h4 class="mb-0">{{ contacts_count }}</h4>
+                <a href="{% url 'dashboard:admin:contact-list' %}" class="btn btn-soft-primary btn-sm mt-2">مشاهده</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-4 col-xl-3">
+        <div class="card card-borderless h-100">
+            <div class="card-body">
+                <span class="text-muted small">نظرات</span>
+                <h4 class="mb-0">{{ reviews_count }}</h4>
+                <a href="{% url 'dashboard:admin:review-list' %}" class="btn btn-soft-primary btn-sm mt-2">مشاهده</a>
+            </div>
+        </div>
+    </div>
 </div>
-<!-- End Card -->
+
+<!-- آخرین سفارشات -->
+<div class="card">
+    <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="card-header-title mb-0">آخرین سفارشات</h5>
+        <a href="{% url 'dashboard:admin:order-list' %}" class="btn btn-sm btn-ghost-primary">همه سفارشات</a>
+    </div>
+    <div class="card-body">
+        {% if recent_orders %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>شماره</th>
+                        <th>کاربر</th>
+                        <th>تاریخ</th>
+                        <th>وضعیت</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.user.email }}</td>
+                        <td>{{ order.created_date|date:"Y/m/d H:i" }}</td>
+                        <td><span class="badge bg-soft-{% if order.status == 2 %}success{% elif order.status == 3 %}danger{% else %}warning{% endif %}">{{ order.get_status.label }}</span></td>
+                        <td><a href="{% url 'dashboard:admin:order-detail' pk=order.pk %}" class="btn btn-ghost-primary btn-sm">جزئیات</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">هنوز سفارشی ثبت نشده است.</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
