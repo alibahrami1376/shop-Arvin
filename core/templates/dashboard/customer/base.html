@@ -5,16 +5,19 @@
 <head>
     <!-- Required Meta Tags Always Come First -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
 
     <!-- Title -->
-    <title>{% block title %} {% endblock title %}</title>
+    <title>{% block title %}پروفایل{% endblock title %}</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="/favicon.ico">
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Aviny Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- CSS Implementing Plugins -->
     <link rel="stylesheet" href="{% static 'css/vendor.min.css' %}">
@@ -31,108 +34,41 @@
 
 
 <body>
-    <!-- ========== HEADER ========== -->
-    <header id="header" class="navbar navbar-expand-lg navbar-end navbar-absolute-top navbar-light navbar-show-hide"
-        data-hs-header-options='{
-        "fixMoment": 500,
-        "fixEffect": "slide"
-      }'>
-        <div class="container">
-            <nav class="js-mega-menu navbar-nav-wrap">
-                <!-- Default Logo -->
-                <a class="navbar-brand" href="{% url 'website:index' %}" aria-label="Front">
-                    <img class="navbar-brand-logo" src="{% static 'svg/logos/logo.svg' %}" alt="Logo">
-                </a>
-                <!-- End Default Logo -->
+    <!-- ========== HEADER (همان هدر صفحه هوم) ========== -->
+    <header id="header" class="header" role="banner" aria-label="Main navigation">
+        <div class="header__container">
+            <a href="{% url 'website:index' %}" class="header__logo" aria-label="خانه - فروشگاه کامیون">
+                <i class="bi-truck header__logo-icon"></i>
+                <span class="header__logo-text">کامیون</span>
+            </a>
 
-                <!-- Toggler -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-default">
-                        <i class="bi-list"></i>
-                    </span>
-                    <span class="navbar-toggler-toggled">
-                        <i class="bi-x"></i>
-                    </span>
-                </button>
-                <!-- End Toggler -->
-
-                <!-- Collapse -->
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link  {% if request.resolver_match.view_name  == 'website:index' %} active {% endif %}"
-                                href="{% url 'website:index' %}">صفحه اصلی</a>
-                        </li>
-
-
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.view_name  == 'shop:product-grid' %} active {% endif %}"
-                                href="{% url 'shop:product-grid' %}">لیست محصولات</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.view_name  == 'website:about' %} active {% endif %}"
-                                href="{% url 'website:about' %}">درباره ما</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.view_name  == 'website:contact' %} active {% endif %}"
-                                href="{% url 'website:contact' %}">ارتباط با ما</a>
-                        </li>
-
-
-
-                        <li class="nav-item">
-                            <!-- Search -->
-                            <button class="btn btn-ghost-secondary btn-icon" type="button" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasNavbarSearch" aria-controls="offcanvasNavbarSearch">
-                                <i class="bi-search"></i>
-                            </button>
-
-                            <!-- End Search -->
-
-                        
-                            <a href="{% url 'cart:cart-summary' %}" class="btn btn-ghost-secondary btn-icon">
-                                <i class="bi-basket"></i>
-                                <span class="cart-item-count"
-                                    id="total-cart-item-count">{{cart.get_total_quantity}}</span>
-                            </a>
-                            <!-- End Shopping Cart -->
-                            {% if request.user.is_authenticated %}
-
-                            <button class="btn btn-ghost-secondary btn-icon" id="dropdownMenuLink"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="avatar avatar-sm avatar-circle">
-                                    <img class="avatar-img" src="{{request.user.user_profile.image.url}}"
-                                        alt="Image Description">
-                                </span>
-                            </button>
-
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item" href="{% url 'dashboard:home' %}">پروفایل</a>
-                                <a class="dropdown-item" href="{% url 'accounts:logout' %}">خروج</a>
-                            </div>
-
-                            {% else %}
-                            <a class="btn btn-primary btn-transition" href="{% url 'accounts:login' %}">ورود</a>
-                            {% endif %}
-                        </li>
-                    </ul>
-                </div>
-                <!-- End Collapse -->
+            <nav class="header__nav" aria-label="منوی اصلی">
+                <ul class="header__nav-list">
+                    <li><a href="{% url 'website:index' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:index' %}header__nav-link--active{% endif %}">صفحه اصلی</a></li>
+                    <li><a href="{% url 'shop:product-grid' %}" class="header__nav-link {% if request.resolver_match.view_name == 'shop:product-grid' %}header__nav-link--active{% endif %}">فروشگاه</a></li>
+                    <li><a href="{% url 'website:about' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:about' %}header__nav-link--active{% endif %}">درباره ما</a></li>
+                    <li><a href="{% url 'website:contact' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:contact' %}header__nav-link--active{% endif %}">تماس با ما</a></li>
+                </ul>
             </nav>
+
+            <div class="header__actions">
+                <a href="{% url 'dashboard:home' %}" class="header__user-link"><i class="bi-person"></i> <span>حساب کاربری</span></a>
+                <a href="{% url 'accounts:logout' %}" class="header__user-link"><i class="bi-box-arrow-right"></i> <span>خروج</span></a>
+                <a href="{% url 'cart:cart-summary' %}" class="header__cart-link" aria-label="سبد خرید">
+                    <i class="bi-basket"></i>
+                    <span class="header__badge" id="total-cart-item-count">{{ cart.get_total_quantity|default:"۰" }}</span>
+                </a>
+                <span id="cart-total-price" class="header__cart-price">{{ cart.get_total_price|default:"۰" }} تومان</span>
+            </div>
         </div>
     </header>
-
     <!-- ========== END HEADER ========== -->
 
     <!-- ========== MAIN CONTENT ========== -->
-    <main id="content" role="main" class="bg-light content-space-2">
-        <!-- Breadcrumb -->
-        <div class="navbar-dark bg-dark" style="
-                background-image: url({% static '/svg/components/wave-pattern-light.svg' %});
-                ">
-            <div class="container content-space-1 content-space-b-lg-3">
+    <main id="content" role="main" class="bg-light content-space-2 pt-0">
+        <!-- Breadcrumb (هماهنگ با هدر - همان تم تیره) -->
+        <div class="navbar-dark bg-dark" style="background-image: url({% static 'svg/components/wave-pattern-light.svg' %});">
+            <div class="container content-space-t-0 content-space-1 content-space-b-lg-3">
                 <div class="row align-items-center">
                     <div class="col">
                         <div class="d-none d-lg-block">
@@ -414,9 +350,11 @@
     <!-- JS Plugins Init. -->
     <script>
         (function () {
-            // INITIALIZATION OF HEADER
+            // INITIALIZATION OF HEADER (در داشبورد هدر ثابت است، بدون show-hide)
             // =======================================================
-            new HSHeader('#header').init()
+            if (document.querySelector('#header[data-hs-header-options]')) {
+                new HSHeader('#header').init();
+            }
 
             new HSMegaMenu('.js-mega-menu', {
                 desktop: {

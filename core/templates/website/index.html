@@ -256,7 +256,7 @@
                 <p class="section-subtitle mb-4">
                     برای دریافت آخرین محصولات، تخفیف‌های ویژه و اخبار فروشگاه
                 </p>
-                <form method="post" action="#" class="d-flex flex-column flex-md-row gap-2 justify-content-center flex-wrap" style="max-width: 500px; margin: 0 auto;">
+                <form method="post" action="{% url 'website:newsletter' %}" class="d-flex flex-column flex-md-row gap-2 justify-content-center flex-wrap" style="max-width: 500px; margin: 0 auto;">
                     {% csrf_token %}
                     <input type="email" class="form-control flex-grow-1" placeholder="ایمیل شما" name="email" required style="min-width: 200px;">
                     <button type="submit" class="btn btn-primary">عضویت</button>

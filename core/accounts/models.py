@@ -84,8 +84,14 @@ class Profile(models.Model):
             return self.first_name + " " + self.last_name
         return "کاربر جدید"
     
-@receiver(post_save,sender=User)
-def create_profile(sender,instance,created,**kwargs):
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance, pk=instance.pk)
+        Profile.objects.create(
+            user=instance,
+            pk=instance.pk,
+            first_name="",
+            last_name="",
+            phone_number="09000000000",
+        )
         

@@ -233,6 +233,11 @@ select,
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* حذف فاصله سفید بین هدر و محتوا در داشبورد */
+.header + main#content {
+    padding-top: 0 !important;
+}
+
 .header__container {
     max-width: 1200px;
     margin: 0 auto;

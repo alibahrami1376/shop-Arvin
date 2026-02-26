@@ -54,6 +54,19 @@ class CartSession:
     def get_total_quantity(self):
         return sum(item["quantity"] for item in self._cart["items"])
 
+    def get_total_price(self):
+        """جمع مبلغ سبد برای نمایش در هدر (بدون وابستگی به get_cart_items)."""
+        total = 0
+        for item in self._cart["items"]:
+            try:
+                product = ProductModel.objects.get(
+                    id=item["product_id"], status=ProductStatusType.publish.value
+                )
+                total += item["quantity"] * product.get_price()
+            except (ProductModel.DoesNotExist, ValueError):
+                continue
+        return total
+
     def save(self):
         self.session.modified = True
 

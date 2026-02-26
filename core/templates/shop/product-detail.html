@@ -550,7 +550,7 @@
             </div>
 
             <div class="modal-body">
-                <form action="#" method="post" id="review-form">
+                <form action="{% url 'review:submit-review' %}" method="post" id="review-form">
                     {% csrf_token %}
                     <input hidden name="product" value="{{object.id}}">
                     <div class="row">
