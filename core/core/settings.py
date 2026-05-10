@@ -90,11 +90,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config("PGDB_NAME",default='postgres'),                      
-        'USER': config("PGDB_USER",default='postgres'),
-        'PASSWORD': config("PGDB_PASSWORD",default='postgres'),
-        'HOST': config("PGDB_HOST",default='db_arvin'),
-        'PORT': config("PGDB_PORT", cast=int,default=5432),
+        'NAME': config("PGDB_NAME", default="db_arvin"),
+        'USER': config("PGDB_USER", default="postgres"),
+        'PASSWORD': config("PGDB_PASSWORD", default="postgres"),
+        'HOST': config("PGDB_HOST", default="db_arvin"),
+        'PORT': config("PGDB_PORT", default="5432"),
     }
 }
 # Password validation
