@@ -30,4 +30,4 @@ deploy_production:
     - echo "Deployment finished successfully!"
 
   only:
-    - main
+    - production
