@@ -4,6 +4,7 @@ services:
     container_name: shop_arvin_backend
     command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3
     volumes:
+      - .:/app
       - static_volume:/app/staticfiles
       - media_volume:/app/media
     env_file:
