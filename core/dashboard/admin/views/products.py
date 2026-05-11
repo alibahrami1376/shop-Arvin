@@ -54,6 +54,14 @@ class AdminProductListView(LoginRequiredMixin, HasAdminAccessPermission, ListVie
         context["categories"] = ProductCategoryModel.objects.all()
         return context
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+from dashboard.admin.forms import ProductForm, ProductImageFormSet
+from shop.models import ProductModel
+
 
 class AdminProductCreateView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
     template_name = "dashboard/admin/products/product-create.html"
@@ -61,14 +69,29 @@ class AdminProductCreateView(LoginRequiredMixin, HasAdminAccessPermission, Succe
     form_class = ProductForm
     success_message = "ایجاد محصول با موفقیت انجام شد"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['image_formset'] = ProductImageFormSet(self.request.POST, self.request.FILES)
+        else:
+            context['image_formset'] = ProductImageFormSet()
+        return context
+
     def form_valid(self, form):
+        context = self.get_context_data()
+        image_formset = context['image_formset']
+        
         form.instance.user = self.request.user
-        super().form_valid(form)
-        return redirect(reverse_lazy("dashboard:admin:product-edit", kwargs={"pk": form.instance.pk}))
+        self.object = form.save()
+        
+        if image_formset.is_valid():
+            image_formset.instance = self.object
+            image_formset.save()
+        
+        return redirect(reverse_lazy("dashboard:admin:product-edit", kwargs={"pk": self.object.pk}))
 
     def get_success_url(self):
         return reverse_lazy("dashboard:admin:product-list")
-
 
 class AdminProductEditView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
     template_name = "dashboard/admin/products/product-edit.html"

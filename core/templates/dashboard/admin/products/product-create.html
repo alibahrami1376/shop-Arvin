@@ -18,6 +18,13 @@
     .small-primary-button:focus {
         background-color: #0056b3;
     }
+
+    .image-formset-row {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+    }
 </style>
 
 {% endblock %}
@@ -91,10 +98,22 @@
                 </div>
 
                 <div class="col-md-12 mb-3">
-                    <label for="validationValidFileInput1">تصویر محصول</label>
+                    <label for="validationValidFileInput1">تصویر اصلی محصول</label>
                     {{form.image}}
                 </div>
 
+                <!-- Formset برای عکس‌های اضافی -->
+                <div class="col-md-12 mb-3">
+                    <label>تصاویر اضافی محصول</label>
+                    {{ image_formset.management_form }}
+                    <div id="image-formset-container">
+                        {% for image_form in image_formset %}
+                        <div class="image-formset-row">
+                            {{ image_form.as_p }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
 
             </div>
             <div class="card-footer">
