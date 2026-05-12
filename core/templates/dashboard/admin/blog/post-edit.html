@@ -9,6 +9,12 @@
     #published-date-addon.cursor-pointer {
         cursor: pointer;
     }
+    .blog-image-formset-row {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+    }
 </style>
 {% endblock %}
 
@@ -53,7 +59,21 @@
                 </div>
                 <div class="col-md-12 mb-3">
                     <label>محتوا</label>
+                    <p class="small text-muted mb-2">در ادیتور می‌توانید چند تصویر داخل متن آپلود کنید.</p>
                     {{ form.content }}
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label>تصاویر گالری پست</label>
+                    <p class="small text-muted mb-2">چند تصویر اضافی؛ ردیف خالی نادیده گرفته می‌شود. برای حذف، تیک DELETE را بزنید.</p>
+                    {% if image_formset.non_form_errors %}
+                    <div class="alert alert-danger">{{ image_formset.non_form_errors }}</div>
+                    {% endif %}
+                    {{ image_formset.management_form }}
+                    {% for image_form in image_formset %}
+                    <div class="blog-image-formset-row">
+                        {{ image_form.as_p }}
+                    </div>
+                    {% endfor %}
                 </div>
                 <div class="col-md-6 mb-3">
                     <label>لینک خارجی (اختیاری)</label>

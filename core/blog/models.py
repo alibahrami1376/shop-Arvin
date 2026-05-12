@@ -41,3 +41,25 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse("blog:blog_detail", args=[str(self.id)])
+
+
+class PostImageModel(models.Model):
+    """تصاویر اضافی پست (گالری)، جدا از تصویر شاخص و تصاویر داخل متن ادیتور."""
+
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name="post_images",
+        verbose_name="پست",
+    )
+    file = models.ImageField(upload_to="blog/extra-img/", verbose_name="فایل تصویر")
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
+    updated_date = models.DateTimeField(auto_now=True, verbose_name="تاریخ بروزرسانی")
+
+    class Meta:
+        ordering = ["created_date"]
+        verbose_name = "تصویر پست"
+        verbose_name_plural = "تصاویر پست"
+
+    def __str__(self):
+        return f"{self.post_id}: {self.file.name}"

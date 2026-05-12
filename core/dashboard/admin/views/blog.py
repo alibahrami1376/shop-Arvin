@@ -1,12 +1,14 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import FieldError
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from blog.models import Category as BlogCategory
 from blog.models import Post
-from dashboard.admin.forms import BlogCategoryForm, BlogPostForm
+from dashboard.admin.forms import BlogCategoryForm, BlogPostForm, PostImageFormSet
 from dashboard.permissions import HasAdminAccessPermission
 
 
@@ -43,12 +45,30 @@ class AdminBlogPostCreateView(LoginRequiredMixin, HasAdminAccessPermission, Succ
     form_class = BlogPostForm
     success_message = "ایجاد پست با موفقیت انجام شد"
 
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if "image_formset" in kwargs:
+            context["image_formset"] = kwargs["image_formset"]
+        elif self.request.POST:
+            context["image_formset"] = PostImageFormSet(self.request.POST, self.request.FILES)
+        else:
+            context["image_formset"] = PostImageFormSet()
+        return context
 
-    def get_success_url(self):
-        return reverse_lazy("dashboard:admin:blog-post-edit", kwargs={"pk": self.object.pk})
+    def form_valid(self, form):
+        image_formset = PostImageFormSet(self.request.POST, self.request.FILES)
+        if not image_formset.is_valid():
+            return self.render_to_response(
+                self.get_context_data(form=form, image_formset=image_formset)
+            )
+        self.object = form.save(commit=False)
+        self.object.author = self.request.user
+        self.object.save()
+        form.save_m2m()
+        image_formset.instance = self.object
+        image_formset.save()
+        messages.success(self.request, self.success_message)
+        return redirect("dashboard:admin:blog-post-edit", pk=self.object.pk)
 
 
 class AdminBlogPostEditView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
@@ -57,8 +77,31 @@ class AdminBlogPostEditView(LoginRequiredMixin, HasAdminAccessPermission, Succes
     form_class = BlogPostForm
     success_message = "ویرایش پست با موفقیت انجام شد"
 
-    def get_success_url(self):
-        return reverse_lazy("dashboard:admin:blog-post-edit", kwargs={"pk": self.get_object().pk})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if "image_formset" in kwargs:
+            context["image_formset"] = kwargs["image_formset"]
+        elif self.request.POST:
+            context["image_formset"] = PostImageFormSet(
+                self.request.POST, self.request.FILES, instance=self.object
+            )
+        else:
+            context["image_formset"] = PostImageFormSet(instance=self.object)
+        return context
+
+    def form_valid(self, form):
+        image_formset = PostImageFormSet(
+            self.request.POST, self.request.FILES, instance=self.object
+        )
+        if not image_formset.is_valid():
+            return self.render_to_response(
+                self.get_context_data(form=form, image_formset=image_formset)
+            )
+        self.object = form.save()
+        image_formset.instance = self.object
+        image_formset.save()
+        messages.success(self.request, self.success_message)
+        return redirect("dashboard:admin:blog-post-edit", pk=self.object.pk)
 
 
 class AdminBlogPostDeleteView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):

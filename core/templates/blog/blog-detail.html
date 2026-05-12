@@ -58,6 +58,21 @@
                     {{ post.content|safe }}
                 </div>
 
+                {% if post.post_images.all %}
+                <div class="mb-5">
+                    <h3 class="h5 mb-3">گالری تصاویر</h3>
+                    <div class="row g-3">
+                        {% for img in post.post_images.all %}
+                        <div class="col-md-6">
+                            <a href="{{ img.file.url }}" target="_blank" rel="noopener noreferrer">
+                                <img class="img-fluid rounded-2" src="{{ img.file.url }}" alt="" style="width: 100%; max-height: 280px; object-fit: cover;">
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- External Link -->
                 {% if post.url %}
                 <div class="alert alert-soft-primary mb-5" role="alert">

@@ -1,8 +1,10 @@
 from django import forms
+from django.forms import inlineformset_factory
 from django.utils import timezone
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 from blog.models import Category as BlogCategory
-from blog.models import Post
+from blog.models import Post, PostImageModel
 
 _DATETIME_LOCAL_INPUT_FORMATS = (
     "%Y-%m-%dT%H:%M",
@@ -34,6 +36,9 @@ class BlogPostForm(forms.ModelForm):
             "status",
             "published_date",
         ]
+        widgets = {
+            "content": CKEditor5Widget(config_name="extends"),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -62,3 +67,23 @@ class BlogPostForm(forms.ModelForm):
             if timezone.is_aware(dt):
                 dt = timezone.localtime(dt)
             self.initial["published_date"] = dt.strftime("%Y-%m-%dT%H:%M")
+
+
+class PostImageForm(forms.ModelForm):
+    class Meta:
+        model = PostImageModel
+        fields = ["file"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["file"].widget.attrs.setdefault("class", "form-control")
+
+
+PostImageFormSet = inlineformset_factory(
+    Post,
+    PostImageModel,
+    form=PostImageForm,
+    extra=5,
+    can_delete=True,
+    max_num=20,
+)
