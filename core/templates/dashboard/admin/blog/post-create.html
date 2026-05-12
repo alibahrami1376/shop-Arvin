@@ -1,0 +1,108 @@
+{% extends 'dashboard/admin/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    #{{ form.published_date.id_for_label }} {
+        min-height: 2.75rem;
+    }
+    #published-date-addon.cursor-pointer {
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js_no_compress %}
+{{ form.media }}
+{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">حساب</li>
+        <li class="breadcrumb-item">داشبورد ادمین</li>
+        <li class="breadcrumb-item"><a href="{% url 'dashboard:admin:blog-post-list' %}">پست‌ها</a></li>
+        <li class="breadcrumb-item active" aria-current="page">ایجاد پست</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header border-bottom">
+        <h5 class="card-header-title">ایجاد پست</h5>
+    </div>
+
+    <form action="." method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8 mb-3">
+                    <label>عنوان</label>
+                    {{ form.title }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>تصویر شاخص</label>
+                    {{ form.image }}
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label>محتوا</label>
+                    {{ form.content }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>لینک خارجی (اختیاری)</label>
+                    {{ form.url }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label mb-1" for="{{ form.published_date.id_for_label }}">تاریخ و زمان انتشار</label>
+                    <div class="input-group input-group-merge">
+                        <span class="input-group-text cursor-pointer" id="published-date-addon" role="button" tabindex="0" title="باز کردن تقویم" aria-label="باز کردن تقویم و ساعت"><i class="bi-calendar3-event" aria-hidden="true"></i></span>
+                        {{ form.published_date }}
+                    </div>
+                    <div class="form-text" id="blog-published-date-help">با کلیک روی فیلد، تقویم و ساعت مرورگر باز می‌شود (دقیقه به دقیقه).</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>دسته‌بندی‌ها</label>
+                    {{ form.category }}
+                </div>
+                <div class="col-md-6 mb-3 d-flex align-items-center pt-4">
+                    <div class="form-check">
+                        {{ form.status }}
+                        <label class="form-check-label me-2" for="{{ form.status.id_for_label }}">منتشر شده</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex pt-3 justify-content-end">
+                <a class="btn btn-secondary ms-3" href="{% url 'dashboard:admin:blog-post-list' %}">بازگشت</a>
+                <button class="btn btn-primary ms-3" type="submit">ایجاد پست</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        var inp = document.getElementById("{{ form.published_date.id_for_label }}");
+        var addon = document.getElementById("published-date-addon");
+        if (!inp || !addon) return;
+        function openPicker() {
+            if (typeof inp.showPicker === "function") {
+                inp.showPicker();
+            } else {
+                inp.focus();
+            }
+        }
+        addon.addEventListener("click", openPicker);
+        addon.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                openPicker();
+            }
+        });
+    })();
+</script>
+{% endblock %}

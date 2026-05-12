@@ -38,6 +38,7 @@
                 <ul class="header__nav-list">
                     <li><a href="{% url 'website:index' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:index' %}header__nav-link--active{% endif %}">صفحه اصلی</a></li>
                     <li><a href="{% url 'shop:product-grid' %}" class="header__nav-link {% if request.resolver_match.view_name == 'shop:product-grid' %}header__nav-link--active{% endif %}">فروشگاه</a></li>
+                    <li><a href="{% url 'blog:blog_home' %}" class="header__nav-link {% if 'blog' in request.resolver_match.namespace %}header__nav-link--active{% endif %}">بلاگ</a></li>
                     <li><a href="{% url 'website:about' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:about' %}header__nav-link--active{% endif %}">درباره ما</a></li>
                     <li><a href="{% url 'website:contact' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:contact' %}header__nav-link--active{% endif %}">تماس با ما</a></li>
                 </ul>

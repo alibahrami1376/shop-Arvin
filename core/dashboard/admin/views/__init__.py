@@ -8,3 +8,4 @@ from .contacts import *
 from .newsletters import *
 from .users import *
 from .coupons import *
+from .blog import *

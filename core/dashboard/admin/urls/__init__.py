@@ -13,6 +13,7 @@ urlpatterns = [
     path("",include("dashboard.admin.urls.contacts")),
     path("",include("dashboard.admin.urls.users")),
     path("",include("dashboard.admin.urls.coupons")),
+    path("",include("dashboard.admin.urls.blog")),
 ]
 
 
