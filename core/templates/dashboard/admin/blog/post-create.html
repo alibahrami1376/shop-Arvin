@@ -1,6 +1,8 @@
 {% extends 'dashboard/admin/base.html' %}
 {% load static %}
 
+{# استاتیک CKEditor فقط با {{ form.media }} کامل لود می‌شود؛ .js/.css جدا گاهی در Network دیده نمی‌شود #}
+
 {% block extra_css %}
 <style>
     #{{ form.published_date.id_for_label }} {

@@ -25,6 +25,13 @@ class BlogCategoryForm(forms.ModelForm):
 
 
 class BlogPostForm(forms.ModelForm):
+    """فیلد content صریح است تا حتماً CKEditor5Widget اعمال شود (نه Textarea پیش‌فرض)."""
+
+    content = forms.CharField(
+        label=Post._meta.get_field("content").verbose_name,
+        widget=CKEditor5Widget(config_name="extends"),
+    )
+
     class Meta:
         model = Post
         fields = [
@@ -36,12 +43,10 @@ class BlogPostForm(forms.ModelForm):
             "status",
             "published_date",
         ]
-        widgets = {
-            "content": CKEditor5Widget(config_name="extends"),
-        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["content"].widget = CKEditor5Widget(config_name="extends")
         for fname in ("title", "image", "url"):
             self.fields[fname].widget.attrs.setdefault("class", "form-control")
         self.fields["category"].widget.attrs.setdefault("class", "form-select")
