@@ -1,13 +1,21 @@
 from django import forms
-from order.models import UserAddressModel,CouponModel
 from django.utils import timezone
+from payment.models import PaymentMethodType
+
+from order.models import CouponModel, UserAddressModel
+
 
 class CheckOutForm(forms.Form):
     address_id = forms.IntegerField(required=True)
     coupon = forms.CharField(required=False)
-    
+    payment_method = forms.TypedChoiceField(
+        coerce=int,
+        choices=PaymentMethodType.choices,
+        initial=PaymentMethodType.gateway.value,
+    )
+
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
+        self.request = kwargs.pop("request", None)
         super(CheckOutForm, self).__init__(*args, **kwargs)
         
     def clean_address_id(self):

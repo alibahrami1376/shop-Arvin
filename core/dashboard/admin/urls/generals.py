@@ -5,4 +5,9 @@ from .. import views
 urlpatterns = [
 
     path("home/", views.AdminDashboardHomeView.as_view(), name="home"),
+    path(
+        "settings/card-to-card/",
+        views.AdminCardToCardSettingsView.as_view(),
+        name="card-to-card-settings",
+    ),
 ]

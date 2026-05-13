@@ -6,6 +6,11 @@ app_name = "order"
 urlpatterns = [
     path("validate-coupon/",views.ValidateCouponView.as_view(),name="validate-coupon"),
     path("checkout/",views.OrderCheckOutView.as_view(),name="checkout"),
+    path(
+        "card-payment/<int:pk>/",
+        views.CardPaymentInstructionsView.as_view(),
+        name="card-payment-instructions",
+    ),
     path("completed/",views.OrderCompletedView.as_view(),name="completed"),
     path("failed/",views.OrderFailedView.as_view(),name="failed"),
 

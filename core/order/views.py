@@ -1,25 +1,26 @@
-from django.http import HttpResponse
-from django.views.generic import (
-    TemplateView,
-    FormView,
-    View
-)
-from django.contrib.auth.mixins import LoginRequiredMixin
-from order.permissions import HasCustomerAccessPermission
-from order.models import UserAddressModel
-from order.forms import CheckOutForm
-from cart.models import CartModel, CartItemModel
-from order.models import OrderModel, OrderItemModel
-from django.urls import reverse_lazy
-from cart.cart import CartSession
-from decimal import Decimal
-from order.models import CouponModel
-from django.http import JsonResponse
-from django.utils import timezone
+import uuid
+
+from django.contrib import messages
+from django.db import transaction
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
-# # Create your views here.
-from payment.zarinpal_client import ZarinPalSandbox
-from payment.models import PaymentModel
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import DetailView, FormView, TemplateView, View
+
+from cart.cart import CartSession
+from cart.models import CartModel, CartItemModel
+from order.forms import CheckOutForm
+from order.models import CouponModel, OrderItemModel, OrderModel, UserAddressModel
+from order.permissions import HasCustomerAccessPermission
+from payment.models import (
+    CardToCardSettings,
+    PaymentMethodType,
+    PaymentModel,
+    PaymentStatusType,
+)
+from payment.zarinpal_client import ZarinPalRequestFailed, ZarinPalSandbox
 
 
 class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormView):
@@ -35,30 +36,56 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
     def form_valid(self, form):
         user = self.request.user
         cleaned_data = form.cleaned_data
-        address = cleaned_data['address_id']
-        coupon = cleaned_data['coupon']
+        address = cleaned_data["address_id"]
+        coupon = cleaned_data["coupon"]
 
         cart = CartModel.objects.get(user=user)
-        order = self.create_order(address)
+        payment_method = cleaned_data["payment_method"]
+        try:
+            with transaction.atomic():
+                order = self.create_order(address)
+                self.create_order_items(order, cart)
+                total_price = order.calculate_total_price()
+                self.apply_coupon(coupon, order, user, total_price)
+                order.save()
+                if payment_method == PaymentMethodType.card_to_card.value:
+                    redirect_url = self._create_card_payment_next_url(order)
+                else:
+                    redirect_url = self._create_gateway_payment_url(order)
+        except ZarinPalRequestFailed as exc:
+            messages.error(self.request, str(exc))
+            return redirect(reverse_lazy("order:checkout"))
 
-        self.create_order_items(order, cart)
         self.clear_cart(cart)
+        return redirect(redirect_url)
 
-        total_price = order.calculate_total_price()
-        self.apply_coupon(coupon, order, user, total_price)
-        order.save()
-        return redirect(self.create_payment_url(order))
-
-    def create_payment_url(self, order):
+    def _create_gateway_payment_url(self, order):
         zarinpal = ZarinPalSandbox()
         response = zarinpal.payment_request(order.get_price())
+        authority = response["Authority"]
         payment_obj = PaymentModel.objects.create(
-            authority_id=response.get("Authority"),
+            authority_id=authority,
             amount=order.get_price(),
+            method=PaymentMethodType.gateway.value,
+            response_json=response,
         )
         order.payment = payment_obj
         order.save()
-        return zarinpal.generate_payment_url(response.get("Authority"))
+        return zarinpal.generate_payment_url(authority)
+
+    def _create_card_payment_next_url(self, order):
+        authority = f"card-{order.pk}-{uuid.uuid4().hex}"
+        payment_obj = PaymentModel.objects.create(
+            authority_id=authority,
+            amount=order.get_price(),
+            method=PaymentMethodType.card_to_card.value,
+            response_json={},
+        )
+        order.payment = payment_obj
+        order.save()
+        return reverse_lazy(
+            "order:card-payment-instructions", kwargs={"pk": order.pk}
+        )
 
     def create_order(self, address):
         return OrderModel.objects.create(
@@ -110,9 +137,44 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
 
 class OrderCompletedView(LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):
     template_name = "order/completed.html"
-    
+
+
 class OrderFailedView(LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):
     template_name = "order/failed.html"
+
+
+class CardPaymentInstructionsView(
+    LoginRequiredMixin, HasCustomerAccessPermission, DetailView
+):
+    """راهنمای واریز کارت به کارت پس از ثبت سفارش."""
+
+    model = OrderModel
+    template_name = "order/card-payment-instructions.html"
+    context_object_name = "order"
+
+    def get_queryset(self):
+        return OrderModel.objects.filter(user=self.request.user).select_related(
+            "payment"
+        )
+
+    def get_object(self, queryset=None):
+        order = super().get_object(queryset)
+        pay = order.payment
+        if pay is None or pay.method != PaymentMethodType.card_to_card.value:
+            raise Http404()
+        if pay.status != PaymentStatusType.pending.value:
+            raise Http404()
+        return order
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cfg = CardToCardSettings.get_solo()
+        context["card_bank_name"] = cfg.bank_name
+        context["card_holder"] = cfg.account_holder
+        context["card_number"] = cfg.card_number
+        context["card_iban"] = cfg.iban
+        context["card_note"] = cfg.note
+        return context
 
 
 class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):

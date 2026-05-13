@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container content-space-3 content-space-lg-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-4 text-center">
+                <h1 class="h2">واریز کارت به کارت</h1>
+                <p class="text-muted">سفارش شما ثبت شد. لطفاً مبلغ را به شمارهٔ زیر واریز کنید و شمارهٔ سفارش را نزد خود نگه دارید.</p>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h5 card-title border-bottom pb-2 mb-3">جزئیات سفارش</h2>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">شماره سفارش</dt>
+                        <dd class="col-sm-8"><strong>#{{ order.pk }}</strong></dd>
+                        <dt class="col-sm-4">مبلغ قابل پرداخت</dt>
+                        <dd class="col-sm-8"><strong class="formatted-price">{{ order.get_price }}</strong> <span class="small text-muted">تومان</span></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-primary mb-4">
+                <div class="card-body">
+                    <h2 class="h5 card-title border-bottom pb-2 mb-3">اطلاعات حساب</h2>
+                    {% if card_bank_name %}
+                    <p class="mb-1"><span class="text-muted">بانک:</span> {{ card_bank_name }}</p>
+                    {% endif %}
+                    {% if card_holder %}
+                    <p class="mb-1"><span class="text-muted">به نام:</span> {{ card_holder }}</p>
+                    {% endif %}
+                    {% if card_number %}
+                    <p class="mb-1"><span class="text-muted">شماره کارت:</span> <code class="user-select-all">{{ card_number }}</code></p>
+                    {% endif %}
+                    {% if card_iban %}
+                    <p class="mb-0"><span class="text-muted">شبا:</span> <code class="user-select-all">{{ card_iban }}</code></p>
+                    {% endif %}
+                    {% if not card_number and not card_iban %}
+                    <p class="text-warning mb-0">شماره کارت یا شبا در تنظیمات فروشگاه (متغیرهای محیط) ثبت نشده است. از پنل ادمین یا فایل <code>.env</code> مقداردهی کنید.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if card_note %}
+            <div class="alert alert-soft-primary" role="alert">
+                {{ card_note }}
+            </div>
+            {% endif %}
+
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                <a class="btn btn-primary" href="{% url 'dashboard:customer:order-list' %}">سفارش‌های من</a>
+                <a class="btn btn-outline-secondary" href="{% url 'shop:product-grid' %}">ادامه خرید</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.formatted-price').forEach(function (el) {
+            if (typeof formatPriceInToman === 'function') {
+                formatPriceInToman(el);
+            }
+        });
+    });
+</script>
+{% endblock extra_js %}
