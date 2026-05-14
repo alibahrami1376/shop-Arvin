@@ -56,16 +56,21 @@
    Typography - Modern, Soft, Elegant
    ============================================ */
 
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600&display=swap');
-
-/* Persian Font Import */
+/* Vazir FD — متن اصلی پروژه (فایل‌های محلی) */
 @font-face {
     font-family: 'Vazir';
-    src: url('../fonts/vazir/Vazir-Light-FD-WOL.woff') format('woff');
+    src: url('../fonts/vazir/Vazir-Light-FD.woff') format('woff');
     font-weight: 300;
     font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazir';
+    src: url('../fonts/vazir/Vazir-Medium-FD.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -73,32 +78,68 @@
     src: url('../fonts/vazir/Vazir-Bold-FD.woff') format('woff');
     font-weight: 700;
     font-style: normal;
+    font-display: swap;
 }
 
-/* Aviny Font Import - Local File */
+/* Font Awesome 6 — برای آیکن‌های fa (در صورت استفاده در قالب) */
 @font-face {
-    font-family: 'Aviny';
-    src: url('../fonts/Aviny.ttf') format('truetype');
+    font-family: 'Font Awesome 6 Brands';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('../fonts/fontawesome/fa-brands-400.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Font Awesome 6 Free';
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url('../fonts/fontawesome/fa-solid-900.woff2') format('woff2');
+}
+
+/* Font Awesome 5 — نام جایگزین در صورت استفاده از کلاس‌های نسخهٔ ۵ */
+@font-face {
+    font-family: 'Font Awesome 5 Brands';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('../fonts/fontawesome/fa-brands-400.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Font Awesome 5 Free';
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url('../fonts/fontawesome/fa-solid-900.woff2') format('woff2');
+}
+
+/* Ionicons — برای کلاس‌های ionicons (در صورت استفاده) */
+@font-face {
+    font-family: 'Ionicons';
+    src: url('../fonts/ionicons/ionicons.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 
+/* هدر سایت (نوار بالا) — Vazir v16.1.0 Bold */
 @font-face {
-    font-family: 'Aviny';
-    src: url('../fonts/Aviny.ttf') format('truetype');
-    font-weight: bold;
+    font-family: 'VazirHeader';
+    src: url('../fonts/vazir-font-v16.1.0/Vazir-Bold.ttf') format('truetype');
+    font-weight: 700;
     font-style: normal;
     font-display: swap;
 }
 
 /* Base Typography */
 * {
-    font-family: 'Aviny', 'Vazir', 'Noto Sans Arabic', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Vazir', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 body {
-    font-family: 'Aviny', 'Vazir', 'Noto Sans Arabic', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Vazir', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     color: var(--text-primary);
     background-color: var(--color-off-white);
     line-height: 1.9;
@@ -109,13 +150,13 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Apply Aviny to all text elements */
+/* متن رابط کاربری با Vazir */
 a, span, div, li, td, th, label, input, textarea, select, button {
-    font-family: 'Aviny', 'Vazir', 'Noto Sans Arabic', sans-serif;
+    font-family: 'Vazir', sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Aviny', 'Vazir', 'Noto Sans Arabic', 'Playfair Display', serif;
+    font-family: 'Vazir', sans-serif;
     color: var(--text-dark);
     font-weight: 500;
     line-height: 1.4;
@@ -160,7 +201,7 @@ h6 {
 }
 
 p {
-    font-family: 'Aviny', 'Vazir', 'Noto Sans Arabic', sans-serif;
+    font-family: 'Vazir', sans-serif;
     font-size: 1.1rem;
     line-height: 1.9;
     color: var(--text-secondary);
@@ -168,7 +209,7 @@ p {
 }
 
 .lead {
-    font-family: 'Aviny', 'Vazir', 'Noto Sans Arabic', sans-serif;
+    font-family: 'Vazir', sans-serif;
     font-size: 1.25rem;
     line-height: 1.8;
     color: var(--text-secondary);
@@ -417,7 +458,7 @@ select,
 }
 
 .logo-text {
-    font-family: 'Aviny', 'Vazir', 'Noto Sans Arabic', sans-serif;
+    font-family: 'Vazir', sans-serif;
     font-size: 1.5rem;
     font-weight: 500;
     color: var(--color-dusty-rose);
@@ -479,7 +520,7 @@ select,
 }
 
 .nav-link {
-    font-family: 'Aviny', 'Vazir', 'Noto Sans Arabic', sans-serif;
+    font-family: 'Vazir', sans-serif;
     color: var(--text-primary) !important;
     font-weight: 400;
     font-size: 0.9rem;
@@ -755,7 +796,7 @@ select,
    ============================================ */
 
 .btn {
-    font-family: 'Aviny', 'Vazir', 'Noto Sans Arabic', sans-serif;
+    font-family: 'Vazir', sans-serif;
     border-radius: var(--radius-full);
     padding: 0.75rem 2rem;
     font-weight: 400;
@@ -797,7 +838,7 @@ select,
    ============================================ */
 
 .form-control {
-    font-family: 'Aviny', 'Vazir', 'Noto Sans Arabic', sans-serif;
+    font-family: 'Vazir', sans-serif;
     border-radius: var(--radius-md);
     border: 1px solid rgba(0, 0, 0, 0.25);
     padding: 0.875rem 1.25rem;
@@ -2880,4 +2921,10 @@ textarea {
 
 .accordion .card-noorbanoo:hover {
     border-color: rgba(255, 107, 53, 0.3);
+}
+
+/* هدر: اولویت نهایی — VazirHeader روی متن؛ آیکن bi روی ::before از bootstrap-icons جدا می‌ماند */
+.header,
+.header * {
+    font-family: 'VazirHeader', 'Vazir', sans-serif !important;
 }
