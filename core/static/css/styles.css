@@ -1,30 +1,36 @@
 /* ============================================
-   فروشگاه لوازم کامیون و کامیونت - طراحی صنعتی و حرفه‌ای
-   Industrial, Professional, Reliable
+   فروشگاه لوازم کامیون و کامیونت — پالت: سفید، زرد، قهوه‌ای
    ============================================ */
 
 /* ============================================
-   Color Palette - Navy, Black, White
+   Color Palette — اصلی: سفید | فرعی: زرد | فرعی دوم: قهوه‌ای متوسط
    ============================================ */
 :root {
-    /* Primary Colors */
-    --color-warm-beige: #F5F5F5;
-    --color-soft-rose-gold: #1E3A5F;
-    --color-dusty-rose: #0A0E27;
+    /* پایه */
+    --color-primary-white: #FFFFFF;
+    --color-accent-yellow: #E6B422;
+    --color-accent-yellow-light: #F2D166;
+    --color-accent-yellow-soft: rgba(230, 180, 34, 0.22);
+    --color-accent-brown: #6B4E3D;
+    --color-accent-brown-dark: #4A372C;
+    --color-accent-brown-light: #8B6E5C;
+
+    /* نام‌های قدیمی (سازگاری با بقیهٔ فایل) */
+    --color-warm-beige: #FCFAF7;
+    --color-soft-rose-gold: #E6B422;
+    --color-dusty-rose: #6B4E3D;
     --color-off-white: #FFFFFF;
-    --color-soft-dark-gray: #000000;
-    
-    /* Additional Colors */
-    --color-light-beige: #FAFAFA;
-    --color-pale-pink: #E8E8E8;
-    --color-rose-gold-light: #2C4A6F;
+    --color-soft-dark-gray: #3D2E26;
+    --color-light-beige: #FAF8F5;
+    --color-pale-pink: #EDE6DF;
+    --color-rose-gold-light: #9A7B66;
     --color-cream: #FFFFFF;
-    
-    /* Text Colors */
-    --text-primary: #5A5A5A;
-    --text-secondary: #8A8A8A;
-    --text-light: #B8B8B8;
-    --text-dark: #4A4A4A;
+
+    /* متن */
+    --text-primary: #5C4338;
+    --text-secondary: #7D6558;
+    --text-light: #A89488;
+    --text-dark: #4A372C;
     
     /* Spacing */
     --spacing-xs: 0.5rem;
@@ -265,13 +271,18 @@ select,
     --spacing-sm: 1rem;
     --spacing-md: 1.5rem;
     --spacing-lg: 2rem;
-    --header-bg: #1E3A5F;
-    --header-text: #FFFFFF;
+    /* هدر: نوار تیره بالا + زمینه کهربایی (طبق نمونه) */
+    --header-top-bar: #333333;
+    --header-bg: #fdb94e;
+    --header-text: #333333;
+    --header-shadow: rgba(51, 51, 51, 0.12);
 }
 
 .header {
     background-color: var(--header-bg);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-top: 3px solid var(--header-top-bar);
+    box-shadow: 0 2px 12px var(--header-shadow);
+    border-bottom: 1px solid rgba(51, 51, 51, 0.15);
 }
 
 /* حذف فاصله سفید بین هدر و محتوا در داشبورد */
@@ -327,7 +338,8 @@ select,
 
 .header__nav-link:hover,
 .header__nav-link--active {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.35);
+    color: var(--header-text);
 }
 
 .header__actions {
@@ -354,19 +366,35 @@ select,
     position: relative;
     color: var(--header-text);
     font-size: 1.25rem;
-    padding: 0.4rem;
-    border-radius: 50%;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.header__cart-text {
+    font-size: 1.12rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+}
+
+@media (min-width: 992px) {
+    .header__cart-text {
+        font-size: 1.2rem;
+    }
 }
 
 .header__cart-link:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.35);
 }
 
 .header__badge {
     position: absolute;
-    top: -2px;
-    right: -2px;
-    background: #000;
+    top: -4px;
+    inset-inline-start: -6px;
+    background: var(--color-accent-brown);
     color: #fff;
     border-radius: 50%;
     width: 18px;
@@ -533,7 +561,7 @@ select,
 .nav-link:hover,
 .nav-link.active {
     color: var(--color-dusty-rose) !important;
-    background-color: rgba(0, 0, 0, 0.08);
+    background-color: var(--color-accent-yellow-soft);
 }
 
 .nav-link::after {
@@ -544,7 +572,7 @@ select,
     transform: translateX(50%);
     width: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--color-soft-rose-gold), #E55A2B);
+    background: linear-gradient(90deg, var(--color-soft-rose-gold), var(--color-dusty-rose));
     transition: var(--transition-smooth);
     border-radius: var(--radius-full);
 }
@@ -556,9 +584,9 @@ select,
 
 /* CTA Button in Header */
 .btn-primary {
-    background: #000000;
+    background: var(--color-soft-rose-gold);
     border: none;
-    color: white;
+    color: var(--color-dusty-rose);
     padding: 0.5rem 1.5rem;
     border-radius: var(--radius-full);
     font-weight: 400;
@@ -571,7 +599,7 @@ select,
     transform: translateY(-2px);
     box-shadow: var(--shadow-medium);
     background: var(--color-dusty-rose);
-    color: white;
+    color: #FFFFFF;
 }
 
 .btn-primary:active {
@@ -588,7 +616,7 @@ select,
     align-items: center;
     justify-content: center;
     position: relative;
-    background: linear-gradient(135deg, var(--color-off-white) 0%, var(--color-light-beige) 50%, #E8E8E8 100%);
+    background: linear-gradient(135deg, var(--color-off-white) 0%, var(--color-light-beige) 50%, var(--color-pale-pink) 100%);
     padding: var(--spacing-xl) 0;
     overflow: hidden;
 }
@@ -600,7 +628,7 @@ select,
     right: -15%;
     width: 700px;
     height: 700px;
-    background: radial-gradient(circle, rgba(255, 107, 53, 0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(230, 180, 34, 0.12) 0%, transparent 70%);
     border-radius: 50%;
     z-index: 0;
     animation: float 20s ease-in-out infinite;
@@ -613,7 +641,7 @@ select,
     left: -10%;
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(30, 58, 95, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(107, 78, 61, 0.1) 0%, transparent 70%);
     border-radius: 50%;
     z-index: 0;
     animation: float 25s ease-in-out infinite reverse;
@@ -642,14 +670,14 @@ select,
     padding: var(--spacing-xl);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-medium);
-    border: 1px solid rgba(232, 180, 160, 0.15);
+    border: 1px solid rgba(107, 78, 61, 0.12);
     margin-bottom: var(--spacing-md);
 }
 
 .hero-title {
     font-size: 4rem;
     font-weight: 500;
-    color: #000000;
+    color: var(--text-dark);
     margin-bottom: var(--spacing-md);
     line-height: 1.2;
 }
@@ -676,9 +704,9 @@ select,
 }
 
 .btn-hero {
-    background: #000000;
+    background: var(--color-soft-rose-gold);
     border: none;
-    color: white;
+    color: var(--color-dusty-rose);
     padding: 1.2rem 3rem;
     border-radius: var(--radius-full);
     font-weight: 400;
@@ -693,7 +721,7 @@ select,
     transform: translateY(-3px);
     box-shadow: var(--shadow-strong);
     background: var(--color-dusty-rose);
-    color: white;
+    color: #FFFFFF;
 }
 
 /* ============================================
@@ -782,7 +810,7 @@ select,
     width: 60px;
     height: 60px;
     border-radius: var(--radius-md);
-    background: linear-gradient(135deg, rgba(30, 58, 95, 0.1), rgba(0, 0, 0, 0.1));
+    background: linear-gradient(135deg, rgba(107, 78, 61, 0.1), rgba(0, 0, 0, 0.1));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -809,16 +837,16 @@ select,
 }
 
 .btn-outline-primary {
-    border: 2px solid #000000;
-    color: #000000;
+    border: 2px solid var(--color-dusty-rose);
+    color: var(--color-dusty-rose);
     background: transparent;
     padding: 0.75rem 2rem;
 }
 
 .btn-outline-primary:hover {
-    background: #000000;
+    background: var(--color-dusty-rose);
     color: white;
-    border-color: #000000;
+    border-color: var(--color-dusty-rose);
     transform: translateY(-2px);
     box-shadow: var(--shadow-soft);
 }
@@ -849,8 +877,8 @@ select,
 }
 
 .form-control:focus {
-    border-color: #000000;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    border-color: var(--color-dusty-rose);
+    box-shadow: 0 0 0 3px rgba(107, 78, 61, 0.12);
     outline: none;
 }
 
@@ -946,7 +974,7 @@ footer .text-muted {
 
 /* Gradient Backgrounds */
 .gradient-rose-beige {
-    background: linear-gradient(135deg, var(--color-soft-rose-gold), #E55A2B);
+    background: linear-gradient(135deg, var(--color-soft-rose-gold), var(--color-dusty-rose));
 }
 
 .gradient-subtle {
@@ -1010,7 +1038,7 @@ footer .text-muted {
 }
 
 .navbar-toggler:focus {
-    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    box-shadow: 0 0 0 3px rgba(230, 180, 34, 0.1);
     outline: none;
 }
 
@@ -1025,7 +1053,7 @@ footer .text-muted {
 
 .dropdown-menu {
     border-radius: var(--radius-md);
-    border: 1px solid rgba(30, 58, 95, 0.2);
+    border: 1px solid rgba(107, 78, 61, 0.2);
     box-shadow: var(--shadow-medium);
     padding: 0.5rem;
     margin-top: 0.5rem;
@@ -1040,7 +1068,7 @@ footer .text-muted {
 }
 
 .dropdown-item:hover {
-    background-color: rgba(255, 107, 53, 0.1);
+    background-color: rgba(230, 180, 34, 0.1);
     color: var(--color-dusty-rose);
 }
 
@@ -1065,7 +1093,7 @@ footer .text-muted {
 
 .input-group-text {
     background-color: transparent;
-    border: 1px solid rgba(30, 58, 95, 0.25);
+    border: 1px solid rgba(107, 78, 61, 0.25);
     border-right: none;
     border-radius: var(--radius-md) 0 0 var(--radius-md);
     color: var(--text-secondary);
@@ -1093,9 +1121,9 @@ footer .text-muted {
 }
 
 .alert-danger {
-    background-color: rgba(255, 107, 53, 0.1);
-    color: #E55A2B;
-    border: 1px solid rgba(255, 107, 53, 0.3);
+    background-color: rgba(230, 180, 34, 0.12);
+    color: var(--color-accent-brown-dark);
+    border: 1px solid rgba(230, 180, 34, 0.35);
 }
 
 /* ============================================
@@ -1118,7 +1146,7 @@ a:hover {
 
 .btn-ghost-secondary {
     background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(107, 78, 61, 0.25);
     color: var(--text-primary);
     border-radius: var(--radius-md);
     transition: var(--transition-smooth);
@@ -1131,8 +1159,8 @@ a:hover {
 }
 
 .btn-ghost-secondary:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-    border-color: #000000;
+    background-color: var(--color-accent-yellow-soft);
+    border-color: var(--color-dusty-rose);
     color: var(--color-dusty-rose);
 }
 
@@ -1144,7 +1172,7 @@ a:hover {
     position: absolute;
     top: -8px;
     right: -8px;
-    background: #000000;
+    background: var(--color-dusty-rose);
     color: white;
     border-radius: 50%;
     width: 22px;
@@ -1165,7 +1193,7 @@ a:hover {
 }
 
 .offcanvas-header {
-    border-bottom: 1px solid rgba(30, 58, 95, 0.15);
+    border-bottom: 1px solid rgba(107, 78, 61, 0.15);
 }
 
 /* ============================================
@@ -1174,7 +1202,7 @@ a:hover {
 
 .swiper-button-prev,
 .swiper-button-next {
-    color: #000000;
+    color: var(--color-dusty-rose);
     background: rgba(255, 255, 255, 0.9);
     width: 45px;
     height: 45px;
@@ -1223,7 +1251,7 @@ a:hover {
     right: -20%;
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(30, 58, 95, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(107, 78, 61, 0.08) 0%, transparent 70%);
     border-radius: 50%;
     z-index: 0;
 }
@@ -1286,7 +1314,7 @@ a:hover {
 /* Banner Navigation Buttons */
 .banner-nav-prev,
 .banner-nav-next {
-    color: #000000 !important;
+    color: var(--color-dusty-rose) !important;
     background: rgba(255, 255, 255, 0.95) !important;
     width: 50px !important;
     height: 50px !important;
@@ -1330,7 +1358,7 @@ a:hover {
 .banner-pagination .swiper-pagination-bullet {
     width: 12px !important;
     height: 12px !important;
-    background: rgba(0, 0, 0, 0.3) !important;
+    background: rgba(107, 78, 61, 0.28) !important;
     opacity: 1 !important;
     margin: 0 6px !important;
     transition: var(--transition-smooth) !important;
@@ -1338,7 +1366,7 @@ a:hover {
 }
 
 .banner-pagination .swiper-pagination-bullet-active {
-    background: #000000 !important;
+    background: var(--color-soft-rose-gold) !important;
     width: 30px !important;
     border-radius: var(--radius-full) !important;
 }
@@ -1506,11 +1534,11 @@ textarea {
     height: 80px;
     margin: 0 auto var(--spacing-sm);
     border-radius: var(--radius-md);
-    background: linear-gradient(135deg, rgba(30, 58, 95, 0.1), rgba(0, 0, 0, 0.1));
+    background: linear-gradient(135deg, rgba(230, 180, 34, 0.15), rgba(107, 78, 61, 0.12));
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #000000;
+    color: var(--color-dusty-rose);
     font-size: 2.5rem;
 }
 
@@ -2348,7 +2376,7 @@ textarea {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #E55A2B;
+    background: var(--color-dusty-rose);
 }
 
 /* ============================================
@@ -2411,8 +2439,8 @@ textarea {
 
 /* Card Info Link */
 .card-info-link {
-    background: rgba(255, 107, 53, 0.05);
-    border: 1px solid rgba(255, 107, 53, 0.15);
+    background: rgba(230, 180, 34, 0.05);
+    border: 1px solid rgba(230, 180, 34, 0.15);
 }
 
 .card-sm {
@@ -2477,7 +2505,7 @@ textarea {
     border-radius: var(--radius-full);
     padding: 0.5rem;
     box-shadow: var(--shadow-soft);
-    border: 1px solid rgba(30, 58, 95, 0.2);
+    border: 1px solid rgba(107, 78, 61, 0.2);
 }
 
 .input-card-form {
@@ -2788,19 +2816,19 @@ textarea {
 
 /* Border Overrides */
 .border-top {
-    border-top: 1px solid rgba(30, 58, 95, 0.15) !important;
+    border-top: 1px solid rgba(107, 78, 61, 0.15) !important;
 }
 
 .border-bottom {
-    border-bottom: 1px solid rgba(30, 58, 95, 0.15) !important;
+    border-bottom: 1px solid rgba(107, 78, 61, 0.15) !important;
 }
 
 .border {
-    border: 1px solid rgba(30, 58, 95, 0.15) !important;
+    border: 1px solid rgba(107, 78, 61, 0.15) !important;
 }
 
 .border-end {
-    border-right: 1px solid rgba(30, 58, 95, 0.15) !important;
+    border-right: 1px solid rgba(107, 78, 61, 0.15) !important;
 }
 
 .border-0 {
@@ -2869,7 +2897,7 @@ textarea {
 /* Button Overrides */
 .btn-white {
     background-color: white;
-    border: 1px solid rgba(30, 58, 95, 0.25);
+    border: 1px solid rgba(107, 78, 61, 0.25);
     color: var(--text-primary);
 }
 
@@ -2880,13 +2908,13 @@ textarea {
 }
 
 .btn-soft-secondary {
-    background-color: rgba(255, 107, 53, 0.1);
-    border: 1px solid rgba(255, 107, 53, 0.2);
+    background-color: rgba(230, 180, 34, 0.1);
+    border: 1px solid rgba(230, 180, 34, 0.2);
     color: var(--text-primary);
 }
 
 .btn-soft-secondary:hover {
-    background-color: rgba(255, 107, 53, 0.2);
+    background-color: rgba(230, 180, 34, 0.2);
     border-color: var(--color-soft-rose-gold);
     color: var(--color-dusty-rose);
 }
@@ -2920,7 +2948,7 @@ textarea {
 }
 
 .accordion .card-noorbanoo:hover {
-    border-color: rgba(255, 107, 53, 0.3);
+    border-color: rgba(230, 180, 34, 0.3);
 }
 
 /* هدر: اولویت نهایی — VazirHeader روی متن؛ آیکن bi روی ::before از bootstrap-icons جدا می‌ماند */

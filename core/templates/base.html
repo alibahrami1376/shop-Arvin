@@ -51,7 +51,7 @@
                 <a href="{% url 'accounts:login' %}" class="header__user-link"><i class="bi-person"></i> <span>ورود / ثبت نام</span></a>
                 {% endif %}
                 <a href="{% url 'cart:cart-summary' %}" class="header__cart-link" aria-label="سبد خرید">
-                    <i class="bi-basket"></i>
+                    <span class="header__cart-text">سبد خرید</span>
                     <span class="header__badge" id="total-cart-item-count">{{ cart.get_total_quantity|default:"۰" }}</span>
                 </a>
             </div>
@@ -73,7 +73,7 @@
                         <a class="mb-4 navbar-brand" href="{% url 'website:index' %}" aria-label="فروشگاه لوازم کامیون">
                             <div class="logo-container">
                                 <div class="logo-icon">
-                                    <i class="bi-truck" style="font-size: 2rem; color: #FF6B35;"></i>
+                                    <i class="bi-truck" style="font-size: 2rem; color: var(--color-soft-rose-gold);"></i>
                                 </div>
                                 <span class="logo-text">کامیون</span>
                             </div>
