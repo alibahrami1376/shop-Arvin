@@ -1,25 +1,33 @@
-from django.shortcuts import render
-from django.views.generic import View
-from .models import PaymentMethodType, PaymentModel, PaymentStatusType
-from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, get_object_or_404
-from .zarinpal_client import ZarinPalSandbox
+from django.urls import reverse_lazy
+from django.views.generic import View
+
 from order.models import OrderModel, OrderStatusType
+from order.permissions import HasCustomerAccessPermission
+from .models import PaymentMethodType, PaymentModel, PaymentStatusType
+from .zarinpal_client import ZarinPalSandbox
 
 # Create your views here.
 
 
-class PaymentVerifyView(View):
+class PaymentVerifyView(LoginRequiredMixin, HasCustomerAccessPermission, View):
     def get(self, request, *args, **kwargs):
-        authority_id = request.GET.get("Authority")
-        status = request.GET.get("Status")
+        authority_id = (request.GET.get("Authority") or "").strip()
+        if not authority_id:
+            return HttpResponseBadRequest()
 
         payment_obj = get_object_or_404(
             PaymentModel,
             authority_id=authority_id,
             method=PaymentMethodType.gateway.value,
         )
-        order = OrderModel.objects.get(payment=payment_obj)
+        order = get_object_or_404(
+            OrderModel,
+            payment=payment_obj,
+            user=request.user,
+        )
         zarin_pal = ZarinPalSandbox()
         response = zarin_pal.payment_verify(
             int(payment_obj.amount), payment_obj.authority_id
