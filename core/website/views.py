@@ -5,6 +5,7 @@ from .forms import ContactForm, NewsLetterForm
 from django.contrib import messages
 from django.views.generic import CreateView
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 # Create your views here.
 
 class IndexView(TemplateView):
@@ -23,6 +24,7 @@ class SendContactView(CreateView):
     """
     http_method_names = ['post']
     form_class = ContactForm
+    success_url = reverse_lazy('website:contact')
 
     def form_valid(self, form):
         form.save()
@@ -34,10 +36,7 @@ class SendContactView(CreateView):
         # handle unsuccessful form submission
         messages.error(
             self.request, 'مشکلی در ارسال فرم شما پیش آمد لطفا ورودی ها رو بررسی کنین و مجدد ارسال نمایید')
-        return redirect(self.request.META.get('HTTP_REFERER'))
-
-    def get_success_url(self):
-        return self.request.META.get('HTTP_REFERER')
+        return redirect('website:contact')
     
 class NewsletterView(CreateView):
     http_method_names = ['post']
