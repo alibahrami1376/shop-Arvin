@@ -1636,7 +1636,107 @@ textarea {
     line-height: 1.6;
     margin: 0;
     overflow-wrap: anywhere;
-} 
+}
+
+/* ============================================
+   Home — دنبال چی می‌گردی؟ (دسته‌های سریع)
+   ============================================ */
+
+.home-lookfor-section {
+    background: #f6f6f6;
+    padding: var(--spacing-lg) 0;
+}
+
+.home-lookfor-title {
+    text-align: center;
+    font-size: clamp(1.1rem, 3vw, 1.35rem);
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0 0 var(--spacing-md);
+    line-height: 1.4;
+}
+
+.home-lookfor-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0.5rem 0.65rem;
+}
+
+.home-lookfor-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 9rem;
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition-smooth);
+}
+
+.home-lookfor-item:focus-visible {
+    outline: 2px solid var(--color-soft-rose-gold);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+}
+
+.home-lookfor-item__box {
+    width: clamp(5.75rem, 16vw, 7.5rem);
+    aspect-ratio: 1;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.35rem;
+    background: #ffffff;
+    border: 1px solid rgba(230, 180, 34, 0.45);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    transition:
+        border-radius 0.3s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.home-lookfor-item:hover .home-lookfor-item__box,
+.home-lookfor-item:focus-visible .home-lookfor-item__box {
+    border-radius: 50%;
+    border-color: var(--color-soft-rose-gold);
+    box-shadow: 0 8px 22px rgba(230, 180, 34, 0.2);
+    transform: translateY(-3px);
+}
+
+.home-lookfor-item__icon-wrap {
+    font-size: clamp(1.65rem, 4.5vw, 2.1rem);
+    line-height: 1;
+    color: rgba(200, 150, 40, 0.95);
+}
+
+.home-lookfor-item:hover .home-lookfor-item__icon-wrap {
+    color: var(--color-soft-rose-gold);
+}
+
+.home-lookfor-item__label-in {
+    font-size: clamp(0.65rem, 2vw, 0.78rem);
+    font-weight: 600;
+    color: rgba(200, 150, 45, 0.92);
+    text-align: center;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.home-lookfor-item__caption {
+    display: block;
+    margin-top: 0.55rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    text-align: center;
+    line-height: 1.3;
+}
 
 /* ============================================
    Feature Cards

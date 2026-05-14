@@ -131,6 +131,30 @@
 </section>
 <!-- End خدمات -->
 
+<!-- دنبال چی می‌گردی؟ -->
+<section class="home-lookfor-section" aria-labelledby="home-lookfor-heading">
+    <div class="container">
+        <h2 id="home-lookfor-heading" class="home-lookfor-title">دنبال چی می‌گردی؟</h2>
+        <div class="home-lookfor-grid">
+            <a href="{% url 'shop:product-grid' %}?q={{ 'لوازم آروین'|urlencode }}" class="home-lookfor-item">
+                <div class="home-lookfor-item__box">
+                    <span class="home-lookfor-item__icon-wrap" aria-hidden="true"><i class="bi bi-grid-3x3-gap"></i></span>
+                    <span class="home-lookfor-item__label-in">لوازم آروین</span>
+                </div>
+                <span class="home-lookfor-item__caption">لوازم</span>
+            </a>
+            <a href="{% url 'shop:product-grid' %}?q={{ 'صندلی'|urlencode }}" class="home-lookfor-item">
+                <div class="home-lookfor-item__box">
+                    <span class="home-lookfor-item__icon-wrap" aria-hidden="true"><i class="bi bi-person-workspace"></i></span>
+                    <span class="home-lookfor-item__label-in">صندلی آروین</span>
+                </div>
+                <span class="home-lookfor-item__caption">صندلی</span>
+            </a>
+        </div>
+    </div>
+</section>
+<!-- End دنبال چی می‌گردی؟ -->
+
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="container">
