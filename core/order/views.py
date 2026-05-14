@@ -162,7 +162,7 @@ class CardPaymentInstructionsView(
         pay = order.payment
         if pay is None or pay.method != PaymentMethodType.card_to_card.value:
             raise Http404()
-        if pay.status != PaymentStatusType.pending.value:
+        if pay.status != PaymentStatusType.awaiting_payment.value:
             raise Http404()
         return order
 

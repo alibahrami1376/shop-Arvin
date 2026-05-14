@@ -22,12 +22,6 @@
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h5 class="mb-0">سفارش شماره {{object.id}}</h5>
         <div class="d-flex flex-wrap align-items-center gap-2">
-          <form method="post" action="{% url 'dashboard:admin:order-change-status' pk=object.pk %}" class="d-flex flex-wrap align-items-center gap-2">
-            {% csrf_token %}
-            <label class="mb-0 small text-muted" for="id_status">وضعیت:</label>
-            {{ status_form.status }}
-            <button type="submit" class="btn btn-sm btn-primary">ذخیره وضعیت</button>
-          </form>
           {% if object.is_successful %}
           <a class="btn btn-sm btn-outline-primary" href="{% url 'dashboard:admin:order-invoice' pk=object.pk %}" target="_blank">مشاهده فاکتور</a>
           {% endif %}
@@ -88,8 +82,30 @@
             {% endif %}
             <span class="text-muted small d-block">{{ object.user.email }}</span>
           </dl>
-          <dt class="col-md-3">وضعیت فعلی:</dt>
-          <dl class="col-md-9">{{ object.get_status.label }}</dl>
+        </div>
+        <div class="row mb-4">
+          <div class="col-12">
+            <h6 class="text-muted border-bottom pb-2 mb-3">تغییر وضعیت‌ها</h6>
+            <div class="d-flex flex-column gap-3">
+              <form method="post" action="{% url 'dashboard:admin:order-change-status' pk=object.pk %}" class="d-flex flex-wrap align-items-center gap-2">
+                {% csrf_token %}
+                <label class="mb-0 small text-muted" for="{{ status_form.status.id_for_label }}">وضعیت سفارش:</label>
+                {{ status_form.status }}
+                <button type="submit" class="btn btn-sm btn-primary">ذخیرهٔ وضعیت سفارش</button>
+              </form>
+              {% if payment_form %}
+              <div class="small text-muted">
+                پرداخت — روش: {{ object.payment.get_method_display }}، مبلغ: <span class="formatted-price">{{ object.payment.amount }}</span>
+              </div>
+              <form method="post" action="{% url 'dashboard:admin:order-change-payment-status' pk=object.pk %}" class="d-flex flex-wrap align-items-center gap-2">
+                {% csrf_token %}
+                <label class="mb-0 small text-muted" for="{{ payment_form.status.id_for_label }}">مرحلهٔ پرداخت و ارسال:</label>
+                {{ payment_form.status }}
+                <button type="submit" class="btn btn-sm btn-outline-primary">ذخیرهٔ وضعیت پرداخت</button>
+              </form>
+              {% endif %}
+            </div>
+          </div>
         </div>
         <div class="row mb-3">
           <dt class="col-md-3"> تاریخ سفارش:</dt>

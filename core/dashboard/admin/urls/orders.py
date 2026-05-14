@@ -9,6 +9,15 @@ urlpatterns = [
         views.AdminOrderChangeStatusView.as_view(),
         name="order-change-status",
     ),
-    path("order/<int:pk>/invoice/",views.AdminOrderInvoiceView.as_view(),name="order-invoice"),
+    path(
+        "order/<int:pk>/payment-status/",
+        views.AdminOrderPaymentStatusView.as_view(),
+        name="order-change-payment-status",
+    ),
+    path(
+        "order/<int:pk>/invoice/",
+        views.AdminOrderInvoiceView.as_view(),
+        name="order-invoice",
+    ),
 ]
 

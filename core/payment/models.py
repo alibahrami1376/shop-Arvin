@@ -3,9 +3,11 @@ from django.db.models import JSONField
 
 
 class PaymentStatusType(models.IntegerChoices):
-    pending = 1, "در انتظار"
-    success = 2, "پرداخت موفق"
-    failed = 3, "پرداخت ناموفق"
+    awaiting_payment = 1, "در انتظار پرداخت"
+    preparing = 2, "در حال آماده‌سازی"
+    shipped = 3, "ارسال شده"
+    payment_failed = 4, "پرداخت ناموفق"
+    cancelled = 5, "لغو شده"
 
 
 class PaymentMethodType(models.IntegerChoices):
@@ -26,7 +28,7 @@ class PaymentModel(models.Model):
     response_code = models.IntegerField(null=True, blank=True)
     status = models.IntegerField(
         choices=PaymentStatusType.choices,
-        default=PaymentStatusType.pending.value,
+        default=PaymentStatusType.awaiting_payment.value,
     )
 
     created_date = models.DateTimeField(auto_now_add=True)

@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, View
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from dashboard.admin.forms import AdminOrderStatusForm
+from dashboard.admin.forms import AdminOrderStatusForm, AdminPaymentStatusForm
 from dashboard.permissions import HasAdminAccessPermission
 from order.models import OrderModel, OrderStatusType
 
@@ -40,11 +40,17 @@ class AdminOrderDetailView(LoginRequiredMixin, HasAdminAccessPermission, DetailV
     template_name = "dashboard/admin/orders/order-detail.html"
 
     def get_queryset(self):
-        return OrderModel.objects.select_related("user", "user__user_profile").all()
+        return OrderModel.objects.select_related(
+            "user", "user__user_profile", "payment"
+        ).all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["status_form"] = AdminOrderStatusForm(instance=self.object)
+        pay = self.object.payment
+        context["payment_form"] = (
+            AdminPaymentStatusForm(instance=pay) if pay is not None else None
+        )
         return context
 
 
@@ -61,6 +67,34 @@ class AdminOrderChangeStatusView(LoginRequiredMixin, HasAdminAccessPermission, V
             messages.error(
                 request,
                 "تغییر وضعیت انجام نشد. دوباره تلاش کنید.",
+            )
+        return redirect(reverse_lazy("dashboard:admin:order-detail", kwargs={"pk": pk}))
+
+
+class AdminOrderPaymentStatusView(LoginRequiredMixin, HasAdminAccessPermission, View):
+    http_method_names = ["post"]
+
+    def post(self, request, pk, *args, **kwargs):
+        order = get_object_or_404(
+            OrderModel.objects.select_related("payment"),
+            pk=pk,
+        )
+        if order.payment is None:
+            messages.error(request, "برای این سفارش رکورد پرداختی ثبت نشده است.")
+            return redirect(
+                reverse_lazy("dashboard:admin:order-detail", kwargs={"pk": pk})
+            )
+        form = AdminPaymentStatusForm(
+            request.POST,
+            instance=order.payment,
+        )
+        if form.is_valid():
+            form.save()
+            messages.success(request, "مرحلهٔ پرداخت و ارسال به‌روزرسانی شد.")
+        else:
+            messages.error(
+                request,
+                "تغییر وضعیت پرداخت انجام نشد. ورودی را بررسی کنید.",
             )
         return redirect(reverse_lazy("dashboard:admin:order-detail", kwargs={"pk": pk}))
 

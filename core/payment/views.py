@@ -38,9 +38,9 @@ class PaymentVerifyView(LoginRequiredMixin, HasCustomerAccessPermission, View):
         payment_obj.ref_id = ref_id
         payment_obj.response_code = status_code
         payment_obj.status = (
-            PaymentStatusType.success.value
+            PaymentStatusType.preparing.value
             if status_code in {100, 101}
-            else PaymentStatusType.failed.value
+            else PaymentStatusType.payment_failed.value
         )
         payment_obj.response_json = response
         payment_obj.save()
