@@ -56,9 +56,18 @@ class ContactView(TemplateView):
     template_name = "website/contact.html" 
     
 class AboutView(TemplateView):
-    template_name = "website/about.html" 
-    
-    
+    template_name = "website/about.html"
+
+
+class FAQView(TemplateView):
+    template_name = "website/faq.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["faq_items"] = FAQItem.objects.filter(is_published=True)
+        return context
+
+
 class SendContactView(CreateView):
     """
     a class based view to show index page

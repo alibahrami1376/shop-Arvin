@@ -31,3 +31,20 @@ class NewsLetter(models.Model):
 
     def __str__(self):
         return self.email
+
+
+class FAQItem(models.Model):
+    question = models.CharField(max_length=500, verbose_name="سوال")
+    answer = models.TextField(verbose_name="پاسخ")
+    sort_order = models.PositiveIntegerField(default=0, verbose_name="ترتیب نمایش")
+    is_published = models.BooleanField(default=True, verbose_name="منتشر شده")
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["sort_order", "-created_date"]
+        verbose_name = "سوال متداول"
+        verbose_name_plural = "سوالات متداول"
+
+    def __str__(self):
+        return self.question

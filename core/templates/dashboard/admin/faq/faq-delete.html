@@ -1,0 +1,30 @@
+{% extends 'dashboard/admin/base.html' %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">داشبورد ادمین</li>
+        <li class="breadcrumb-item"><a href="{% url 'dashboard:admin:faq-list' %}">سوالات متداول</a></li>
+        <li class="breadcrumb-item active" aria-current="page">حذف سوال</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header border-bottom">
+        <h5 class="card-header-title mb-0">حذف سوال متداول</h5>
+    </div>
+    <div class="card-body">
+        <p class="mb-2">آیا از حذف این سوال مطمئن هستید؟</p>
+        <p class="fw-semibold mb-0">{{ object.question }}</p>
+    </div>
+    <div class="card-footer d-flex justify-content-end gap-2">
+        <form action="." method="post" class="d-flex gap-2">
+            {% csrf_token %}
+            <a class="btn btn-secondary" href="{% url 'dashboard:admin:faq-list' %}">انصراف</a>
+            <button class="btn btn-danger" type="submit">حذف</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

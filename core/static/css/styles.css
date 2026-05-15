@@ -3728,3 +3728,64 @@ section.home-product-strip.section + section.home-product-strip.section {
     font-family: 'VazirHeader', 'Vazir', sans-serif !important;
 }
 
+/* صفحه سوالات متداول */
+.faq-hero {
+    padding: clamp(1.5rem, 4vw, 2.5rem) 0;
+    background: linear-gradient(180deg, #faf8f5 0%, #ffffff 100%);
+}
+
+.faq-hero__title {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 0.5rem;
+}
+
+.faq-hero__subtitle {
+    margin: 0 auto;
+    color: var(--text-secondary);
+    font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+    max-width: 36rem;
+}
+
+.faq-section {
+    padding-top: clamp(1rem, 3vw, 2rem);
+    padding-bottom: clamp(1.5rem, 4vw, 3rem);
+}
+
+.faq-accordion__item {
+    border: 1px solid rgba(74, 55, 44, 0.1);
+    border-radius: var(--radius-md) !important;
+    margin-bottom: 0.65rem;
+    overflow: hidden;
+    background: #fff;
+}
+
+.faq-accordion__button {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-dark);
+    background: #fff;
+    box-shadow: none;
+    padding: 1rem 1.15rem;
+}
+
+.faq-accordion__button:not(.collapsed) {
+    color: var(--text-dark);
+    background: rgba(230, 180, 34, 0.12);
+    box-shadow: none;
+}
+
+.faq-accordion__button:focus {
+    box-shadow: none;
+}
+
+.faq-accordion__body {
+    color: var(--text-secondary);
+    line-height: 1.85;
+    padding: 0 1.15rem 1.1rem;
+}
+
+.faq-cta p {
+    color: var(--text-secondary);
+}

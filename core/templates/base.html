@@ -51,6 +51,7 @@
                         </ul>
                     </li>
                     <li><a href="{% url 'blog:blog_home' %}" class="header__nav-link {% if 'blog' in request.resolver_match.namespace %}header__nav-link--active{% endif %}">بلاگ</a></li>
+                    <li><a href="{% url 'website:faq' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:faq' %}header__nav-link--active{% endif %}">از آروین بپرس؟</a></li>
                     <li><a href="{% url 'website:about' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:about' %}header__nav-link--active{% endif %}">درباره ما</a></li>
                     <li><a href="{% url 'website:contact' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:contact' %}header__nav-link--active{% endif %}">تماس با ما</a></li>
                 </ul>
@@ -98,6 +99,7 @@
                         </div>
                     </li>
                     <li><a href="{% url 'blog:blog_home' %}" class="header__mobile-nav-link {% if 'blog' in request.resolver_match.namespace %}header__mobile-nav-link--active{% endif %}">بلاگ</a></li>
+                    <li><a href="{% url 'website:faq' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:faq' %}header__mobile-nav-link--active{% endif %}">از آروین بپرس؟</a></li>
                     <li><a href="{% url 'website:about' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:about' %}header__mobile-nav-link--active{% endif %}">درباره ما</a></li>
                     <li><a href="{% url 'website:contact' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:contact' %}header__mobile-nav-link--active{% endif %}">تماس با ما</a></li>
                 </ul>
