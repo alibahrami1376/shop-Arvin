@@ -13,6 +13,29 @@ def show_latest_products(context):
     return {"latest_products": latest_products,"request":request,"wishlist_items":wishlist_items}
 
 
+@register.inclusion_tag("includes/home-product-strip.html", takes_context=True)
+def show_home_product_strip(
+    context, products, title, strip_suffix="strip", extra_section_class=""
+):
+    request = context.get("request")
+    wishlist_items = (
+        WishlistProductModel.objects.filter(user=request.user).values_list(
+            "product__id", flat=True
+        )
+        if request.user.is_authenticated
+        else []
+    )
+    strip_heading_id = f"home-product-strip-{strip_suffix}"
+    return {
+        "products": products,
+        "title": title,
+        "request": request,
+        "wishlist_items": wishlist_items,
+        "strip_heading_id": strip_heading_id,
+        "extra_section_class": extra_section_class,
+    }
+
+
 @register.inclusion_tag("includes/similar-products.html",takes_context=True)
 def show_similar_products(context,product):
     request = context.get("request")

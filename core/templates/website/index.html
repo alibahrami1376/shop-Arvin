@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load shop_tags %}
-
 {% block title %}ARVIN SIT {% endblock %}
-
 {% block content %}
+
 <!-- Banner Slider Section -->
 <section class="banner-slider-section">
     <div class="js-swiper-banner swiper banner-swiper">
@@ -81,7 +80,6 @@
     </div>
 </section>
 <!-- End Banner Slider Section -->
-
 <!-- خدمات فروشگاه (بعد از بنر) -->
 <section class="home-services-section" aria-labelledby="home-services-heading">
     <div class="container">
@@ -130,7 +128,6 @@
     </div>
 </section>
 <!-- End خدمات -->
-
 <!-- دنبال چی می‌گردی؟ -->
 <section class="home-lookfor-section" aria-labelledby="home-lookfor-heading">
     <div class="container">
@@ -154,200 +151,29 @@
     </div>
 </section>
 <!-- End دنبال چی می‌گردی؟ -->
-
-<!-- Hero Section -->
-<section class="hero-section">
+{% show_home_product_strip top_products "برترین‌ها" "top" %}
+{% show_home_product_strip newest_products "جدیدترین‌ها" "new" "section-alt" %}
+<!-- دو بنر تبلیغاتی (چیدمان ثابت چپ‌به‌راست برای نسبت ۲:۱ روی صفحهٔ RTL) -->
+<section class="home-dual-banner section" aria-label="پیشنهادها و تخفیف‌ها">
     <div class="container">
-        <div class="hero-content fade-in-up">
-            <div class="hero-text-box">
-                <h1 class="hero-title">فروشگاه آروین </h1>
-                <p class="hero-subtitle">
-                    بزرگترین مرکز تامین قطعات یدکی و لوازم جانبی کامیون و کامیونت. 
-                    با بیش از ۱۰ سال تجربه در زمینه تامین و فروش قطعات اصلی و با کیفیت.
-                </p>
-                <div class="hero-cta">
-                    <a href="{% url 'shop:product-grid' %}" class="btn-hero">مشاهده محصولات</a>
-                    <a href="{% url 'website:about' %}" class="btn btn-outline-primary ms-3">درباره ما</a>
-                </div>
-            </div>
+        <div class="home-dual-banner__grid" dir="ltr">
+            <a href="{% url 'shop:product-grid' %}" class="home-dual-banner__link">
+                <img src="{% static 'img/900x900/img2.jpg' %}" alt="پیشنهاد ویژه فروشگاه آروین" class="home-dual-banner__img" width="900" height="900" loading="lazy">
+            </a>
+            <a href="{% url 'shop:product-grid' %}" class="home-dual-banner__link">
+                <img src="{% static 'img/900x900/img3.jpg' %}" alt="محصولات پرطرفدار آروین" class="home-dual-banner__img" width="900" height="900" loading="lazy">
+            </a>
         </div>
     </div>
 </section>
-<!-- End Hero Section -->
-
-<!-- Features Section -->
-<section class="section section-alt">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="feature-card fade-in-up">
-                    <div class="feature-icon">
-                        <i class="bi-truck"></i>
-                    </div>
-                    <h4 class="card-title">قطعات اصلی</h4>
-                    <p class="card-text">
-                        تامین قطعات اصلی و با کیفیت از برندهای معتبر جهانی برای انواع کامیون و کامیونت
-                    </p>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="feature-card fade-in-up">
-                    <div class="feature-icon">
-                        <i class="bi-shield-check"></i>
-                    </div>
-                    <h4 class="card-title">گارانتی معتبر</h4>
-                    <p class="card-text">
-                        تمامی محصولات با گارانتی اصالت و کیفیت ارائه می‌شوند و خدمات پس از فروش کامل
-                    </p>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="feature-card fade-in-up">
-                    <div class="feature-icon">
-                        <i class="bi-clock-history"></i>
-                    </div>
-                    <h4 class="card-title">ارسال سریع</h4>
-                    <p class="card-text">
-                        ارسال سریع و به موقع به سراسر کشور با بسته‌بندی مناسب و امن
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- End Features Section -->
-
-<!-- About Preview Section -->
-<section class="section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-12 col-lg-6 mb-4 mb-lg-0">
-                <div class="position-relative">
-                    <img src="{% static 'img/900x900/img1.jpg' %}" alt="Noorbanoo Life" class="img-fluid rounded-xl shadow-medium" style="max-height: 600px; width: 100%; object-fit: cover;">
-                    <div class="position-absolute top-0 start-0 w-100 h-100 rounded-xl" style="background: linear-gradient(135deg, rgba(232, 180, 160, 0.1), rgba(212, 165, 165, 0.1)); pointer-events: none;"></div>
-                </div>
-            </div>
-            <div class="col-12 col-lg-6">
-                <div class="ps-lg-5">
-                    <h2 class="section-title text-start mb-4">درباره فروشگاه ما</h2>
-                    <p class="lead mb-4">
-                        با بیش از ۱۰ سال تجربه در زمینه تامین و فروش قطعات یدکی کامیون و کامیونت، 
-                        ما به عنوان یکی از معتبرترین مراکز فروش لوازم یدکی در کشور شناخته می‌شویم.
-                    </p>
-                    <p class="mb-4">
-                        ما با تامین قطعات اصلی از برندهای معتبر جهانی و ارائه خدمات پس از فروش کامل، 
-                        همراه شما در نگهداری و تعمیر کامیون‌هایتان هستیم.
-                    </p>
-                    <a href="{% url 'website:about' %}" class="btn btn-primary">بیشتر بدانید</a>
-                </div>
-            </div>
-        </div>
-                    </div>
-</section>
-<!-- End About Preview Section -->
-
-<!-- Products Section -->
-{% show_latest_products %}
-
-<!-- Values Section -->
-<section class="section section-alt">
-    <div class="container">
-        <h2 class="section-title">ارزش‌های ما</h2>
-        <p class="section-subtitle">
-            در فروشگاه ما، این ارزش‌ها پایه و اساس تمام فعالیت‌هایمان هستند
-        </p>
-        <div class="row g-4 mt-4">
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
-                <div class="card-noorbanoo text-center">
-                    <div class="card-icon mx-auto mb-3">
-                        <i class="bi-award"></i>
-                    </div>
-                    <h5 class="card-title">کیفیت</h5>
-                    <p class="card-text small">فقط قطعات اصلی و با کیفیت از برندهای معتبر جهانی</p>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
-                <div class="card-noorbanoo text-center">
-                    <div class="card-icon mx-auto mb-3">
-                        <i class="bi-people-fill"></i>
-                    </div>
-                    <h5 class="card-title">رضایت مشتری</h5>
-                    <p class="card-text small">رضایت و اعتماد مشتریان اولویت اصلی ماست</p>
-                </div>
-                        </div>
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
-                <div class="card-noorbanoo text-center">
-                    <div class="card-icon mx-auto mb-3">
-                        <i class="bi-tools"></i>
-                    </div>
-                    <h5 class="card-title">تخصص</h5>
-                    <p class="card-text small">تیم متخصص و با تجربه در زمینه قطعات کامیون</p>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
-                <div class="card-noorbanoo text-center">
-                    <div class="card-icon mx-auto mb-3">
-                        <i class="bi-headset"></i>
-                    </div>
-                    <h5 class="card-title">پشتیبانی</h5>
-                    <p class="card-text small">پشتیبانی و مشاوره تخصصی قبل و پس از خرید</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- End Values Section -->
-
-<!-- CTA Section -->
-<section class="section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-8">
-                <div class="card-noorbanoo text-center p-5" style="background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(30, 58, 95, 0.1)); border: none;">
-                    <h2 class="mb-4">به دنبال قطعات یدکی کامیون هستید؟</h2>
-                    <p class="lead mb-4">
-                        از بزرگترین مجموعه قطعات یدکی کامیون و کامیونت دیدن کنید. 
-                        قطعات اصلی، با کیفیت و با بهترین قیمت در خدمت شما هستیم.
-                    </p>
-                    <div class="d-flex gap-3 justify-content-center flex-wrap">
-                        <a href="{% url 'shop:product-grid' %}" class="btn btn-primary btn-lg">مشاهده محصولات</a>
-                        <a href="{% url 'website:contact' %}" class="btn btn-outline-primary btn-lg">تماس با ما</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- End CTA Section -->
-
-<!-- Newsletter Section -->
-<section class="section section-alt">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <h2 class="section-title">عضویت در خبرنامه</h2>
-                <p class="section-subtitle mb-4">
-                    برای دریافت آخرین محصولات، تخفیف‌های ویژه و اخبار فروشگاه
-                </p>
-                <form method="post" action="{% url 'website:newsletter' %}" class="d-flex flex-column flex-md-row gap-2 justify-content-center flex-wrap" style="max-width: 500px; margin: 0 auto;">
-                    {% csrf_token %}
-                    <input type="email" class="form-control flex-grow-1" placeholder="ایمیل شما" name="email" required style="min-width: 200px;">
-                    <button type="submit" class="btn btn-primary">عضویت</button>
-                </form>
-                <p class="text-muted small mt-3">
-                    ما به حریم خصوصی شما احترام می‌گذاریم. می‌توانید در هر زمان عضویت خود را لغو کنید.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- End Newsletter Section -->
-
+<!-- End دو بنر -->
+{% show_home_product_strip bestseller_products "پرفروش‌ترین‌ها" "bestseller" "section-alt" %}
+{% include "includes/home-latest-blog.html" with posts=latest_posts only %}
+{% endblock content %}
 {% block extra_js %}
 <script>
-    // Initialize Banner Swiper
     document.addEventListener('DOMContentLoaded', function() {
-        var bannerSwiper = new Swiper('.js-swiper-banner', {
+        new Swiper('.js-swiper-banner', {
             autoplay: {
                 delay: 5000,
                 disableOnInteraction: false,
@@ -366,11 +192,10 @@
                 el: '.banner-pagination',
                 clickable: true,
                 renderBullet: function (index, className) {
-                    return '<span class="' + className + '">' + '</span>';
+                    return '<span class="' + className + '"></span>';
                 },
             },
         });
     });
 </script>
 {% endblock extra_js %}
-{% endblock content %}

@@ -1,0 +1,72 @@
+{% load static %}
+<section class="home-product-strip section {{ extra_section_class }}" aria-labelledby="{{ strip_heading_id }}">
+    <div class="container">
+        <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-3 mb-md-4">
+            <h2 id="{{ strip_heading_id }}" class="home-product-strip__title">{{ title }}</h2>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 g-md-3 mb-2">
+            {% for product in products %}
+            <div class="col">
+                <div class="card card-bordered shadow-none text-center h-100 position-relative">
+                    <div class="card-pinned">
+                        <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" width="400" height="400" loading="lazy" onerror="this.onerror=null;this.src='{% static 'img/900x900/img1.jpg' %}';">
+                        {% if request.user.is_authenticated %}
+                        <div class="card-pinned-top-end home-product-strip__above-stretch">
+                            <button type="button"
+                                class="btn btn-outline-secondary btn-xs btn-icon rounded-circle {% if product.id in wishlist_items %} active {% endif %}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به علایق"
+                                onclick="event.stopPropagation(); addToWishlist(this,`{{ product.id }}`)">
+                                <i class="bi-heart"></i>
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-body">
+                        <div class="mb-2 home-product-strip__above-stretch">
+                            {% for category in product.category.all %}
+                            <a class="link-sm link-secondary" href="{% url 'shop:product-grid' %}?category_id={{ category.id }}">{{ category.title }}</a>{% if not forloop.last %}، {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <h4 class="card-title text-dark">{{ product.title }}</h4>
+                        {% if product.is_discounted %}
+                        <p class="card-text text-dark fs-4">
+                            <span class="formatted-price">{{ product.get_price }}</span>
+                            <span class="text-body me-1 fs-6 formatted-price text-decoration-line-through">{{ product.price }}</span>
+                        </p>
+                        {% else %}
+                        <p class="card-text text-dark fs-4 formatted-price">{{ product.price }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-footer pt-0">
+                        <div class="d-inline-flex align-items-center mb-3 justify-content-center">
+                            <div class="d-flex gap-1 ms-2">
+                                {% for i in "12345" %}
+                                {% if i|add:0 <= product.avg_rate %}
+                                <span><i class="bi bi-star-fill star-rate"></i></span>
+                                {% else %}
+                                <span><i class="bi bi-star star-rate"></i></span>
+                                {% endif %}
+                                {% endfor %}
+                                <span class="ms-1">{{ product.avg_rate }}/5</span>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-primary btn-sm btn-transition rounded-pill home-product-strip__above-stretch"
+                            onclick="event.stopPropagation(); addToCart('{{ product.id }}')">افزودن به سبد خرید</button>
+                    </div>
+
+                    <a href="{% url 'shop:product-detail' slug=product.slug %}" class="stretched-link" aria-label="مشاهده {{ product.title }}"><span class="visually-hidden">{{ product.title }}</span></a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <p class="text-muted mb-0">محصولی برای نمایش وجود ندارد.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

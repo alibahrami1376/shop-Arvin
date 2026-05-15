@@ -29,12 +29,11 @@
     <!-- ========== HEADER - Simple ========== -->
     <header id="header" class="header" role="banner" aria-label="Main navigation">
         <div class="header__container">
-            <a href="{% url 'website:index' %}" class="header__logo" aria-label="خانه - فروشگاه کامیون">
-                <i class="bi-truck header__logo-icon"></i>
-                <span class="header__logo-text">کامیون</span>
+            <a href="{% url 'website:index' %}" class="header__logo" aria-label="خانه - آروین صندلی">
+                <img src="{% static 'img/ghasetak.png' %}" alt="" class="header__logo-img" width="200" height="222" decoding="async">
             </a>
 
-            <nav class="header__nav" aria-label="منوی اصلی">
+            <nav class="header__nav header__nav--desktop" aria-label="منوی اصلی">
                 <ul class="header__nav-list">
                     <li><a href="{% url 'website:index' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:index' %}header__nav-link--active{% endif %}">صفحه اصلی</a></li>
                     <li><a href="{% url 'shop:product-grid' %}" class="header__nav-link {% if request.resolver_match.view_name == 'shop:product-grid' %}header__nav-link--active{% endif %}">فروشگاه</a></li>
@@ -46,17 +45,39 @@
 
             <div class="header__actions">
                 {% if request.user.is_authenticated %}
-                <a href="{% url 'dashboard:home' %}" class="header__user-link"><i class="bi-person"></i> <span>حساب کاربری</span></a>
+                <a href="{% url 'dashboard:home' %}" class="header__user-link" aria-label="حساب کاربری"><i class="bi-person" aria-hidden="true"></i> <span class="header__user-text d-none d-lg-inline">حساب کاربری</span></a>
                 {% else %}
-                <a href="{% url 'accounts:login' %}" class="header__user-link"><i class="bi-person"></i> <span>ورود / ثبت نام</span></a>
+                <a href="{% url 'accounts:login' %}" class="header__user-link" aria-label="ورود یا ثبت نام"><i class="bi-person" aria-hidden="true"></i> <span class="header__user-text d-none d-lg-inline">ورود / ثبت نام</span></a>
                 {% endif %}
                 <a href="{% url 'cart:cart-summary' %}" class="header__cart-link" aria-label="سبد خرید">
-                    <span class="header__cart-text">سبد خرید</span>
+                    <i class="bi-cart3 header__cart-icon d-lg-none" aria-hidden="true"></i>
+                    <span class="header__cart-text d-none d-lg-inline">سبد خرید</span>
                     <span class="header__badge" id="total-cart-item-count">{{ cart.get_total_quantity|default:"۰" }}</span>
                 </a>
+                <button type="button" class="header__menu-toggle d-inline-flex d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#headerMobileNav" aria-controls="headerMobileNav" aria-label="باز کردن منو">
+                    <i class="bi-list" aria-hidden="true"></i>
+                </button>
             </div>
         </div>
     </header>
+
+    <div class="offcanvas offcanvas-end header__offcanvas" tabindex="-1" id="headerMobileNav" aria-labelledby="headerMobileNavLabel">
+        <div class="offcanvas-header">
+            <h2 class="offcanvas-title h5 mb-0" id="headerMobileNavLabel">منو</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="بستن منو"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav aria-label="منوی موبایل">
+                <ul class="header__mobile-nav-list">
+                    <li><a href="{% url 'website:index' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:index' %}header__mobile-nav-link--active{% endif %}">صفحه اصلی</a></li>
+                    <li><a href="{% url 'shop:product-grid' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'shop:product-grid' %}header__mobile-nav-link--active{% endif %}">فروشگاه</a></li>
+                    <li><a href="{% url 'blog:blog_home' %}" class="header__mobile-nav-link {% if 'blog' in request.resolver_match.namespace %}header__mobile-nav-link--active{% endif %}">بلاگ</a></li>
+                    <li><a href="{% url 'website:about' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:about' %}header__mobile-nav-link--active{% endif %}">درباره ما</a></li>
+                    <li><a href="{% url 'website:contact' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:contact' %}header__mobile-nav-link--active{% endif %}">تماس با ما</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
     <!-- ========== END HEADER ========== -->
 
     <!-- ========== MAIN CONTENT ========== -->

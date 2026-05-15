@@ -1,0 +1,35 @@
+{% load static %}
+<section class="home-blog-section section section-alt" aria-labelledby="home-blog-heading">
+    <div class="container">
+        <h2 id="home-blog-heading" class="section-title text-center mb-2">آخرین مطالب وبلاگ</h2>
+        <p class="section-subtitle text-center mb-5">تازه‌ترین نوشته‌ها از وبلاگ فروشگاه آروین</p>
+
+        <div class="row g-4 justify-content-center">
+            {% for post in posts %}
+            <div class="col-12 col-sm-6 col-lg-3">
+                <article class="home-blog-card h-100">
+                    <a href="{% url 'blog:blog_detail' post.id %}" class="home-blog-card__media-link">
+                        <img src="{{ post.image.url }}" alt="" class="home-blog-card__img">
+                    </a>
+                    <div class="home-blog-card__body">
+                        <h3 class="home-blog-card__title">
+                            <a href="{% url 'blog:blog_detail' post.id %}">{{ post.title }}</a>
+                        </h3>
+                        {% if post.published_date %}
+                        <time class="home-blog-card__date" datetime="{{ post.published_date|date:'c' }}">{{ post.published_date|date:"Y/m/d" }}</time>
+                        {% endif %}
+                    </div>
+                </article>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-4">
+                <p class="text-muted mb-0">هنوز پست منتشرشده‌ای وجود ندارد.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{% url 'blog:blog_home' %}" class="btn btn-outline-primary rounded-pill">مشاهده همه مطالب</a>
+        </div>
+    </div>
+</section>
