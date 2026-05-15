@@ -6,18 +6,31 @@
 
 {% if home_banners %}
 <section class="banner-slider-section" aria-label="بنر صفحه اصلی">
-    <div class="js-swiper-banner swiper banner-swiper home-banner-swiper">
+    <div class="js-swiper-banner swiper banner-swiper">
         <div class="swiper-wrapper">
             {% for banner in home_banners %}
             <div class="swiper-slide">
-                <div class="home-banner-slide">
-                    {% if banner.link %}
-                    <a href="{{ banner.link }}" class="home-banner-slide__link"{% if banner.link|slice:":4" == "http" %} target="_blank" rel="noopener noreferrer"{% endif %}>
-                        <img src="{{ banner.image.url }}" alt="{{ banner.title }}" class="home-banner-slide__img" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" decoding="async">
-                    </a>
-                    {% else %}
-                    <img src="{{ banner.image.url }}" alt="{{ banner.title }}" class="home-banner-slide__img" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" decoding="async">
-                    {% endif %}
+                <div class="banner-slide" style="background: {{ banner.background_gradient }};">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-12 col-lg-6 order-2 order-lg-1">
+                                <div class="banner-content">
+                                    <h2 class="banner-title">{{ banner.title }}</h2>
+                                    {% if banner.subtitle %}
+                                    <p class="banner-text">{{ banner.subtitle }}</p>
+                                    {% endif %}
+                                    {% if banner.link and banner.button_text %}
+                                    <a href="{{ banner.link }}" class="btn btn-primary btn-lg mt-3"{% if banner.link|slice:":4" == "http" %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ banner.button_text }}</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 order-1 order-lg-2">
+                                <div class="banner-image-wrapper">
+                                    <img src="{{ banner.image.url }}" alt="{{ banner.image_alt|default:banner.title }}" class="banner-image" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" decoding="async">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             {% endfor %}

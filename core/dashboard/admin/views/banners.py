@@ -1,11 +1,13 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import FieldError
 from django.db.models import Q
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from dashboard.admin.forms import HomeBannerForm
+from dashboard.admin.forms import DefaultHomeBannerForm, HomeBannerForm
 from dashboard.permissions import HasAdminAccessPermission
 from website.models import HomeBanner
 
@@ -51,8 +53,15 @@ class AdminHomeBannerEditView(
 ):
     template_name = "dashboard/admin/banners/banner-edit.html"
     queryset = HomeBanner.objects.all()
-    form_class = HomeBannerForm
-    success_message = "بنر با موفقیت ویرایش شد"
+    def get_form_class(self):
+        if self.get_object().is_default:
+            return DefaultHomeBannerForm
+        return HomeBannerForm
+
+    def get_success_message(self, form):
+        if self.get_object().is_default:
+            return "وضعیت نمایش بنر پیش‌فرض ذخیره شد"
+        return "بنر با موفقیت ویرایش شد"
 
     def get_success_url(self):
         return reverse_lazy(
@@ -67,3 +76,10 @@ class AdminHomeBannerDeleteView(
     queryset = HomeBanner.objects.all()
     success_url = reverse_lazy("dashboard:admin:home-banner-list")
     success_message = "بنر با موفقیت حذف شد"
+
+    def dispatch(self, request, *args, **kwargs):
+        banner = self.get_object()
+        if banner.is_default:
+            messages.error(request, "بنرهای پیش‌فرض قابل حذف نیستند؛ فقط می‌توانید غیرفعال کنید.")
+            return redirect("dashboard:admin:home-banner-list")
+        return super().dispatch(request, *args, **kwargs)

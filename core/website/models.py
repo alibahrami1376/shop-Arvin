@@ -51,20 +51,48 @@ class FAQItem(models.Model):
 
 
 class HomeBanner(models.Model):
-    title = models.CharField(max_length=200, verbose_name="عنوان (alt)")
+    STYLE_CHOICES = (
+        (1, "سبک ۱"),
+        (2, "سبک ۲"),
+        (3, "سبک ۳"),
+    )
+    GRADIENT_STYLES = {
+        1: "linear-gradient(135deg, rgba(232, 180, 160, 0.15), rgba(212, 165, 165, 0.15))",
+        2: "linear-gradient(135deg, rgba(245, 230, 211, 0.2), rgba(232, 180, 160, 0.15))",
+        3: "linear-gradient(135deg, rgba(212, 165, 165, 0.15), rgba(245, 230, 211, 0.2))",
+    }
+
+    title = models.CharField(max_length=200, verbose_name="عنوان")
+    subtitle = models.TextField(blank=True, verbose_name="متن توضیح")
+    button_text = models.CharField(
+        max_length=100, blank=True, verbose_name="متن دکمه"
+    )
     image = models.FileField(
         upload_to="banners/home/",
         verbose_name="تصویر یا GIF",
-        help_text="فرمت‌های JPG، PNG، WEBP و GIF — ابعاد پیشنهادی ۱۹۲۰×۶۰۰",
+        help_text="فرمت‌های JPG، PNG، WEBP و GIF",
+    )
+    image_alt = models.CharField(
+        max_length=200, blank=True, verbose_name="متن alt تصویر"
     )
     link = models.CharField(
         max_length=500,
         blank=True,
-        verbose_name="لینک کلیک (اختیاری)",
-        help_text="مثال: /shop/ یا آدرس کامل",
+        verbose_name="لینک دکمه",
+        help_text="مثال: /shop/product/grid/",
+    )
+    background_style = models.PositiveSmallIntegerField(
+        choices=STYLE_CHOICES,
+        default=1,
+        verbose_name="سبک پس‌زمینه",
     )
     sort_order = models.PositiveIntegerField(default=0, verbose_name="ترتیب نمایش")
     is_active = models.BooleanField(default=True, verbose_name="فعال")
+    is_default = models.BooleanField(
+        default=False,
+        verbose_name="بنر پیش‌فرض",
+        help_text="بنرهای پیش‌فرض فقط از پنل قابل فعال/غیرفعال شدن هستند.",
+    )
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -80,3 +108,7 @@ class HomeBanner(models.Model):
     def is_gif(self):
         name = (self.image.name or "").lower()
         return name.endswith(".gif")
+
+    @property
+    def background_gradient(self):
+        return self.GRADIENT_STYLES.get(self.background_style, self.GRADIENT_STYLES[1])

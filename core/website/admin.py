@@ -5,9 +5,16 @@ from website.models import ContactModel, FAQItem, HomeBanner
 
 @admin.register(HomeBanner)
 class HomeBannerAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "sort_order", "is_active", "created_date")
-    list_filter = ("is_active",)
-    search_fields = ("title", "link")
+    list_display = (
+        "id",
+        "title",
+        "sort_order",
+        "is_default",
+        "is_active",
+        "created_date",
+    )
+    list_filter = ("is_active", "is_default")
+    search_fields = ("title", "subtitle", "link")
     ordering = ("sort_order", "-created_date")
 
 
