@@ -50,6 +50,8 @@ class IndexView(TemplateView):
             .order_by("-published_date", "-created_date")[:4]
         )
 
+        context["home_banners"] = HomeBanner.objects.filter(is_active=True)
+
         return context
 
 class ContactView(TemplateView):

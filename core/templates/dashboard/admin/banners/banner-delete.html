@@ -1,0 +1,32 @@
+{% extends 'dashboard/admin/base.html' %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">داشبورد ادمین</li>
+        <li class="breadcrumb-item"><a href="{% url 'dashboard:admin:home-banner-list' %}">بنر صفحه اصلی</a></li>
+        <li class="breadcrumb-item active" aria-current="page">حذف بنر</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header border-bottom">
+        <h5 class="card-header-title mb-0">حذف بنر</h5>
+    </div>
+    <form action="." method="post">
+        {% csrf_token %}
+        <div class="card-body">
+            <p>آیا از حذف بنر «{{ object.title }}» مطمئن هستید؟</p>
+            {% if object.image %}
+            <img src="{{ object.image.url }}" alt="{{ object.title }}" class="img-fluid rounded border mb-3" style="max-height: 160px;">
+            {% endif %}
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <a class="btn btn-secondary" href="{% url 'dashboard:admin:home-banner-list' %}">انصراف</a>
+            <button class="btn btn-danger" type="submit">حذف</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

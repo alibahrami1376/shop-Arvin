@@ -1,0 +1,60 @@
+{% extends 'dashboard/admin/base.html' %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">داشبورد ادمین</li>
+        <li class="breadcrumb-item"><a href="{% url 'dashboard:admin:home-banner-list' %}">بنر صفحه اصلی</a></li>
+        <li class="breadcrumb-item active" aria-current="page">ویرایش بنر</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="card-header-title mb-0">ویرایش بنر صفحه اصلی</h5>
+        <a class="btn btn-outline-danger btn-sm" href="{% url 'dashboard:admin:home-banner-delete' pk=object.pk %}">حذف</a>
+    </div>
+    <form action="." method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card-body">
+            {% if object.image %}
+            <div class="mb-4">
+                <label class="form-label d-block">پیش‌نمایش فعلی</label>
+                <img src="{{ object.image.url }}" alt="{{ object.title }}" class="img-fluid rounded border" style="max-height: 200px; width: 100%; object-fit: cover;">
+            </div>
+            {% endif %}
+            <div class="mb-3">
+                <label class="form-label">عنوان (متن alt تصویر)</label>
+                {{ form.title }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">تصویر یا GIF</label>
+                {{ form.image }}
+                <div class="form-text">برای حفظ تصویر فعلی، فایل جدید انتخاب نکنید.</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">لینک کلیک (اختیاری)</label>
+                {{ form.link }}
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">ترتیب نمایش</label>
+                    {{ form.sort_order }}
+                </div>
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+                    <div class="form-check">
+                        {{ form.is_active }}
+                        <label class="form-check-label" for="{{ form.is_active.id_for_label }}">فعال</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <a class="btn btn-secondary" href="{% url 'dashboard:admin:home-banner-list' %}">بازگشت</a>
+            <button class="btn btn-primary" type="submit">ذخیره تغییرات</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

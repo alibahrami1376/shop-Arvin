@@ -1,6 +1,14 @@
 from django.contrib import admin
 
-from website.models import ContactModel, FAQItem
+from website.models import ContactModel, FAQItem, HomeBanner
+
+
+@admin.register(HomeBanner)
+class HomeBannerAdmin(admin.ModelAdmin):
+    list_display = ("id", "title", "sort_order", "is_active", "created_date")
+    list_filter = ("is_active",)
+    search_fields = ("title", "link")
+    ordering = ("sort_order", "-created_date")
 
 
 @admin.register(FAQItem)
