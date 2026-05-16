@@ -237,6 +237,7 @@ class CardPaymentInstructionsView(
         context["card_number"] = cfg.card_number
         context["card_iban"] = cfg.iban
         context["card_note"] = cfg.note
+        context["receipt_social_links"] = cfg.get_receipt_social_links()
         return context
 
 

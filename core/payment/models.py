@@ -39,6 +39,15 @@ class PaymentModel(models.Model):
         return f"{label} — {self.authority_id[:24]}"
 
 
+RECEIPT_SOCIAL_PLATFORMS = (
+    ("telegram", "تلگرام", "bi-telegram"),
+    ("bale", "بله", None),
+    ("rubika", "روبیکا", None),
+    ("whatsapp", "واتساپ", "bi-whatsapp"),
+    ("email", "ایمیل", "bi-envelope"),
+)
+
+
 class CardToCardSettings(models.Model):
     """یک ردیف (singleton) برای نمایش به مشتری در صفحهٔ کارت به کارت."""
 
@@ -53,6 +62,42 @@ class CardToCardSettings(models.Model):
         verbose_name="متن راهنما برای مشتری",
         help_text="مثلاً درخواست ارسال فیش یا شماره سفارش.",
     )
+
+    telegram_enabled = models.BooleanField(default=False, verbose_name="فعال — تلگرام")
+    telegram_link = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name="لینک تلگرام",
+        help_text="مثال: https://t.me/username",
+    )
+    bale_enabled = models.BooleanField(default=False, verbose_name="فعال — بله")
+    bale_link = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name="لینک بله",
+        help_text="مثال: https://ble.ir/username",
+    )
+    rubika_enabled = models.BooleanField(default=False, verbose_name="فعال — روبیکا")
+    rubika_link = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name="لینک روبیکا",
+    )
+    whatsapp_enabled = models.BooleanField(default=False, verbose_name="فعال — واتساپ")
+    whatsapp_link = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name="لینک واتساپ",
+        help_text="لینک کامل یا شماره موبایل (مثال: 989121234567)",
+    )
+    email_enabled = models.BooleanField(default=False, verbose_name="فعال — ایمیل")
+    email_link = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name="ایمیل",
+        help_text="آدرس ایمیل (مثال: shop@example.com)",
+    )
+
     updated_date = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -66,3 +111,31 @@ class CardToCardSettings(models.Model):
     def get_solo(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+    def get_receipt_social_links(self):
+        links = []
+        for key, label, icon in RECEIPT_SOCIAL_PLATFORMS:
+            if not getattr(self, f"{key}_enabled", False):
+                continue
+            raw = (getattr(self, f"{key}_link", "") or "").strip()
+            if not raw:
+                continue
+            url = self._normalize_receipt_link(key, raw)
+            if url:
+                links.append({"key": key, "label": label, "url": url, "icon": icon})
+        return links
+
+    @staticmethod
+    def _normalize_receipt_link(platform, raw):
+        if platform == "email":
+            if raw.startswith("mailto:"):
+                return raw
+            return f"mailto:{raw}"
+        if platform == "whatsapp":
+            if raw.startswith("http://") or raw.startswith("https://"):
+                return raw
+            digits = "".join(c for c in raw if c.isdigit())
+            if digits:
+                return f"https://wa.me/{digits}"
+            return ""
+        return raw

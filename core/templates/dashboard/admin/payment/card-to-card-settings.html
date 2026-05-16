@@ -39,6 +39,80 @@
                 <label class="col-sm-3 col-form-label form-label" for="{{ form.note.id_for_label }}">متن راهنما</label>
                 <div class="col-sm-9">{{ form.note }}</div>
             </div>
+
+            <hr class="my-4">
+            <h5 class="mb-1">ارسال رسید واریز</h5>
+            <p class="text-muted small mb-4">لینک هر شبکه را وارد کنید و در صورت نیاز آن را فعال کنید. فقط موارد فعال در صفحهٔ پرداخت کارت به کارت نمایش داده می‌شوند.</p>
+
+            <div class="row mb-4 align-items-center">
+                <div class="col-sm-3">
+                    <div class="form-check">
+                        {{ form.telegram_enabled }}
+                        <label class="form-check-label" for="{{ form.telegram_enabled.id_for_label }}">تلگرام</label>
+                    </div>
+                </div>
+                <div class="col-sm-9">
+                    <label class="form-label visually-hidden" for="{{ form.telegram_link.id_for_label }}">لینک تلگرام</label>
+                    {{ form.telegram_link }}
+                    {% if form.telegram_link.errors %}<div class="invalid-feedback d-block">{{ form.telegram_link.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="row mb-4 align-items-center">
+                <div class="col-sm-3">
+                    <div class="form-check">
+                        {{ form.bale_enabled }}
+                        <label class="form-check-label" for="{{ form.bale_enabled.id_for_label }}">بله</label>
+                    </div>
+                </div>
+                <div class="col-sm-9">
+                    <label class="form-label visually-hidden" for="{{ form.bale_link.id_for_label }}">لینک بله</label>
+                    {{ form.bale_link }}
+                    {% if form.bale_link.errors %}<div class="invalid-feedback d-block">{{ form.bale_link.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="row mb-4 align-items-center">
+                <div class="col-sm-3">
+                    <div class="form-check">
+                        {{ form.rubika_enabled }}
+                        <label class="form-check-label" for="{{ form.rubika_enabled.id_for_label }}">روبیکا</label>
+                    </div>
+                </div>
+                <div class="col-sm-9">
+                    <label class="form-label visually-hidden" for="{{ form.rubika_link.id_for_label }}">لینک روبیکا</label>
+                    {{ form.rubika_link }}
+                    {% if form.rubika_link.errors %}<div class="invalid-feedback d-block">{{ form.rubika_link.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="row mb-4 align-items-center">
+                <div class="col-sm-3">
+                    <div class="form-check">
+                        {{ form.whatsapp_enabled }}
+                        <label class="form-check-label" for="{{ form.whatsapp_enabled.id_for_label }}">واتساپ</label>
+                    </div>
+                </div>
+                <div class="col-sm-9">
+                    <label class="form-label visually-hidden" for="{{ form.whatsapp_link.id_for_label }}">لینک واتساپ</label>
+                    {{ form.whatsapp_link }}
+                    {% if form.whatsapp_link.errors %}<div class="invalid-feedback d-block">{{ form.whatsapp_link.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="row mb-0 align-items-center">
+                <div class="col-sm-3">
+                    <div class="form-check">
+                        {{ form.email_enabled }}
+                        <label class="form-check-label" for="{{ form.email_enabled.id_for_label }}">ایمیل</label>
+                    </div>
+                </div>
+                <div class="col-sm-9">
+                    <label class="form-label visually-hidden" for="{{ form.email_link.id_for_label }}">ایمیل</label>
+                    {{ form.email_link }}
+                    {% if form.email_link.errors %}<div class="invalid-feedback d-block">{{ form.email_link.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
         </div>
         <div class="card-footer pt-0">
             <div class="d-flex justify-content-end gap-3">

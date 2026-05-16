@@ -49,6 +49,26 @@
             </div>
             {% endif %}
 
+            {% if receipt_social_links %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <h2 class="h5 card-title border-bottom pb-2 mb-3">ارسال رسید واریز</h2>
+                    <p class="text-muted small mb-3">پس از واریز، فیش یا تصویر رسید را از طریق یکی از راه‌های زیر ارسال کنید.</p>
+                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                        {% for item in receipt_social_links %}
+                        <a class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1"
+                           href="{{ item.url }}"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            {% if item.icon %}<i class="bi {{ item.icon }}"></i>{% endif %}
+                            {{ item.label }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             <div class="d-flex flex-wrap gap-2 justify-content-center">
                 <a class="btn btn-outline-primary" href="{% url 'order:track' %}?code={{ order.tracking_code }}">پیگیری سفارش</a>
                 <a class="btn btn-primary" href="{% url 'dashboard:customer:order-list' %}">سفارش‌های من</a>
