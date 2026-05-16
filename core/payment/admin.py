@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CardToCardSettings, PaymentModel
+from .models import CardToCardSettings, PaymentMethodSettings, PaymentModel
 
 
 @admin.register(CardToCardSettings)
@@ -35,6 +35,18 @@ class CardToCardSettingsAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return not CardToCardSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(PaymentMethodSettings)
+class PaymentMethodSettingsAdmin(admin.ModelAdmin):
+    list_display = ("id", "gateway_enabled", "card_to_card_enabled", "updated_date")
+    fields = ("gateway_enabled", "card_to_card_enabled")
+
+    def has_add_permission(self, request):
+        return not PaymentMethodSettings.objects.exists()
 
     def has_delete_permission(self, request, obj=None):
         return False

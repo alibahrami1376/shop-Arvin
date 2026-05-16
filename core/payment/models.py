@@ -15,6 +15,54 @@ class PaymentMethodType(models.IntegerChoices):
     card_to_card = 2, "کارت به کارت"
 
 
+class PaymentMethodSettings(models.Model):
+    """تنظیم نمایش روش‌های پرداخت در سایت (یک ردیف)."""
+
+    gateway_enabled = models.BooleanField(
+        default=True,
+        verbose_name="نمایش درگاه آنلاین (زرین‌پال)",
+    )
+    card_to_card_enabled = models.BooleanField(
+        default=True,
+        verbose_name="نمایش کارت به کارت",
+    )
+    updated_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "تنظیمات روش‌های پرداخت"
+        verbose_name_plural = "تنظیمات روش‌های پرداخت"
+
+    def __str__(self):
+        return "تنظیمات روش‌های پرداخت"
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def is_method_enabled(self, method):
+        if method == PaymentMethodType.gateway.value:
+            return self.gateway_enabled
+        if method == PaymentMethodType.card_to_card.value:
+            return self.card_to_card_enabled
+        return False
+
+    def get_enabled_methods(self):
+        enabled = []
+        if self.gateway_enabled:
+            enabled.append(
+                (PaymentMethodType.gateway.value, PaymentMethodType.gateway.label)
+            )
+        if self.card_to_card_enabled:
+            enabled.append(
+                (
+                    PaymentMethodType.card_to_card.value,
+                    PaymentMethodType.card_to_card.label,
+                )
+            )
+        return enabled
+
+
 class PaymentModel(models.Model):
     method = models.IntegerField(
         choices=PaymentMethodType.choices,

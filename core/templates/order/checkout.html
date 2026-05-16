@@ -34,16 +34,23 @@
                 <hr class="my-4">
 
                 <h4 class="mb-3">روش پرداخت</h4>
+                {% if payment_methods_available %}
                 <div class="d-grid gap-2">
+                    {% for value, label in enabled_payment_methods %}
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="payment_method" value="1" id="payment-gateway" checked required>
-                        <label class="form-check-label" for="payment-gateway">درگاه آنلاین (زرین‌پال)</label>
+                        <input class="form-check-input" type="radio" name="payment_method" value="{{ value }}"
+                            id="payment-method-{{ value }}" {% if forloop.first %}checked{% endif %} required>
+                        <label class="form-check-label" for="payment-method-{{ value }}">
+                            {% if value == 1 %}درگاه آنلاین (زرین‌پال){% else %}{{ label }}{% endif %}
+                        </label>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="payment_method" value="2" id="payment-card" required>
-                        <label class="form-check-label" for="payment-card">کارت به کارت</label>
-                    </div>
+                    {% endfor %}
                 </div>
+                {% else %}
+                <div class="alert alert-warning mb-0" role="alert">
+                    در حال حاضر امکان پرداخت آنلاین فعال نیست. لطفاً بعداً تلاش کنید یا با پشتیبانی تماس بگیرید.
+                </div>
+                {% endif %}
 
                 <hr class="my-4">
 
@@ -114,7 +121,8 @@
                         </div>
 
                         <div class="d-grid">
-                            <button class="btn btn-primary btn-lg" type="submit" form="checkout-form" >ثبت نهایی</button>
+                            <button class="btn btn-primary btn-lg" type="submit" form="checkout-form"
+                                {% if not payment_methods_available %}disabled{% endif %}>ثبت نهایی</button>
                         </div>
 
                     </div>

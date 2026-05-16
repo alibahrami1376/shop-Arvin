@@ -1,6 +1,6 @@
 from django import forms
 from django.utils import timezone
-from payment.models import PaymentMethodType
+from payment.models import PaymentMethodSettings, PaymentMethodType
 
 from order.models import CouponModel, UserAddressModel
 
@@ -10,13 +10,18 @@ class CheckOutForm(forms.Form):
     coupon = forms.CharField(required=False)
     payment_method = forms.TypedChoiceField(
         coerce=int,
-        choices=PaymentMethodType.choices,
-        initial=PaymentMethodType.gateway.value,
+        choices=[],
     )
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request", None)
         super(CheckOutForm, self).__init__(*args, **kwargs)
+        enabled = PaymentMethodSettings.get_solo().get_enabled_methods()
+        self.fields["payment_method"].choices = enabled
+        if enabled:
+            self.fields["payment_method"].initial = enabled[0][0]
+        else:
+            self.fields["payment_method"].required = False
         
     def clean_address_id(self):
         address_id = self.cleaned_data.get('address_id')
@@ -55,6 +60,16 @@ class CheckOutForm(forms.Form):
                 raise forms.ValidationError("این کد تخفیف قبلا توسط شما استفاده شده است")
 
         return coupon
+
+    def clean_payment_method(self):
+        method = self.cleaned_data.get("payment_method")
+        settings = PaymentMethodSettings.get_solo()
+        enabled = settings.get_enabled_methods()
+        if not enabled:
+            raise forms.ValidationError("در حال حاضر هیچ روش پرداختی فعال نیست.")
+        if method is None or not settings.is_method_enabled(method):
+            raise forms.ValidationError("روش پرداخت انتخاب‌شده در دسترس نیست.")
+        return method
 
 
 class OrderTrackingForm(forms.Form):

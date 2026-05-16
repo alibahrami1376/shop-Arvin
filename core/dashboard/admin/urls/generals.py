@@ -10,4 +10,9 @@ urlpatterns = [
         views.AdminCardToCardSettingsView.as_view(),
         name="card-to-card-settings",
     ),
+    path(
+        "settings/payment-methods/",
+        views.AdminPaymentMethodSettingsView.as_view(),
+        name="payment-method-settings",
+    ),
 ]

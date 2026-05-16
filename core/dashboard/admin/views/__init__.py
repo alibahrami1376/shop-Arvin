@@ -10,5 +10,6 @@ from .users import *
 from .coupons import *
 from .blog import *
 from .card_to_card_settings import *
+from .payment_method_settings import *
 from .faq import *
 from .banners import *

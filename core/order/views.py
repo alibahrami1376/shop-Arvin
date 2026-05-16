@@ -16,6 +16,7 @@ from order.models import CouponModel, OrderItemModel, OrderModel, UserAddressMod
 from order.permissions import HasCustomerAccessPermission
 from payment.models import (
     CardToCardSettings,
+    PaymentMethodSettings,
     PaymentMethodType,
     PaymentModel,
     PaymentStatusType,
@@ -133,6 +134,9 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
         total_price = cart.calculate_total_price()
         context["total_price"] = total_price
         context["total_tax"] = round((total_price * 9)/100)
+        payment_settings = PaymentMethodSettings.get_solo()
+        context["enabled_payment_methods"] = payment_settings.get_enabled_methods()
+        context["payment_methods_available"] = bool(context["enabled_payment_methods"])
         return context
 
 
