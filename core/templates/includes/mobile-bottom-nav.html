@@ -1,0 +1,52 @@
+<nav class="mobile-bottom-nav d-lg-none" aria-label="منوی پایین موبایل">
+    <a href="{% url 'website:index' %}"
+        class="mobile-bottom-nav__item {% if request.resolver_match.view_name == 'website:index' %}mobile-bottom-nav__item--active{% endif %}"
+        aria-label="خانه">
+        <i class="bi-house-door" aria-hidden="true"></i>
+        <span class="mobile-bottom-nav__label">خانه</span>
+    </a>
+
+    <button type="button"
+        class="mobile-bottom-nav__item mobile-bottom-nav__item--menu"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#headerMobileNav"
+        aria-controls="headerMobileNav"
+        aria-label="باز کردن منو">
+        <i class="bi-list" aria-hidden="true"></i>
+        <span class="mobile-bottom-nav__label">منو</span>
+    </button>
+
+    <a href="{% url 'cart:cart-summary' %}"
+        class="mobile-bottom-nav__item mobile-bottom-nav__item--center {% if request.resolver_match.namespace == 'cart' %}mobile-bottom-nav__item--active{% endif %}"
+        aria-label="سبد خرید">
+        <span class="mobile-bottom-nav__center-btn">
+            <i class="bi-bag" aria-hidden="true"></i>
+            <span class="mobile-bottom-nav__badge{% if not cart.get_total_quantity %} d-none{% endif %}"
+                id="mobile-bottom-cart-count">{{ cart.get_total_quantity|default:"" }}</span>
+        </span>
+        <span class="mobile-bottom-nav__label">سبد خرید</span>
+    </a>
+
+    <a href="{% url 'blog:blog_home' %}"
+        class="mobile-bottom-nav__item {% if 'blog' in request.resolver_match.namespace %}mobile-bottom-nav__item--active{% endif %}"
+        aria-label="وبلاگ">
+        <i class="bi-journal-text" aria-hidden="true"></i>
+        <span class="mobile-bottom-nav__label">وبلاگ</span>
+    </a>
+
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'dashboard:home' %}"
+        class="mobile-bottom-nav__item {% if request.resolver_match.namespace == 'dashboard' %}mobile-bottom-nav__item--active{% endif %}"
+        aria-label="حساب کاربری">
+        <i class="bi-person" aria-hidden="true"></i>
+        <span class="mobile-bottom-nav__label">حساب</span>
+    </a>
+    {% else %}
+    <a href="{% url 'accounts:login' %}"
+        class="mobile-bottom-nav__item {% if request.resolver_match.view_name == 'accounts:login' %}mobile-bottom-nav__item--active{% endif %}"
+        aria-label="ورود">
+        <i class="bi-box-arrow-in-right" aria-hidden="true"></i>
+        <span class="mobile-bottom-nav__label">ورود</span>
+    </a>
+    {% endif %}
+</nav>
