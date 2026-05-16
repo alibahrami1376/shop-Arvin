@@ -4,14 +4,14 @@ from django.contrib import messages
 from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView, FormView, TemplateView, View
 
 from cart.cart import CartSession
 from cart.models import CartModel, CartItemModel
-from order.forms import CheckOutForm
+from order.forms import CheckOutForm, OrderTrackingForm
 from order.models import CouponModel, OrderItemModel, OrderModel, UserAddressModel
 from order.permissions import HasCustomerAccessPermission
 from payment.models import (
@@ -48,6 +48,7 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
                 total_price = order.calculate_total_price()
                 self.apply_coupon(coupon, order, user, total_price)
                 order.save()
+                self.request.session["last_order_tracking_code"] = order.tracking_code
                 if payment_method == PaymentMethodType.card_to_card.value:
                     redirect_url = self._create_card_payment_next_url(order)
                 else:
@@ -137,6 +138,68 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
 
 class OrderCompletedView(LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):
     template_name = "order/completed.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        code = self.request.session.pop("last_order_tracking_code", None)
+        context["tracking_code"] = code
+        if code:
+            context["tracking_url"] = f"{reverse('order:track')}?code={code}"
+        return context
+
+
+class OrderTrackingView(FormView):
+    template_name = "order/tracking.html"
+    form_class = OrderTrackingForm
+
+    def get_initial(self):
+        code = (self.request.GET.get("code") or "").strip()
+        if code:
+            return {"tracking_code": code}
+        return {}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["order"] = getattr(self, "tracked_order", None)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        code = (request.GET.get("code") or "").strip()
+        if code:
+            self.tracked_order = self._get_order(code)
+            if self.tracked_order is None:
+                form = self.get_form()
+                form.add_error(
+                    "tracking_code",
+                    "سفارشی با این کد سفارش یافت نشد.",
+                )
+                return self.render_to_response(
+                    self.get_context_data(form=form)
+                )
+            form = self.form_class(initial={"tracking_code": code})
+            return self.render_to_response(
+                self.get_context_data(form=form)
+            )
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        code = form.cleaned_data["tracking_code"]
+        self.tracked_order = self._get_order(code)
+        if self.tracked_order is None:
+            form.add_error(
+                "tracking_code",
+                "سفارشی با این کد سفارش یافت نشد.",
+            )
+            return self.form_invalid(form)
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def _get_order(self, code):
+        return (
+            OrderModel.objects.filter(tracking_code=code)
+            .select_related("payment")
+            .prefetch_related("order_items__product")
+            .first()
+        )
 
 
 class OrderFailedView(LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):

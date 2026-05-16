@@ -63,7 +63,7 @@
             <table class="table table-hover align-middle">
                 <thead>
                     <tr>
-                        <th>شماره</th>
+                        <th>کد سفارش</th>
                         <th>تاریخ</th>
                         <th>مبلغ</th>
                         <th>وضعیت</th>
@@ -73,7 +73,7 @@
                 <tbody>
                     {% for order in recent_orders %}
                     <tr>
-                        <td>#{{ order.id }}</td>
+                        <td dir="ltr">{{ order.tracking_code }}</td>
                         <td>{{ order.created_date|date:"Y/m/d" }}</td>
                         <td>{{ order.get_price|default:order.total_price }} تومان</td>
                         <td><span class="badge bg-soft-{% if order.status == 2 %}success{% elif order.status == 3 %}danger{% else %}warning{% endif %}">{{ order.get_status.label }}</span></td>

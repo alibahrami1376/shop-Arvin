@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.core.exceptions import FieldError
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, View
@@ -20,7 +21,9 @@ class AdminOrderListView(LoginRequiredMixin, HasAdminAccessPermission, ListView)
     def get_queryset(self):
         queryset = OrderModel.objects.all()
         if search_q := self.request.GET.get("q"):
-            queryset = queryset.filter(id__icontains=search_q)
+            queryset = queryset.filter(
+                Q(id__icontains=search_q) | Q(tracking_code__icontains=search_q)
+            )
         if status := self.request.GET.get("status"):
             queryset = queryset.filter(status=status)
         if order_by := self.request.GET.get("order_by"):

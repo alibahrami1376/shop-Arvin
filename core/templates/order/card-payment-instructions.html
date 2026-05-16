@@ -7,17 +7,17 @@
         <div class="col-lg-8">
             <div class="mb-4 text-center">
                 <h1 class="h2">واریز کارت به کارت</h1>
-                <p class="text-muted">سفارش شما ثبت شد. لطفاً مبلغ را به شمارهٔ زیر واریز کنید و شمارهٔ سفارش را نزد خود نگه دارید.</p>
+                <p class="text-muted">سفارش شما ثبت شد. لطفاً مبلغ را به شمارهٔ زیر واریز کنید و کد سفارش را نزد خود نگه دارید.</p>
             </div>
 
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h2 class="h5 card-title border-bottom pb-2 mb-3">جزئیات سفارش</h2>
                     <dl class="row mb-0">
-                        <dt class="col-sm-4">شماره سفارش</dt>
-                        <dd class="col-sm-8"><strong>#{{ order.pk }}</strong></dd>
+                        <dt class="col-sm-4">کد سفارش</dt>
+                        <dd class="col-sm-8"><code class="user-select-all fs-5">{{ order.tracking_code }}</code></dd>
                         <dt class="col-sm-4">مبلغ قابل پرداخت</dt>
-                        <dd class="col-sm-8"><strong class="formatted-price">{{ order.get_price }}</strong> <span class="small text-muted">تومان</span></dd>
+                        <dd class="col-sm-8"><strong class="formatted-price" data-price="{{ order.get_price }}">{{ order.get_price }}</strong></dd>
                     </dl>
                 </div>
             </div>
@@ -50,6 +50,7 @@
             {% endif %}
 
             <div class="d-flex flex-wrap gap-2 justify-content-center">
+                <a class="btn btn-outline-primary" href="{% url 'order:track' %}?code={{ order.tracking_code }}">پیگیری سفارش</a>
                 <a class="btn btn-primary" href="{% url 'dashboard:customer:order-list' %}">سفارش‌های من</a>
                 <a class="btn btn-outline-secondary" href="{% url 'shop:product-grid' %}">ادامه خرید</a>
             </div>
@@ -57,15 +58,3 @@
     </div>
 </div>
 {% endblock content %}
-
-{% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.formatted-price').forEach(function (el) {
-            if (typeof formatPriceInToman === 'function') {
-                formatPriceInToman(el);
-            }
-        });
-    });
-</script>
-{% endblock extra_js %}

@@ -20,7 +20,7 @@
     <!-- Header -->
     <div class="card-header border-bottom">
       <div class="d-flex justify-content-between align-items-center">
-        <h5 class="">سفارش شماره {{object.id}}</h5>
+        <h5 class="">سفارش {{ object.tracking_code }}</h5>
         {% if object.is_successful %}
         <a class="btn btn-primary" href="{% url 'dashboard:customer:order-invoice' pk=object.pk %}" target="_blank">مشاهده فاکتور</a>
         {% endif %}
@@ -74,10 +74,22 @@
     <div class="card-footer row pt-5 mt-5">
       <form>
         <div class="row mb-3 align-items-center">
+          <dt class="col-md-3">کد سفارش:</dt>
+          <dl class="col-md-3"><code dir="ltr">{{ object.tracking_code }}</code></dl>
           <dt class="col-md-3">سفارش دهنده:</dt>
           <dl class="col-md-3">{{object.user.user_profile.get_fullname}}</dl>
+          <dt class="col-md-3">وضعیت پرداخت:</dt>
+          <dl class="col-md-3">
+            {% with ps=object.get_customer_payment_status %}
+            <span class="badge bg-soft-{{ ps.variant }} text-{{ ps.variant }}">{{ ps.label }}</span>
+            {% endwith %}
+          </dl>
           <dt class="col-md-3">وضعیت سفارش:</dt>
-          <dl class="col-md-3 ">{{object.get_status.label}}</dl>
+          <dl class="col-md-3">
+            {% with os=object.get_customer_order_status %}
+            <span class="badge bg-soft-{{ os.variant }} text-{{ os.variant }}">{{ os.label }}</span>
+            {% endwith %}
+          </dl>
         </div>
         <div class="row mb-3">
           <dt class="col-md-3"> تاریخ سفارش:</dt>

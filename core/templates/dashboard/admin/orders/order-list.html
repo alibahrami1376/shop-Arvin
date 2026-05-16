@@ -97,7 +97,7 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">شماره سفارش</th>
+                                    <th scope="col">کد سفارش</th>
                                     <th scope="col">سفارش دهنده</th>
                                     <th scope="col">قیمت کل</th>
                                     <th scope="col">تاریخ ثبت</th>
@@ -109,7 +109,7 @@
                                 {% for object in object_list %}
                                 <tr>
                                     <th scope="row">{{forloop.counter}}</th>
-                                    <td><a href="{% url 'dashboard:admin:order-detail' pk=object.pk %}">{{object.id}}</a></td>
+                                    <td><a href="{% url 'dashboard:admin:order-detail' pk=object.pk %}" dir="ltr">{{ object.tracking_code }}</a></td>
                                     <td>{{object.user.user_profile.get_fullname}}</td>
                                     <td class="formatted-price" >{{object.get_price}}</td>
                                     <td>{{object.created_date|date:"Y-m-d h:i"}}</td>

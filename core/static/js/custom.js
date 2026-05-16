@@ -6,10 +6,19 @@ function changePage(page_number) {
 }
 
 function formatPriceInToman(element) {
-    let rawPrice = parseFloat(element.innerText);
-    let formatter = new Intl.NumberFormat('fa-IR');
-    let formattedPrice = formatter.format(rawPrice);
-    element.innerText = `${formattedPrice} تومان`;
+    if (!element || element.dataset.priceFormatted === "1") {
+        return;
+    }
+    const raw =
+        element.dataset.price ??
+        element.textContent.replace(/[^\d.]/g, "");
+    const rawPrice = parseFloat(raw);
+    if (Number.isNaN(rawPrice)) {
+        return;
+    }
+    const formatter = new Intl.NumberFormat("fa-IR");
+    element.textContent = `${formatter.format(rawPrice)} تومان`;
+    element.dataset.priceFormatted = "1";
 }
 
 document.addEventListener("DOMContentLoaded", function() {

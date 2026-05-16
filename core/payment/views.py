@@ -51,6 +51,7 @@ class PaymentVerifyView(LoginRequiredMixin, HasCustomerAccessPermission, View):
             else OrderStatusType.failed.value
         )
         order.save()
+        request.session["last_order_tracking_code"] = order.tracking_code
 
         return redirect(
             reverse_lazy("order:completed")

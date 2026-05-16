@@ -18,7 +18,20 @@
                 یک ایمیل تاییدیه دریافت خواهید کرد.</p>
         </div>
 
+        {% if tracking_code %}
+        <div class="alert alert-soft-success text-start mb-4" role="alert">
+            <p class="mb-2">کد سفارش شما:</p>
+            <p class="mb-2"><code class="user-select-all fs-4">{{ tracking_code }}</code></p>
+            <p class="small text-muted mb-0">این کد را نگه دارید تا هر زمان بتوانید وضعیت سفارش را بررسی کنید.</p>
+        </div>
+        {% endif %}
+
+        <div class="d-flex flex-wrap gap-2 justify-content-center">
+        {% if tracking_url %}
+        <a class="btn btn-outline-primary btn-transition rounded-pill px-6" href="{{ tracking_url }}">پیگیری سفارش</a>
+        {% endif %}
         <a class="btn btn-primary btn-transition rounded-pill px-6" href="{% url 'shop:product-grid' %}">به خرید ادامه دهید</a>
+        </div>
     </div>
 </div>
 <!-- End Content -->

@@ -100,14 +100,24 @@
                                 <!-- End Col -->
 
                                 <div class="col-6 col-md mb-3 mb-md-0">
-                                    <small class="card-subtitle mb-0">وضعیت </small>
-                                    <small class="text-dark fw-semibold">{{object.get_status.label}}</small>
+                                    <small class="card-subtitle mb-0">وضعیت پرداخت</small>
+                                    {% with ps=object.get_customer_payment_status %}
+                                    <small class="badge bg-soft-{{ ps.variant }} text-{{ ps.variant }} d-inline-block mt-1">{{ ps.label }}</small>
+                                    {% endwith %}
+                                </div>
+                                <!-- End Col -->
+
+                                <div class="col-6 col-md mb-3 mb-md-0">
+                                    <small class="card-subtitle mb-0">وضعیت سفارش</small>
+                                    {% with os=object.get_customer_order_status %}
+                                    <small class="badge bg-soft-{{ os.variant }} text-{{ os.variant }} d-inline-block mt-1">{{ os.label }}</small>
+                                    {% endwith %}
                                 </div>
                                 <!-- End Col -->
 
                                 <div class="col-6 col-md">
-                                    <small class="card-subtitle mb-0">شماره سفارش.</small>
-                                    <small class="text-dark fw-semibold">{{object.id}}</small>
+                                    <small class="card-subtitle mb-0">کد سفارش</small>
+                                    <small class="text-dark fw-semibold d-block" dir="ltr">{{ object.tracking_code }}</small>
                                 </div>
                                 <!-- End Col -->
 

@@ -8,12 +8,15 @@ from .models import OrderModel, OrderItemModel, CouponModel, UserAddressModel
 class OrderModelAdmin(admin.ModelAdmin):
     list_display = (
         "id",
+        "tracking_code",
         "user",
         "total_price",
         "coupon",
         "status",
-        "created_date"
+        "created_date",
     )
+    search_fields = ("tracking_code", "user__email")
+    readonly_fields = ("tracking_code",)
 
 
 @admin.register(OrderItemModel)

@@ -55,3 +55,28 @@ class CheckOutForm(forms.Form):
                 raise forms.ValidationError("این کد تخفیف قبلا توسط شما استفاده شده است")
 
         return coupon
+
+
+class OrderTrackingForm(forms.Form):
+    tracking_code = forms.CharField(
+        label="کد سفارش",
+        max_length=7,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control form-control-lg",
+                "placeholder": "مثال: 123456",
+                "autocomplete": "off",
+                "dir": "ltr",
+                "inputmode": "numeric",
+                "pattern": "[0-9]{5,7}",
+            }
+        ),
+    )
+
+    def clean_tracking_code(self):
+        code = self.cleaned_data["tracking_code"].strip()
+        if not code:
+            raise forms.ValidationError("کد سفارش را وارد کنید.")
+        if not code.isdigit() or not (5 <= len(code) <= 7):
+            raise forms.ValidationError("کد سفارش باید عددی ۵ تا ۷ رقمی باشد.")
+        return code
