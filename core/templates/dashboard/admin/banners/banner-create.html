@@ -43,15 +43,19 @@
                 {{ form.link }}
             </div>
             <div class="row">
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label class="form-label">سبک پس‌زمینه</label>
                     {{ form.background_style }}
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">دستگاه نمایش</label>
+                    {{ form.display_target }}
+                </div>
+                <div class="col-md-3 mb-3">
                     <label class="form-label">ترتیب نمایش</label>
                     {{ form.sort_order }}
                 </div>
-                <div class="col-md-4 mb-3 d-flex align-items-end">
+                <div class="col-md-3 mb-3 d-flex align-items-end">
                     <div class="form-check">
                         {{ form.is_active }}
                         <label class="form-check-label" for="{{ form.is_active.id_for_label }}">فعال</label>

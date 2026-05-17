@@ -14,6 +14,7 @@ class HomeBannerForm(forms.ModelForm):
             "image_alt",
             "link",
             "background_style",
+            "display_target",
             "sort_order",
             "is_active",
         ]
@@ -28,9 +29,12 @@ class HomeBannerForm(forms.ModelForm):
             "link",
             "sort_order",
             "background_style",
+            "display_target",
         ):
             if name in self.fields:
                 self.fields[name].widget.attrs["class"] = "form-control"
+        if "display_target" in self.fields:
+            self.fields["display_target"].widget.attrs["class"] = "form-select"
         self.fields["subtitle"].widget.attrs["rows"] = 3
         self.fields["image"].widget.attrs["class"] = "form-control"
         self.fields["image"].widget.attrs["accept"] = (

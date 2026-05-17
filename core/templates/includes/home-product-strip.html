@@ -1,7 +1,7 @@
 {% load static %}
 <section class="home-product-strip section {{ extra_section_class }}" aria-labelledby="{{ strip_heading_id }}">
     <div class="container">
-        <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-3 mb-md-4">
+        <div class="text-center mb-3 mb-md-4{% if is_desktop_site %} w-md-75 w-lg-50 mx-md-auto{% endif %}">
             <h2 id="{{ strip_heading_id }}" class="home-product-strip__title">{{ title }}</h2>
         </div>
 

@@ -5,50 +5,40 @@
 {% block content %}
 
 {% if home_banners %}
-<section class="banner-slider-section" aria-label="بنر صفحه اصلی">
+<section class="banner-slider-section m-home-banner" aria-label="بنر صفحه اصلی">
     <div class="js-swiper-banner swiper banner-swiper">
         <div class="swiper-wrapper">
             {% for banner in home_banners %}
             <div class="swiper-slide">
-                <div class="banner-slide" style="background: {{ banner.background_gradient }};">
-                    <div class="container">
-                        <div class="row align-items-center">
-                            <div class="col-12 col-lg-6 order-2 order-lg-1">
-                                <div class="banner-content">
-                                    <h2 class="banner-title">{{ banner.title }}</h2>
-                                    {% if banner.subtitle %}
-                                    <p class="banner-text">{{ banner.subtitle }}</p>
-                                    {% endif %}
-                                    {% if banner.link and banner.button_text %}
-                                    <a href="{{ banner.link }}" class="btn btn-primary btn-lg mt-3"{% if banner.link|slice:":4" == "http" %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ banner.button_text }}</a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6 order-1 order-lg-2">
-                                <div class="banner-image-wrapper">
-                                    <img src="{{ banner.image.url }}" alt="{{ banner.image_alt|default:banner.title }}" class="banner-image" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" decoding="async">
-                                </div>
-                            </div>
-                        </div>
+                <article class="m-banner-card" style="background: {{ banner.background_gradient }};">
+                    <div class="m-banner-card__media">
+                        <img src="{{ banner.image.url }}" alt="{{ banner.image_alt|default:banner.title }}" class="m-banner-card__img" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" decoding="async">
                     </div>
-                </div>
+                    <div class="m-banner-card__body">
+                        <h2 class="m-banner-card__title">{{ banner.title }}</h2>
+                        {% if banner.subtitle %}
+                        <p class="m-banner-card__text">{{ banner.subtitle }}</p>
+                        {% endif %}
+                        {% if banner.link and banner.button_text %}
+                        <a href="{{ banner.link }}" class="btn btn-primary"{% if banner.link|slice:":4" == "http" %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ banner.button_text }}</a>
+                        {% endif %}
+                    </div>
+                </article>
             </div>
             {% endfor %}
         </div>
-        <div class="swiper-button-prev banner-nav-prev"></div>
-        <div class="swiper-button-next banner-nav-next"></div>
         <div class="swiper-pagination banner-pagination"></div>
     </div>
 </section>
 {% endif %}
-<!-- خدمات فروشگاه (بعد از بنر) -->
+
 <section class="home-services-section" aria-labelledby="home-services-heading">
     <div class="container">
         <header class="home-services-heading">
             <h2 id="home-services-heading" class="home-services-title">خدمات فروشگاه آنلاین آروین</h2>
             <div class="home-services-underline" aria-hidden="true"></div>
         </header>
-        <div class="row row-cols-1 row-cols-md-4 g-3 g-lg-4 home-services-grid">
+        <div class="row row-cols-2 g-3 home-services-grid">
             <div class="col">
                 <article class="home-service-card home-service-card--highlight">
                     <div class="home-service-card__icon-wrap">
@@ -88,8 +78,7 @@
         </div>
     </div>
 </section>
-<!-- End خدمات -->
-<!-- دنبال چی می‌گردی؟ -->
+
 <section class="home-lookfor-section" aria-labelledby="home-lookfor-heading">
     <div class="container">
         <h2 id="home-lookfor-heading" class="home-lookfor-title">دنبال چی می‌گردی؟</h2>
@@ -111,53 +100,54 @@
         </div>
     </div>
 </section>
-<!-- End دنبال چی می‌گردی؟ -->
+
 {% show_home_product_strip top_products "برترین‌ها" "top" %}
 {% show_home_product_strip newest_products "جدیدترین‌ها" "new" "section-alt" %}
-<!-- دو بنر تبلیغاتی (چیدمان ثابت چپ‌به‌راست برای نسبت ۲:۱ روی صفحهٔ RTL) -->
-<section class="home-dual-banner section" aria-label="پیشنهادها و تخفیف‌ها">
+
+<section class="home-dual-banner section" aria-label="پیشنهادها">
     <div class="container">
-        <div class="home-dual-banner__grid" dir="ltr">
+        <div class="home-dual-banner__grid">
             <a href="{% url 'shop:product-grid' %}" class="home-dual-banner__link">
-                <img src="{% static 'img/900x900/img2.jpg' %}" alt="پیشنهاد ویژه فروشگاه آروین" class="home-dual-banner__img" width="900" height="900" loading="lazy">
+                <img src="{% static 'img/900x900/img2.jpg' %}" alt="پیشنهاد ویژه" class="home-dual-banner__img" width="900" height="900" loading="lazy">
             </a>
             <a href="{% url 'shop:product-grid' %}" class="home-dual-banner__link">
-                <img src="{% static 'img/900x900/img3.jpg' %}" alt="محصولات پرطرفدار آروین" class="home-dual-banner__img" width="900" height="900" loading="lazy">
+                <img src="{% static 'img/900x900/img3.jpg' %}" alt="پرفروش‌ها" class="home-dual-banner__img" width="900" height="900" loading="lazy">
             </a>
         </div>
     </div>
 </section>
-<!-- End دو بنر -->
+
 {% show_home_product_strip bestseller_products "پرفروش‌ترین‌ها" "bestseller" "section-alt" %}
 {% include "includes/home-latest-blog.html" with posts=latest_posts only %}
 {% endblock content %}
+
 {% block extra_js %}
 {% if home_banners %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var bannerEl = document.querySelector('.js-swiper-banner');
-        if (!bannerEl) return;
+        if (!bannerEl || typeof Swiper === 'undefined') return;
         var slideCount = bannerEl.querySelectorAll('.swiper-slide').length;
         new Swiper(bannerEl, {
-            autoplay: slideCount > 1 ? {
-                delay: 5000,
-                disableOnInteraction: false,
-            } : false,
-            loop: slideCount > 1,
-            speed: 800,
-            effect: 'fade',
-            fadeEffect: {
-                crossFade: true
-            },
-            navigation: {
-                nextEl: '.banner-nav-next',
-                prevEl: '.banner-nav-prev',
-            },
+            rtl: true,
+            direction: 'horizontal',
+            autoplay: slideCount > 1 ? { delay: 5000, disableOnInteraction: false } : false,
+            loop: false,
+            speed: 600,
+            slidesPerView: 1,
+            spaceBetween: 0,
+            autoHeight: true,
+            centeredSlides: false,
+            observer: true,
+            observeParents: true,
+            resizeObserver: true,
             pagination: {
                 el: '.banner-pagination',
                 clickable: true,
-                renderBullet: function (index, className) {
-                    return '<span class="' + className + '"></span>';
+            },
+            on: {
+                init: function (swiper) {
+                    swiper.update();
                 },
             },
         });

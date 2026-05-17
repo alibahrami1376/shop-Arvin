@@ -1,0 +1,516 @@
+/* ==========================================================================
+   Mobile layout — mobile-first, full viewport width
+   Loaded only from base-mobile.html (body.device-mobile)
+   ========================================================================== */
+
+html.device-mobile-root {
+    width: 100%;
+    max-width: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+body.device-mobile {
+    width: 100%;
+    max-width: 100vw;
+    min-width: 0;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+    overflow-x: hidden;
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+body.device-mobile *,
+body.device-mobile *::before,
+body.device-mobile *::after {
+    box-sizing: border-box;
+}
+
+/* Fluid container — همیشه تمام عرض */
+body.device-mobile .container,
+body.device-mobile .container-fluid,
+body.device-mobile .container-sm,
+body.device-mobile .container-md,
+body.device-mobile .container-lg,
+body.device-mobile .container-xl,
+body.device-mobile .container-xxl {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-inline: auto !important;
+    padding-inline: max(0.75rem, env(safe-area-inset-left)) max(0.75rem, env(safe-area-inset-right)) !important;
+}
+
+body.device-mobile #content {
+    width: 100%;
+    max-width: 100vw;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+body.device-mobile img,
+body.device-mobile video,
+body.device-mobile svg,
+body.device-mobile iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Swiper — تمام عرض */
+body.device-mobile .banner-slider-section,
+body.device-mobile .m-home-banner,
+body.device-mobile .banner-swiper,
+body.device-mobile .banner-swiper.swiper,
+body.device-mobile .swiper,
+body.device-mobile .swiper-wrapper,
+body.device-mobile .swiper-slide {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-inline: 0 !important;
+}
+
+body.device-mobile .swiper-slide {
+    flex-shrink: 0;
+    height: auto !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Swiper + RTL — جلوگیری از جابه‌جایی افقی */
+body.device-mobile .swiper {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    overflow: hidden !important;
+    touch-action: pan-y;
+}
+
+body.device-mobile .swiper-wrapper {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+body.device-mobile .m-home-banner {
+    margin-inline: 0;
+    padding-inline: 0;
+    max-width: 100vw;
+}
+
+body.device-mobile .banner-swiper {
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+}
+
+/* بنر موبایل */
+body.device-mobile .m-banner-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    padding: 0.75rem 0.5rem 1rem;
+}
+
+body.device-mobile .m-banner-card__media {
+    width: 100%;
+}
+
+body.device-mobile .m-banner-card__img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    max-height: min(56vw, 240px);
+    object-fit: contain;
+    margin-inline: auto;
+    border-radius: var(--radius-lg);
+}
+
+body.device-mobile .m-banner-card__body {
+    text-align: center;
+    padding: 0.5rem 0.25rem 0;
+}
+
+body.device-mobile .m-banner-card__title {
+    font-size: clamp(1.05rem, 4.5vw, 1.4rem);
+    line-height: 1.35;
+    margin-bottom: 0.35rem;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+body.device-mobile .m-banner-card__text {
+    font-size: clamp(0.8rem, 3.2vw, 0.95rem);
+    line-height: 1.55;
+    margin-bottom: 0.65rem;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+body.device-mobile .m-banner-card__body .btn {
+    width: 100%;
+    max-width: 18rem;
+}
+
+body.device-mobile .banner-nav-prev,
+body.device-mobile .banner-nav-next {
+    display: none !important;
+}
+
+body.device-mobile .banner-pagination {
+    position: relative !important;
+    bottom: auto !important;
+    margin-top: 0.35rem;
+}
+
+/* عرض‌های ثابت دسکتاپ — غیرفعال */
+body.device-mobile .w-md-75,
+body.device-mobile .w-lg-50,
+body.device-mobile .w-lg-75,
+body.device-mobile .w-md-65,
+body.device-mobile .w-65,
+body.device-mobile .w-35 {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* خدمات — گرید ۲ ستونه */
+body.device-mobile .home-services-section {
+    padding-block: 1rem;
+}
+
+body.device-mobile .home-services-heading {
+    padding-inline: 0.25rem;
+}
+
+body.device-mobile .home-services-title {
+    font-size: clamp(1rem, 4vw, 1.25rem);
+}
+
+body.device-mobile .home-services-grid.row {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin-inline: 0 !important;
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 0;
+}
+
+body.device-mobile .home-services-grid.row > .col {
+    width: auto !important;
+    max-width: none !important;
+    flex: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+body.device-mobile .home-service-card {
+    padding: 0.75rem 0.5rem;
+    min-height: 100%;
+}
+
+body.device-mobile .home-service-card__title {
+    font-size: clamp(0.8rem, 3.2vw, 0.95rem);
+}
+
+body.device-mobile .home-service-card__desc {
+    font-size: clamp(0.7rem, 2.8vw, 0.8rem);
+    line-height: 1.45;
+}
+
+body.device-mobile .home-service-card__icon-wrap {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.25rem;
+}
+
+@media (max-width: 360px) {
+    body.device-mobile .home-services-grid.row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* دنبال چی می‌گردی */
+body.device-mobile .home-lookfor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    justify-items: center;
+}
+
+body.device-mobile .home-lookfor-item {
+    max-width: 100%;
+    width: 100%;
+}
+
+body.device-mobile .home-lookfor-item__box {
+    width: 100%;
+    max-width: 8.5rem;
+}
+
+/* محصولات صفحه اصلی — ۲ ستون؛ زیر ۴۸۰px تک‌ستونه */
+body.device-mobile .home-product-strip .row {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-inline: 0 !important;
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 0;
+    width: 100% !important;
+}
+
+@media (max-width: 480px) {
+    body.device-mobile .home-product-strip .row {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+body.device-mobile .home-product-strip .row > .col {
+    width: auto !important;
+    max-width: none !important;
+    flex: none !important;
+    padding: 0 !important;
+}
+
+body.device-mobile .home-product-strip__title {
+    font-size: clamp(1rem, 4vw, 1.25rem);
+}
+
+body.device-mobile .home-product-strip .card-img-top {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+}
+
+body.device-mobile .home-product-strip .card-title {
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
+}
+
+body.device-mobile .home-product-strip .card-text.fs-4 {
+    font-size: clamp(0.8rem, 3vw, 0.95rem) !important;
+}
+
+body.device-mobile .home-product-strip .card-footer .btn {
+    font-size: 0.7rem;
+    padding: 0.35rem 0.5rem;
+    white-space: normal;
+}
+
+/* دو بنر */
+body.device-mobile .home-dual-banner__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+body.device-mobile .home-dual-banner__img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius-md);
+}
+
+/* هدر موبایل */
+body.device-mobile header.header--mobile {
+    width: 100%;
+    max-width: 100vw;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body.device-mobile header.header--mobile .header__container {
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+}
+
+body.device-mobile header.header--mobile .header__logo-img {
+    max-height: 2.85rem;
+    max-width: min(9rem, 45vw);
+}
+
+/* فوتر و ناوبری پایین */
+body.device-mobile .mobile-bottom-nav {
+    display: flex;
+    width: 100%;
+    max-width: 100vw;
+    inset-inline: 0;
+    left: 0;
+    right: 0;
+}
+
+body.device-mobile .pwa-install-banner {
+    width: 100%;
+    max-width: 100vw;
+    inset-inline: 0;
+}
+
+body.device-mobile footer.site-footer--mobile {
+    width: 100%;
+    padding-bottom: 0.5rem;
+}
+
+body.device-mobile.has-pwa-install-banner {
+    padding-bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+body.device-mobile .js-go-to.go-to {
+    bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+body.device-mobile.has-pwa-install-banner .js-go-to.go-to {
+    bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+/* فروشگاه — سایدبار زیر محتوا */
+body.device-mobile .col-lg-3,
+body.device-mobile .col-lg-9 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    width: 100%;
+}
+
+body.device-mobile .navbar-expand-lg .navbar-collapse {
+    display: block;
+}
+
+body.device-mobile .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.device-mobile .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-inline: 0 !important;
+    --bs-gutter-x: 0.65rem;
+    width: 100%;
+    max-width: 100%;
+}
+
+body.device-mobile .row > [class*="col"]:not(.home-services-grid > *) {
+    min-width: 0;
+}
+
+/* تایپوگرافی کلی */
+body.device-mobile h1 {
+    font-size: clamp(1.35rem, 5vw, 1.75rem);
+}
+
+body.device-mobile h2 {
+    font-size: clamp(1.15rem, 4.5vw, 1.5rem);
+}
+
+body.device-mobile h3,
+body.device-mobile h4 {
+    font-size: clamp(1rem, 4vw, 1.25rem);
+}
+
+body.device-mobile .section,
+body.device-mobile section {
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   Offcanvas منو — Bootstrap styles were in theme.min.css (not loaded on mobile)
+   ========================================================================== */
+body.device-mobile {
+    --bs-offcanvas-zindex: 1055;
+    --bs-offcanvas-width: min(20rem, 88vw);
+    --bs-offcanvas-padding-x: 1rem;
+    --bs-offcanvas-padding-y: 1rem;
+    --bs-offcanvas-bg: #fff;
+    --bs-offcanvas-border-color: rgba(74, 55, 44, 0.12);
+}
+
+body.device-mobile .offcanvas {
+    position: fixed;
+    bottom: 0;
+    z-index: var(--bs-offcanvas-zindex);
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    color: var(--text-dark);
+    visibility: hidden;
+    background-color: var(--bs-offcanvas-bg);
+    background-clip: padding-box;
+    outline: 0;
+    transition: transform 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+body.device-mobile .offcanvas.offcanvas-start {
+    top: 0;
+    right: 0;
+    left: auto;
+    width: var(--bs-offcanvas-width);
+    border-left: 1px solid var(--bs-offcanvas-border-color);
+    transform: translateX(100%);
+}
+
+body.device-mobile .offcanvas.offcanvas-end {
+    top: 0;
+    left: 0;
+    right: auto;
+    width: var(--bs-offcanvas-width);
+    border-right: 1px solid var(--bs-offcanvas-border-color);
+    transform: translateX(-100%);
+}
+
+body.device-mobile .offcanvas.showing,
+body.device-mobile .offcanvas.show:not(.hiding) {
+    transform: none;
+    visibility: visible;
+}
+
+body.device-mobile .offcanvas.hiding {
+    visibility: visible;
+}
+
+body.device-mobile .offcanvas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--bs-offcanvas-padding-y) var(--bs-offcanvas-padding-x);
+    border-bottom: 1px solid var(--bs-offcanvas-border-color);
+}
+
+body.device-mobile .offcanvas-title {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+body.device-mobile .offcanvas-body {
+    flex-grow: 1;
+    padding: var(--bs-offcanvas-padding-y) var(--bs-offcanvas-padding-x);
+    overflow-y: auto;
+}
+
+body.device-mobile .offcanvas-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.45);
+}
+
+body.device-mobile .offcanvas-backdrop.fade {
+    opacity: 0;
+    transition: opacity 0.15s linear;
+}
+
+body.device-mobile .offcanvas-backdrop.show {
+    opacity: 1;
+}
+
+body.device-mobile .header__offcanvas .header__mobile-nav-link {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}

@@ -51,6 +51,11 @@ class FAQItem(models.Model):
 
 
 class HomeBanner(models.Model):
+    class DisplayTarget(models.TextChoices):
+        ALL = "all", "همه دستگاه‌ها"
+        MOBILE = "mobile", "فقط موبایل"
+        DESKTOP = "desktop", "فقط دسکتاپ"
+
     STYLE_CHOICES = (
         (1, "سبک ۱"),
         (2, "سبک ۲"),
@@ -87,6 +92,12 @@ class HomeBanner(models.Model):
         verbose_name="سبک پس‌زمینه",
     )
     sort_order = models.PositiveIntegerField(default=0, verbose_name="ترتیب نمایش")
+    display_target = models.CharField(
+        max_length=10,
+        choices=DisplayTarget.choices,
+        default=DisplayTarget.ALL,
+        verbose_name="دستگاه نمایش",
+    )
     is_active = models.BooleanField(default=True, verbose_name="فعال")
     is_default = models.BooleanField(
         default=False,

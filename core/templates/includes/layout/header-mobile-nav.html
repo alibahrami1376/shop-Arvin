@@ -1,0 +1,32 @@
+<div class="offcanvas offcanvas-start header__offcanvas" tabindex="-1" id="headerMobileNav" aria-labelledby="headerMobileNavLabel" aria-hidden="true">
+    <div class="offcanvas-header">
+        <h2 class="offcanvas-title h5 mb-0" id="headerMobileNavLabel">منو</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="بستن منو"></button>
+    </div>
+    <div class="offcanvas-body">
+        <nav aria-label="منوی موبایل">
+            <ul class="header__mobile-nav-list">
+                <li><a href="{% url 'website:index' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:index' %}header__mobile-nav-link--active{% endif %}">صفحه اصلی</a></li>
+                <li class="header__mobile-nav-item--shop">
+                    <button type="button" class="header__mobile-nav-link header__mobile-shop-toggle w-100 d-flex align-items-center justify-content-between {% if request.resolver_match.view_name == 'shop:product-grid' %}header__mobile-nav-link--active{% endif %}" data-bs-toggle="collapse" data-bs-target="#headerShopCategories" aria-expanded="false" aria-controls="headerShopCategories">
+                        <span>فروشگاه</span>
+                        <i class="bi-chevron-down header__mobile-shop-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div class="collapse" id="headerShopCategories">
+                        <ul class="header__mobile-categories">
+                            <li><a href="{% url 'shop:product-grid' %}" class="header__mobile-category-link">همه محصولات</a></li>
+                            {% for category in shop_categories %}
+                            <li><a href="{% url 'shop:product-grid' %}?category_id={{ category.id }}" class="header__mobile-category-link">{{ category.title }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="{% url 'blog:blog_home' %}" class="header__mobile-nav-link {% if 'blog' in request.resolver_match.namespace %}header__mobile-nav-link--active{% endif %}">بلاگ</a></li>
+                <li><a href="{% url 'website:faq' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:faq' %}header__mobile-nav-link--active{% endif %}">از آروین بپرس؟</a></li>
+                <li><a href="{% url 'website:about' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:about' %}header__mobile-nav-link--active{% endif %}">درباره ما</a></li>
+                <li><a href="{% url 'website:contact' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:contact' %}header__mobile-nav-link--active{% endif %}">تماس با ما</a></li>
+                <li><a href="{% url 'order:track' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'order:track' %}header__mobile-nav-link--active{% endif %}">پیگیری سفارش</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>

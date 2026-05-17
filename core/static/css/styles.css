@@ -2045,7 +2045,7 @@ textarea {
 
 @media (min-width: 768px) {
     /* Grid avoids Bootstrap flex row-cols + flex-shrink:0 wrapping when card text is wide */
-    .home-services-grid.row {
+    body.device-desktop .home-services-grid.row {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         column-gap: 0.4rem;
@@ -2054,7 +2054,7 @@ textarea {
         margin-right: 0;
     }
 
-    .home-services-grid.row > * {
+    body.device-desktop .home-services-grid.row > * {
         width: auto;
         max-width: none;
         flex: none;
@@ -2063,7 +2063,7 @@ textarea {
         margin-top: 0;
     }
 
-    .home-services-grid .home-service-card {
+    body.device-desktop .home-services-grid .home-service-card {
         padding-inline: 0.5rem;
     }
 }
@@ -2344,7 +2344,7 @@ section.home-product-strip.section + section.home-product-strip.section {
 }
 
 @media (min-width: 768px) {
-    .home-dual-banner__grid {
+    body.device-desktop .home-dual-banner__grid {
         grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
         gap: 1rem;
     }
@@ -2378,17 +2378,17 @@ section.home-product-strip.section + section.home-product-strip.section {
     }
 }
 
-/* صفحهٔ اصلی — موبایل و تبلت کوچک */
+/* صفحهٔ اصلی — تبلت کوچک (فقط دسکتاپ؛ موبایل در styles-mobile.css) */
 @media (max-width: 991.98px) {
-    .home-services-section {
+    body.device-desktop .home-services-section {
         padding: 1.5rem 0;
     }
 
-    .home-services-heading {
+    body.device-desktop .home-services-heading {
         margin-bottom: 1rem;
     }
 
-    .home-services-grid.row {
+    body.device-desktop .home-services-grid.row {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         column-gap: 0.5rem;
@@ -2397,7 +2397,7 @@ section.home-product-strip.section + section.home-product-strip.section {
         margin-right: 0;
     }
 
-    .home-services-grid.row > * {
+    body.device-desktop .home-services-grid.row > * {
         width: auto;
         max-width: none;
         flex: none;
@@ -2453,7 +2453,7 @@ section.home-product-strip.section + section.home-product-strip.section {
 }
 
 @media (max-width: 575.98px) {
-    main#content .container {
+    body.device-desktop main#content .container {
         padding-left: 0.75rem;
         padding-right: 0.75rem;
     }
@@ -2575,8 +2575,8 @@ section.home-product-strip.section + section.home-product-strip.section {
    Responsive Design - Comprehensive
    ============================================ */
 
-/* Container Responsive */
-.container {
+/* Container Responsive — فقط دسکتاپ؛ موبایل در styles-mobile.css */
+body.device-desktop .container {
     width: 100%;
     padding-right: 15px;
     padding-left: 15px;
@@ -2585,38 +2585,38 @@ section.home-product-strip.section + section.home-product-strip.section {
 }
 
 @media (min-width: 576px) {
-    .container {
+    body.device-desktop .container {
         max-width: 540px;
     }
 }
 
 @media (min-width: 768px) {
-    .container {
+    body.device-desktop .container {
         max-width: 720px;
     }
 }
 
 @media (min-width: 992px) {
-    .container {
+    body.device-desktop .container {
         max-width: 960px;
     }
 }
 
 @media (min-width: 1200px) {
-    .container {
+    body.device-desktop .container {
         max-width: 1140px;
     }
 }
 
 @media (min-width: 1400px) {
-    .container {
+    body.device-desktop .container {
         max-width: 1320px;
     }
 }
 
 /* Base Responsive Styles */
 @media (max-width: 1200px) {
-    .container {
+    body.device-desktop .container {
         padding-right: 20px;
         padding-left: 20px;
     }
@@ -3607,26 +3607,36 @@ section.home-product-strip.section + section.home-product-strip.section {
 }
 
 .w-md-65 {
-    width: 65% !important;
+    width: 100% !important;
 }
 
 .w-md-75 {
-    width: 75% !important;
+    width: 100% !important;
 }
 
 .w-lg-50 {
-    width: 50% !important;
+    width: 100% !important;
 }
 
 .w-lg-75 {
-    width: 75% !important;
+    width: 100% !important;
+}
+
+@media (min-width: 768px) {
+    .w-md-65 {
+        width: 65% !important;
+    }
+
+    .w-md-75 {
+        width: 75% !important;
+    }
 }
 
 @media (min-width: 992px) {
     .w-lg-50 {
         width: 50% !important;
     }
-    
+
     .w-lg-75 {
         width: 75% !important;
     }

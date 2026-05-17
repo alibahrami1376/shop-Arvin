@@ -7,6 +7,9 @@ from blog.models import Post
 from order.models import OrderStatusType
 from shop.models import ProductModel, ProductStatusType
 
+from core.device import filter_queryset_for_device
+from core.mixins import DeviceTemplateMixin
+
 from .models import *
 from .forms import ContactForm, NewsLetterForm
 from django.contrib import messages
@@ -15,8 +18,10 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 # Create your views here.
 
-class IndexView(TemplateView):
+class IndexView(DeviceTemplateMixin, TemplateView):
     template_name = "website/index.html"
+    mobile_template_name = "website/index-mobile.html"
+    desktop_template_name = "website/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -50,7 +55,8 @@ class IndexView(TemplateView):
             .order_by("-published_date", "-created_date")[:4]
         )
 
-        context["home_banners"] = HomeBanner.objects.filter(is_active=True)
+        banners = HomeBanner.objects.filter(is_active=True)
+        context["home_banners"] = filter_queryset_for_device(banners, self.request)
 
         return context
 

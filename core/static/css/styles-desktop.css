@@ -1,0 +1,22 @@
+/* Desktop-only layout (server: body.device-desktop) */
+
+body.device-desktop header.header--desktop .header__nav--desktop {
+    display: flex;
+}
+
+body.device-desktop header.header--desktop .header__actions {
+    display: flex;
+}
+
+body.device-desktop .mobile-bottom-nav,
+body.device-desktop .pwa-install-banner {
+    display: none !important;
+}
+
+body.device-desktop .banner-slide .row {
+    min-height: 420px;
+}
+
+body.device-desktop .home-services-grid {
+    --bs-columns: 4;
+}

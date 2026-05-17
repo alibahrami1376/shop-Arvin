@@ -57,6 +57,7 @@
                         <th scope="col">پیش‌نمایش</th>
                         <th scope="col">عنوان</th>
                         <th scope="col">ترتیب</th>
+                        <th scope="col">دستگاه</th>
                         <th scope="col">وضعیت</th>
                         <th scope="col">عملیات</th>
                     </tr>
@@ -79,6 +80,7 @@
                             {% endif %}
                         </td>
                         <td>{{ object.sort_order }}</td>
+                        <td>{{ object.get_display_target_display }}</td>
                         <td>
                             {% if object.is_active %}
                             <span class="badge bg-success">فعال</span>
@@ -95,7 +97,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">بنری ثبت نشده است.</td>
+                        <td colspan="7" class="text-center text-muted py-4">بنری ثبت نشده است.</td>
                     </tr>
                     {% endfor %}
                 </tbody>

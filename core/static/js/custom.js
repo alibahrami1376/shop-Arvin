@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const header = document.querySelector('.header');
     const contentElement = document.querySelector('#content');
     
-    if (header) {
+    if (header && !document.body.classList.contains('device-mobile')) {
         let lastScrollTop = 0;
         let isScrolling = false;
         let scrollTimeout = null;

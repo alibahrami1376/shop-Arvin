@@ -1,0 +1,18 @@
+<footer class="site-footer site-footer--mobile">
+    <div class="container py-4">
+        <div class="text-center mb-3">
+            <a class="navbar-brand d-inline-flex align-items-center gap-2" href="{% url 'website:index' %}">
+                <i class="bi-truck" style="font-size: 1.5rem; color: var(--color-accent-yellow);"></i>
+                <span class="logo-text">آروین</span>
+            </a>
+        </div>
+        <ul class="list-inline text-center mb-3">
+            <li class="list-inline-item"><a class="text-secondary small" href="{% url 'shop:product-grid' %}">محصولات</a></li>
+            <li class="list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="text-secondary small" href="{% url 'website:contact' %}">تماس</a></li>
+            <li class="list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="text-secondary small" href="{% url 'order:track' %}">پیگیری سفارش</a></li>
+        </ul>
+        <p class="text-muted small text-center mb-0">&copy; ۱۴۰۳ فروشگاه آروین</p>
+    </div>
+</footer>
