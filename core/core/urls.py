@@ -3,8 +3,12 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from website.pwa_views import ServiceWorkerView, WebAppManifestView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('manifest.webmanifest', WebAppManifestView.as_view(), name='pwa-manifest'),
+    path('sw.js', ServiceWorkerView.as_view(), name='pwa-service-worker'),
     path('', include('website.urls')),
     path('accounts/', include('accounts.urls')),
     path('shop/', include('shop.urls')),

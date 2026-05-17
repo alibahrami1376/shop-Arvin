@@ -6,6 +6,13 @@
     <!-- Required Meta Tags Always Come First -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <meta name="theme-color" content="#6B4E3D">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="آروین">
+    <link rel="manifest" href="{% url 'pwa-manifest' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/pwa/apple-touch-icon.png' %}">
 
     <!-- Title -->
     <title>{% block title %} {% endblock title %}</title>
@@ -578,7 +585,10 @@
     {% block extra_js_no_compress %} {% endblock extra_js_no_compress %}
 
     {% include 'messages.html' %}
+    {% include 'includes/pwa-install-banner.html' %}
     {% include 'includes/mobile-bottom-nav.html' %}
+
+    <script src="{% static 'js/pwa.js' %}" defer></script>
 </body>
 
 </html>
