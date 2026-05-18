@@ -10,9 +10,10 @@ from blog.models import Category as BlogCategory
 from blog.models import Post
 from dashboard.admin.forms import BlogCategoryForm, BlogPostForm, PostImageFormSet
 from dashboard.permissions import HasAdminAccessPermission
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class AdminBlogPostListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
+class AdminBlogPostListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, ListView):
     template_name = "dashboard/admin/blog/post-list.html"
     model = Post
     paginate_by = 10
@@ -39,7 +40,7 @@ class AdminBlogPostListView(LoginRequiredMixin, HasAdminAccessPermission, ListVi
         return context
 
 
-class AdminBlogPostCreateView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
+class AdminBlogPostCreateView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
     template_name = "dashboard/admin/blog/post-create.html"
     model = Post
     form_class = BlogPostForm
@@ -71,7 +72,7 @@ class AdminBlogPostCreateView(LoginRequiredMixin, HasAdminAccessPermission, Succ
         return redirect("dashboard:admin:blog-post-edit", pk=self.object.pk)
 
 
-class AdminBlogPostEditView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
+class AdminBlogPostEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
     template_name = "dashboard/admin/blog/post-edit.html"
     model = Post
     form_class = BlogPostForm
@@ -104,14 +105,14 @@ class AdminBlogPostEditView(LoginRequiredMixin, HasAdminAccessPermission, Succes
         return redirect("dashboard:admin:blog-post-edit", pk=self.object.pk)
 
 
-class AdminBlogPostDeleteView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
+class AdminBlogPostDeleteView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
     template_name = "dashboard/admin/blog/post-delete.html"
     model = Post
     success_url = reverse_lazy("dashboard:admin:blog-post-list")
     success_message = "حذف پست با موفقیت انجام شد"
 
 
-class AdminBlogCategoryListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
+class AdminBlogCategoryListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, ListView):
     template_name = "dashboard/admin/blog/blog-category-list.html"
     model = BlogCategory
     paginate_by = 10
@@ -138,7 +139,7 @@ class AdminBlogCategoryListView(LoginRequiredMixin, HasAdminAccessPermission, Li
         return context
 
 
-class AdminBlogCategoryCreateView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
+class AdminBlogCategoryCreateView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
     template_name = "dashboard/admin/blog/blog-category-create.html"
     model = BlogCategory
     form_class = BlogCategoryForm
@@ -146,7 +147,7 @@ class AdminBlogCategoryCreateView(LoginRequiredMixin, HasAdminAccessPermission, 
     success_message = "ایجاد دسته‌بندی بلاگ با موفقیت انجام شد"
 
 
-class AdminBlogCategoryEditView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
+class AdminBlogCategoryEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
     template_name = "dashboard/admin/blog/blog-category-edit.html"
     model = BlogCategory
     form_class = BlogCategoryForm
@@ -156,7 +157,7 @@ class AdminBlogCategoryEditView(LoginRequiredMixin, HasAdminAccessPermission, Su
         return reverse_lazy("dashboard:admin:blog-category-edit", kwargs={"pk": self.get_object().pk})
 
 
-class AdminBlogCategoryDeleteView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
+class AdminBlogCategoryDeleteView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
     template_name = "dashboard/admin/blog/blog-category-delete.html"
     model = BlogCategory
     success_url = reverse_lazy("dashboard:admin:blog-category-list")

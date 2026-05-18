@@ -1,0 +1,14 @@
+/* Admin dashboard — desktop only */
+
+body.device-desktop.dashboard-layout--admin main#content {
+    min-height: 60vh;
+}
+
+body.device-desktop.dashboard-layout--admin .col-lg-3 .navbar-vertical {
+    position: sticky;
+    top: 1rem;
+}
+
+body.device-desktop.dashboard-layout--admin .card-header .btn {
+    white-space: nowrap;
+}

@@ -1,0 +1,90 @@
+/* Dashboard — mobile layout (admin + customer) */
+
+body.device-mobile.dashboard-layout {
+    padding-bottom: 1rem;
+    background: #f5f3f0;
+}
+
+body.device-mobile.dashboard-layout .dashboard-mobile-top {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.65rem max(0.75rem, env(safe-area-inset-left)) 0.65rem max(0.75rem, env(safe-area-inset-right));
+    background: var(--color-primary-white);
+    border-bottom: 1px solid rgba(74, 55, 44, 0.12);
+    box-shadow: 0 2px 12px rgba(74, 55, 44, 0.06);
+}
+
+body.device-mobile.dashboard-layout .dashboard-mobile-top__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.device-mobile.dashboard-layout .dashboard-mobile-menu-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 1px solid rgba(74, 55, 44, 0.15);
+    border-radius: var(--radius-sm);
+    background: var(--color-primary-white);
+    color: var(--text-dark);
+}
+
+body.device-mobile.dashboard-layout main#content {
+    padding: 0.75rem max(0.75rem, env(safe-area-inset-left)) 1rem max(0.75rem, env(safe-area-inset-right));
+}
+
+body.device-mobile.dashboard-layout .dashboard-mobile-breadcrumb {
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+}
+
+body.device-mobile.dashboard-layout .dashboard-mobile-breadcrumb .breadcrumb {
+    margin-bottom: 0;
+    padding: 0;
+    background: transparent;
+}
+
+body.device-mobile.dashboard-layout .card {
+    border-radius: var(--radius-md);
+}
+
+body.device-mobile.dashboard-layout .table-responsive {
+    -webkit-overflow-scrolling: touch;
+}
+
+body.device-mobile.dashboard-layout .navbar-vertical {
+    display: block !important;
+}
+
+body.device-mobile.dashboard-layout #sidebarNav {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+body.device-mobile.dashboard-layout .offcanvas .navbar-vertical .card {
+    border: none;
+    box-shadow: none;
+    margin-bottom: 0;
+}
+
+body.device-mobile.dashboard-layout .form-control,
+body.device-mobile.dashboard-layout .form-select {
+    font-size: 16px;
+}

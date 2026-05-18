@@ -607,8 +607,9 @@ select,
 }
 
 /* ============================================
-   Mobile bottom navigation
+   Mobile bottom navigation (viewport < 992px only)
    ============================================ */
+@media (max-width: 991.98px) {
 .mobile-bottom-nav {
     position: fixed;
     inset-inline: 0;
@@ -795,6 +796,8 @@ body.has-pwa-install-banner.has-mobile-bottom-nav .js-go-to.go-to {
     justify-content: center;
     line-height: 1;
     border: 2px solid var(--color-primary-white);
+}
+
 }
 
 /* دسکتاپ — هدر کامل با منوی افقی وسط */
@@ -1665,8 +1668,8 @@ a:hover {
 
 .banner-swiper {
     width: 100%;
-    height: auto;
-    min-height: 350px;
+    height: 450px;
+    min-height: 450px;
     max-height: 450px;
 }
 
@@ -1763,9 +1766,10 @@ a:hover {
 
 .banner-image {
     width: 100%;
-    height: auto;
-    max-height: 350px;
+    height: 100%;
+    max-height: none;
     object-fit: cover;
+    object-position: center;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-medium);
     filter: brightness(1.02) contrast(0.98);
@@ -1854,23 +1858,12 @@ a:hover {
         height: clamp(200px, 42vw, 380px);
     }
 
-    .banner-swiper {
-        min-height: 0;
-        max-height: none;
-        height: auto;
-    }
-    
-    .banner-title {
+    body.device-desktop .banner-title {
         font-size: 2rem;
     }
     
-    .banner-text {
+    body.device-desktop .banner-text {
         font-size: 1rem;
-    }
-    
-    .banner-image {
-        max-height: 280px;
-        margin-top: var(--spacing-sm);
     }
     
     .banner-nav-prev {
@@ -1904,54 +1897,25 @@ a:hover {
         height: clamp(180px, 48vw, 300px);
     }
 
-    .banner-swiper {
-        min-height: 0;
-        max-height: none;
-        height: auto;
-    }
-
-    .banner-swiper .swiper-slide {
-        height: auto !important;
-    }
-
-    .banner-slide {
-        padding: 0.65rem 0 1rem;
-    }
-
-    .banner-slide .container {
+    body.device-desktop .banner-slide .container {
         padding-left: 0.75rem;
         padding-right: 0.75rem;
     }
 
-    .banner-title {
+    body.device-desktop .banner-title {
         font-size: clamp(1.15rem, 4.5vw, 1.5rem);
         margin-bottom: 0.35rem;
     }
 
-    .banner-text {
+    body.device-desktop .banner-text {
         font-size: 0.875rem;
         line-height: 1.55;
         margin-bottom: 0.5rem;
     }
 
-    .banner-content .btn-lg {
+    body.device-desktop .banner-content .btn-lg {
         font-size: 0.9rem;
         padding: 0.5rem 1.25rem;
-    }
-
-    .banner-image-wrapper {
-        padding: 0.25rem 0 0;
-    }
-
-    .banner-image {
-        max-height: min(42vw, 200px);
-        width: 100%;
-        margin-inline: auto;
-    }
-
-    .banner-content {
-        text-align: center;
-        padding: 0.25rem 0 0.5rem;
     }
 
     .banner-nav-prev,
@@ -1965,12 +1929,8 @@ a:hover {
 }
 
 @media (max-width: 576px) {
-    .banner-title {
+    body.device-desktop .banner-title {
         font-size: 1.15rem;
-    }
-
-    .banner-image {
-        max-height: min(48vw, 180px);
     }
 }
 

@@ -16,13 +16,14 @@ from django.db.models import F,Q
 from django.core import exceptions
 from django.contrib.auth import get_user_model
 from dashboard.admin.forms import *
+from dashboard.mixins import DashboardDeviceTemplateMixin
 User = get_user_model()
 
 
 
 
 
-class UserListView(LoginRequiredMixin,HasAdminAccessPermission, ListView):
+class UserListView(DashboardDeviceTemplateMixin, LoginRequiredMixin,HasAdminAccessPermission, ListView):
     title = "لیست کاربران"
     template_name = "dashboard/admin/users/user-list.html"
     paginate_by = 10
@@ -58,7 +59,7 @@ class UserListView(LoginRequiredMixin,HasAdminAccessPermission, ListView):
 
 
 
-class UserDeleteView(LoginRequiredMixin,HasAdminAccessPermission,SuccessMessageMixin, DeleteView):
+class UserDeleteView(DashboardDeviceTemplateMixin, LoginRequiredMixin,HasAdminAccessPermission,SuccessMessageMixin, DeleteView):
     title = "حذف کاربر"
     template_name = "dashboard/admin/users/user-delete.html"
     success_url = reverse_lazy("dashboard:admin:user-list")
@@ -67,7 +68,7 @@ class UserDeleteView(LoginRequiredMixin,HasAdminAccessPermission,SuccessMessageM
         return User.objects.filter(is_superuser=False,type=UserType.customer.value)
     
     
-class UserUpdateView(LoginRequiredMixin,HasAdminAccessPermission,SuccessMessageMixin, UpdateView):
+class UserUpdateView(DashboardDeviceTemplateMixin, LoginRequiredMixin,HasAdminAccessPermission,SuccessMessageMixin, UpdateView):
     title = "ویرایش کاربر"
     template_name = "dashboard/admin/users/user-edit.html"
     success_message = "کاربر مورد نظر با موفقیت ویرایش شد"

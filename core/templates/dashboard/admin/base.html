@@ -1,3 +1,4 @@
+{% comment %}Desktop admin layout — use base-desktop.html in new templates.{% endcomment %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
@@ -21,13 +22,15 @@
     <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/toastify/toastify.css' %}">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles-desktop.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles-dashboard-admin-desktop.css' %}">
     {% block extra_css %} {% endblock extra_css %}
 
     {% block extra_css_no_compress %} {% endblock extra_css_no_compress %}
 </head>
 
 
-<body>
+<body class="device-desktop dashboard-layout dashboard-layout--admin">
     <!-- ========== HEADER (همان هدر صفحه هوم) ========== -->
     <header id="header" class="header" role="banner" aria-label="Main navigation">
         <div class="header__container">

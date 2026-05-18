@@ -11,10 +11,72 @@ body.device-desktop header.header--desktop .header__actions {
 body.device-desktop .mobile-bottom-nav,
 body.device-desktop .pwa-install-banner {
     display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
 }
 
-body.device-desktop .banner-slide .row {
-    min-height: 420px;
+body.device-desktop.has-mobile-bottom-nav,
+body.device-desktop.has-pwa-install-banner.has-mobile-bottom-nav {
+    padding-bottom: 0 !important;
+}
+
+body.device-desktop.has-mobile-bottom-nav .js-go-to.go-to,
+body.device-desktop.has-pwa-install-banner.has-mobile-bottom-nav .js-go-to.go-to {
+    bottom: 2rem !important;
+}
+
+/* بنر صفحه اصلی — ارتفاع ثابت */
+body.device-desktop .banner-slider-section {
+    --home-banner-height: 450px;
+    --home-banner-image-height: 300px;
+}
+
+body.device-desktop .banner-slider-section .banner-swiper {
+    height: var(--home-banner-height) !important;
+    min-height: var(--home-banner-height) !important;
+    max-height: var(--home-banner-height) !important;
+}
+
+body.device-desktop .banner-slider-section .swiper-slide {
+    height: var(--home-banner-height) !important;
+}
+
+body.device-desktop .banner-slider-section .banner-slide {
+    height: 100%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+body.device-desktop .banner-slider-section .banner-slide .row {
+    height: 100%;
+    min-height: 0;
+    width: 100%;
+    align-items: center !important;
+}
+
+body.device-desktop .banner-slider-section .banner-image-wrapper {
+    height: var(--home-banner-image-height);
+    max-height: var(--home-banner-image-height);
+    min-height: var(--home-banner-image-height);
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+body.device-desktop .banner-slider-section .banner-image {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    min-height: 0;
+    object-fit: cover;
+    object-position: center;
+}
+
+body.device-desktop .banner-slider-section .banner-content {
+    padding: 0.75rem 0;
 }
 
 body.device-desktop .home-services-grid {

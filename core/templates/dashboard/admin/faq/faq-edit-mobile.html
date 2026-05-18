@@ -1,0 +1,49 @@
+{% extends 'dashboard/admin/base-mobile.html' %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">داشبورد ادمین</li>
+        <li class="breadcrumb-item"><a href="{% url 'dashboard:admin:faq-list' %}">سوالات متداول</a></li>
+        <li class="breadcrumb-item active" aria-current="page">ویرایش سوال</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="card-header-title mb-0">ویرایش سوال متداول</h5>
+        <a class="btn btn-outline-danger btn-sm" href="{% url 'dashboard:admin:faq-delete' pk=object.pk %}">حذف</a>
+    </div>
+    <form action="." method="post">
+        {% csrf_token %}
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">سوال</label>
+                {{ form.question }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">پاسخ</label>
+                {{ form.answer }}
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">ترتیب نمایش</label>
+                    {{ form.sort_order }}
+                </div>
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+                    <div class="form-check">
+                        {{ form.is_published }}
+                        <label class="form-check-label" for="{{ form.is_published.id_for_label }}">منتشر شده</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <a class="btn btn-secondary" href="{% url 'dashboard:admin:faq-list' %}">بازگشت</a>
+            <button class="btn btn-primary" type="submit">ذخیره تغییرات</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

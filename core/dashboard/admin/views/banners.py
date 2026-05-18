@@ -10,9 +10,10 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from dashboard.admin.forms import DefaultHomeBannerForm, HomeBannerForm
 from dashboard.permissions import HasAdminAccessPermission
 from website.models import HomeBanner
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class AdminHomeBannerListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
+class AdminHomeBannerListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, ListView):
     template_name = "dashboard/admin/banners/banner-list.html"
     paginate_by = 10
 
@@ -38,9 +39,7 @@ class AdminHomeBannerListView(LoginRequiredMixin, HasAdminAccessPermission, List
         return context
 
 
-class AdminHomeBannerCreateView(
-    LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView
-):
+class AdminHomeBannerCreateView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
     template_name = "dashboard/admin/banners/banner-create.html"
     queryset = HomeBanner.objects.all()
     form_class = HomeBannerForm
@@ -48,9 +47,7 @@ class AdminHomeBannerCreateView(
     success_message = "بنر با موفقیت ایجاد شد"
 
 
-class AdminHomeBannerEditView(
-    LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView
-):
+class AdminHomeBannerEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
     template_name = "dashboard/admin/banners/banner-edit.html"
     queryset = HomeBanner.objects.all()
     def get_form_class(self):
@@ -69,9 +66,7 @@ class AdminHomeBannerEditView(
         )
 
 
-class AdminHomeBannerDeleteView(
-    LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView
-):
+class AdminHomeBannerDeleteView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
     template_name = "dashboard/admin/banners/banner-delete.html"
     queryset = HomeBanner.objects.all()
     success_url = reverse_lazy("dashboard:admin:home-banner-list")

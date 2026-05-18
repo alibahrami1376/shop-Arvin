@@ -36,6 +36,9 @@
         window.addEventListener("load", function () {
             navigator.serviceWorker
                 .register("/sw.js", { scope: "/" })
+                .then(function (registration) {
+                    registration.update();
+                })
                 .catch(function (err) {
                     console.warn("PWA service worker registration failed:", err);
                 });

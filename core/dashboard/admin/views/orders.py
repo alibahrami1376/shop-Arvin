@@ -9,9 +9,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from dashboard.admin.forms import AdminOrderStatusForm, AdminPaymentStatusForm
 from dashboard.permissions import HasAdminAccessPermission
 from order.models import OrderModel, OrderStatusType
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class AdminOrderListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
+class AdminOrderListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, ListView):
     template_name = "dashboard/admin/orders/order-list.html"
     paginate_by = 10
     
@@ -39,7 +40,7 @@ class AdminOrderListView(LoginRequiredMixin, HasAdminAccessPermission, ListView)
         context["status_types"] = OrderStatusType.choices
         return context
     
-class AdminOrderDetailView(LoginRequiredMixin, HasAdminAccessPermission, DetailView):
+class AdminOrderDetailView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, DetailView):
     template_name = "dashboard/admin/orders/order-detail.html"
 
     def get_queryset(self):
@@ -57,7 +58,7 @@ class AdminOrderDetailView(LoginRequiredMixin, HasAdminAccessPermission, DetailV
         return context
 
 
-class AdminOrderChangeStatusView(LoginRequiredMixin, HasAdminAccessPermission, View):
+class AdminOrderChangeStatusView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, View):
     http_method_names = ["post"]
 
     def post(self, request, pk, *args, **kwargs):
@@ -74,7 +75,7 @@ class AdminOrderChangeStatusView(LoginRequiredMixin, HasAdminAccessPermission, V
         return redirect(reverse_lazy("dashboard:admin:order-detail", kwargs={"pk": pk}))
 
 
-class AdminOrderPaymentStatusView(LoginRequiredMixin, HasAdminAccessPermission, View):
+class AdminOrderPaymentStatusView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, View):
     http_method_names = ["post"]
 
     def post(self, request, pk, *args, **kwargs):
@@ -102,7 +103,7 @@ class AdminOrderPaymentStatusView(LoginRequiredMixin, HasAdminAccessPermission, 
         return redirect(reverse_lazy("dashboard:admin:order-detail", kwargs={"pk": pk}))
 
 
-class AdminOrderInvoiceView(LoginRequiredMixin, HasAdminAccessPermission, DetailView):
+class AdminOrderInvoiceView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, DetailView):
     template_name = "dashboard/admin/orders/order-invoice.html"
 
     def get_queryset(self):

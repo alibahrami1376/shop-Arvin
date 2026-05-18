@@ -8,8 +8,9 @@ from django.contrib import messages
 from django.core.exceptions import FieldError
 from review.models import ReviewModel, ReviewStatusType
 from dashboard.admin.forms.reviews import ReviewForm
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
-class AdminReviewListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
+class AdminReviewListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, ListView):
     template_name = "dashboard/admin/reviews/review-list.html"
     paginate_by = 10
     
@@ -35,7 +36,7 @@ class AdminReviewListView(LoginRequiredMixin, HasAdminAccessPermission, ListView
         context["status_types"] = ReviewStatusType.choices
         return context
     
-class AdminReviewEditView(LoginRequiredMixin, HasAdminAccessPermission,SuccessMessageMixin, UpdateView):
+class AdminReviewEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission,SuccessMessageMixin, UpdateView):
     template_name = "dashboard/admin/reviews/review-edit.html"
     queryset = ReviewModel.objects.all()
     form_class = ReviewForm

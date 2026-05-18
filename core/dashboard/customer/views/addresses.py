@@ -9,8 +9,9 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.core.exceptions import FieldError
 from order.models import UserAddressModel
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
-class CustomerAddressListView(LoginRequiredMixin, HasCustomerAccessPermission, ListView):
+class CustomerAddressListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, ListView):
     template_name = "dashboard/customer/addresses/address-list.html"
 
     def get_queryset(self):
@@ -24,7 +25,7 @@ class CustomerAddressListView(LoginRequiredMixin, HasCustomerAccessPermission, L
 
 
 
-class CustomerAddressCreateView(LoginRequiredMixin, HasCustomerAccessPermission, SuccessMessageMixin, CreateView):
+class CustomerAddressCreateView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, SuccessMessageMixin, CreateView):
     template_name = "dashboard/customer/addresses/address-create.html"
     
     form_class = UserAddressForm
@@ -43,7 +44,7 @@ class CustomerAddressCreateView(LoginRequiredMixin, HasCustomerAccessPermission,
         return reverse_lazy("dashboard:customer:address-list")
 
 
-class CustomerAddressEditView(LoginRequiredMixin, HasCustomerAccessPermission, SuccessMessageMixin, UpdateView):
+class CustomerAddressEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, SuccessMessageMixin, UpdateView):
     template_name = "dashboard/customer/addresses/address-edit.html"
    
     form_class = UserAddressForm
@@ -56,7 +57,7 @@ class CustomerAddressEditView(LoginRequiredMixin, HasCustomerAccessPermission, S
         return reverse_lazy("dashboard:customer:address-edit", kwargs={"pk": self.get_object().pk})
 
 
-class CustomerAddressDeleteView(LoginRequiredMixin, HasCustomerAccessPermission, SuccessMessageMixin, DeleteView):
+class CustomerAddressDeleteView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, SuccessMessageMixin, DeleteView):
     template_name = "dashboard/customer/addresses/address-delete.html"
     
     success_url = reverse_lazy("dashboard:customer:address-list")

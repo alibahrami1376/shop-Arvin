@@ -6,10 +6,13 @@ from order.models import OrderModel, OrderStatusType
 from shop.models import ProductModel
 from website.models import ContactModel
 from review.models import ReviewModel
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class AdminDashboardHomeView(LoginRequiredMixin, HasAdminAccessPermission, TemplateView):
+class AdminDashboardHomeView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, TemplateView):
     template_name = "dashboard/admin/home.html"
+    desktop_template_name = "dashboard/admin/home.html"
+    mobile_template_name = "dashboard/admin/home-mobile.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -1,0 +1,48 @@
+{% load static %}
+<nav class="admin-sidebar-mobile" aria-label="منوی پنل ادمین">
+    <div class="admin-sidebar-mobile__profile text-center py-3 border-bottom">
+        <div class="avatar avatar-lg avatar-circle mx-auto mb-2">
+            <img class="avatar-img" src="{{ request.user.user_profile.image.url }}" alt="">
+        </div>
+        <p class="mb-0 fw-semibold small">{{ request.user.user_profile.get_fullname }}</p>
+        <p class="mb-0 text-muted small">{{ request.user.email }}</p>
+    </div>
+
+    <p class="admin-sidebar-mobile__section">حساب</p>
+    <ul class="admin-sidebar-mobile__nav">
+        <li><a href="{% url 'dashboard:admin:home' %}"><i class="bi-speedometer2"></i> داشبورد</a></li>
+        <li><a href="{% url 'dashboard:admin:security-edit' %}"><i class="bi-shield-shaded"></i> امنیت</a></li>
+        <li><a href="{% url 'dashboard:admin:profile-edit' %}"><i class="bi-sliders"></i> تنظیمات پروفایل</a></li>
+    </ul>
+
+    <p class="admin-sidebar-mobile__section">فروشگاه</p>
+    <ul class="admin-sidebar-mobile__nav">
+        <li><a href="{% url 'dashboard:admin:product-list' %}"><i class="bi-shop-window"></i> محصولات</a></li>
+        <li><a href="{% url 'dashboard:admin:category-list' %}"><i class="bi-tags"></i> دسته‌بندی‌ها</a></li>
+        <li><a href="{% url 'dashboard:admin:order-list' %}"><i class="bi-receipt-cutoff"></i> سفارشات</a></li>
+        <li><a href="{% url 'dashboard:admin:coupon-list' %}"><i class="bi-ticket-perforated"></i> کد تخفیف</a></li>
+        <li><a href="{% url 'dashboard:admin:payment-method-settings' %}"><i class="bi-wallet2"></i> روش‌های پرداخت</a></li>
+        <li><a href="{% url 'dashboard:admin:card-to-card-settings' %}"><i class="bi-credit-card-2-back"></i> کارت به کارت</a></li>
+        <li><a href="{% url 'dashboard:admin:review-list' %}"><i class="bi-chat-square-text"></i> نظرات</a></li>
+        <li><a href="{% url 'dashboard:admin:contact-list' %}"><i class="bi-envelope"></i> تیکت‌ها</a></li>
+        <li><a href="{% url 'dashboard:admin:home-banner-list' %}"><i class="bi-images"></i> بنر صفحه اصلی</a></li>
+        <li><a href="{% url 'dashboard:admin:faq-list' %}"><i class="bi-question-circle"></i> سوالات متداول</a></li>
+    </ul>
+
+    <p class="admin-sidebar-mobile__section">بلاگ</p>
+    <ul class="admin-sidebar-mobile__nav">
+        <li><a href="{% url 'dashboard:admin:blog-post-list' %}"><i class="bi-journal-text"></i> پست‌ها</a></li>
+        <li><a href="{% url 'dashboard:admin:blog-category-list' %}"><i class="bi-folder2-open"></i> دسته‌بندی بلاگ</a></li>
+    </ul>
+
+    <p class="admin-sidebar-mobile__section">کاربران</p>
+    <ul class="admin-sidebar-mobile__nav">
+        <li><a href="{% url 'dashboard:admin:user-list' %}"><i class="bi-people"></i> لیست کاربران</a></li>
+        <li><a href="{% url 'dashboard:admin:newsletter-list' %}"><i class="bi-newspaper"></i> خبرنامه</a></li>
+    </ul>
+
+    <ul class="admin-sidebar-mobile__nav admin-sidebar-mobile__nav--footer border-top mt-3 pt-3">
+        <li><a href="{% url 'website:index' %}"><i class="bi-house"></i> بازگشت به فروشگاه</a></li>
+        <li><a href="{% url 'accounts:logout' %}"><i class="bi-box-arrow-right"></i> خروج</a></li>
+    </ul>
+</nav>

@@ -6,11 +6,10 @@ from django.views.generic import UpdateView
 from dashboard.admin.forms import PaymentMethodSettingsForm
 from dashboard.permissions import HasAdminAccessPermission
 from payment.models import PaymentMethodSettings
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class AdminPaymentMethodSettingsView(
-    LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView
-):
+class AdminPaymentMethodSettingsView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
     model = PaymentMethodSettings
     form_class = PaymentMethodSettingsForm
     template_name = "dashboard/admin/payment/payment-method-settings.html"

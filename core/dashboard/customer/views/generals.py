@@ -4,10 +4,13 @@ from dashboard.permissions import HasCustomerAccessPermission
 from order.models import OrderModel, OrderStatusType
 from order.models import UserAddressModel
 from shop.models import WishlistProductModel
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class CustomerDashboardHomeView(LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):
+class CustomerDashboardHomeView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):
     template_name = "dashboard/customer/home.html"
+    desktop_template_name = "dashboard/customer/home.html"
+    mobile_template_name = "dashboard/customer/home-mobile.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -6,11 +6,10 @@ from django.views.generic import UpdateView
 from dashboard.admin.forms import CardToCardSettingsForm
 from dashboard.permissions import HasAdminAccessPermission
 from payment.models import CardToCardSettings
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class AdminCardToCardSettingsView(
-    LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView
-):
+class AdminCardToCardSettingsView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
     model = CardToCardSettings
     form_class = CardToCardSettingsForm
     template_name = "dashboard/admin/payment/card-to-card-settings.html"

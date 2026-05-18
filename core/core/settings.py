@@ -167,7 +167,7 @@ LOGIN_REDIRECT_URL = "/"
 PWA_APP_NAME = "آروین صندلی"
 PWA_SHORT_NAME = "آروین"
 PWA_APP_DESCRIPTION = "فروشگاه آنلاین آروین صندلی"
-PWA_CACHE_VERSION = "v1"
+PWA_CACHE_VERSION = "v2"
 
 customColorPalette = [
     {

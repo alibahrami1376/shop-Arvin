@@ -2,7 +2,7 @@
 
 
 def is_mobile_site(request) -> bool:
-    """True for phones and tablets — mobile layout."""
+    """True for phones only — tablets and desktop use the desktop layout."""
     forced = request.GET.get("site") or request.COOKIES.get("site_layout")
     if forced == "mobile":
         return True
@@ -16,7 +16,7 @@ def is_mobile_site(request) -> bool:
     ua = getattr(request, "user_agent", None)
     if ua is None:
         return False
-    return bool(ua.is_mobile or ua.is_tablet)
+    return bool(ua.is_mobile) and not bool(ua.is_tablet)
 
 
 def get_device_type(request) -> str:

@@ -9,16 +9,17 @@ from django.urls import reverse_lazy
 from accounts.models import Profile
 from django.shortcuts import redirect
 from django.contrib import messages
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class CustomerSecurityEditView(LoginRequiredMixin, HasCustomerAccessPermission,SuccessMessageMixin, auth_views.PasswordChangeView):
+class CustomerSecurityEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission,SuccessMessageMixin, auth_views.PasswordChangeView):
     template_name = "dashboard/customer/profile/security-edit.html"
     form_class = CustomerPasswordChangeForm
     success_url = reverse_lazy("dashboard:customer:security-edit")
     success_message = "بروز رسانی پسورد با موفقیت انجام شد"
 
 
-class CustomerProfileEditView(LoginRequiredMixin, HasCustomerAccessPermission,SuccessMessageMixin,UpdateView):
+class CustomerProfileEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission,SuccessMessageMixin,UpdateView):
     template_name = "dashboard/customer/profile/profile-edit.html"
     form_class = CustomerProfileEditForm
     success_url = reverse_lazy("dashboard:customer:profile-edit")
@@ -27,7 +28,7 @@ class CustomerProfileEditView(LoginRequiredMixin, HasCustomerAccessPermission,Su
     def get_object(self, queryset=None):
         return Profile.objects.get(user=self.request.user)
 
-class CustomerProfileImageEditView(LoginRequiredMixin, HasCustomerAccessPermission,SuccessMessageMixin,UpdateView):
+class CustomerProfileImageEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission,SuccessMessageMixin,UpdateView):
     http_method_names=["post"]
     model = Profile
     fields= [

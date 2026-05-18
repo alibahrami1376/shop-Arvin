@@ -21,7 +21,6 @@ from django.urls import reverse_lazy
 class IndexView(DeviceTemplateMixin, TemplateView):
     template_name = "website/index.html"
     mobile_template_name = "website/index-mobile.html"
-    desktop_template_name = "website/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -60,14 +59,15 @@ class IndexView(DeviceTemplateMixin, TemplateView):
 
         return context
 
-class ContactView(TemplateView):
-    template_name = "website/contact.html" 
-    
-class AboutView(TemplateView):
+class ContactView(DeviceTemplateMixin, TemplateView):
+    template_name = "website/contact.html"
+
+
+class AboutView(DeviceTemplateMixin, TemplateView):
     template_name = "website/about.html"
 
 
-class FAQView(TemplateView):
+class FAQView(DeviceTemplateMixin, TemplateView):
     template_name = "website/faq.html"
 
     def get_context_data(self, **kwargs):

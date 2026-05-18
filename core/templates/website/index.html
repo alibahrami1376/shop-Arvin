@@ -1,4 +1,4 @@
-{% extends base_template %}
+{% extends "base-desktop.html" %}
 {% load static %}
 {% load shop_tags %}
 {% block title %}ARVIN SIT {% endblock %}
@@ -139,6 +139,7 @@
         if (!bannerEl) return;
         var slideCount = bannerEl.querySelectorAll('.swiper-slide').length;
         new Swiper(bannerEl, {
+            rtl: true,
             autoplay: slideCount > 1 ? {
                 delay: 5000,
                 disableOnInteraction: false,

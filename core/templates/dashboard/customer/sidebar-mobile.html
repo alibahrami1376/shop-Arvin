@@ -1,0 +1,30 @@
+{% load static %}
+<nav class="customer-sidebar-mobile" aria-label="منوی حساب کاربری">
+    <div class="customer-sidebar-mobile__profile text-center py-3 border-bottom">
+        <div class="avatar avatar-lg avatar-circle mx-auto mb-2">
+            <img class="avatar-img" src="{{ request.user.user_profile.image.url }}" alt="">
+        </div>
+        <p class="mb-0 fw-semibold small">{{ request.user.user_profile.get_fullname }}</p>
+        <p class="mb-0 text-muted small">{{ request.user.email }}</p>
+    </div>
+
+    <p class="customer-sidebar-mobile__section">حساب</p>
+    <ul class="customer-sidebar-mobile__nav">
+        <li><a href="{% url 'dashboard:customer:home' %}"><i class="bi-speedometer2"></i> داشبورد</a></li>
+        <li><a href="{% url 'dashboard:customer:security-edit' %}"><i class="bi-shield-shaded"></i> امنیت</a></li>
+        <li><a href="{% url 'dashboard:customer:profile-edit' %}"><i class="bi-sliders"></i> تنظیمات پروفایل</a></li>
+    </ul>
+
+    <p class="customer-sidebar-mobile__section">خرید</p>
+    <ul class="customer-sidebar-mobile__nav">
+        <li><a href="{% url 'dashboard:customer:order-list' %}"><i class="bi-basket"></i> سفارشات</a></li>
+        <li><a href="{% url 'dashboard:customer:wishlist-list' %}"><i class="bi-heart"></i> لیست علاقه‌مندی</a></li>
+        <li><a href="{% url 'dashboard:customer:address-list' %}"><i class="bi-geo-alt"></i> نشانی‌ها</a></li>
+    </ul>
+
+    <ul class="customer-sidebar-mobile__nav customer-sidebar-mobile__nav--footer border-top mt-3 pt-3">
+        <li><a href="{% url 'shop:product-grid' %}"><i class="bi-shop"></i> فروشگاه</a></li>
+        <li><a href="{% url 'website:index' %}"><i class="bi-house"></i> صفحه اصلی</a></li>
+        <li><a href="{% url 'accounts:logout' %}"><i class="bi-box-arrow-right"></i> خروج</a></li>
+    </ul>
+</nav>

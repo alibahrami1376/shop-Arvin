@@ -57,21 +57,21 @@ class ServiceWorkerView(View):
     """Minimal offline-capable service worker."""
 
     def get(self, request):
-        cache_version = getattr(settings, "PWA_CACHE_VERSION", "v1")
+        cache_version = getattr(settings, "PWA_CACHE_VERSION", "v2")
         cache_name = f"arvin-shop-{cache_version}"
         static_url = settings.STATIC_URL.rstrip("/")
         precache = [
             request.build_absolute_uri("/"),
             request.build_absolute_uri(f"{static_url}/css/styles.css"),
-            request.build_absolute_uri(f"{static_url}/css/theme.min.css"),
+            request.build_absolute_uri(f"{static_url}/css/styles-mobile.css"),
             request.build_absolute_uri(f"{static_url}/css/vendor.min.css"),
             request.build_absolute_uri(
                 f"{static_url}/vendor/bootstrap-icons/font/bootstrap-icons.css"
             ),
             request.build_absolute_uri(f"{static_url}/js/jquery.min.js"),
             request.build_absolute_uri(f"{static_url}/js/vendor.min.js"),
-            request.build_absolute_uri(f"{static_url}/js/theme.min.js"),
             request.build_absolute_uri(f"{static_url}/js/custom.js"),
+            request.build_absolute_uri(f"{static_url}/js/mobile.js"),
             request.build_absolute_uri(f"{static_url}/img/pwa/icon-192.png"),
             request.build_absolute_uri(f"{static_url}/img/pwa/icon-512.png"),
             request.build_absolute_uri("/manifest.webmanifest"),
@@ -83,38 +83,68 @@ class ServiceWorkerView(View):
 const PRECACHE_URLS = {precache_json};
 const START_URL = {json.dumps(start_url)};
 
+function shouldHandleFetch(url, request) {{
+  if (request.method !== "GET") return false;
+  if (url.origin !== self.location.origin) return false;
+  const path = url.pathname;
+  if (path.startsWith("/media/")) return false;
+  if (path.startsWith("/admin/")) return false;
+  if (request.mode === "navigate") return true;
+  if (path.startsWith("/static/")) return true;
+  return false;
+}}
+
+function cacheOkResponse(request, response) {{
+  if (!response || response.status !== 200 || response.type !== "basic") return;
+  caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+}}
+
 self.addEventListener("install", (event) => {{
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) =>
-      Promise.allSettled(PRECACHE_URLS.map((url) => cache.add(url)))
-    ).then(() => self.skipWaiting())
+    caches
+      .open(CACHE_NAME)
+      .then((cache) =>
+        Promise.allSettled(
+          PRECACHE_URLS.map((url) =>
+            fetch(url).then((response) => {{
+              if (response.ok) return cache.put(url, response);
+            }})
+          )
+        )
+      )
+      .then(() => self.skipWaiting())
   );
 }});
 
 self.addEventListener("activate", (event) => {{
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        )
       )
-    ).then(() => self.clients.claim())
+      .then(() => self.clients.claim())
   );
 }});
 
 self.addEventListener("fetch", (event) => {{
-  if (event.request.method !== "GET") return;
   const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
+  if (!shouldHandleFetch(url, event.request)) return;
 
   if (event.request.mode === "navigate") {{
     event.respondWith(
       fetch(event.request)
         .then((response) => {{
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          cacheOkResponse(event.request, response);
           return response;
         }})
-        .catch(() => caches.match(event.request).then((r) => r || caches.match(START_URL)))
+        .catch(() =>
+          caches
+            .match(event.request)
+            .then((cached) => cached || caches.match(START_URL))
+        )
     );
     return;
   }}
@@ -122,14 +152,12 @@ self.addEventListener("fetch", (event) => {{
   event.respondWith(
     caches.match(event.request).then((cached) => {{
       if (cached) return cached;
-      return fetch(event.request).then((response) => {{
-        if (!response || response.status !== 200 || response.type !== "basic") {{
+      return fetch(event.request)
+        .then((response) => {{
+          cacheOkResponse(event.request, response);
           return response;
-        }}
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-        return response;
-      }});
+        }})
+        .catch(() => Response.error());
     }})
   );
 }});

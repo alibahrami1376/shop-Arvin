@@ -8,9 +8,10 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from dashboard.admin.forms import FAQItemForm
 from dashboard.permissions import HasAdminAccessPermission
 from website.models import FAQItem
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class AdminFAQListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
+class AdminFAQListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, ListView):
     template_name = "dashboard/admin/faq/faq-list.html"
     paginate_by = 10
 
@@ -36,9 +37,7 @@ class AdminFAQListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
         return context
 
 
-class AdminFAQCreateView(
-    LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView
-):
+class AdminFAQCreateView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
     template_name = "dashboard/admin/faq/faq-create.html"
     queryset = FAQItem.objects.all()
     form_class = FAQItemForm
@@ -46,9 +45,7 @@ class AdminFAQCreateView(
     success_message = "سوال متداول با موفقیت ایجاد شد"
 
 
-class AdminFAQEditView(
-    LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView
-):
+class AdminFAQEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
     template_name = "dashboard/admin/faq/faq-edit.html"
     queryset = FAQItem.objects.all()
     form_class = FAQItemForm
@@ -58,9 +55,7 @@ class AdminFAQEditView(
         return reverse_lazy("dashboard:admin:faq-edit", kwargs={"pk": self.get_object().pk})
 
 
-class AdminFAQDeleteView(
-    LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView
-):
+class AdminFAQDeleteView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
     template_name = "dashboard/admin/faq/faq-delete.html"
     queryset = FAQItem.objects.all()
     success_url = reverse_lazy("dashboard:admin:faq-list")

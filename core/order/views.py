@@ -22,9 +22,12 @@ from payment.models import (
     PaymentStatusType,
 )
 from payment.zarinpal_client import ZarinPalRequestFailed, ZarinPalSandbox
+from core.mixins import DeviceTemplateMixin
 
 
-class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormView):
+class OrderCheckOutView(
+    DeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, FormView
+):
     template_name = "order/checkout.html"
     form_class = CheckOutForm
     success_url = reverse_lazy('order:completed')
@@ -140,7 +143,9 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
         return context
 
 
-class OrderCompletedView(LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):
+class OrderCompletedView(
+    DeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, TemplateView
+):
     template_name = "order/completed.html"
 
     def get_context_data(self, **kwargs):
@@ -152,7 +157,7 @@ class OrderCompletedView(LoginRequiredMixin, HasCustomerAccessPermission, Templa
         return context
 
 
-class OrderTrackingView(FormView):
+class OrderTrackingView(DeviceTemplateMixin, FormView):
     template_name = "order/tracking.html"
     form_class = OrderTrackingForm
 
@@ -206,12 +211,14 @@ class OrderTrackingView(FormView):
         )
 
 
-class OrderFailedView(LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):
+class OrderFailedView(
+    DeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, TemplateView
+):
     template_name = "order/failed.html"
 
 
 class CardPaymentInstructionsView(
-    LoginRequiredMixin, HasCustomerAccessPermission, DetailView
+    DeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, DetailView
 ):
     """راهنمای واریز کارت به کارت پس از ثبت سفارش."""
 

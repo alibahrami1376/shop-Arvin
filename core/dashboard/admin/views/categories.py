@@ -7,9 +7,10 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from dashboard.permissions import HasAdminAccessPermission
 from dashboard.admin.forms import CategoryForm
 from shop.models import ProductCategoryModel
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class AdminCategoryListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
+class AdminCategoryListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, ListView):
     template_name = "dashboard/admin/categories/category-list.html"
     paginate_by = 10
 
@@ -33,7 +34,7 @@ class AdminCategoryListView(LoginRequiredMixin, HasAdminAccessPermission, ListVi
         return context
 
 
-class AdminCategoryCreateView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
+class AdminCategoryCreateView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
     template_name = "dashboard/admin/categories/category-create.html"
     queryset = ProductCategoryModel.objects.all()
     form_class = CategoryForm
@@ -41,7 +42,7 @@ class AdminCategoryCreateView(LoginRequiredMixin, HasAdminAccessPermission, Succ
     success_message = "ایجاد دسته‌بندی با موفقیت انجام شد"
 
 
-class AdminCategoryEditView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
+class AdminCategoryEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
     template_name = "dashboard/admin/categories/category-edit.html"
     queryset = ProductCategoryModel.objects.all()
     form_class = CategoryForm
@@ -51,7 +52,7 @@ class AdminCategoryEditView(LoginRequiredMixin, HasAdminAccessPermission, Succes
         return reverse_lazy("dashboard:admin:category-edit", kwargs={"pk": self.get_object().pk})
 
 
-class AdminCategoryDeleteView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
+class AdminCategoryDeleteView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
     template_name = "dashboard/admin/categories/category-delete.html"
     queryset = ProductCategoryModel.objects.all()
     success_url = reverse_lazy("dashboard:admin:category-list")

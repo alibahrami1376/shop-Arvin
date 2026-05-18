@@ -10,8 +10,9 @@ from django.contrib import messages
 from django.core.exceptions import FieldError
 from django.db.models import Q
 from order.models import OrderModel,OrderStatusType
+from dashboard.mixins import DashboardDeviceTemplateMixin
 
-class CustomerOrderListView(LoginRequiredMixin, HasCustomerAccessPermission, ListView):
+class CustomerOrderListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, ListView):
     template_name = "dashboard/customer/orders/order-list.html"
     paginate_by = 5
     
@@ -41,7 +42,7 @@ class CustomerOrderListView(LoginRequiredMixin, HasCustomerAccessPermission, Lis
         context["status_types"] = OrderStatusType.choices  
         return context
     
-class CustomerOrderDetailView(LoginRequiredMixin, HasCustomerAccessPermission, DetailView):
+class CustomerOrderDetailView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, DetailView):
     template_name = "dashboard/customer/orders/order-detail.html"
 
     def get_queryset(self):
@@ -49,7 +50,7 @@ class CustomerOrderDetailView(LoginRequiredMixin, HasCustomerAccessPermission, D
             "payment"
         )
 
-class CustomerOrderInvoiceView(LoginRequiredMixin, HasCustomerAccessPermission, DetailView):
+class CustomerOrderInvoiceView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, DetailView):
     template_name = "dashboard/customer/orders/order-invoice.html"
 
     def get_queryset(self):

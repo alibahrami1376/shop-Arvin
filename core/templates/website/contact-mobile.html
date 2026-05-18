@@ -1,0 +1,164 @@
+{% extends "base-mobile.html" %}
+{% load static %}
+
+{% block title %}تماس با ما - فروشگاه لوازم کامیون{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" style="min-height: 40vh;">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text-box">
+                <h1 class="hero-title">تماس با ما</h1>
+                <p class="hero-subtitle">
+                    ما مشتاق شنیدن نظرات، پیشنهادات و سوالات شما هستیم
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Hero Section -->
+
+<!-- Contact Section -->
+<section class="section">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Contact Info -->
+            <div class="col-lg-4">
+                <div class="mb-5">
+                    <h3 class="mb-4">راه‌های ارتباطی</h3>
+                    <div class="mb-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="card-icon me-3 flex-shrink-0">
+                                <i class="bi-envelope-fill"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">ایمیل</h5>
+                                <p class="text-muted mb-0">info@truckparts.ir</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="card-icon me-3 flex-shrink-0">
+                                <i class="bi-telephone-fill"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">تلفن</h5>
+                                <p class="text-muted mb-0">۰۲۱-۱۲۳۴۵۶۷۸</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <div class="card-icon me-3 flex-shrink-0">
+                                <i class="bi-clock-fill"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">ساعات کاری</h5>
+                                <p class="text-muted mb-0">شنبه تا پنجشنبه: ۹ صبح تا ۶ عصر</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-noorbanoo p-4">
+                    <h5 class="mb-3">ما را در شبکه‌های اجتماعی دنبال کنید</h5>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-ghost-secondary btn-sm rounded-circle" aria-label="Instagram">
+                            <i class="bi-instagram"></i>
+                        </a>
+                        <a href="#" class="btn btn-ghost-secondary btn-sm rounded-circle" aria-label="Telegram">
+                            <i class="bi-telegram"></i>
+                        </a>
+                        <a href="#" class="btn btn-ghost-secondary btn-sm rounded-circle" aria-label="LinkedIn">
+                            <i class="bi-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="col-lg-8">
+                <div class="card-noorbanoo p-4 p-lg-5">
+                    <h3 class="mb-4">فرم تماس</h3>
+                    <p class="text-muted mb-4">لطفاً فرم زیر را پر کنید و ما در اسرع وقت با شما تماس خواهیم گرفت.</p>
+                    
+                    <form action="{% url 'website:submit-ticket' %}" method="post">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label" for="formFullName">نام و نام خانوادگی</label>
+                                <input type="text" class="form-control form-control-lg" name="full_name"
+                                    id="formFullName" placeholder="نام و نام خانوادگی خود را وارد کنید" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="formEmail">آدرس ایمیل</label>
+                                <input type="email" class="form-control form-control-lg" name="email" dir="ltr"
+                                    id="formEmail" placeholder="email@example.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="formPhoneNumber">شماره همراه</label>
+                                <input type="text" class="form-control form-control-lg" name="phone_number" dir="ltr"
+                                    id="formPhoneNumber" placeholder="09123456789" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label" for="formSubject">موضوع</label>
+                                <input type="text" class="form-control form-control-lg" name="subject"
+                                    id="formSubject" placeholder="موضوع پیام خود را وارد کنید" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label" for="formDescription">پیام</label>
+                                <textarea class="form-control form-control-lg" name="content"
+                                    id="formDescription" placeholder="پیام خود را بنویسید..."
+                                    rows="6" required></textarea>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">ارسال پیام</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Contact Section -->
+
+<!-- FAQ Section -->
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="section-title">سوالات متداول</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    <div class="card-noorbanoo mb-3">
+                        <div class="card-body">
+                            <h5 class="mb-0">چگونه می‌توانم قطعات مورد نیاز را پیدا کنم؟</h5>
+                            <p class="text-muted mt-2 mb-0">
+                                می‌توانید از طریق صفحه محصولات، قطعات موجود را جستجو کرده و یا با ما تماس بگیرید 
+                                تا مشاوران ما شما را راهنمایی کنند.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-noorbanoo mb-3">
+                        <div class="card-body">
+                            <h5 class="mb-0">آیا محصولات شما گارانتی دارند؟</h5>
+                            <p class="text-muted mt-2 mb-0">
+                                بله، تمامی محصولات ما با گارانتی اصالت و کیفیت ارائه می‌شوند. 
+                                برای اطلاعات بیشتر در مورد گارانتی با ما تماس بگیرید.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-noorbanoo mb-3">
+                        <div class="card-body">
+                            <h5 class="mb-0">آیا ارسال به سراسر کشور دارید؟</h5>
+                            <p class="text-muted mt-2 mb-0">
+                                بله، ما به سراسر کشور ارسال داریم. هزینه و زمان ارسال بسته به مقصد متفاوت است. 
+                                برای اطلاعات بیشتر با ما تماس بگیرید.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End FAQ Section -->
+{% endblock content %}

@@ -1,0 +1,98 @@
+{% extends "base-mobile.html" %}
+
+
+{% block content %}
+<div class="container content-space-3 content-space-t-lg-4 content-space-b-lg-3">
+    <div class="flex-grow-1 mx-auto" style="max-width: 28rem;">
+        <!-- Heading -->
+        <div class="text-center mb-5 mb-md-7">
+            <h1 class="h2">ثبت‌نام</h1>
+            <p>برای ساخت حساب کاربری فرم زیر را پر کنید.</p>
+        </div>
+        <!-- End Heading -->
+
+        <!-- Form -->
+        <form action="{% url 'accounts:register' %}" method="post" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger mb-3">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="mb-4">
+                <label class="form-label" for="id_email">{{ form.email.label }}</label>
+                <input type="email" name="email" value="{{ form.email.value|default:'' }}" class="form-control form-control-lg text-center {% if form.email.errors %}is-invalid{% endif %}" id="id_email" placeholder="email@site.com" required>
+                {% if form.email.errors %}<div class="invalid-feedback">{{ form.email.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label class="form-label" for="id_first_name">{{ form.first_name.label }}</label>
+                    <input type="text" name="first_name" value="{{ form.first_name.value|default:'' }}" class="form-control form-control-lg text-center {% if form.first_name.errors %}is-invalid{% endif %}" id="id_first_name" placeholder="نام">
+                    {% if form.first_name.errors %}<div class="invalid-feedback">{{ form.first_name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label" for="id_last_name">{{ form.last_name.label }}</label>
+                    <input type="text" name="last_name" value="{{ form.last_name.value|default:'' }}" class="form-control form-control-lg text-center {% if form.last_name.errors %}is-invalid{% endif %}" id="id_last_name" placeholder="نام خانوادگی">
+                    {% if form.last_name.errors %}<div class="invalid-feedback">{{ form.last_name.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label" for="id_phone_number">{{ form.phone_number.label }}</label>
+                <input type="text" name="phone_number" value="{{ form.phone_number.value|default:'' }}" class="form-control form-control-lg text-center {% if form.phone_number.errors %}is-invalid{% endif %}" id="id_phone_number" placeholder="۰۹۱۲۳۴۵۶۷۸۹" dir="ltr">
+                {% if form.phone_number.errors %}<div class="invalid-feedback">{{ form.phone_number.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label" for="id_password1">{{ form.password1.label }}</label>
+                <div class="input-group input-group-merge">
+                    <input type="password" name="password1" class="form-control form-control-lg text-center js-toggle-password {% if form.password1.errors %}is-invalid{% endif %}" id="id_password1" placeholder="حداقل ۸ کاراکتر" required>
+                    <a class="input-group-append input-group-text" href="javascript:;" id="togglePass1" aria-label="نمایش رمز">
+                        <i class="bi-eye"></i>
+                    </a>
+                </div>
+                {% if form.password1.errors %}<div class="invalid-feedback d-block">{{ form.password1.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label" for="id_password2">{{ form.password2.label }}</label>
+                <div class="input-group input-group-merge">
+                    <input type="password" name="password2" class="form-control form-control-lg text-center js-toggle-password {% if form.password2.errors %}is-invalid{% endif %}" id="id_password2" placeholder="تکرار رمز عبور" required>
+                    <a class="input-group-append input-group-text" href="javascript:;" id="togglePass2" aria-label="نمایش رمز">
+                        <i class="bi-eye"></i>
+                    </a>
+                </div>
+                {% if form.password2.errors %}<div class="invalid-feedback d-block">{{ form.password2.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary btn-lg">ثبت‌نام</button>
+            </div>
+
+            <div class="text-center">
+                <p>قبلاً ثبت‌نام کرده‌اید؟ <a class="link" href="{% url 'accounts:login' %}">وارد شوید</a></p>
+            </div>
+        </form>
+        <!-- End Form -->
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function togglePassword(inputId, iconEl) {
+            var input = document.getElementById(inputId);
+            if (!input) return;
+            var isPass = input.type === 'password';
+            input.type = isPass ? 'text' : 'password';
+            if (iconEl) iconEl.className = isPass ? 'bi-eye-slash' : 'bi-eye';
+        }
+        var t1 = document.getElementById('togglePass1');
+        var t2 = document.getElementById('togglePass2');
+        if (t1) t1.addEventListener('click', function() { togglePassword('id_password1', t1.querySelector('i')); });
+        if (t2) t2.addEventListener('click', function() { togglePassword('id_password2', t2.querySelector('i')); });
+    });
+</script>
+{% endblock extra_js %}

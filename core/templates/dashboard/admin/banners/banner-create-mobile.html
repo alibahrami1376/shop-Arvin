@@ -1,0 +1,72 @@
+{% extends 'dashboard/admin/base-mobile.html' %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">داشبورد ادمین</li>
+        <li class="breadcrumb-item"><a href="{% url 'dashboard:admin:home-banner-list' %}">بنر صفحه اصلی</a></li>
+        <li class="breadcrumb-item active" aria-current="page">افزودن بنر</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header border-bottom">
+        <h5 class="card-header-title mb-0">افزودن بنر سفارشی</h5>
+    </div>
+    <form action="." method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">عنوان</label>
+                {{ form.title }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">متن توضیح</label>
+                {{ form.subtitle }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">متن دکمه</label>
+                {{ form.button_text }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">تصویر یا GIF</label>
+                {{ form.image }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">متن alt تصویر</label>
+                {{ form.image_alt }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">لینک دکمه</label>
+                {{ form.link }}
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">سبک پس‌زمینه</label>
+                    {{ form.background_style }}
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">دستگاه نمایش</label>
+                    {{ form.display_target }}
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">ترتیب نمایش</label>
+                    {{ form.sort_order }}
+                </div>
+                <div class="col-md-3 mb-3 d-flex align-items-end">
+                    <div class="form-check">
+                        {{ form.is_active }}
+                        <label class="form-check-label" for="{{ form.is_active.id_for_label }}">فعال</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <a class="btn btn-secondary" href="{% url 'dashboard:admin:home-banner-list' %}">بازگشت</a>
+            <button class="btn btn-primary" type="submit">ذخیره</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

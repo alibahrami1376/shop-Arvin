@@ -4,6 +4,7 @@ from django.views.generic import View, TemplateView
 from django.http import JsonResponse
 from shop.models import ProductModel, ProductStatusType
 from .cart import CartSession
+from core.mixins import DeviceTemplateMixin
 
 
 class SessionAddProductView(View):
@@ -44,7 +45,7 @@ class SessionUpdateProductQuantityView(View):
         return JsonResponse({"cart": cart.get_cart_dict(), "total_quantity": cart.get_total_quantity()})
 
 
-class CartSummaryView(TemplateView):
+class CartSummaryView(DeviceTemplateMixin, TemplateView):
     template_name = "cart/cart-summary.html"
 
     def get_context_data(self, **kwargs: Any):
