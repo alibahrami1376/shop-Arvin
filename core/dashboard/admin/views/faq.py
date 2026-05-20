@@ -8,10 +8,9 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from dashboard.admin.forms import FAQItemForm
 from dashboard.permissions import HasAdminAccessPermission
 from website.models import FAQItem
-from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class AdminFAQListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, ListView):
+class AdminFAQListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
     template_name = "dashboard/admin/faq/faq-list.html"
     paginate_by = 10
 
@@ -37,7 +36,7 @@ class AdminFAQListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdmi
         return context
 
 
-class AdminFAQCreateView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
+class AdminFAQCreateView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
     template_name = "dashboard/admin/faq/faq-create.html"
     queryset = FAQItem.objects.all()
     form_class = FAQItemForm
@@ -45,7 +44,7 @@ class AdminFAQCreateView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAd
     success_message = "سوال متداول با موفقیت ایجاد شد"
 
 
-class AdminFAQEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
+class AdminFAQEditView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
     template_name = "dashboard/admin/faq/faq-edit.html"
     queryset = FAQItem.objects.all()
     form_class = FAQItemForm
@@ -55,7 +54,7 @@ class AdminFAQEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdmi
         return reverse_lazy("dashboard:admin:faq-edit", kwargs={"pk": self.get_object().pk})
 
 
-class AdminFAQDeleteView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
+class AdminFAQDeleteView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
     template_name = "dashboard/admin/faq/faq-delete.html"
     queryset = FAQItem.objects.all()
     success_url = reverse_lazy("dashboard:admin:faq-list")

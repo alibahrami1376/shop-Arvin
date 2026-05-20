@@ -4,12 +4,11 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView
 from accounts.forms import AuthenticationForm, UserRegistrationForm
 from accounts.models import UserType
-from core.mixins import DeviceTemplateMixin
 
 User = get_user_model()
 
 
-class LoginView(DeviceTemplateMixin, auth_views.LoginView):
+class LoginView(auth_views.LoginView):
     template_name = "accounts/login.html"
     form_class = AuthenticationForm
     redirect_authenticated_user = True
@@ -19,7 +18,7 @@ class LogoutView(auth_views.LogoutView):
     pass
 
 
-class RegisterView(DeviceTemplateMixin, FormView):
+class RegisterView(FormView):
     template_name = "accounts/register.html"
     form_class = UserRegistrationForm
     success_url = reverse_lazy("dashboard:home")

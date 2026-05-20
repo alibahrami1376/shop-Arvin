@@ -27,11 +27,11 @@
         <span class="mobile-bottom-nav__label">سبد خرید</span>
     </a>
 
-    <a href="{% url 'blog:blog_home' %}"
-        class="mobile-bottom-nav__item {% if 'blog' in request.resolver_match.namespace %}mobile-bottom-nav__item--active{% endif %}"
-        aria-label="وبلاگ">
-        <i class="bi-journal-text" aria-hidden="true"></i>
-        <span class="mobile-bottom-nav__label">وبلاگ</span>
+    <a href="{% url 'shop:product-grid' %}"
+        class="mobile-bottom-nav__item {% if request.resolver_match.namespace == 'shop' %}mobile-bottom-nav__item--active{% endif %}"
+        aria-label="فروشگاه">
+        <i class="bi-shop" aria-hidden="true"></i>
+        <span class="mobile-bottom-nav__label">فروشگاه</span>
     </a>
 
     {% if request.user.is_authenticated %}

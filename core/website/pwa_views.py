@@ -57,19 +57,21 @@ class ServiceWorkerView(View):
     """Minimal offline-capable service worker."""
 
     def get(self, request):
-        cache_version = getattr(settings, "PWA_CACHE_VERSION", "v2")
+        cache_version = getattr(settings, "PWA_CACHE_VERSION", "v3")
         cache_name = f"arvin-shop-{cache_version}"
         static_url = settings.STATIC_URL.rstrip("/")
         precache = [
-            request.build_absolute_uri("/"),
             request.build_absolute_uri(f"{static_url}/css/styles.css"),
             request.build_absolute_uri(f"{static_url}/css/styles-mobile.css"),
+            request.build_absolute_uri(f"{static_url}/css/styles-desktop.css"),
             request.build_absolute_uri(f"{static_url}/css/vendor.min.css"),
             request.build_absolute_uri(
                 f"{static_url}/vendor/bootstrap-icons/font/bootstrap-icons.css"
             ),
+            request.build_absolute_uri(f"{static_url}/vendor/js/bootstrap.bundle.min.js"),
+            request.build_absolute_uri(f"{static_url}/vendor/js/swiper-bundle.min.js"),
             request.build_absolute_uri(f"{static_url}/js/jquery.min.js"),
-            request.build_absolute_uri(f"{static_url}/js/vendor.min.js"),
+            request.build_absolute_uri(f"{static_url}/js/layout-sync.js"),
             request.build_absolute_uri(f"{static_url}/js/custom.js"),
             request.build_absolute_uri(f"{static_url}/js/mobile.js"),
             request.build_absolute_uri(f"{static_url}/img/pwa/icon-192.png"),
@@ -135,30 +137,22 @@ self.addEventListener("fetch", (event) => {{
 
   if (event.request.mode === "navigate") {{
     event.respondWith(
-      fetch(event.request)
-        .then((response) => {{
-          cacheOkResponse(event.request, response);
-          return response;
-        }})
-        .catch(() =>
-          caches
-            .match(event.request)
-            .then((cached) => cached || caches.match(START_URL))
-        )
+      fetch(event.request).catch(() =>
+        caches.match(event.request).then((cached) => cached || caches.match(START_URL))
+      )
     );
     return;
   }}
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {{
-      if (cached) return cached;
-      return fetch(event.request)
-        .then((response) => {{
-          cacheOkResponse(event.request, response);
-          return response;
-        }})
-        .catch(() => Response.error());
-    }})
+    fetch(event.request)
+      .then((response) => {{
+        cacheOkResponse(event.request, response);
+        return response;
+      }})
+      .catch(() =>
+        caches.match(event.request).then((cached) => cached || Response.error())
+      )
   );
 }});
 """

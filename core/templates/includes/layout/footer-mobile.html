@@ -1,18 +1,28 @@
 <footer class="site-footer site-footer--mobile">
-    <div class="container py-4">
-        <div class="text-center mb-3">
-            <a class="navbar-brand d-inline-flex align-items-center gap-2" href="{% url 'website:index' %}">
-                <i class="bi-truck" style="font-size: 1.5rem; color: var(--color-accent-yellow);"></i>
-                <span class="logo-text">آروین</span>
+    <div class="container site-footer__container py-3">
+        <div class="text-center mb-2">
+            <a class="navbar-brand site-footer__brand site-footer__brand--mobile d-inline-flex align-items-center justify-content-center flex-wrap gap-2" href="{% url 'website:index' %}" aria-label="{{ site_branding.get_logo_alt }}">
+                <span class="site-footer__store-name site-footer__store-name--mobile">{{ site_branding.get_logo_alt }}</span>
+                {% include "includes/partials/site-logo-img.html" with extra_class="site-footer__logo-img site-footer__logo-img--mobile" lazy=True %}
             </a>
         </div>
-        <ul class="list-inline text-center mb-3">
-            <li class="list-inline-item"><a class="text-secondary small" href="{% url 'shop:product-grid' %}">محصولات</a></li>
+        <div class="text-center mb-2">
+            {% include "includes/partials/site-wide-social-buttons.html" %}
+        </div>
+        <ul class="list-inline text-center mb-2">
+            <li class="list-inline-item"><a class="text-secondary small site-footer__link" href="{% url 'shop:product-grid' %}">محصولات</a></li>
             <li class="list-inline-item text-muted">|</li>
             <li class="list-inline-item"><a class="text-secondary small" href="{% url 'website:contact' %}">تماس</a></li>
             <li class="list-inline-item text-muted">|</li>
             <li class="list-inline-item"><a class="text-secondary small" href="{% url 'order:track' %}">پیگیری سفارش</a></li>
+            <li class="list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="text-secondary small" href="{% url 'website:faq' %}">سوالات متداول</a></li>
         </ul>
-        <p class="text-muted small text-center mb-0">&copy; ۱۴۰۳ فروشگاه آروین</p>
+        <ul class="list-inline text-center mb-2">
+            <li class="list-inline-item"><a class="text-secondary small site-footer__link" href="{% url 'website:privacy' %}">حریم خصوصی</a></li>
+            <li class="list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="text-secondary small" href="{% url 'website:terms' %}">قوانین</a></li>
+        </ul>
+        <p class="text-muted small text-center mb-0">&copy; ۱۴۰۳ {{ site_branding.get_logo_alt }}</p>
     </div>
 </footer>

@@ -15,6 +15,7 @@
     {% block extra_css_no_compress %}{% endblock extra_css_no_compress %}
 </head>
 <body class="device-mobile dashboard-layout dashboard-layout--admin">
+    <script src="{% static 'js/layout-sync.js' %}"></script>
     <header class="admin-mobile-header" role="banner">
         <button type="button"
             class="admin-mobile-header__btn"
@@ -24,7 +25,10 @@
             aria-label="باز کردن منو">
             <i class="bi-list" aria-hidden="true"></i>
         </button>
-        <a href="{% url 'dashboard:admin:home' %}" class="admin-mobile-header__brand">پنل ادمین</a>
+        <a href="{% url 'website:index' %}" class="admin-mobile-header__brand admin-mobile-header__brand--with-logo" aria-label="{{ site_branding.get_logo_alt }}">
+            <span class="admin-mobile-header__store-name text-truncate">{{ site_branding.get_logo_alt }}</span>
+            {% include "includes/partials/site-logo-img.html" with extra_class="dashboard-mobile-header__logo" %}
+        </a>
         <a href="{% url 'accounts:logout' %}" class="admin-mobile-header__btn" aria-label="خروج">
             <i class="bi-box-arrow-right" aria-hidden="true"></i>
         </a>
@@ -48,15 +52,8 @@
     </div>
 
     <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/vendor.min.js' %}"></script>
+    {% include 'includes/layout/scripts-vendor.html' %}
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
-    <script>
-        (function () {
-            if (typeof HSBsDropdown !== 'undefined') {
-                HSBsDropdown.init();
-            }
-        })();
-    </script>
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
     <script>

@@ -4,11 +4,9 @@ from django.views.generic import ListView
 from django.db.models import Q
 from django.core.exceptions import FieldError
 from blog.models import Post, Category
-from core.device_templates import resolve_device_template
-from core.mixins import DeviceTemplateMixin
 
 
-class BlogPostListView(DeviceTemplateMixin, ListView):
+class BlogPostListView(ListView):
     model = Post
     template_name = "blog/blog-home.html"
     context_object_name = "posts"
@@ -70,8 +68,7 @@ def blog_detail(request, post_id):
         'post': post,
         'related_posts': related_posts,
     }
-    template = resolve_device_template(request, "blog/blog-detail.html")
-    return render(request, template, context)
+    return render(request, "blog/blog-detail.html", context)
 
 
 def blog_search(request):
@@ -96,5 +93,4 @@ def blog_search(request):
         'posts': page_obj,
         'query': query,
     }
-    template = resolve_device_template(request, "blog/blog-search.html")
-    return render(request, template, context)
+    return render(request, "blog/blog-search.html", context)

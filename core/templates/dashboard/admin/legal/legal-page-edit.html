@@ -1,0 +1,44 @@
+{% extends dashboard_admin_base_template %}
+{% load static %}
+
+{% block extra_js_no_compress %}
+{{ form.media }}
+{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">فروشگاه</li>
+        <li class="breadcrumb-item active" aria-current="page">{{ page_type_label }}</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="card-header border-bottom">
+        <h4 class="card-header-title mb-0">ویرایش {{ page_type_label }}</h4>
+        <p class="card-text small text-muted mb-0 mt-1">
+            این متن در
+            <a href="{% if object.page_type == 'privacy' %}{% url 'website:privacy' %}{% else %}{% url 'website:terms' %}{% endif %}" target="_blank" rel="noopener noreferrer">صفحهٔ عمومی</a>
+            نمایش داده می‌شود.
+        </p>
+    </div>
+    <form action="." method="post">
+        <div class="card-body">
+            {% csrf_token %}
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.title.id_for_label }}">عنوان</label>
+                <div class="col-sm-9">{{ form.title }}</div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.content.id_for_label }}">محتوا</label>
+                <div class="col-sm-9">{{ form.content }}</div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <button type="submit" class="btn btn-primary">ذخیره</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

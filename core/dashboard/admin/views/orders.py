@@ -9,10 +9,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from dashboard.admin.forms import AdminOrderStatusForm, AdminPaymentStatusForm
 from dashboard.permissions import HasAdminAccessPermission
 from order.models import OrderModel, OrderStatusType
-from dashboard.mixins import DashboardDeviceTemplateMixin
+from payment.models import PaymentStatusType
 
 
-class AdminOrderListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, ListView):
+class AdminOrderListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
     template_name = "dashboard/admin/orders/order-list.html"
     paginate_by = 10
     
@@ -40,7 +40,7 @@ class AdminOrderListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAd
         context["status_types"] = OrderStatusType.choices
         return context
     
-class AdminOrderDetailView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, DetailView):
+class AdminOrderDetailView(LoginRequiredMixin, HasAdminAccessPermission, DetailView):
     template_name = "dashboard/admin/orders/order-detail.html"
 
     def get_queryset(self):
@@ -58,7 +58,7 @@ class AdminOrderDetailView(DashboardDeviceTemplateMixin, LoginRequiredMixin, Has
         return context
 
 
-class AdminOrderChangeStatusView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, View):
+class AdminOrderChangeStatusView(LoginRequiredMixin, HasAdminAccessPermission, View):
     http_method_names = ["post"]
 
     def post(self, request, pk, *args, **kwargs):
@@ -75,7 +75,7 @@ class AdminOrderChangeStatusView(DashboardDeviceTemplateMixin, LoginRequiredMixi
         return redirect(reverse_lazy("dashboard:admin:order-detail", kwargs={"pk": pk}))
 
 
-class AdminOrderPaymentStatusView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, View):
+class AdminOrderPaymentStatusView(LoginRequiredMixin, HasAdminAccessPermission, View):
     http_method_names = ["post"]
 
     def post(self, request, pk, *args, **kwargs):
@@ -93,7 +93,14 @@ class AdminOrderPaymentStatusView(DashboardDeviceTemplateMixin, LoginRequiredMix
             instance=order.payment,
         )
         if form.is_valid():
-            form.save()
+            payment = form.save()
+            if payment.status in {
+                PaymentStatusType.preparing.value,
+                PaymentStatusType.shipped.value,
+            }:
+                if order.status != OrderStatusType.success.value:
+                    order.status = OrderStatusType.success.value
+                    order.save(update_fields=["status", "updated_date"])
             messages.success(request, "مرحلهٔ پرداخت و ارسال به‌روزرسانی شد.")
         else:
             messages.error(
@@ -103,7 +110,7 @@ class AdminOrderPaymentStatusView(DashboardDeviceTemplateMixin, LoginRequiredMix
         return redirect(reverse_lazy("dashboard:admin:order-detail", kwargs={"pk": pk}))
 
 
-class AdminOrderInvoiceView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, DetailView):
+class AdminOrderInvoiceView(LoginRequiredMixin, HasAdminAccessPermission, DetailView):
     template_name = "dashboard/admin/orders/order-invoice.html"
 
     def get_queryset(self):

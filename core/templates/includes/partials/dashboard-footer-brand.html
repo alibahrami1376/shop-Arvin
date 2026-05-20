@@ -1,0 +1,5 @@
+{% comment %}ستون برند فوتر داشبورد — نام + لوگو{% endcomment %}
+<a class="dashboard-footer-brand w-100 mb-3 mb-lg-auto d-inline-flex align-items-center flex-wrap gap-2" href="{% url 'website:index' %}" aria-label="{{ site_branding.get_logo_alt }}">
+    <span class="dashboard-footer-brand__name text-dark fw-semibold">{{ site_branding.get_logo_alt }}</span>
+    {% include "includes/partials/site-logo-img.html" with extra_class="dashboard-footer-brand__img" lazy=True %}
+</a>

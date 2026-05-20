@@ -1,69 +1,49 @@
-{% extends "base-desktop.html" %}
-
+{% extends base_template %}
 
 {% block content %}
-<div class="container content-space-3 content-space-t-lg-4 content-space-b-lg-3">
-    <div class="flex-grow-1 mx-auto" style="max-width: 28rem;">
-        <!-- Heading -->
-        <div class="text-center mb-5 mb-md-7">
-            <h1 class="h2">فرم ورود</h1>
-            <p>برای مدیریت حساب خود وارد شوید.</p>
-        </div>
-        <!-- End Heading -->
+<div class="container auth-page">
+    <div class="auth-page__card mx-auto">
+        <header class="auth-page__header text-center">
+            <h1 class="auth-page__title h2">فرم ورود</h1>
+            <p class="auth-page__subtitle mb-0">برای مدیریت حساب خود وارد شوید.</p>
+        </header>
 
-        <!-- Form -->
-        <form action="{% url 'accounts:login' %}" method="POST">
+        <form class="auth-form" action="{% url 'accounts:login' %}" method="post" novalidate>
             {% csrf_token %}
-            <!-- Form -->
-            <div class="mb-4">
+
+            <div class="auth-form__field mb-4">
                 <label class="form-label" for="signupSimpleLoginEmail">ایمیل شما</label>
-                <input type="email" class="form-control form-control-lg text-center" name="username"
-                    id="signupSimpleLoginEmail" placeholder="email@site.com" aria-label="email@site.com" required>
-                <span class="invalid-feedback">لطفا یک آدرس ایمیل معتبر وارد کنید.</span>
+                <input type="email" class="form-control form-control-lg auth-form__input auth-form__input--ltr"
+                    name="username" id="signupSimpleLoginEmail" placeholder="email@site.com" required
+                    autocomplete="email" inputmode="email" spellcheck="false">
             </div>
-            <!-- End Form -->
 
-            <!-- Form -->
-            <div class="mb-4">
-                <div class="d-flex justify-content-between align-items-center">
-                    <label class="form-label" for="signupSimpleLoginPassword">کلمه عبور</label>
-
+            <div class="auth-form__field mb-4">
+                <label class="form-label" for="signupSimpleLoginPassword">کلمه عبور</label>
+                <div class="auth-field-password">
+                    <input type="password" class="form-control form-control-lg auth-form__input" name="password"
+                        id="signupSimpleLoginPassword" placeholder="رمز عبور" required
+                        autocomplete="current-password">
+                    <button type="button" class="auth-field-password__toggle js-password-toggle"
+                        aria-label="نمایش رمز عبور" aria-controls="signupSimpleLoginPassword">
+                        <i class="bi-eye" aria-hidden="true"></i>
+                    </button>
                 </div>
-
-                <div class="input-group input-group-merge">
-                    <input type="password" class=" form-control form-control-lg text-center" name="password"
-                        id="signupSimpleLoginPassword" placeholder="8+ characters required"
-                        aria-label="8+ characters required" required>
-                    <a id="changePassTarget" class="input-group-append input-group-text" href="javascript:;">
-                        <i id="changePassIcon" class="bi-eye"></i>
-                    </a>
-                </div>
-
-                <span class="invalid-feedback">لطفا یک گذر واژه معتبر وارد کنید.</span>
-            </div>
-            <!-- End Form -->
-
-            <div class="d-grid mb-3">
-                <a class="form-label-link" href="./page-reset-password-simple.html">رمز عبور را فراموش کرده اید؟</a>
-                <button type="submit" class="btn btn-primary btn-lg">ورود</button>
             </div>
 
-            <div class="text-center">
-                <p>حساب کاربری ندارید؟ <a class="link" href="{% url 'accounts:register' %}">اینجا ثبت‌نام کنید</a></p>
+            <div class="auth-form__actions">
+                <p class="text-center mb-3">
+                    <a class="auth-form__forgot-link" href="./page-reset-password-simple.html">رمز عبور را فراموش کرده‌اید؟</a>
+                </p>
+                <button type="submit" class="btn btn-primary btn-lg w-100">ورود</button>
             </div>
+
+            <p class="auth-form__footer text-center mb-0">
+                حساب کاربری ندارید؟ <a class="link" href="{% url 'accounts:register' %}">اینجا ثبت‌نام کنید</a>
+            </p>
         </form>
-
-        <!-- End Form -->
     </div>
 </div>
-
 {% endblock content %}
 
-
-{% block extra_js %}
-<script>
-    // INITIALIZATION OF TOGGLE PASSWORD
-    // =======================================================
-    new HSTogglePassword('.js-toggle-password')
-</script>
-{% endblock extra_js %}
+{% block extra_js %}{% endblock extra_js %}

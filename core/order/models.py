@@ -170,7 +170,12 @@ class OrderModel(models.Model):
     @property
     def is_successful(self):
         return self.status == OrderStatusType.success.value
-    
+
+    @property
+    def can_customer_view_invoice(self):
+        """فاکتور وقتی وضعیت پرداخت برای مشتری «موفق» است (تأیید ادمین یا درگاه)."""
+        return self.get_customer_payment_status()["variant"] == "success"
+
     def get_price(self):
         
         if self.coupon:            

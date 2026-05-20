@@ -15,7 +15,12 @@ def show_latest_products(context):
 
 @register.inclusion_tag("includes/home-product-strip.html", takes_context=True)
 def show_home_product_strip(
-    context, products, title, strip_suffix="strip", extra_section_class=""
+    context,
+    products,
+    title,
+    strip_suffix="strip",
+    extra_section_class="",
+    mobile_carousel=False,
 ):
     request = context.get("request")
     wishlist_items = (
@@ -33,6 +38,8 @@ def show_home_product_strip(
         "wishlist_items": wishlist_items,
         "strip_heading_id": strip_heading_id,
         "extra_section_class": extra_section_class,
+        "mobile_carousel": mobile_carousel,
+        "strip_suffix": strip_suffix,
     }
 
 

@@ -16,6 +16,7 @@ urlpatterns = [
     path("",include("dashboard.admin.urls.blog")),
     path("",include("dashboard.admin.urls.faq")),
     path("",include("dashboard.admin.urls.banners")),
+    path("",include("dashboard.admin.urls.site_content")),
 ]
 
 

@@ -1,0 +1,16 @@
+{% comment %}دکمه‌های شبکه اجتماعی سراسری — نیاز به site_wide_social_links در context{% endcomment %}
+{% if site_wide_social_links %}
+<ul class="site-footer__social list-inline mb-0">
+    {% for item in site_wide_social_links %}
+    <li class="list-inline-item">
+        <a class="site-footer__social-btn"
+           href="{{ item.url }}"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="{{ item.label }}">
+            {% if item.icon %}<i class="bi {{ item.icon }}"></i>{% else %}<span class="site-footer__social-fallback small">{{ item.label }}</span>{% endif %}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}

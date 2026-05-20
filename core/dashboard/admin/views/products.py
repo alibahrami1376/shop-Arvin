@@ -22,10 +22,9 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from shop.models import ProductModel, ProductCategoryModel, ProductStatusType
 from django.core.exceptions import FieldError
-from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class AdminProductListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, ListView):
+class AdminProductListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
     template_name = "dashboard/admin/products/product-list.html"
     paginate_by = 10
 
@@ -58,7 +57,7 @@ class AdminProductListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, Has
 from dashboard.admin.forms import ProductForm, ProductImageFormSet
 
 
-class AdminProductCreateView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
+class AdminProductCreateView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
     template_name = "dashboard/admin/products/product-create.html"
     queryset = ProductModel.objects.all()
     form_class = ProductForm
@@ -88,7 +87,7 @@ class AdminProductCreateView(DashboardDeviceTemplateMixin, LoginRequiredMixin, H
     def get_success_url(self):
         return reverse_lazy("dashboard:admin:product-list")
 
-class AdminProductEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
+class AdminProductEditView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
     template_name = "dashboard/admin/products/product-edit.html"
     queryset = ProductModel.objects.all()
     form_class = ProductForm
@@ -108,14 +107,14 @@ class AdminProductEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, Has
         return obj
 
 
-class AdminProductDeleteView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
+class AdminProductDeleteView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
     template_name = "dashboard/admin/products/product-delete.html"
     queryset = ProductModel.objects.all()
     success_url = reverse_lazy("dashboard:admin:product-list")
     success_message = "حذف محصول با موفقیت انجام شد"
 
 
-class AdminProductAddImageView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, CreateView):
+class AdminProductAddImageView(LoginRequiredMixin, HasAdminAccessPermission, CreateView):
     http_method_names = ['post']
     form_class = ProductImageForm
 
@@ -140,7 +139,7 @@ class AdminProductAddImageView(DashboardDeviceTemplateMixin, LoginRequiredMixin,
         return redirect(reverse_lazy('dashboard:admin:product-edit', kwargs={'pk': self.kwargs.get('pk')}))
 
 
-class AdminProductRemoveImageView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
+class AdminProductRemoveImageView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
     http_method_names = ["post"]
     success_message = "تصویر مورد نظر با موفقیت حذف شد"
 

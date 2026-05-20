@@ -60,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
     'core.middleware.SiteLayoutCookieMiddleware',
+    'core.middleware.NoCacheHtmlMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -81,7 +82,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'shop.context_processors.shop_categories',
+                'cart.context_processors.cart_processor',
                 'core.context_processors.device.device',
+                'website.context_processors.site_branding',
             ],
         },
     },
@@ -167,7 +170,7 @@ LOGIN_REDIRECT_URL = "/"
 PWA_APP_NAME = "آروین صندلی"
 PWA_SHORT_NAME = "آروین"
 PWA_APP_DESCRIPTION = "فروشگاه آنلاین آروین صندلی"
-PWA_CACHE_VERSION = "v2"
+PWA_CACHE_VERSION = "v3"
 
 customColorPalette = [
     {

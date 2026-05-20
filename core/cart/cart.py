@@ -5,8 +5,19 @@ class CartSession:
     def __init__(self, session):
         self.session = session
         self._cart = self.session.setdefault("cart", {"items": []})
+        self._normalize_item_product_ids()
 
-    def update_product_quantity(self,product_id,quantity):
+    def _normalize_item_product_ids(self):
+        for item in self._cart.get("items", []):
+            if "product_id" in item:
+                item["product_id"] = str(item["product_id"])
+
+    @staticmethod
+    def _pid(product_id):
+        return str(product_id)
+
+    def update_product_quantity(self, product_id, quantity):
+        product_id = self._pid(product_id)
         for item in self._cart["items"]:
             if product_id == item["product_id"]:
                 item["quantity"] = int(quantity)
@@ -15,7 +26,8 @@ class CartSession:
             return
         self.save()
     
-    def remove_product(self,product_id):
+    def remove_product(self, product_id):
+        product_id = self._pid(product_id)
         for item in self._cart["items"]:
             if product_id == item["product_id"]:
                 self._cart["items"].remove(item)
@@ -25,6 +37,7 @@ class CartSession:
         self.save()
         
     def add_product(self, product_id):
+        product_id = self._pid(product_id)
         for item in self._cart["items"]:
             if product_id == item["product_id"]:
                 item["quantity"] += 1
@@ -88,17 +101,31 @@ class CartSession:
         self.save()
             
         
-    def merge_session_cart_in_db(self,user):
-        cart,created = CartModel.objects.get_or_create(user=user)
-        
-        for item in  self._cart["items"]:
-            product_obj = ProductModel.objects.get(id=item["product_id"], status=ProductStatusType.publish.value)
-            
-            cart_item ,created = CartItemModel.objects.get_or_create(cart=cart,product=product_obj)
+    def merge_session_cart_in_db(self, user):
+        cart, created = CartModel.objects.get_or_create(user=user)
+        merged_ids = []
+
+        for item in self._cart["items"]:
+            try:
+                product_obj = ProductModel.objects.get(
+                    id=item["product_id"], status=ProductStatusType.publish.value
+                )
+            except (ProductModel.DoesNotExist, ValueError, TypeError):
+                continue
+
+            cart_item, created = CartItemModel.objects.get_or_create(
+                cart=cart, product=product_obj
+            )
             cart_item.quantity = item["quantity"]
             cart_item.save()
-        session_product_ids = [item["product_id"] for item in  self._cart["items"]]
-        CartItemModel.objects.filter(cart=cart).exclude(product__id__in=session_product_ids).delete()
+            merged_ids.append(str(product_obj.id))
+
+        if merged_ids:
+            CartItemModel.objects.filter(cart=cart).exclude(
+                product__id__in=merged_ids
+            ).delete()
+
+        self.save()
         
 
         

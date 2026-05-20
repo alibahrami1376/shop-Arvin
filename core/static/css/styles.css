@@ -1363,6 +1363,292 @@ footer .text-muted {
     font-size: 0.9rem;
 }
 
+/* Footer دسکتاپ — فشرده و مرتب */
+.site-footer--desktop {
+    padding: 1.25rem 0 0.875rem;
+    margin-top: 2rem;
+}
+
+.site-footer--desktop .site-footer__row {
+    --bs-gutter-y: 1rem;
+    padding: 0.25rem 0 0.5rem;
+}
+
+.site-footer--desktop .site-footer__col--brand {
+    padding-left: 0;
+}
+
+.site-footer--desktop .site-footer__brand {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    padding: 0;
+    text-decoration: none;
+    color: inherit;
+}
+
+.site-footer__brand-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+.site-footer__store-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    line-height: 1.25;
+}
+
+.site-footer__store-name--mobile {
+    font-size: 0.9rem;
+    max-width: 70vw;
+    text-align: center;
+}
+
+.site-footer--desktop .site-footer__col--brand .site-footer__social {
+    margin-top: 0.35rem;
+}
+
+.site-footer__social-fallback {
+    display: inline-block;
+    line-height: 1;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.site-footer--desktop .site-footer__logo-img {
+    display: block;
+    flex-shrink: 0;
+    max-height: 2.75rem;
+    width: auto;
+    max-width: 9.5rem;
+    object-fit: contain;
+}
+
+.site-footer--mobile .site-footer__logo-img--mobile {
+    max-height: 2.25rem;
+    max-width: 8rem;
+}
+
+.site-footer--mobile .site-footer__social {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.site-footer--mobile .site-footer__social .list-inline-item {
+    margin: 0;
+}
+
+.site-logo-img {
+    display: block;
+    height: auto;
+    object-fit: contain;
+}
+
+.invoice-brand__img {
+    max-height: 4.5rem;
+    width: auto;
+    max-width: 8rem;
+    object-fit: contain;
+}
+
+/* داشبورد ادمین/مشتری: نام فروشگاه + لوگو در هدر */
+.dashboard-layout .header__logo--branding {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: min(24rem, 42vw);
+}
+
+.dashboard-layout .header__logo-store-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--header-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 14rem;
+}
+
+.dashboard-layout .header__logo--branding .header__logo-img {
+    flex-shrink: 0;
+    max-height: 2.65rem;
+    max-width: 9rem;
+}
+
+.dashboard-footer-brand {
+    text-decoration: none;
+    color: inherit;
+}
+
+.dashboard-footer-brand:hover {
+    opacity: 0.92;
+    color: inherit;
+}
+
+.dashboard-footer-brand__name {
+    font-size: 0.95rem;
+}
+
+.dashboard-footer-brand__img {
+    max-height: 3.25rem;
+    width: auto;
+    max-width: 10rem;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.site-footer--desktop .site-footer__desc {
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    margin-bottom: 0.625rem;
+    max-width: 22rem;
+}
+
+.site-footer--desktop .site-footer__social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1px solid rgba(107, 78, 61, 0.2);
+    color: var(--text-secondary);
+    background: transparent;
+    transition: var(--transition-smooth);
+    text-decoration: none;
+}
+
+.site-footer--desktop .site-footer__social-btn:hover {
+    color: var(--color-dusty-rose);
+    border-color: var(--color-soft-rose-gold);
+    background: rgba(230, 180, 34, 0.08);
+}
+
+.site-footer--desktop .site-footer__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.site-footer--desktop .site-footer__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.site-footer--desktop .site-footer__link {
+    font-size: 0.875rem;
+    color: var(--text-secondary) !important;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.site-footer--desktop .site-footer__link:hover {
+    color: var(--color-dusty-rose) !important;
+}
+
+.site-footer--desktop .site-footer__link:visited {
+    color: var(--text-secondary) !important;
+}
+
+.site-footer--desktop .site-footer__newsletter-hint {
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.site-footer--desktop .site-footer__newsletter-input .form-control {
+    font-size: 0.875rem;
+    padding: 0.45rem 0.75rem;
+    min-height: auto;
+}
+
+.site-footer--desktop .site-footer__newsletter-input .btn {
+    padding: 0.45rem 0.75rem;
+}
+
+.site-footer--desktop .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-top: 0.875rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(30, 58, 95, 0.12);
+}
+
+.site-footer--desktop .site-footer__copyright {
+    font-size: 0.75rem;
+}
+
+.site-footer--desktop .site-footer__legal {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+}
+
+.site-footer--desktop .site-footer__legal-sep {
+    color: var(--text-light);
+    font-size: 0.75rem;
+    user-select: none;
+}
+
+.site-footer--desktop .site-footer__link--sm {
+    font-size: 0.75rem;
+}
+
+@media (min-width: 992px) {
+    .site-footer--desktop .site-footer__col--nav {
+        padding-right: 1.5rem;
+    }
+
+    .site-footer--desktop .site-footer__col--newsletter {
+        max-width: 20rem;
+        margin-inline-start: auto;
+    }
+}
+
+.site-footer--mobile {
+    padding: 0.75rem 0 !important;
+    margin-top: 1.5rem;
+}
+
+.site-footer--mobile .site-footer__link:visited {
+    color: var(--text-secondary) !important;
+}
+
+@media (max-width: 991.98px) {
+    .site-footer--desktop .site-footer__row {
+        text-align: center;
+    }
+
+    .site-footer--desktop .site-footer__desc {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .site-footer--desktop .site-footer__col--newsletter {
+        margin-top: 0.25rem;
+    }
+
+    .site-footer--desktop .site-footer__newsletter-form {
+        max-width: 20rem;
+        margin: 0 auto;
+    }
+
+    .site-footer--desktop .site-footer__bottom {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
 /* ============================================
    Utilities
    ============================================ */
@@ -1545,6 +1831,156 @@ footer .text-muted {
     border-color: var(--color-soft-rose-gold);
 }
 
+.input-group-password {
+    flex-wrap: nowrap;
+    align-items: stretch;
+}
+
+.input-group-password > .form-control {
+    border-inline-end: 0;
+    min-width: 0;
+}
+
+.input-group-password > .js-password-toggle {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    padding-inline: 0.65rem;
+    border-color: rgba(107, 78, 61, 0.25);
+    color: var(--text-secondary);
+    background-color: #fff;
+}
+
+.input-group-password > .form-control:focus {
+    box-shadow: none;
+}
+
+.input-group-password > .form-control:focus + .js-password-toggle,
+.input-group-password:focus-within > .js-password-toggle {
+    border-color: var(--color-soft-rose-gold);
+    color: var(--color-accent-brown);
+}
+
+/* ورود / ثبت‌نام */
+.auth-page {
+    padding: clamp(1.25rem, 4vw, 2.5rem) 0.85rem;
+}
+
+.auth-page__card {
+    width: 100%;
+    max-width: 28rem;
+}
+
+.auth-page__header {
+    margin-bottom: 1.75rem;
+}
+
+.auth-page__title {
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.auth-page__subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.auth-form {
+    width: 100%;
+}
+
+.auth-form__field {
+    width: 100%;
+}
+
+.auth-form .form-label {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    text-align: right;
+}
+
+.auth-form .auth-form__input,
+.auth-form .form-control {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.auth-form__input--ltr {
+    direction: ltr;
+    text-align: left;
+    unicode-bidi: plaintext;
+}
+
+.auth-form .auth-form__input:not(.auth-form__input--ltr) {
+    text-align: right;
+}
+
+.auth-field-password {
+    position: relative;
+    width: 100%;
+}
+
+.auth-field-password .form-control {
+    width: 100%;
+    padding-inline-end: 2.85rem;
+    text-align: right;
+}
+
+.auth-field-password__toggle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    inset-inline-end: 0;
+    width: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.auth-field-password__toggle:hover,
+.auth-field-password__toggle:focus {
+    color: var(--color-accent-brown);
+    outline: none;
+}
+
+.auth-field-password__toggle:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--color-soft-rose-gold);
+}
+
+.auth-form__forgot-link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--color-accent-brown);
+}
+
+.auth-form__forgot-link:hover {
+    text-decoration: underline;
+}
+
+.auth-form__actions {
+    margin-top: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.auth-form__footer {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
 /* ============================================
    Alert
    ============================================ */
@@ -1685,11 +2121,26 @@ a:hover {
 }
 
 .home-banner-slide {
+    display: flex;
+    flex-direction: column;
     position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
     background: var(--bg-light, #f8f5f2);
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+}
+
+.home-banner-slide__media {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .home-banner-slide__link {
@@ -1701,9 +2152,71 @@ a:hover {
 .home-banner-slide__img {
     display: block;
     width: 100%;
+    max-width: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.home-banner-slide:not(.home-banner-slide--full) .home-banner-slide__img {
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center;
+}
+
+.home-banner-slide__content {
+    flex: 0 0 auto;
+    text-align: center;
+    padding: 0.75rem 1rem 1rem;
+}
+
+.home-banner-slide__title {
+    font-size: clamp(1.05rem, 4.5vw, 2.75rem);
+    font-weight: 500;
+    line-height: 1.35;
+    margin-bottom: 0.35rem;
+    color: var(--text-dark);
+}
+
+.home-banner-slide__text {
+    font-size: clamp(0.85rem, 3.2vw, 1.15rem);
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.home-banner-slide--full {
+    display: block;
+    height: auto;
+}
+
+.home-banner-slide--full .home-banner-slide__media {
+    display: block;
+    flex: none;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+}
+
+.home-banner-slide--full .home-banner-slide__img {
+    width: 100%;
+    height: auto;
+    object-fit: unset;
+    object-position: center;
+    vertical-align: top;
+}
+
+.banner-slider-section:has(.home-banner-slide--full) {
+    height: auto;
+}
+
+.banner-slider-section:has(.home-banner-slide--full) .banner-swiper,
+.banner-slider-section:has(.home-banner-slide--full) .banner-swiper.swiper,
+.banner-slider-section:has(.home-banner-slide--full) .swiper-wrapper,
+.banner-slider-section:has(.home-banner-slide--full) .swiper-slide {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
 }
 
 .banner-slide {
@@ -1998,7 +2511,7 @@ textarea {
 
 .home-services-grid {
     direction: rtl;
-    /* Tighter than Bootstrap g-3 / g-lg-4 so four cards fit one row comfortably */
+    /* Tighter than Bootstrap g-3 / g-lg-4 so three cards fit one row comfortably */
     --bs-gutter-x: 0.5rem;
     --bs-gutter-y: 0.65rem;
 }
@@ -2007,11 +2520,13 @@ textarea {
     /* Grid avoids Bootstrap flex row-cols + flex-shrink:0 wrapping when card text is wide */
     body.device-desktop .home-services-grid.row {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        column-gap: 0.4rem;
-        row-gap: 0.5rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: 1rem;
+        row-gap: 0.75rem;
         margin-left: 0;
         margin-right: 0;
+        max-width: 56rem;
+        margin-inline: auto;
     }
 
     body.device-desktop .home-services-grid.row > * {
@@ -2037,7 +2552,7 @@ textarea {
     border-radius: var(--radius-lg);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
     border: 1px solid transparent;
-    padding: var(--spacing-md) var(--spacing-sm);
+    padding: 1.35rem 1rem 1.25rem;
     text-align: center;
     height: 100%;
     transition: var(--transition-smooth);
@@ -2054,12 +2569,12 @@ textarea {
 }
 
 .home-service-card__icon-wrap {
-    width: 3.25rem;
-    height: 3.25rem;
+    width: 3.5rem;
+    height: 3.5rem;
     margin: 0 auto var(--spacing-sm);
-    border-radius: var(--radius-md);
+    border-radius: 50%;
     background: transparent;
-    border: 2px solid rgba(230, 180, 34, 0.4);
+    border: 2px solid rgba(230, 180, 34, 0.55);
     color: var(--color-soft-rose-gold);
     display: flex;
     align-items: center;
@@ -2305,15 +2820,17 @@ section.home-product-strip.section + section.home-product-strip.section {
 
 @media (min-width: 768px) {
     body.device-desktop .home-dual-banner__grid {
-        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25rem;
     }
 }
 
 .home-dual-banner__link {
     display: block;
+    position: relative;
     width: 100%;
     min-width: 0;
+    aspect-ratio: 2 / 1;
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
@@ -2326,16 +2843,13 @@ section.home-product-strip.section + section.home-product-strip.section {
 }
 
 .home-dual-banner__img {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: clamp(11rem, 28vw, 15rem);
+    height: 100%;
     display: block;
     object-fit: cover;
-}
-
-@media (min-width: 992px) {
-    .home-dual-banner__img {
-        height: clamp(12rem, 22vw, 16rem);
-    }
+    object-position: center;
 }
 
 /* صفحهٔ اصلی — تبلت کوچک (فقط دسکتاپ؛ موبایل در styles-mobile.css) */
@@ -2386,9 +2900,6 @@ section.home-product-strip.section + section.home-product-strip.section {
         padding-bottom: 1rem;
     }
 
-    .home-dual-banner__img {
-        height: clamp(9rem, 32vw, 12rem);
-    }
 
     .home-product-strip .card-title {
         font-size: 0.9rem;
@@ -4007,4 +4518,78 @@ body.device-desktop .container {
 
 .faq-cta p {
     color: var(--text-secondary);
+}
+
+/* سبد خرید — حالت خالی */
+.cart-empty-state {
+    padding: clamp(2rem, 8vw, 4rem) 0;
+    min-height: min(70vh, 32rem);
+    display: flex;
+    align-items: center;
+}
+
+.cart-empty-state__card {
+    max-width: 26rem;
+    margin-inline: auto;
+    text-align: center;
+    padding: clamp(1.5rem, 5vw, 2.5rem);
+    background: var(--color-warm-beige, #fcfaf7);
+    border: 1px solid rgba(107, 78, 61, 0.12);
+    border-radius: var(--radius-lg, 1rem);
+    box-shadow: var(--shadow-soft, 0 4px 24px rgba(0, 0, 0, 0.06));
+}
+
+.cart-empty-state__icon-wrap {
+    width: 4.5rem;
+    height: 4.5rem;
+    margin: 0 auto 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--color-accent-yellow-soft, rgba(230, 180, 34, 0.22));
+    color: var(--color-accent-brown, #6b4e3d);
+    font-size: 2rem;
+}
+
+.cart-empty-state__title {
+    font-size: clamp(1.15rem, 4vw, 1.5rem);
+    font-weight: 600;
+    color: var(--text-dark, #4a372c);
+    margin-bottom: 0.75rem;
+}
+
+.cart-empty-state__text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text-secondary, #7d6558);
+    margin-bottom: 1.5rem;
+}
+
+.cart-empty-state__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: min(100%, 14rem);
+}
+
+body.device-mobile .cart-empty-state {
+    min-height: min(60vh, 28rem);
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* فاکتور سفارش */
+.invoice-brand__img {
+    max-height: 5rem;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+@media print {
+    .invoice-brand__img {
+        max-height: 4.25rem;
+    }
 }

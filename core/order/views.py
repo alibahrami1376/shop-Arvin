@@ -22,11 +22,10 @@ from payment.models import (
     PaymentStatusType,
 )
 from payment.zarinpal_client import ZarinPalRequestFailed, ZarinPalSandbox
-from core.mixins import DeviceTemplateMixin
 
 
 class OrderCheckOutView(
-    DeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, FormView
+    LoginRequiredMixin, HasCustomerAccessPermission, FormView
 ):
     template_name = "order/checkout.html"
     form_class = CheckOutForm
@@ -144,7 +143,7 @@ class OrderCheckOutView(
 
 
 class OrderCompletedView(
-    DeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, TemplateView
+    LoginRequiredMixin, HasCustomerAccessPermission, TemplateView
 ):
     template_name = "order/completed.html"
 
@@ -157,7 +156,7 @@ class OrderCompletedView(
         return context
 
 
-class OrderTrackingView(DeviceTemplateMixin, FormView):
+class OrderTrackingView(FormView):
     template_name = "order/tracking.html"
     form_class = OrderTrackingForm
 
@@ -212,13 +211,13 @@ class OrderTrackingView(DeviceTemplateMixin, FormView):
 
 
 class OrderFailedView(
-    DeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, TemplateView
+    LoginRequiredMixin, HasCustomerAccessPermission, TemplateView
 ):
     template_name = "order/failed.html"
 
 
 class CardPaymentInstructionsView(
-    DeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, DetailView
+    LoginRequiredMixin, HasCustomerAccessPermission, DetailView
 ):
     """راهنمای واریز کارت به کارت پس از ثبت سفارش."""
 

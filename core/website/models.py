@@ -1,5 +1,9 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.templatetags.static import static
+from django_ckeditor_5.fields import CKEditor5Field
+
+from website.logo_validation import SITE_LOGO_HEIGHT, SITE_LOGO_WIDTH
 
 
 # fetching user model
@@ -123,3 +127,195 @@ class HomeBanner(models.Model):
     @property
     def background_gradient(self):
         return self.GRADIENT_STYLES.get(self.background_style, self.GRADIENT_STYLES[1])
+
+
+class SiteBrandingSettings(models.Model):
+    """لوگوی اصلی سایت — یک ردیف؛ هدر، فوتر و فاکتور."""
+
+    LOGO_WIDTH = SITE_LOGO_WIDTH
+    LOGO_HEIGHT = SITE_LOGO_HEIGHT
+
+    logo = models.ImageField(
+        upload_to="branding/",
+        blank=True,
+        null=True,
+        verbose_name="لوگوی سایت",
+        help_text=f"PNG یا WEBP — دقیقاً {LOGO_WIDTH}×{LOGO_HEIGHT} پیکسل.",
+    )
+    site_name = models.CharField(
+        max_length=120,
+        blank=True,
+        default="فروشگاه آروین",
+        verbose_name="نام فروشگاه (متن alt لوگو)",
+    )
+    updated_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "لوگوی سایت"
+        verbose_name_plural = "لوگوی سایت"
+
+    def __str__(self):
+        return "تنظیمات لوگو"
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    @property
+    def has_custom_logo(self):
+        return bool(self.logo)
+
+    def get_logo_url(self):
+        if self.logo:
+            return self.logo.url
+        return static("img/ghasetak.png")
+
+    def get_logo_alt(self):
+        return (self.site_name or "").strip() or "فروشگاه آروین"
+
+
+class LegalPage(models.Model):
+    class PageType(models.TextChoices):
+        PRIVACY = "privacy", "حریم خصوصی"
+        TERMS = "terms", "قوانین و مقررات"
+
+    page_type = models.CharField(
+        max_length=20,
+        choices=PageType.choices,
+        unique=True,
+        verbose_name="نوع صفحه",
+    )
+    title = models.CharField(max_length=200, verbose_name="عنوان")
+    content = CKEditor5Field(verbose_name="محتوا")
+    updated_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "صفحه قانونی"
+        verbose_name_plural = "صفحات قانونی"
+
+    def __str__(self):
+        return self.get_page_type_display()
+
+    @classmethod
+    def get_by_type(cls, page_type):
+        obj, _ = cls.objects.get_or_create(
+            page_type=page_type,
+            defaults={
+                "title": cls.PageType(page_type).label,
+                "content": f"<p>متن {cls.PageType(page_type).label} را از پنل مدیریت ویرایش کنید.</p>",
+            },
+        )
+        return obj
+
+
+class ContactPageSettings(models.Model):
+    """تنظیمات نمایشی صفحه تماس با ما (یک ردیف)."""
+
+    email = models.EmailField(
+        blank=True,
+        default="info@truckparts.ir",
+        verbose_name="ایمیل",
+    )
+    phone = models.CharField(
+        max_length=50,
+        blank=True,
+        default="۰۲۱-۱۲۳۴۵۶۷۸",
+        verbose_name="تلفن",
+    )
+    working_hours = models.CharField(
+        max_length=255,
+        blank=True,
+        default="شنبه تا پنجشنبه: ۹ صبح تا ۶ عصر",
+        verbose_name="ساعات کاری",
+    )
+    instagram_link = models.CharField(max_length=500, blank=True, verbose_name="لینک اینستاگرام")
+    telegram_link = models.CharField(max_length=500, blank=True, verbose_name="لینک تلگرام")
+    linkedin_link = models.CharField(max_length=500, blank=True, verbose_name="لینک لینکدین")
+    bale_link = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name="لینک بله",
+        help_text="مثال: https://ble.ir/username",
+    )
+    rubika_link = models.CharField(max_length=500, blank=True, verbose_name="لینک روبیکا")
+    bale_channel_link = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name="لینک کانال بله",
+    )
+    bale_channel_text = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name="متن معرفی کانال بله",
+        help_text="جمله‌ای که زیر لینک کانال نمایش داده می‌شود.",
+    )
+    updated_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "تنظیمات تماس با ما"
+        verbose_name_plural = "تنظیمات تماس با ما"
+
+    def __str__(self):
+        return "تنظیمات تماس با ما"
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def get_social_links(self):
+        links = []
+        for key, label, icon in (
+            ("instagram", "اینستاگرام", "bi-instagram"),
+            ("telegram", "تلگرام", "bi-telegram"),
+            ("linkedin", "لینکدین", "bi-linkedin"),
+            ("bale", "بله", None),
+            ("rubika", "روبیکا", None),
+        ):
+            url = (getattr(self, f"{key}_link", "") or "").strip()
+            if url:
+                links.append({"key": key, "label": label, "url": url, "icon": icon})
+        return links
+
+
+class SiteWideSocialSettings(models.Model):
+    """لینک شبکه‌های اجتماعی در فوتر و سایر بخش‌های عمومی سایت (جدا از بلوک صفحهٔ تماس با ما)."""
+
+    instagram_link = models.CharField(max_length=500, blank=True, verbose_name="لینک اینستاگرام")
+    telegram_link = models.CharField(max_length=500, blank=True, verbose_name="لینک تلگرام")
+    linkedin_link = models.CharField(max_length=500, blank=True, verbose_name="لینک لینکدین")
+    bale_link = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name="لینک بله",
+        help_text="مثال: https://ble.ir/username",
+    )
+    rubika_link = models.CharField(max_length=500, blank=True, verbose_name="لینک روبیکا")
+    updated_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "شبکه‌های اجتماعی سایت"
+        verbose_name_plural = "شبکه‌های اجتماعی سایت"
+
+    def __str__(self):
+        return "لینک‌های شبکه اجتماعی (فوتر و سایت)"
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def get_links(self):
+        links = []
+        for key, label, icon in (
+            ("instagram", "اینستاگرام", "bi-instagram"),
+            ("telegram", "تلگرام", "bi-telegram"),
+            ("linkedin", "لینکدین", "bi-linkedin"),
+            ("bale", "بله", None),
+            ("rubika", "روبیکا", None),
+        ):
+            url = (getattr(self, f"{key}_link", "") or "").strip()
+            if url:
+                links.append({"key": key, "label": label, "url": url, "icon": icon})
+        return links

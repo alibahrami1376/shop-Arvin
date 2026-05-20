@@ -1,4 +1,4 @@
-{% extends 'dashboard/customer/base-desktop.html' %}
+{% extends dashboard_customer_base_template %}
 {% load static %}
 
 {% block breadcrumb %}
@@ -149,7 +149,7 @@
 
                                 <div class="col-md-4">
                                     <div class="d-grid gap-2">
-                                        {% if object.is_successful %}
+                                        {% if object.can_customer_view_invoice %}
                                         <a class="btn btn-white btn-sm"
                                             href="{% url 'dashboard:customer:order-invoice' pk=object.pk %}"
                                             target="_blank">

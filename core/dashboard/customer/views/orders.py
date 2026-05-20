@@ -9,10 +9,12 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.core.exceptions import FieldError
 from django.db.models import Q
-from order.models import OrderModel,OrderStatusType
-from dashboard.mixins import DashboardDeviceTemplateMixin
+from django.db.models import Q
 
-class CustomerOrderListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, ListView):
+from order.models import OrderModel, OrderStatusType
+from payment.models import PaymentStatusType
+
+class CustomerOrderListView(LoginRequiredMixin, HasCustomerAccessPermission, ListView):
     template_name = "dashboard/customer/orders/order-list.html"
     paginate_by = 5
     
@@ -42,7 +44,7 @@ class CustomerOrderListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, Ha
         context["status_types"] = OrderStatusType.choices  
         return context
     
-class CustomerOrderDetailView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, DetailView):
+class CustomerOrderDetailView(LoginRequiredMixin, HasCustomerAccessPermission, DetailView):
     template_name = "dashboard/customer/orders/order-detail.html"
 
     def get_queryset(self):
@@ -50,8 +52,23 @@ class CustomerOrderDetailView(DashboardDeviceTemplateMixin, LoginRequiredMixin, 
             "payment"
         )
 
-class CustomerOrderInvoiceView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, DetailView):
+class CustomerOrderInvoiceView(LoginRequiredMixin, HasCustomerAccessPermission, DetailView):
     template_name = "dashboard/customer/orders/order-invoice.html"
 
     def get_queryset(self):
-        return OrderModel.objects.filter(user=self.request.user,status=OrderStatusType.success.value)
+        payment_confirmed = Q(
+            payment__status__in=[
+                PaymentStatusType.preparing.value,
+                PaymentStatusType.shipped.value,
+            ]
+        )
+        legacy_success_without_payment = Q(
+            payment__isnull=True,
+            status=OrderStatusType.success.value,
+        )
+        return (
+            OrderModel.objects.filter(user=self.request.user)
+            .select_related("payment", "user", "user__user_profile", "coupon")
+            .prefetch_related("order_items", "order_items__product")
+            .filter(payment_confirmed | legacy_success_without_payment)
+        )

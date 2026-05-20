@@ -1,5 +1,5 @@
 {% load static %}
-<nav class="admin-sidebar-mobile" aria-label="منوی پنل ادمین">
+<nav id="adminSidebarMobileNav" class="admin-sidebar-mobile" aria-label="منوی پنل ادمین" data-current-view="{{ request.resolver_match.view_name|default:'' }}">
     <div class="admin-sidebar-mobile__profile text-center py-3 border-bottom">
         <div class="avatar avatar-lg avatar-circle mx-auto mb-2">
             <img class="avatar-img" src="{{ request.user.user_profile.image.url }}" alt="">
@@ -16,18 +16,101 @@
     </ul>
 
     <p class="admin-sidebar-mobile__section">فروشگاه</p>
-    <ul class="admin-sidebar-mobile__nav">
-        <li><a href="{% url 'dashboard:admin:product-list' %}"><i class="bi-shop-window"></i> محصولات</a></li>
-        <li><a href="{% url 'dashboard:admin:category-list' %}"><i class="bi-tags"></i> دسته‌بندی‌ها</a></li>
-        <li><a href="{% url 'dashboard:admin:order-list' %}"><i class="bi-receipt-cutoff"></i> سفارشات</a></li>
-        <li><a href="{% url 'dashboard:admin:coupon-list' %}"><i class="bi-ticket-perforated"></i> کد تخفیف</a></li>
-        <li><a href="{% url 'dashboard:admin:payment-method-settings' %}"><i class="bi-wallet2"></i> روش‌های پرداخت</a></li>
-        <li><a href="{% url 'dashboard:admin:card-to-card-settings' %}"><i class="bi-credit-card-2-back"></i> کارت به کارت</a></li>
-        <li><a href="{% url 'dashboard:admin:review-list' %}"><i class="bi-chat-square-text"></i> نظرات</a></li>
-        <li><a href="{% url 'dashboard:admin:contact-list' %}"><i class="bi-envelope"></i> تیکت‌ها</a></li>
-        <li><a href="{% url 'dashboard:admin:home-banner-list' %}"><i class="bi-images"></i> بنر صفحه اصلی</a></li>
-        <li><a href="{% url 'dashboard:admin:faq-list' %}"><i class="bi-question-circle"></i> سوالات متداول</a></li>
-    </ul>
+    <div class="admin-sidebar-store-groups px-2">
+        <div class="admin-sidebar-group">
+            <button type="button" class="admin-sidebar-group__toggle collapsed" data-bs-toggle="collapse" data-bs-target="#adminMobNavStoreSales" aria-expanded="false" aria-controls="adminMobNavStoreSales">
+                <span class="admin-sidebar-group__label"><i class="bi-shop"></i> کاتالوگ و فروش</span>
+                <i class="bi-chevron-down admin-sidebar-group__chev" aria-hidden="true"></i>
+            </button>
+            <div class="collapse js-admin-sidebar-collapse" id="adminMobNavStoreSales" data-active-views="dashboard:admin:product-list,dashboard:admin:product-create,dashboard:admin:product-edit,dashboard:admin:product-delete,dashboard:admin:product-add-image,dashboard:admin:product-remove-image,dashboard:admin:category-list,dashboard:admin:category-create,dashboard:admin:category-edit,dashboard:admin:category-delete,dashboard:admin:order-list,dashboard:admin:order-detail,dashboard:admin:order-change-status,dashboard:admin:order-change-payment-status,dashboard:admin:order-invoice,dashboard:admin:coupon-list,dashboard:admin:coupon-create,dashboard:admin:coupon-edit,dashboard:admin:coupon-delete">
+                <ul class="admin-sidebar-mobile__nav admin-sidebar-group__nav">
+                    <li><a href="{% url 'dashboard:admin:product-list' %}"><i class="bi-shop-window"></i> محصولات</a></li>
+                    <li><a href="{% url 'dashboard:admin:category-list' %}"><i class="bi-tags"></i> دسته‌بندی‌ها</a></li>
+                    <li><a href="{% url 'dashboard:admin:order-list' %}"><i class="bi-receipt-cutoff"></i> سفارشات</a></li>
+                    <li><a href="{% url 'dashboard:admin:coupon-list' %}"><i class="bi-ticket-perforated"></i> کد تخفیف</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="admin-sidebar-group">
+            <button type="button" class="admin-sidebar-group__toggle collapsed" data-bs-toggle="collapse" data-bs-target="#adminMobNavStorePayment" aria-expanded="false" aria-controls="adminMobNavStorePayment">
+                <span class="admin-sidebar-group__label"><i class="bi-wallet2"></i> پرداخت</span>
+                <i class="bi-chevron-down admin-sidebar-group__chev" aria-hidden="true"></i>
+            </button>
+            <div class="collapse js-admin-sidebar-collapse" id="adminMobNavStorePayment" data-active-views="dashboard:admin:payment-method-settings,dashboard:admin:card-to-card-settings">
+                <ul class="admin-sidebar-mobile__nav admin-sidebar-group__nav">
+                    <li><a href="{% url 'dashboard:admin:payment-method-settings' %}"><i class="bi-wallet2"></i> روش‌های پرداخت</a></li>
+                    <li><a href="{% url 'dashboard:admin:card-to-card-settings' %}"><i class="bi-credit-card-2-back"></i> کارت به کارت</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="admin-sidebar-group">
+            <button type="button" class="admin-sidebar-group__toggle collapsed" data-bs-toggle="collapse" data-bs-target="#adminMobNavStoreSupport" aria-expanded="false" aria-controls="adminMobNavStoreSupport">
+                <span class="admin-sidebar-group__label"><i class="bi-chat-dots"></i> پشتیبانی</span>
+                <i class="bi-chevron-down admin-sidebar-group__chev" aria-hidden="true"></i>
+            </button>
+            <div class="collapse js-admin-sidebar-collapse" id="adminMobNavStoreSupport" data-active-views="dashboard:admin:review-list,dashboard:admin:review-edit,dashboard:admin:contact-list,dashboard:admin:contact-detail">
+                <ul class="admin-sidebar-mobile__nav admin-sidebar-group__nav">
+                    <li><a href="{% url 'dashboard:admin:review-list' %}"><i class="bi-chat-square-text"></i> نظرات</a></li>
+                    <li><a href="{% url 'dashboard:admin:contact-list' %}"><i class="bi-envelope"></i> تیکت‌ها</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="admin-sidebar-group">
+            <button type="button" class="admin-sidebar-group__toggle collapsed" data-bs-toggle="collapse" data-bs-target="#adminMobNavStoreContent" aria-expanded="false" aria-controls="adminMobNavStoreContent">
+                <span class="admin-sidebar-group__label"><i class="bi-layout-text-window-reverse"></i> محتوای سایت</span>
+                <i class="bi-chevron-down admin-sidebar-group__chev" aria-hidden="true"></i>
+            </button>
+            <div class="collapse js-admin-sidebar-collapse" id="adminMobNavStoreContent" data-active-views="dashboard:admin:home-banner-list,dashboard:admin:home-banner-create,dashboard:admin:home-banner-edit,dashboard:admin:home-banner-delete,dashboard:admin:faq-list,dashboard:admin:faq-create,dashboard:admin:faq-edit,dashboard:admin:faq-delete">
+                <ul class="admin-sidebar-mobile__nav admin-sidebar-group__nav">
+                    <li><a href="{% url 'dashboard:admin:home-banner-list' %}"><i class="bi-images"></i> بنر صفحه اصلی</a></li>
+                    <li><a href="{% url 'dashboard:admin:faq-list' %}"><i class="bi-question-circle"></i> سوالات متداول</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="admin-sidebar-group">
+            <button type="button" class="admin-sidebar-group__toggle collapsed" data-bs-toggle="collapse" data-bs-target="#adminMobNavStoreSite" aria-expanded="false" aria-controls="adminMobNavStoreSite">
+                <span class="admin-sidebar-group__label"><i class="bi-palette"></i> ظاهر و اطلاعات</span>
+                <i class="bi-chevron-down admin-sidebar-group__chev" aria-hidden="true"></i>
+            </button>
+            <div class="collapse js-admin-sidebar-collapse" id="adminMobNavStoreSite" data-active-views="dashboard:admin:site-branding-settings,dashboard:admin:site-wide-social-settings,dashboard:admin:contact-settings,dashboard:admin:legal-page-edit">
+                <ul class="admin-sidebar-mobile__nav admin-sidebar-group__nav">
+                    <li><a href="{% url 'dashboard:admin:site-branding-settings' %}"><i class="bi-image"></i> لوگوی سایت</a></li>
+                    <li><a href="{% url 'dashboard:admin:site-wide-social-settings' %}"><i class="bi-share"></i> شبکه‌های سایت</a></li>
+                    <li><a href="{% url 'dashboard:admin:contact-settings' %}"><i class="bi-telephone"></i> تنظیمات تماس</a></li>
+                    <li><a href="{% url 'dashboard:admin:legal-page-edit' page_type='privacy' %}"><i class="bi-shield-lock"></i> حریم خصوصی</a></li>
+                    <li><a href="{% url 'dashboard:admin:legal-page-edit' page_type='terms' %}"><i class="bi-file-earmark-text"></i> قوانین</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+      function expandActiveAdminMobileSidebar() {
+        var root = document.getElementById('adminSidebarMobileNav');
+        if (!root) return;
+        var current = root.getAttribute('data-current-view') || '';
+        if (!current) return;
+        root.querySelectorAll('.js-admin-sidebar-collapse').forEach(function (el) {
+          var raw = el.getAttribute('data-active-views') || '';
+          var views = raw.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+          if (views.indexOf(current) === -1) return;
+          el.classList.add('show');
+          var id = el.id;
+          var btn = root.querySelector('[data-bs-target="#' + id + '"]');
+          if (btn) {
+            btn.classList.remove('collapsed');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', expandActiveAdminMobileSidebar);
+      } else {
+        expandActiveAdminMobileSidebar();
+      }
+    })();
+    </script>
 
     <p class="admin-sidebar-mobile__section">بلاگ</p>
     <ul class="admin-sidebar-mobile__nav">

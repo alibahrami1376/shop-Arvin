@@ -1,0 +1,77 @@
+{% extends dashboard_admin_base_template %}
+{% load static %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">فروشگاه</li>
+        <li class="breadcrumb-item active" aria-current="page">تنظیمات تماس با ما</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="card-header border-bottom">
+        <h4 class="card-header-title mb-0">تنظیمات تماس با ما</h4>
+        <p class="card-text small text-muted mb-0 mt-1">اطلاعات تماس، کانال بله و لینک‌های شبکهٔ زیر فقط در صفحهٔ <a href="{% url 'website:contact' %}" target="_blank" rel="noopener noreferrer">تماس با ما</a> نمایش داده می‌شوند. برای <strong>فوتر و سایر بخش‌های سایت</strong> از «<a href="{% url 'dashboard:admin:site-wide-social-settings' %}">شبکه‌های اجتماعی سایت</a>» استفاده کنید.</p>
+    </div>
+    <form action="." method="post">
+        <div class="card-body">
+            {% csrf_token %}
+            <h5 class="mb-3">اطلاعات تماس</h5>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.email.id_for_label }}">ایمیل</label>
+                <div class="col-sm-9">{{ form.email }}</div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.phone.id_for_label }}">تلفن</label>
+                <div class="col-sm-9">{{ form.phone }}</div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.working_hours.id_for_label }}">ساعات کاری</label>
+                <div class="col-sm-9">{{ form.working_hours }}</div>
+            </div>
+
+            <hr class="my-4">
+            <h5 class="mb-2">شبکه‌های اجتماعی (فقط صفحهٔ تماس)</h5>
+            <p class="text-muted small mb-3">این لینک‌ها در بلوک «ما را در شبکه‌ها دنبال کنید» همان صفحه استفاده می‌شوند، نه در فوتر عمومی.</p>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.instagram_link.id_for_label }}">اینستاگرام</label>
+                <div class="col-sm-9">{{ form.instagram_link }}</div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.telegram_link.id_for_label }}">تلگرام</label>
+                <div class="col-sm-9">{{ form.telegram_link }}</div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.linkedin_link.id_for_label }}">لینکدین</label>
+                <div class="col-sm-9">{{ form.linkedin_link }}</div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.bale_link.id_for_label }}">بله</label>
+                <div class="col-sm-9">{{ form.bale_link }}</div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.rubika_link.id_for_label }}">روبیکا</label>
+                <div class="col-sm-9">{{ form.rubika_link }}</div>
+            </div>
+
+            <hr class="my-4">
+            <h5 class="mb-1">کانال بله</h5>
+            <p class="text-muted small mb-4">لینک و جملهٔ معرفی کانال در صفحه تماس نمایش داده می‌شود.</p>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.bale_channel_link.id_for_label }}">لینک کانال</label>
+                <div class="col-sm-9">{{ form.bale_channel_link }}</div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.bale_channel_text.id_for_label }}">متن معرفی</label>
+                <div class="col-sm-9">{{ form.bale_channel_text }}</div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <button type="submit" class="btn btn-primary">ذخیره</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

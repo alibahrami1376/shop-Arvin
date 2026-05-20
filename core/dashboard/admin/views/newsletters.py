@@ -12,11 +12,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from dashboard.permissions import *
 from django.db.models import F, Q
 from django.core import exceptions
-from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
 
-class NewsletterListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, ListView):
+class NewsletterListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
     title = "لیست خبرنامه"
     template_name = "dashboard/admin/newsletters/newsletter-list.html"
     paginate_by = 10
@@ -50,7 +49,7 @@ class NewsletterListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAd
         return context
 
 
-class NewsletterDeleteView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
+class NewsletterDeleteView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
     title = "حذف خبرنامه"
     template_name = "dashboard/admin/newsletters/newsletter-delete.html"
     success_url = reverse_lazy("dashboard:admin:newsletter-list")

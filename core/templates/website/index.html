@@ -1,45 +1,13 @@
-{% extends "base-desktop.html" %}
+{% extends base_template %}
 {% load static %}
 {% load shop_tags %}
 {% block title %}ARVIN SIT {% endblock %}
 {% block content %}
 
-{% if home_banners %}
-<section class="banner-slider-section" aria-label="بنر صفحه اصلی">
-    <div class="js-swiper-banner swiper banner-swiper">
-        <div class="swiper-wrapper">
-            {% for banner in home_banners %}
-            <div class="swiper-slide">
-                <div class="banner-slide" style="background: {{ banner.background_gradient }};">
-                    <div class="container">
-                        <div class="row align-items-center">
-                            <div class="col-12 col-lg-6 order-2 order-lg-1">
-                                <div class="banner-content">
-                                    <h2 class="banner-title">{{ banner.title }}</h2>
-                                    {% if banner.subtitle %}
-                                    <p class="banner-text">{{ banner.subtitle }}</p>
-                                    {% endif %}
-                                    {% if banner.link and banner.button_text %}
-                                    <a href="{{ banner.link }}" class="btn btn-primary btn-lg mt-3"{% if banner.link|slice:":4" == "http" %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ banner.button_text }}</a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6 order-1 order-lg-2">
-                                <div class="banner-image-wrapper">
-                                    <img src="{{ banner.image.url }}" alt="{{ banner.image_alt|default:banner.title }}" class="banner-image" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" decoding="async">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <div class="swiper-button-prev banner-nav-prev"></div>
-        <div class="swiper-button-next banner-nav-next"></div>
-        <div class="swiper-pagination banner-pagination"></div>
-    </div>
-</section>
+{% if is_mobile_site %}
+{% include "website/partials/home-banner-mobile.html" %}
+{% else %}
+{% include "website/partials/home-banner-desktop.html" %}
 {% endif %}
 <!-- خدمات فروشگاه (بعد از بنر) -->
 <section class="home-services-section" aria-labelledby="home-services-heading">
@@ -48,44 +16,34 @@
             <h2 id="home-services-heading" class="home-services-title">خدمات فروشگاه آنلاین آروین</h2>
             <div class="home-services-underline" aria-hidden="true"></div>
         </header>
-        <div class="row row-cols-1 row-cols-md-4 g-3 g-lg-4 home-services-grid">
+        {% if is_mobile_site %}
+        <div class="home-services-swiper swiper js-home-services-swiper" dir="rtl" aria-label="خدمات فروشگاه">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    {% include "website/partials/home-service-card.html" with highlight=True icon_class="bi-truck" title="نصب تخصصی" description="نصب بر روی انواع ماشین سنگین، نیمه سنگین و راهسازی" %}
+                </div>
+                <div class="swiper-slide">
+                    {% include "website/partials/home-service-card.html" with icon_class="bi-lightning-charge-fill" title="ارسال فوری" description="ارسال سریع و مطمئن به سراسر کشور" %}
+                </div>
+                <div class="swiper-slide">
+                    {% include "website/partials/home-service-card.html" with icon_class="bi-headset" title="خدمات پس از فروش" description="پشتیبانی ۲۴ ساعته و مشاوره رایگان" %}
+                </div>
+            </div>
+            <div class="swiper-pagination home-services-pagination" aria-hidden="true"></div>
+        </div>
+        {% else %}
+        <div class="row row-cols-1 row-cols-md-3 g-3 g-lg-4 home-services-grid">
             <div class="col">
-                <article class="home-service-card home-service-card--highlight">
-                    <div class="home-service-card__icon-wrap">
-                        <i class="bi-truck" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="home-service-card__title">نصب تخصصی</h3>
-                    <p class="home-service-card__desc">نصب بر روی انواع ماشین سنگین، نیمه سنگین و راهسازی</p>
-                </article>
+                {% include "website/partials/home-service-card.html" with highlight=True icon_class="bi-truck" title="نصب تخصصی" description="نصب بر روی انواع ماشین سنگین، نیمه سنگین و راهسازی" %}
             </div>
             <div class="col">
-                <article class="home-service-card">
-                    <div class="home-service-card__icon-wrap">
-                        <i class="bi-lightning-charge-fill" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="home-service-card__title">ارسال فوری</h3>
-                    <p class="home-service-card__desc">ارسال سریع و مطمئن به سراسر کشور</p>
-                </article>
+                {% include "website/partials/home-service-card.html" with icon_class="bi-lightning-charge-fill" title="ارسال فوری" description="ارسال سریع و مطمئن به سراسر کشور" %}
             </div>
             <div class="col">
-                <article class="home-service-card">
-                    <div class="home-service-card__icon-wrap">
-                        <i class="bi-shield-fill-check" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="home-service-card__title">گارانتی ۶ ماهه</h3>
-                    <p class="home-service-card__desc">تعویض قطعات در صورت هرگونه مشکل</p>
-                </article>
-            </div>
-            <div class="col">
-                <article class="home-service-card">
-                    <div class="home-service-card__icon-wrap">
-                        <i class="bi-headset" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="home-service-card__title">خدمات پس از فروش</h3>
-                    <p class="home-service-card__desc">پشتیبانی ۲۴ ساعته و مشاوره رایگان</p>
-                </article>
+                {% include "website/partials/home-service-card.html" with icon_class="bi-headset" title="خدمات پس از فروش" description="پشتیبانی ۲۴ ساعته و مشاوره رایگان" %}
             </div>
         </div>
+        {% endif %}
     </div>
 </section>
 <!-- End خدمات -->
@@ -112,17 +70,16 @@
     </div>
 </section>
 <!-- End دنبال چی می‌گردی؟ -->
-{% show_home_product_strip top_products "برترین‌ها" "top" %}
-{% show_home_product_strip newest_products "جدیدترین‌ها" "new" "section-alt" %}
+{% show_home_product_strip newest_products "جدیدترین‌ها" "new" "section-alt" mobile_carousel=True %}
 <!-- دو بنر تبلیغاتی (چیدمان ثابت چپ‌به‌راست برای نسبت ۲:۱ روی صفحهٔ RTL) -->
-<section class="home-dual-banner section" aria-label="پیشنهادها و تخفیف‌ها">
+<section class="home-dual-banner section" aria-label="{% if is_mobile_site %}پیشنهادها{% else %}پیشنهادها و تخفیف‌ها{% endif %}">
     <div class="container">
-        <div class="home-dual-banner__grid" dir="ltr">
+        <div class="home-dual-banner__grid"{% if not is_mobile_site %} dir="ltr"{% endif %}>
             <a href="{% url 'shop:product-grid' %}" class="home-dual-banner__link">
-                <img src="{% static 'img/900x900/img2.jpg' %}" alt="پیشنهاد ویژه فروشگاه آروین" class="home-dual-banner__img" width="900" height="900" loading="lazy">
+                <img src="{% static 'img/900x900/img2.jpg' %}" alt="{% if is_mobile_site %}پیشنهاد ویژه{% else %}پیشنهاد ویژه فروشگاه آروین{% endif %}" class="home-dual-banner__img" width="1200" height="600" loading="lazy">
             </a>
             <a href="{% url 'shop:product-grid' %}" class="home-dual-banner__link">
-                <img src="{% static 'img/900x900/img3.jpg' %}" alt="محصولات پرطرفدار آروین" class="home-dual-banner__img" width="900" height="900" loading="lazy">
+                <img src="{% static 'img/900x900/img3.jpg' %}" alt="{% if is_mobile_site %}پرفروش‌ها{% else %}محصولات پرطرفدار آروین{% endif %}" class="home-dual-banner__img" width="1200" height="600" loading="lazy">
             </a>
         </div>
     </div>
@@ -138,8 +95,45 @@
         var bannerEl = document.querySelector('.js-swiper-banner');
         if (!bannerEl) return;
         var slideCount = bannerEl.querySelectorAll('.swiper-slide').length;
+{% if is_mobile_site %}        if (typeof Swiper === 'undefined') return;
         new Swiper(bannerEl, {
             rtl: true,
+            direction: 'horizontal',
+            autoHeight: true,
+            autoplay: slideCount > 1 ? { delay: 5000, disableOnInteraction: false } : false,
+            loop: false,
+            speed: 600,
+            slidesPerView: 1,
+            spaceBetween: 0,
+            centeredSlides: false,
+            observer: true,
+            observeParents: true,
+            resizeObserver: true,
+            pagination: {
+                el: '.banner-pagination',
+                clickable: true,
+            },
+            on: {
+                init: function (swiper) {
+                    swiper.update();
+                    swiper.el.querySelectorAll('.home-banner-slide__img').forEach(function (img) {
+                        function refresh() {
+                            swiper.update();
+                            if (typeof swiper.updateAutoHeight === 'function') {
+                                swiper.updateAutoHeight(0);
+                            }
+                        }
+                        if (img.complete) {
+                            refresh();
+                        } else {
+                            img.addEventListener('load', refresh);
+                        }
+                    });
+                },
+            },
+        });{% else %}        var desktopBannerSwiper = new Swiper(bannerEl, {
+            rtl: true,
+            autoHeight: true,
             autoplay: slideCount > 1 ? {
                 delay: 5000,
                 disableOnInteraction: false,
@@ -160,6 +154,47 @@
                 renderBullet: function (index, className) {
                     return '<span class="' + className + '"></span>';
                 },
+            },
+            on: {
+                init: function (swiper) {
+                    swiper.el.querySelectorAll('.home-banner-slide__img').forEach(function (img) {
+                        function refresh() {
+                            swiper.update();
+                            if (typeof swiper.updateAutoHeight === 'function') {
+                                swiper.updateAutoHeight(0);
+                            }
+                        }
+                        if (img.complete) {
+                            refresh();
+                        } else {
+                            img.addEventListener('load', refresh);
+                        }
+                    });
+                },
+            },
+        });{% endif %}
+    });
+</script>
+{% endif %}
+{% if is_mobile_site %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var servicesEl = document.querySelector('.js-home-services-swiper');
+        if (!servicesEl || typeof Swiper === 'undefined') return;
+        var serviceSlides = servicesEl.querySelectorAll('.swiper-slide').length;
+        new Swiper(servicesEl, {
+            rtl: true,
+            slidesPerView: 1,
+            spaceBetween: 14,
+            speed: 500,
+            loop: serviceSlides > 1,
+            autoplay: serviceSlides > 1 ? {
+                delay: 4500,
+                disableOnInteraction: false,
+            } : false,
+            pagination: {
+                el: servicesEl.querySelector('.home-services-pagination'),
+                clickable: true,
             },
         });
     });

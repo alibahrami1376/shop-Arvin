@@ -30,6 +30,29 @@ body.device-mobile.dashboard-layout--admin .admin-mobile-header__brand {
     text-decoration: none;
 }
 
+body.device-mobile.dashboard-layout--admin .admin-mobile-header__brand--with-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    flex-wrap: nowrap;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+body.device-mobile.dashboard-layout--admin .admin-mobile-header__store-name {
+    min-width: 0;
+    max-width: 42vw;
+}
+
+body.device-mobile.dashboard-layout--admin .dashboard-mobile-header__logo {
+    flex-shrink: 0;
+    max-height: 1.65rem;
+    width: auto;
+    max-width: 4.5rem;
+    object-fit: contain;
+}
+
 body.device-mobile.dashboard-layout--admin .admin-mobile-header__btn {
     flex-shrink: 0;
     display: inline-flex;
@@ -87,8 +110,9 @@ body.device-mobile.dashboard-layout--admin .admin-mobile-offcanvas {
     font-size: 0.9rem;
 }
 
-.admin-sidebar-mobile__nav a:hover,
-.admin-sidebar-mobile__nav a:focus {
+.admin-sidebar-mobile__nav a:focus,
+.admin-sidebar-mobile__nav a:focus-visible,
+.admin-sidebar-mobile__nav a:active {
     background: rgba(107, 78, 61, 0.08);
     color: var(--color-accent-brown);
 }
@@ -96,6 +120,62 @@ body.device-mobile.dashboard-layout--admin .admin-mobile-offcanvas {
 .admin-sidebar-mobile__nav i {
     font-size: 1.1rem;
     opacity: 0.85;
+}
+
+/* گروه‌های تاشو فروشگاه (موبایل) */
+body.device-mobile.dashboard-layout--admin .admin-sidebar-store-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-bottom: 0.5rem;
+}
+
+body.device-mobile.dashboard-layout--admin .admin-sidebar-group__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.5rem 0.6rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: rgba(74, 55, 44, 0.07);
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-align: right;
+    direction: rtl;
+    cursor: pointer;
+}
+
+body.device-mobile.dashboard-layout--admin .admin-sidebar-group__toggle:hover {
+    background: rgba(74, 55, 44, 0.11);
+}
+
+body.device-mobile.dashboard-layout--admin .admin-sidebar-group__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+body.device-mobile.dashboard-layout--admin .admin-sidebar-group__chev {
+    font-size: 0.72rem;
+    opacity: 0.65;
+    transition: transform 0.2s ease;
+}
+
+body.device-mobile.dashboard-layout--admin .admin-sidebar-group__toggle:not(.collapsed) .admin-sidebar-group__chev {
+    transform: rotate(-180deg);
+}
+
+body.device-mobile.dashboard-layout--admin .admin-sidebar-group__nav {
+    padding: 0.15rem 0 0.35rem;
+    margin: 0 0 0.25rem;
+    border-inline-end: 2px solid rgba(230, 180, 34, 0.35);
+}
+
+body.device-mobile.dashboard-layout--admin .admin-sidebar-group__nav a {
+    font-size: 0.85rem;
+    padding: 0.45rem 0.55rem;
 }
 
 /* Stats grid — home */

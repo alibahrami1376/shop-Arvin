@@ -9,10 +9,9 @@ from django.core.exceptions import FieldError
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from review.models import ReviewModel, ReviewStatusType
-from core.mixins import DeviceTemplateMixin
 
 
-class ShopProductGridView(DeviceTemplateMixin, ListView):
+class ShopProductGridView(ListView):
     template_name = "shop/product-grid.html"
     paginate_by = 9
 
@@ -46,7 +45,7 @@ class ShopProductGridView(DeviceTemplateMixin, ListView):
         return context
 
 
-class ShopProductDetailView(DeviceTemplateMixin, DetailView):
+class ShopProductDetailView(DetailView):
     template_name = "shop/product-detail.html"
     queryset = ProductModel.objects.filter(
         status=ProductStatusType.publish.value)

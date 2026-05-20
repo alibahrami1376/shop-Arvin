@@ -1,4 +1,4 @@
-{% extends "base-desktop.html" %}
+{% extends base_template %}
 
 
 {% block content %}
@@ -45,22 +45,22 @@
 
             <div class="mb-4">
                 <label class="form-label" for="id_password1">{{ form.password1.label }}</label>
-                <div class="input-group input-group-merge">
-                    <input type="password" name="password1" class="form-control form-control-lg text-center js-toggle-password {% if form.password1.errors %}is-invalid{% endif %}" id="id_password1" placeholder="حداقل ۸ کاراکتر" required>
-                    <a class="input-group-append input-group-text" href="javascript:;" id="togglePass1" aria-label="نمایش رمز">
-                        <i class="bi-eye"></i>
-                    </a>
+                <div class="auth-field-password">
+                    <input type="password" name="password1" class="form-control form-control-lg text-center {% if form.password1.errors %}is-invalid{% endif %}" id="id_password1" placeholder="حداقل ۸ کاراکتر" required autocomplete="new-password">
+                    <button type="button" class="auth-field-password__toggle js-password-toggle" aria-label="نمایش رمز عبور" aria-controls="id_password1">
+                        <i class="bi-eye" aria-hidden="true"></i>
+                    </button>
                 </div>
                 {% if form.password1.errors %}<div class="invalid-feedback d-block">{{ form.password1.errors.0 }}</div>{% endif %}
             </div>
 
             <div class="mb-4">
                 <label class="form-label" for="id_password2">{{ form.password2.label }}</label>
-                <div class="input-group input-group-merge">
-                    <input type="password" name="password2" class="form-control form-control-lg text-center js-toggle-password {% if form.password2.errors %}is-invalid{% endif %}" id="id_password2" placeholder="تکرار رمز عبور" required>
-                    <a class="input-group-append input-group-text" href="javascript:;" id="togglePass2" aria-label="نمایش رمز">
-                        <i class="bi-eye"></i>
-                    </a>
+                <div class="auth-field-password">
+                    <input type="password" name="password2" class="form-control form-control-lg text-center {% if form.password2.errors %}is-invalid{% endif %}" id="id_password2" placeholder="تکرار رمز عبور" required autocomplete="new-password">
+                    <button type="button" class="auth-field-password__toggle js-password-toggle" aria-label="نمایش رمز عبور" aria-controls="id_password2">
+                        <i class="bi-eye" aria-hidden="true"></i>
+                    </button>
                 </div>
                 {% if form.password2.errors %}<div class="invalid-feedback d-block">{{ form.password2.errors.0 }}</div>{% endif %}
             </div>
@@ -79,20 +79,4 @@
 {% endblock content %}
 
 
-{% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        function togglePassword(inputId, iconEl) {
-            var input = document.getElementById(inputId);
-            if (!input) return;
-            var isPass = input.type === 'password';
-            input.type = isPass ? 'text' : 'password';
-            if (iconEl) iconEl.className = isPass ? 'bi-eye-slash' : 'bi-eye';
-        }
-        var t1 = document.getElementById('togglePass1');
-        var t2 = document.getElementById('togglePass2');
-        if (t1) t1.addEventListener('click', function() { togglePassword('id_password1', t1.querySelector('i')); });
-        if (t2) t2.addEventListener('click', function() { togglePassword('id_password2', t2.querySelector('i')); });
-    });
-</script>
-{% endblock extra_js %}
+{% block extra_js %}{% endblock extra_js %}

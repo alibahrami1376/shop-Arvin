@@ -1,0 +1,26 @@
+<div class="swiper-slide">
+    <article class="home-banner-slide{% if not banner.subtitle and not banner.button_text %} home-banner-slide--full{% endif %}" style="background: {{ banner.background_gradient }};">
+        <div class="home-banner-slide__media">
+            <img
+                src="{{ banner.image.url }}"
+                alt="{{ banner.image_alt|default:banner.title }}"
+                class="home-banner-slide__img"
+                loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                decoding="async"
+            >
+        </div>
+        {% if banner.subtitle or banner.button_text %}
+        <div class="home-banner-slide__content">
+            {% if banner.title %}
+            <h2 class="home-banner-slide__title">{{ banner.title }}</h2>
+            {% endif %}
+            {% if banner.subtitle %}
+            <p class="home-banner-slide__text">{{ banner.subtitle }}</p>
+            {% endif %}
+            {% if banner.link and banner.button_text %}
+            <a href="{{ banner.link }}" class="btn btn-primary btn-lg mt-2 home-banner-slide__btn"{% if banner.link|slice:":4" == "http" %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ banner.button_text }}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </article>
+</div>

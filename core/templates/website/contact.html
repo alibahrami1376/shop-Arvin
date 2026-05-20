@@ -1,4 +1,4 @@
-{% extends "base-desktop.html" %}
+{% extends base_template %}
 {% load static %}
 
 {% block title %}تماس با ما - فروشگاه لوازم کامیون{% endblock %}
@@ -34,7 +34,7 @@
                             </div>
                             <div>
                                 <h5 class="mb-1">ایمیل</h5>
-                                <p class="text-muted mb-0">info@truckparts.ir</p>
+                                <p class="text-muted mb-0">{{ contact_settings.email }}</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-start mb-3">
@@ -43,7 +43,7 @@
                             </div>
                             <div>
                                 <h5 class="mb-1">تلفن</h5>
-                                <p class="text-muted mb-0">۰۲۱-۱۲۳۴۵۶۷۸</p>
+                                <p class="text-muted mb-0">{{ contact_settings.phone }}</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-start">
@@ -52,26 +52,44 @@
                             </div>
                             <div>
                                 <h5 class="mb-1">ساعات کاری</h5>
-                                <p class="text-muted mb-0">شنبه تا پنجشنبه: ۹ صبح تا ۶ عصر</p>
+                                <p class="text-muted mb-0">{{ contact_settings.working_hours }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="card-noorbanoo p-4">
+                {% if contact_social_links %}
+                <div class="card-noorbanoo p-4 mb-4">
                     <h5 class="mb-3">ما را در شبکه‌های اجتماعی دنبال کنید</h5>
-                    <div class="d-flex gap-2">
-                        <a href="#" class="btn btn-ghost-secondary btn-sm rounded-circle" aria-label="Instagram">
-                            <i class="bi-instagram"></i>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for item in contact_social_links %}
+                        <a href="{{ item.url }}"
+                           class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           aria-label="{{ item.label }}">
+                            {% if item.icon %}<i class="bi {{ item.icon }}"></i>{% endif %}
+                            {{ item.label }}
                         </a>
-                        <a href="#" class="btn btn-ghost-secondary btn-sm rounded-circle" aria-label="Telegram">
-                            <i class="bi-telegram"></i>
-                        </a>
-                        <a href="#" class="btn btn-ghost-secondary btn-sm rounded-circle" aria-label="LinkedIn">
-                            <i class="bi-linkedin"></i>
-                        </a>
+                        {% endfor %}
                     </div>
                 </div>
+                {% endif %}
+
+                {% if contact_settings.bale_channel_link or contact_settings.bale_channel_text %}
+                <div class="card-noorbanoo p-4">
+                    <h5 class="mb-3">کانال بله</h5>
+                    {% if contact_settings.bale_channel_text %}
+                    <p class="text-muted mb-3">{{ contact_settings.bale_channel_text }}</p>
+                    {% endif %}
+                    {% if contact_settings.bale_channel_link %}
+                    <a href="{{ contact_settings.bale_channel_link }}"
+                       class="btn btn-primary btn-sm"
+                       target="_blank"
+                       rel="noopener noreferrer">عضویت در کانال بله</a>
+                    {% endif %}
+                </div>
+                {% endif %}
             </div>
 
             <!-- Contact Form -->
@@ -88,15 +106,10 @@
                                 <input type="text" class="form-control form-control-lg" name="full_name"
                                     id="formFullName" placeholder="نام و نام خانوادگی خود را وارد کنید" required>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label class="form-label" for="formEmail">آدرس ایمیل</label>
                                 <input type="email" class="form-control form-control-lg" name="email" dir="ltr"
                                     id="formEmail" placeholder="email@example.com" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label" for="formPhoneNumber">شماره همراه</label>
-                                <input type="text" class="form-control form-control-lg" name="phone_number" dir="ltr"
-                                    id="formPhoneNumber" placeholder="09123456789" required>
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label" for="formSubject">موضوع</label>
@@ -127,35 +140,23 @@
         <h2 class="section-title">سوالات متداول</h2>
         <div class="row justify-content-center">
             <div class="col-lg-8">
+                {% if faq_items %}
                 <div class="accordion" id="faqAccordion">
+                    {% for item in faq_items %}
                     <div class="card-noorbanoo mb-3">
                         <div class="card-body">
-                            <h5 class="mb-0">چگونه می‌توانم قطعات مورد نیاز را پیدا کنم؟</h5>
-                            <p class="text-muted mt-2 mb-0">
-                                می‌توانید از طریق صفحه محصولات، قطعات موجود را جستجو کرده و یا با ما تماس بگیرید 
-                                تا مشاوران ما شما را راهنمایی کنند.
-                            </p>
+                            <h5 class="mb-0">{{ item.question }}</h5>
+                            <p class="text-muted mt-2 mb-0">{{ item.answer }}</p>
                         </div>
                     </div>
-                    <div class="card-noorbanoo mb-3">
-                        <div class="card-body">
-                            <h5 class="mb-0">آیا محصولات شما گارانتی دارند؟</h5>
-                            <p class="text-muted mt-2 mb-0">
-                                بله، تمامی محصولات ما با گارانتی اصالت و کیفیت ارائه می‌شوند. 
-                                برای اطلاعات بیشتر در مورد گارانتی با ما تماس بگیرید.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card-noorbanoo mb-3">
-                        <div class="card-body">
-                            <h5 class="mb-0">آیا ارسال به سراسر کشور دارید؟</h5>
-                            <p class="text-muted mt-2 mb-0">
-                                بله، ما به سراسر کشور ارسال داریم. هزینه و زمان ارسال بسته به مقصد متفاوت است. 
-                                برای اطلاعات بیشتر با ما تماس بگیرید.
-                            </p>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
+                <p class="text-center mt-3 mb-0">
+                    <a href="{% url 'website:faq' %}" class="btn btn-outline-primary btn-sm">مشاهده همه سوالات</a>
+                </p>
+                {% else %}
+                <p class="text-muted text-center mb-0">سوالی ثبت نشده است.</p>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -1,0 +1,5 @@
+{% comment %}هدر دسکتاپ داشبورد ادمین/مشتری — نام فروشگاه + لوگوی سایت{% endcomment %}
+<a href="{% url 'website:index' %}" class="header__logo header__logo--branding" aria-label="خانه - {{ site_branding.get_logo_alt }}">
+    <span class="header__logo-store-name">{{ site_branding.get_logo_alt }}</span>
+    {% include "includes/partials/site-logo-img.html" with extra_class="header__logo-img" %}
+</a>

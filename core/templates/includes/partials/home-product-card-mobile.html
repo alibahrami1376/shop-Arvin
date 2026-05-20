@@ -1,0 +1,53 @@
+{% load static %}
+<article class="home-product-card card card-bordered shadow-none h-100">
+    <div class="card-pinned">
+        {% if product.is_discounted %}
+        <span class="home-product-card__badge card-pinned-top-start" aria-label="تخفیف {{ product.discount_percent }} درصد">{{ product.discount_percent }}٪</span>
+        {% endif %}
+        <a href="{% url 'shop:product-detail' slug=product.slug %}" class="home-product-card__img-wrap d-block">
+            <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" width="400" height="400" loading="lazy" onerror="this.onerror=null;this.src='{% static 'img/900x900/img1.jpg' %}';">
+        </a>
+        {% if request.user.is_authenticated %}
+        <div class="card-pinned-top-end">
+            <button type="button"
+                class="btn btn-outline-secondary btn-xs btn-icon rounded-circle home-product-card__wishlist{% if product.id in wishlist_items %} active{% endif %}"
+                data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به علاقه‌مندی‌ها"
+                onclick="event.preventDefault(); event.stopPropagation(); addToWishlist(this, '{{ product.id }}')">
+                <i class="bi-heart" aria-hidden="true"></i>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="card-body home-product-card__body">
+        <div class="home-product-card__meta">
+            {% with product.category.all|first as cat %}
+            {% if cat %}
+            <span class="home-product-card__brand">{{ cat.title }}</span>
+            {% endif %}
+            {% endwith %}
+            <span class="home-product-card__code">کد: {{ product.id }}</span>
+        </div>
+
+        <h3 class="home-product-card__title">
+            <a href="{% url 'shop:product-detail' slug=product.slug %}" class="text-dark text-decoration-none">{{ product.title }}</a>
+        </h3>
+
+        <div class="home-product-card__footer">
+            <div class="home-product-card__prices">
+                {% if product.is_discounted %}
+                <span class="home-product-card__price-old formatted-price text-decoration-line-through">{{ product.price }}</span>
+                <span class="home-product-card__price-current"><span class="formatted-price">{{ product.get_price }}</span> تومان</span>
+                {% else %}
+                <span class="home-product-card__price-current"><span class="formatted-price">{{ product.price }}</span> تومان</span>
+                {% endif %}
+            </div>
+            <button type="button"
+                class="btn btn-primary btn-icon rounded-circle home-product-card__cart"
+                aria-label="افزودن {{ product.title }} به سبد خرید"
+                onclick="event.preventDefault(); event.stopPropagation(); addToCart('{{ product.id }}')">
+                <i class="bi-cart" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</article>

@@ -1,8 +1,8 @@
 {% load static %}
 <header id="header" class="header header--desktop" role="banner" aria-label="Main navigation">
     <div class="header__container">
-        <a href="{% url 'website:index' %}" class="header__logo" aria-label="خانه - آروین صندلی">
-            <img src="{% static 'img/ghasetak.png' %}" alt="" class="header__logo-img" width="200" height="222" decoding="async">
+        <a href="{% url 'website:index' %}" class="header__logo" aria-label="خانه - {{ site_branding.get_logo_alt }}">
+            {% include "includes/partials/site-logo-img.html" with extra_class="header__logo-img" %}
         </a>
 
         <nav class="header__nav header__nav--desktop" aria-label="منوی اصلی">

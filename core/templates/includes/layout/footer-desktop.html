@@ -1,68 +1,38 @@
 <footer class="site-footer site-footer--desktop">
-    <div class="container">
-        <div class="row justify-content-lg-between content-space-t-2 content-space-b-lg-2">
-            <div class="col-lg-4 mb-5 mb-lg-0">
-                <div class="d-flex align-items-start flex-column h-100">
-                    <a class="mb-4 navbar-brand" href="{% url 'website:index' %}" aria-label="فروشگاه لوازم کامیون">
-                        <div class="logo-container">
-                            <div class="logo-icon">
-                                <i class="bi-truck" style="font-size: 2rem; color: var(--color-soft-rose-gold);"></i>
-                            </div>
-                            <span class="logo-text">کامیون</span>
-                        </div>
-                    </a>
-                    <p class="text-muted mb-4" style="max-width: 300px;">
-                        فروشگاه لوازم کامیون - تامین قطعات یدکی اصلی و با کیفیت برای انواع کامیون و کامیونت.
-                        با بیش از ۱۰ سال تجربه در خدمت شما هستیم.
-                    </p>
-                    <ul class="list-inline mb-0">
-                        <li class="list-inline-item">
-                            <a class="btn btn-ghost-secondary btn-sm btn-icon rounded-circle" href="#" aria-label="Instagram">
-                                <i class="bi-instagram"></i>
-                            </a>
-                        </li>
-                        <li class="list-inline-item">
-                            <a class="btn btn-ghost-secondary btn-sm btn-icon rounded-circle" href="#" aria-label="Telegram">
-                                <i class="bi-telegram"></i>
-                            </a>
-                        </li>
-                        <li class="list-inline-item">
-                            <a class="btn btn-ghost-secondary btn-sm btn-icon rounded-circle" href="#" aria-label="LinkedIn">
-                                <i class="bi-linkedin"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+    <div class="container site-footer__container">
+        <div class="row site-footer__row align-items-start">
+            <div class="col-lg-5 col-md-6 site-footer__col site-footer__col--brand">
+                <a class="site-footer__brand navbar-brand" href="{% url 'website:index' %}" aria-label="{{ site_branding.get_logo_alt }}">
+                    <span class="site-footer__brand-inner">
+                        <span class="site-footer__store-name">{{ site_branding.get_logo_alt }}</span>
+                        {% include "includes/partials/site-logo-img.html" with extra_class="site-footer__logo-img" lazy=True %}
+                    </span>
+                </a>
+                <p class="site-footer__desc text-muted">
+                    تامین قطعات یدکی اصلی برای انواع کامیون و کامیونت — بیش از ۱۰ سال تجربه.
+                </p>
+                {% include "includes/partials/site-wide-social-buttons.html" %}
             </div>
 
-            <div class="col-6 col-md-4 col-lg-2 mb-5 mb-lg-0">
-                <h5>دسترسی سریع</h5>
-                <ul class="list-unstyled list-py-1">
-                    <li><a class="text-secondary" href="{% url 'website:index' %}">صفحه اصلی</a></li>
-                    <li><a class="text-secondary" href="{% url 'shop:product-grid' %}">محصولات</a></li>
-                    <li><a class="text-secondary" href="{% url 'website:about' %}">درباره ما</a></li>
-                    <li><a class="text-secondary" href="{% url 'website:contact' %}">تماس با ما</a></li>
+            <div class="col-lg-3 col-md-6 site-footer__col site-footer__col--nav">
+                <h5 class="site-footer__title">دسترسی سریع</h5>
+                <ul class="site-footer__links list-unstyled mb-0">
+                    <li><a class="site-footer__link" href="{% url 'website:index' %}">صفحه اصلی</a></li>
+                    <li><a class="site-footer__link" href="{% url 'shop:product-grid' %}">محصولات</a></li>
+                    <li><a class="site-footer__link" href="{% url 'website:about' %}">درباره ما</a></li>
+                    <li><a class="site-footer__link" href="{% url 'website:contact' %}">تماس با ما</a></li>
+                    <li><a class="site-footer__link" href="{% url 'website:faq' %}">سوالات متداول</a></li>
                 </ul>
             </div>
 
-            <div class="col-6 col-md-4 col-lg-2 mb-5 mb-lg-0">
-                <h5>خدمات</h5>
-                <ul class="list-unstyled list-py-1">
-                    <li><a class="text-secondary" href="#">مشاوره فنی</a></li>
-                    <li><a class="text-secondary" href="#">نصب و راه‌اندازی</a></li>
-                    <li><a class="text-secondary" href="#">گارانتی محصولات</a></li>
-                    <li><a class="text-secondary" href="#">پشتیبانی ۲۴ ساعته</a></li>
-                </ul>
-            </div>
-
-            <div class="col-md-4 col-lg-3 mb-5 mb-lg-0">
-                <h5>عضویت در خبرنامه</h5>
-                <p class="text-muted small mb-3">برای دریافت آخرین محصولات و تخفیف‌های ویژه</p>
-                <form method="post" action="{% url 'website:newsletter' %}">
+            <div class="col-lg-4 col-md-12 site-footer__col site-footer__col--newsletter">
+                <h5 class="site-footer__title">عضویت در خبرنامه</h5>
+                <p class="site-footer__newsletter-hint text-muted">آخرین محصولات و تخفیف‌های ویژه</p>
+                <form class="site-footer__newsletter-form" method="post" action="{% url 'website:newsletter' %}">
                     {% csrf_token %}
-                    <div class="input-group mb-3">
+                    <div class="input-group input-group-sm site-footer__newsletter-input">
                         <input type="email" class="form-control" placeholder="ایمیل شما" name="email" required>
-                        <button class="btn btn-primary" type="submit">
+                        <button class="btn btn-primary" type="submit" aria-label="ارسال">
                             <i class="bi-send"></i>
                         </button>
                     </div>
@@ -70,25 +40,13 @@
             </div>
         </div>
 
-        <hr class="my-4" style="border-color: rgba(30, 58, 95, 0.2);">
-
-        <div class="row align-items-center">
-            <div class="col-md-6 mb-3 mb-md-0">
-                <p class="text-muted small mb-0">&copy; ۱۴۰۳ فروشگاه لوازم کامیون. تمامی حقوق محفوظ است.</p>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <ul class="list-inline mb-0">
-                    <li class="list-inline-item">
-                        <a class="text-secondary small" href="#">حریم خصوصی</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <span class="text-muted">|</span>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="text-secondary small" href="#">قوانین و مقررات</a>
-                    </li>
-                </ul>
-            </div>
+        <div class="site-footer__bottom">
+            <p class="site-footer__copyright text-muted mb-0">&copy; ۱۴۰۳ {{ site_branding.get_logo_alt }}. تمامی حقوق محفوظ است.</p>
+            <nav class="site-footer__legal" aria-label="صفحات قانونی">
+                <a class="site-footer__link site-footer__link--sm" href="{% url 'website:privacy' %}">حریم خصوصی</a>
+                <span class="site-footer__legal-sep" aria-hidden="true">|</span>
+                <a class="site-footer__link site-footer__link--sm" href="{% url 'website:terms' %}">قوانین و مقررات</a>
+            </nav>
         </div>
     </div>
 </footer>

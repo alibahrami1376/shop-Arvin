@@ -1,0 +1,70 @@
+{% extends dashboard_admin_base_template %}
+{% load static %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">فروشگاه</li>
+        <li class="breadcrumb-item active" aria-current="page">لوگوی سایت</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="card-header border-bottom">
+        <h4 class="card-header-title mb-0">لوگوی سایت</h4>
+        <p class="card-text small text-muted mb-0 mt-1">
+            این لوگو در هدر، فوتر و فاکتور نمایش داده می‌شود.
+        </p>
+    </div>
+    <form action="." method="post" enctype="multipart/form-data">
+        <div class="card-body">
+            {% csrf_token %}
+
+            <div class="alert alert-primary mb-4" role="note">
+                <h6 class="alert-heading mb-2">ابعاد اجباری لوگو</h6>
+                <ul class="mb-0 small ps-3">
+                    <li><strong>عرض:</strong> {{ logo_width }} پیکسل</li>
+                    <li><strong>ارتفاع:</strong> {{ logo_height }} پیکسل</li>
+                    <li><strong>نسبت تصویر:</strong> ثابت — فقط همین ابعاد پذیرفته می‌شود</li>
+                    <li><strong>فرمت:</strong> PNG یا WEBP (پس‌زمینهٔ شفاف توصیه می‌شود)</li>
+                    <li><strong>حداکثر حجم:</strong> ۴۰۰ کیلوبایت</li>
+                </ul>
+                <p class="small text-muted mb-0 mt-2">
+                    تصاویر با ابعاد دیگر (مثلاً مربع، افقی کشیده یا عمودی بلند) رد می‌شوند تا چیدمان سایت به‌هم نریزد.
+                </p>
+            </div>
+
+            {% if object.logo %}
+            <div class="mb-4">
+                <p class="form-label mb-2">پیش‌نمایش لوگوی فعلی</p>
+                <div class="border rounded p-3 bg-light d-inline-block">
+                    <img src="{{ object.logo.url }}" alt="{{ object.get_logo_alt }}" width="{{ logo_width }}" height="{{ logo_height }}" class="site-logo-img" style="max-height: 4rem; width: auto;">
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.site_name.id_for_label }}">نام فروشگاه</label>
+                <div class="col-sm-9">
+                    {{ form.site_name }}
+                    <div class="form-text">در ویژگی alt تصویر لوگو استفاده می‌شود.</div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.logo.id_for_label }}">فایل لوگو</label>
+                <div class="col-sm-9">
+                    {{ form.logo }}
+                    {% if form.logo.help_text %}<div class="form-text">{{ form.logo.help_text }}</div>{% endif %}
+                    {% if form.logo.errors %}<div class="invalid-feedback d-block">{{ form.logo.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <button type="submit" class="btn btn-primary">ذخیره</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

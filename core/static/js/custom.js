@@ -1,3 +1,21 @@
+function updateCartBadges(totalQuantity) {
+    var qty = parseInt(totalQuantity, 10);
+    if (Number.isNaN(qty) || qty < 0) {
+        qty = 0;
+    }
+
+    var headerBadge = document.getElementById('total-cart-item-count');
+    if (headerBadge) {
+        headerBadge.textContent = qty > 0 ? String(qty) : (headerBadge.dataset.emptyLabel || '۰');
+    }
+
+    var mobileBadge = document.getElementById('mobile-bottom-cart-count');
+    if (mobileBadge) {
+        mobileBadge.textContent = qty > 0 ? String(qty) : '';
+        mobileBadge.classList.toggle('d-none', qty <= 0);
+    }
+}
+
 function changePage(page_number) {
     let current_url_params = new URLSearchParams(window.location.search)
     current_url_params.set("page", page_number)
@@ -21,9 +39,118 @@ function formatPriceInToman(element) {
     element.dataset.priceFormatted = "1";
 }
 
+function initQuantityCounters() {
+    document.querySelectorAll('.js-quantity-counter').forEach(function (wrap) {
+        if (wrap.dataset.qtyBound) {
+            return;
+        }
+        wrap.dataset.qtyBound = '1';
+        var input = wrap.querySelector('.js-result, input[type="number"], input[type="text"]');
+        var minus = wrap.querySelector('.js-minus');
+        var plus = wrap.querySelector('.js-plus');
+        if (!input || !minus || !plus) {
+            return;
+        }
+        var min = parseInt(input.getAttribute('min'), 10) || 1;
+        var max = parseInt(input.getAttribute('max'), 10) || 99;
+        function setValue(next) {
+            var value = parseInt(input.value, 10) || min;
+            value = Math.max(min, Math.min(max, next !== undefined ? next : value));
+            input.value = String(value);
+        }
+        minus.addEventListener('click', function (e) {
+            e.preventDefault();
+            setValue((parseInt(input.value, 10) || min) - 1);
+        });
+        plus.addEventListener('click', function (e) {
+            e.preventDefault();
+            setValue((parseInt(input.value, 10) || min) + 1);
+        });
+    });
+}
+
+function initProductGallerySwipers() {
+    if (typeof Swiper === 'undefined') {
+        return;
+    }
+    var thumbEl = document.querySelector('.js-swiper-shop-product-thumb');
+    var thumbSwiper = null;
+    if (thumbEl && !thumbEl.swiper) {
+        thumbSwiper = new Swiper(thumbEl, {
+            slidesPerView: 4,
+            spaceBetween: 8,
+            watchSlidesProgress: true,
+            watchSlidesVisibility: true,
+            breakpoints: { 360: { slidesPerView: 5 } },
+        });
+    } else if (thumbEl && thumbEl.swiper) {
+        thumbSwiper = thumbEl.swiper;
+    }
+    var productEl = document.querySelector('.js-swiper-shop-product');
+    if (productEl && !productEl.swiper) {
+        new Swiper(productEl, {
+            rtl: true,
+            effect: 'fade',
+            fadeEffect: { crossFade: true },
+            loop: productEl.querySelectorAll('.swiper-slide').length > 1,
+            navigation: {
+                nextEl: '.js-swiper-shop-product-button-next',
+                prevEl: '.js-swiper-shop-product-button-prev',
+            },
+            thumbs: thumbSwiper ? { swiper: thumbSwiper } : undefined,
+        });
+    }
+}
+
+function initPasswordToggle() {
+    document.querySelectorAll('.js-password-toggle').forEach(function (btn) {
+        if (btn.dataset.passToggleBound) {
+            return;
+        }
+        btn.dataset.passToggleBound = '1';
+
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var group = btn.closest('.input-group, .auth-field-password');
+            var input = group
+                ? group.querySelector('input[type="password"], input[type="text"]')
+                : null;
+            if (!input && btn.getAttribute('aria-controls')) {
+                input = document.getElementById(btn.getAttribute('aria-controls'));
+            }
+            var icon = btn.querySelector('i');
+            if (!input) {
+                return;
+            }
+            var show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            btn.setAttribute('aria-label', show ? 'مخفی کردن رمز عبور' : 'نمایش رمز عبور');
+            if (icon) {
+                icon.classList.toggle('bi-eye', !show);
+                icon.classList.toggle('bi-eye-slash', show);
+            }
+        });
+    });
+}
+
+function initBootstrapTooltips() {
+    if (typeof bootstrap === 'undefined' || !bootstrap.Tooltip) {
+        return;
+    }
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+        if (!bootstrap.Tooltip.getInstance(el)) {
+            new bootstrap.Tooltip(el);
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     let priceElements = document.querySelectorAll('.formatted-price');
     priceElements.forEach(element => formatPriceInToman(element));
+    initQuantityCounters();
+    initProductGallerySwipers();
+    initPasswordToggle();
+    initBootstrapTooltips();
     
     /**
      * Header Scroll Behavior - Intelligent Hide/Show System

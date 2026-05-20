@@ -1,10 +1,26 @@
 {% load static %}
-<section class="home-product-strip section {{ extra_section_class }}" aria-labelledby="{{ strip_heading_id }}">
+<section class="home-product-strip section {{ extra_section_class }}{% if is_mobile_site and mobile_carousel %} home-product-strip--mobile-carousel{% endif %}" aria-labelledby="{{ strip_heading_id }}">
     <div class="container">
         <div class="text-center mb-3 mb-md-4{% if is_desktop_site %} w-md-75 w-lg-50 mx-md-auto{% endif %}">
             <h2 id="{{ strip_heading_id }}" class="home-product-strip__title">{{ title }}</h2>
         </div>
 
+        {% if is_mobile_site and mobile_carousel %}
+        <div class="home-product-strip-swiper swiper js-home-product-strip-swiper" dir="rtl" data-strip="{{ strip_suffix }}" aria-label="{{ title }}">
+            <div class="swiper-wrapper">
+                {% for product in products %}
+                <div class="swiper-slide">
+                    {% include "includes/partials/home-product-card-mobile.html" %}
+                </div>
+                {% empty %}
+                <div class="swiper-slide">
+                    <p class="text-muted text-center mb-0 py-4">محصولی برای نمایش وجود ندارد.</p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination home-product-strip-pagination" aria-hidden="true"></div>
+        </div>
+        {% else %}
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 g-md-3 mb-2">
             {% for product in products %}
             <div class="col">
@@ -68,5 +84,6 @@
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
 </section>

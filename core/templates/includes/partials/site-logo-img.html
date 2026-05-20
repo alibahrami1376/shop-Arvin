@@ -1,0 +1,7 @@
+{% load static %}
+<img src="{% if site_branding.logo %}{{ site_branding.logo.url }}{% else %}{% static 'img/ghasetak.png' %}{% endif %}"
+     alt="{{ site_branding.get_logo_alt }}"
+     class="site-logo-img{% if extra_class %} {{ extra_class }}{% endif %}"
+     width="{{ site_logo_width }}"
+     height="{{ site_logo_height }}"
+     decoding="async"{% if lazy %} loading="lazy"{% endif %}>

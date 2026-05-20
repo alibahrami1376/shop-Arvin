@@ -1,0 +1,79 @@
+{% load static %}
+<section class="cart-page" aria-labelledby="cart-page-title">
+    <header class="cart-page__header">
+        <h1 id="cart-page-title" class="cart-page__title">سبد خرید</h1>
+        <span class="cart-page__count">{{ total_quantity }} مورد</span>
+    </header>
+
+    <ul class="cart-page__items">
+        {% for item in cart_items %}
+        <li class="cart-item">
+            <div class="cart-item__main">
+                <a href="{% url 'shop:product-detail' slug=item.product_obj.slug %}" class="cart-item__img-wrap">
+                    <img src="{{ item.product_obj.image.url }}" alt="{{ item.product_obj.title }}" width="96" height="96" loading="lazy"
+                        onerror="this.onerror=null;this.src='{% static 'img/900x900/img1.jpg' %}';">
+                </a>
+                <div class="cart-item__info">
+                    <h2 class="cart-item__title">
+                        <a href="{% url 'shop:product-detail' slug=item.product_obj.slug %}">{{ item.product_obj.title }}</a>
+                    </h2>
+                    <p class="cart-item__line-total formatted-price">{{ item.total_price }}</p>
+                    {% if item.product_obj.category.all %}
+                    <p class="cart-item__meta">
+                        <span class="cart-item__meta-label">دسته‌بندی:</span>
+                        {% for category in item.product_obj.category.all %}
+                        <span>{{ category.title }}</span>{% if not forloop.last %}، {% endif %}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                    <p class="cart-item__meta">
+                        <span class="cart-item__meta-label">قیمت هر واحد:</span>
+                        <span class="formatted-price">{{ item.product_obj.get_price }}</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="cart-item__actions">
+                <div class="cart-item__qty">
+                    <label class="cart-item__qty-label" for="cart-qty-{{ item.product_id }}">تعداد</label>
+                    {% if item.product_obj.stock > 0 %}
+                    <select id="cart-qty-{{ item.product_id }}" class="form-select form-select-sm cart-item__qty-select"
+                        onchange="changeProductQuantity('{{ item.product_id }}', this.value)">
+                        {% with ''|center:item.product_obj.stock as range %}
+                        {% for _ in range %}
+                        <option value="{{ forloop.counter }}"{% if forloop.counter == item.quantity %} selected{% endif %}>{{ forloop.counter }}</option>
+                        {% endfor %}
+                        {% endwith %}
+                    </select>
+                    {% else %}
+                    <span class="cart-item__qty-value">{{ item.quantity }}</span>
+                    {% endif %}
+                </div>
+                <button type="button" class="cart-item__remove" onclick="removeProduct('{{ item.product_id }}')">
+                    <i class="bi-trash" aria-hidden="true"></i>
+                    <span>حذف</span>
+                </button>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <a class="cart-page__continue" href="{% url 'shop:product-grid' %}">
+        به خرید ادامه دهید <i class="bi-chevron-left" aria-hidden="true"></i>
+    </a>
+
+    <div class="cart-page__summary">
+        <h2 class="cart-page__summary-title">خلاصه هزینه</h2>
+        <dl class="cart-page__summary-rows">
+            <div class="cart-page__summary-row">
+                <dt>مالیات</dt>
+                <dd>به همراه ۹٪ در هنگام پرداخت</dd>
+            </div>
+            <div class="cart-page__summary-row cart-page__summary-row--total">
+                <dt>جمع</dt>
+                <dd class="formatted-price">{{ total_payment_price }}</dd>
+            </div>
+        </dl>
+        <a class="btn btn-primary btn-lg w-100 cart-page__checkout" href="{% url 'order:checkout' %}">ثبت سفارش</a>
+    </div>
+</section>

@@ -1,0 +1,93 @@
+<div class="row shop-product-grid row-cols-2{% if not is_mobile_site %} row-cols-sm-2 row-cols-md-3{% endif %} g-2 g-md-3 mb-4 mb-md-10">
+    {% for object in object_list %}
+    <div class="col">
+        <article class="card card-bordered shadow-none text-center h-100 shop-product-card">
+            <div class="card-pinned">
+                <a href="{% url 'shop:product-detail' slug=object.slug %}" class="d-block shop-product-card__img-wrap">
+                    <img class="card-img-top" src="{{ object.image.url }}" alt="{{ object.title }}">
+                </a>
+                {% if request.user.is_authenticated %}
+                <div class="card-pinned-top-end">
+                    <button type="button"
+                        class="btn btn-outline-secondary btn-xs btn-icon rounded-circle{% if object.id in wishlist_items %} active{% endif %}"
+                        data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به علاقه‌مندی‌ها"
+                        onclick="addToWishlist(this, '{{ object.id }}')">
+                        <i class="bi-heart"></i>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="card-body">
+                {% if object.category.all %}
+                <p class="shop-product-card__cats mb-1">
+                    {% for category in object.category.all %}
+                    <span class="link-sm link-secondary">{{ category.title }}</span>{% if not forloop.last %}، {% endif %}
+                    {% endfor %}
+                </p>
+                {% endif %}
+                <h2 class="card-title h6 shop-product-card__title">
+                    <a class="text-dark text-decoration-none" href="{% url 'shop:product-detail' slug=object.slug %}">{{ object.title }}</a>
+                </h2>
+                {% if object.is_discounted %}
+                <p class="card-text text-dark shop-product-card__price mb-0">
+                    <span class="formatted-price fw-semibold">{{ object.get_price }}</span>
+                    <span class="text-body fs-6 formatted-price text-decoration-line-through">{{ object.price }}</span>
+                </p>
+                {% else %}
+                <p class="card-text text-dark shop-product-card__price formatted-price fw-semibold mb-0">{{ object.price }}</p>
+                {% endif %}
+            </div>
+
+            <div class="card-footer pt-0 border-0 bg-transparent">
+                <div class="d-inline-flex align-items-center small text-secondary mb-2" aria-label="امتیاز {{ object.avg_rate }} از ۵">
+                    {% for i in "12345" %}
+                    {% if i|add:0 <= object.avg_rate %}
+                    <i class="bi bi-star-fill star-rate" aria-hidden="true"></i>
+                    {% else %}
+                    <i class="bi bi-star star-rate" aria-hidden="true"></i>
+                    {% endif %}
+                    {% endfor %}
+                    <span class="ms-1">{{ object.avg_rate }}/5</span>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm w-100 rounded-pill"
+                    onclick="addToCart('{{ object.id }}')">افزودن به سبد</button>
+            </div>
+        </article>
+    </div>
+    {% empty %}
+    <div class="col-12 py-5 text-center text-secondary">
+        <p class="mb-0">محصولی برای نمایش وجود ندارد.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% if page_obj.has_other_pages %}
+<nav class="shop-pagination" aria-label="صفحه‌بندی محصولات">
+    <ul class="pagination justify-content-center flex-wrap gap-1 mb-0">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <button type="button" class="page-link" onclick="changePage('{{ page_obj.previous_page_number }}')" aria-label="صفحه قبل">
+                <i class="bi-chevron-right" aria-hidden="true"></i>
+            </button>
+        </li>
+        {% endif %}
+        {% for i in page_obj.paginator.page_range %}
+        {% if page_obj.number == i %}
+        <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+        {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+        <li class="page-item">
+            <button type="button" class="page-link" onclick="changePage('{{ i }}')">{{ i }}</button>
+        </li>
+        {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <button type="button" class="page-link" onclick="changePage('{{ page_obj.next_page_number }}')" aria-label="صفحه بعد">
+                <i class="bi-chevron-left" aria-hidden="true"></i>
+            </button>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}

@@ -10,3 +10,7 @@ from .payment_method_settings import *
 from .orders import *
 from .faq import *
 from .banners import *
+from .legal_page import *
+from .contact_settings import *
+from .site_branding import *
+from .site_wide_social import *

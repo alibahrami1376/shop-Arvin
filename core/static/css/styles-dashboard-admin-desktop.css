@@ -12,3 +12,72 @@ body.device-desktop.dashboard-layout--admin .col-lg-3 .navbar-vertical {
 body.device-desktop.dashboard-layout--admin .card-header .btn {
     white-space: nowrap;
 }
+
+/* سایدبار فروشگاه — گروه‌های تاشو */
+body.device-desktop.dashboard-layout--admin .admin-sidebar-store-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+body.device-desktop.dashboard-layout--admin .admin-sidebar-group__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.5rem 0.65rem;
+    border: none;
+    border-radius: 0.35rem;
+    background: rgba(74, 55, 44, 0.06);
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    text-align: right;
+    direction: rtl;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+body.device-desktop.dashboard-layout--admin .admin-sidebar-group__toggle:hover {
+    background: rgba(74, 55, 44, 0.1);
+}
+
+body.device-desktop.dashboard-layout--admin .admin-sidebar-group__toggle:focus-visible {
+    outline: 2px solid rgba(230, 180, 34, 0.6);
+    outline-offset: 1px;
+}
+
+body.device-desktop.dashboard-layout--admin .admin-sidebar-group__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+body.device-desktop.dashboard-layout--admin .admin-sidebar-group__label .nav-icon {
+    opacity: 0.9;
+}
+
+body.device-desktop.dashboard-layout--admin .admin-sidebar-group__chev {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    opacity: 0.65;
+    transition: transform 0.2s ease;
+}
+
+body.device-desktop.dashboard-layout--admin .admin-sidebar-group__toggle:not(.collapsed) .admin-sidebar-group__chev {
+    transform: rotate(-180deg);
+}
+
+body.device-desktop.dashboard-layout--admin .admin-sidebar-group__nav {
+    padding-top: 0.2rem;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.25rem;
+    padding-inline-start: 0.35rem;
+    border-inline-end: 2px solid rgba(230, 180, 34, 0.35);
+}
+
+body.device-desktop.dashboard-layout--admin .admin-sidebar-group__nav .nav-link {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+    font-size: 0.8125rem;
+}

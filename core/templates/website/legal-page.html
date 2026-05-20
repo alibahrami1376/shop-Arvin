@@ -1,0 +1,28 @@
+{% extends base_template %}
+{% load static %}
+
+{% block title %}{{ page.title }} - فروشگاه آروین{% endblock %}
+
+{% block content %}
+<section class="hero-section" style="min-height: 30vh;">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text-box">
+                <h1 class="hero-title">{{ page.title }}</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="card-noorbanoo p-4 p-lg-5 legal-page-content">
+                    {{ page.content|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

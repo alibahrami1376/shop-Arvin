@@ -6,7 +6,7 @@ from .models import ContactModel,NewsLetter
 class ContactForm(forms.ModelForm):
     class Meta:
         model = ContactModel
-        fields = ["subject","full_name","email","phone_number","content"]
+        fields = ["subject", "full_name", "email", "content"]
         
         error_messages = {
             'email': {

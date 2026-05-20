@@ -30,13 +30,11 @@
 
 
 <body class="device-desktop dashboard-layout dashboard-layout--admin">
+    <script src="{% static 'js/layout-sync.js' %}"></script>
     <!-- ========== HEADER (همان هدر صفحه هوم) ========== -->
     <header id="header" class="header" role="banner" aria-label="Main navigation">
         <div class="header__container">
-            <a href="{% url 'website:index' %}" class="header__logo" aria-label="خانه - فروشگاه کامیون">
-                <i class="bi-truck header__logo-icon"></i>
-                <span class="header__logo-text">کامیون</span>
-            </a>
+            {% include "includes/partials/dashboard-header-logo.html" %}
 
             <nav class="header__nav" aria-label="منوی اصلی">
                 <ul class="header__nav-list">
@@ -131,13 +129,9 @@
             <div class="row justify-content-lg-between content-space-t-2 content-space-b-lg-2">
                 <div class="col-lg-3 mb-5">
                     <div class="d-flex align-items-start flex-column h-100">
-                        <!-- Logo -->
-                        <a class="w-100 mb-3 mb-lg-auto" href="{% url 'website:index' %}" aria-label="Front">
-                            <img class="brand" src="{% static 'svg/logos/logo.svg' %}" alt="Logo">
-                        </a>
-                        <!-- End Logo -->
+                        {% include "includes/partials/dashboard-footer-brand.html" %}
 
-                        <p class="text-muted small mb-0">&copy; Maryam Farajian 2023 Front RTL</p>
+                        <p class="text-muted small mb-0">&copy; ۱۴۰۳ {{ site_branding.get_logo_alt }}</p>
                     </div>
                 </div>
 
@@ -337,7 +331,7 @@
     <script src="{% static 'js/jquery.min.js' %}"></script>
 
     <!-- JS Implementing Plugins -->
-    <script src="{% static 'js/vendor.min.js' %}"></script>
+    {% include 'includes/layout/scripts-vendor.html' %}
 
     <!-- JS Front -->
     <script src="{% static 'js/theme.min.js' %}"></script>
@@ -428,6 +422,7 @@
             // =======================================================
             const oneYearFromNow = new Date()
 
+            if (typeof countdown === 'function') {
             document.querySelectorAll('.js-countdown').forEach(item => {
                 const days = item.querySelector('.js-cd-days'),
                     hours = item.querySelector('.js-cd-hours'),
@@ -445,6 +440,7 @@
                     countdown.DAYS | countdown.HOURS | countdown.MINUTES | countdown.SECONDS
                 )
             })
+            }
         })()
 
         var swiper = new Swiper('.js-swiper-shop-product', {
@@ -468,7 +464,6 @@
         });
         // INITIALIZATION OF  QUANTITY COUNTER
         // =======================================================
-        new HSQuantityCounter('.js-quantity-counter')
     </script>
     <!-- JS Custom-->
     <script src="{% static 'js/custom.js' %}"></script>

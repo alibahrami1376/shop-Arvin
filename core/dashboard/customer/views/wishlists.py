@@ -11,10 +11,9 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.core.exceptions import FieldError
 from shop.models import WishlistProductModel
-from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class CustomerWishlistListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, ListView):
+class CustomerWishlistListView(LoginRequiredMixin, HasCustomerAccessPermission, ListView):
     template_name = "dashboard/customer/wishlists/wishlist-list.html"
     paginate_by = 5
 
@@ -38,7 +37,7 @@ class CustomerWishlistListView(DashboardDeviceTemplateMixin, LoginRequiredMixin,
         return context
 
 
-class CustomerWishlistDeleteView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasCustomerAccessPermission, SuccessMessageMixin, DeleteView):
+class CustomerWishlistDeleteView(LoginRequiredMixin, HasCustomerAccessPermission, SuccessMessageMixin, DeleteView):
     http_method_names = ["post"]
     success_url = reverse_lazy('dashboard:customer:wishlist-list')
     success_message = "محصول با موفقیت از لیست حذف شد"

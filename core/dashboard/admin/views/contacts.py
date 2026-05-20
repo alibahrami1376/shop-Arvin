@@ -11,10 +11,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from dashboard.permissions import *
 from django.db.models import F,Q
 from django.core import exceptions
-from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class ContactListView(DashboardDeviceTemplateMixin, LoginRequiredMixin,HasAdminAccessPermission, ListView):
+class ContactListView(LoginRequiredMixin,HasAdminAccessPermission, ListView):
     title = "لیست تماس ها"
     template_name = "dashboard/admin/contacts/contact-list.html"
     paginate_by = 10
@@ -52,7 +51,7 @@ class ContactListView(DashboardDeviceTemplateMixin, LoginRequiredMixin,HasAdminA
 
 
 
-class ContactDetailView(DashboardDeviceTemplateMixin, LoginRequiredMixin,HasAdminAccessPermission, DetailView):
+class ContactDetailView(LoginRequiredMixin,HasAdminAccessPermission, DetailView):
     title = "جزئیات تماس"
     template_name = "dashboard/admin/contacts/contact-detail.html"
     

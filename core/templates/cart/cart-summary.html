@@ -1,9 +1,15 @@
-{% extends "base-desktop.html" %}
+{% extends base_template %}
 
 {% load static %}
 
 {% block content %}
 
+{% if cart_items %}
+{% if is_mobile_site %}
+<div class="container cart-page-wrap">
+    {% include "cart/partials/cart-summary-mobile.html" %}
+</div>
+{% else %}
 <!-- Content -->
 <div class="container content-space-3 content-space-lg-5">
     <div class="row">
@@ -106,11 +112,6 @@
                         </div>
                     </div>
                 </li>
-                {% empty %}
-                <div class="row text-center">
-                    <p> محصولی برای نمایش وجود ندارد</p>
-                </div>
-                <!-- End Item -->
                 {% endfor %}
 
             </ul>
@@ -187,11 +188,31 @@
     <!-- End Row -->
 </div>
 <!-- End Content -->
+{% endif %}
+
+{% else %}
+<section class="cart-empty-state" aria-labelledby="cart-empty-title">
+    <div class="container">
+        <div class="cart-empty-state__card">
+            <div class="cart-empty-state__icon-wrap" aria-hidden="true">
+                <i class="bi-cart-x"></i>
+            </div>
+            <h1 id="cart-empty-title" class="cart-empty-state__title">سبد خرید شما خالی است</h1>
+            <p class="cart-empty-state__text">هنوز محصولی به سبد اضافه نکرده‌اید. از فروشگاه دیدن کنید و کالای مورد نظر را انتخاب کنید.</p>
+            <a href="{% url 'shop:product-grid' %}" class="btn btn-primary btn-lg cart-empty-state__btn">
+                <i class="bi-shop" aria-hidden="true"></i>
+                رفتن به فروشگاه
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
 
 {% endblock %}
 
 
 {% block extra_js %}
+{% if cart_items %}
 <script>
     function changeProductQuantity(product_id,quantity){
         $.ajax({
@@ -204,13 +225,13 @@
     
             },
             success: function (response) {
-                console.log(response);
+                if (typeof updateCartBadges === 'function') {
+                    updateCartBadges(response.total_quantity);
+                }
                 window.location.reload();
-                // do something with the response data
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log(errorThrown);
-                // handle the error case
             }
         });
     }
@@ -224,7 +245,9 @@
     
             },
             success: function (response) {
-                console.log(response);
+                if (typeof updateCartBadges === 'function') {
+                    updateCartBadges(response.total_quantity);
+                }
                 window.location.reload();
                 // do something with the response data
             },
@@ -235,5 +258,5 @@
         });
     }
 </script>
-
+{% endif %}
 {% endblock %}

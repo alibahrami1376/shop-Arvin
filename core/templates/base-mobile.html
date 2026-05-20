@@ -25,6 +25,7 @@
 </head>
 
 <body class="device-mobile {% block body_class %}has-mobile-bottom-nav{% endblock body_class %}">
+    <script src="{% static 'js/layout-sync.js' %}"></script>
 
     {% include 'includes/layout/header-mobile.html' %}
 
@@ -33,15 +34,8 @@
     {% include 'includes/layout/footer-mobile.html' %}
 
     <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/vendor.min.js' %}"></script>
+    {% include 'includes/layout/scripts-vendor.html' %}
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
-    <script>
-        (function () {
-            if (typeof HSBsDropdown !== 'undefined') {
-                HSBsDropdown.init();
-            }
-        })();
-    </script>
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
     <script>
@@ -54,12 +48,8 @@
                     csrfmiddlewaretoken: '{{ csrf_token }}'
                 },
                 success: function (response) {
-                    var $badge = $("#mobile-bottom-cart-count");
-                    $badge.html(response.total_quantity);
-                    if (response.total_quantity > 0) {
-                        $badge.removeClass("d-none");
-                    } else {
-                        $badge.addClass("d-none");
+                    if (typeof updateCartBadges === 'function') {
+                        updateCartBadges(response.total_quantity);
                     }
                 }
             });

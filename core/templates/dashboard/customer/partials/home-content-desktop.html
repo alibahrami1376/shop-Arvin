@@ -1,0 +1,77 @@
+<!-- خلاصه آمار -->
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-borderless h-100">
+            <div class="card-body">
+                <span class="text-muted small">تعداد سفارشات</span>
+                <h4 class="mb-0">{{ orders_count }}</h4>
+                <a href="{% url 'dashboard:customer:order-list' %}" class="btn btn-soft-primary btn-sm mt-2">مشاهده</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-borderless h-100">
+            <div class="card-body">
+                <span class="text-muted small">سفارشات پرداخت‌شده</span>
+                <h4 class="mb-0">{{ orders_success_count }}</h4>
+                <a href="{% url 'dashboard:customer:order-list' %}?status=2" class="btn btn-soft-success btn-sm mt-2">مشاهده</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-borderless h-100">
+            <div class="card-body">
+                <span class="text-muted small">لیست علاقه‌مندی</span>
+                <h4 class="mb-0">{{ wishlist_count }}</h4>
+                <a href="{% url 'dashboard:customer:wishlist-list' %}" class="btn btn-soft-warning btn-sm mt-2">مشاهده</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-borderless h-100">
+            <div class="card-body">
+                <span class="text-muted small">نشانی‌ها</span>
+                <h4 class="mb-0">{{ addresses_count }}</h4>
+                <a href="{% url 'dashboard:customer:address-list' %}" class="btn btn-soft-info btn-sm mt-2">مشاهده</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- آخرین سفارشات -->
+<div class="card">
+    <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="card-header-title mb-0">آخرین سفارشات</h5>
+        <a href="{% url 'dashboard:customer:order-list' %}" class="btn btn-sm btn-ghost-primary">همه سفارشات</a>
+    </div>
+    <div class="card-body">
+        {% if recent_orders %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>کد سفارش</th>
+                        <th>تاریخ</th>
+                        <th>مبلغ</th>
+                        <th>وضعیت</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td dir="ltr">{{ order.tracking_code }}</td>
+                        <td>{{ order.created_date|date:"Y/m/d" }}</td>
+                        <td>{{ order.get_price|default:order.total_price }} تومان</td>
+                        <td><span class="badge bg-soft-{% if order.status == 2 %}success{% elif order.status == 3 %}danger{% else %}warning{% endif %}">{{ order.get_status.label }}</span></td>
+                        <td><a href="{% url 'dashboard:customer:order-detail' pk=order.pk %}" class="btn btn-ghost-primary btn-sm">جزئیات</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">هنوز سفارشی ثبت نشده است. <a href="{% url 'shop:product-grid' %}">از فروشگاه خرید کنید</a>.</p>
+        {% endif %}
+    </div>
+</div>

@@ -22,10 +22,9 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from order.models import CouponModel
 from django.core.exceptions import FieldError
-from dashboard.mixins import DashboardDeviceTemplateMixin
 
 
-class AdminCouponListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, ListView):
+class AdminCouponListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
     template_name = "dashboard/admin/coupons/coupon-list.html"
     paginate_by = 10
 
@@ -49,7 +48,7 @@ class AdminCouponListView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasA
         return context
 
 
-class AdminCouponCreateView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
+class AdminCouponCreateView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
     template_name = "dashboard/admin/coupons/coupon-create.html"
     queryset = CouponModel.objects.all()
     form_class = CouponForm
@@ -64,7 +63,7 @@ class AdminCouponCreateView(DashboardDeviceTemplateMixin, LoginRequiredMixin, Ha
         return reverse_lazy("dashboard:admin:coupon-list")
 
 
-class AdminCouponEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
+class AdminCouponEditView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
     template_name = "dashboard/admin/coupons/coupon-edit.html"
     queryset = CouponModel.objects.all()
     form_class = CouponForm
@@ -78,7 +77,7 @@ class AdminCouponEditView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasA
         return context
 
 
-class AdminCouponDeleteView(DashboardDeviceTemplateMixin, LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
+class AdminCouponDeleteView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, DeleteView):
     template_name = "dashboard/admin/coupons/coupon-delete.html"
     queryset = CouponModel.objects.all()
     success_url = reverse_lazy("dashboard:admin:coupon-list")

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.http import Http404
 from django.views.generic import TemplateView
 from django.db.models import IntegerField, Q, Sum, Value
 from django.db.models.functions import Coalesce
@@ -8,7 +8,6 @@ from order.models import OrderStatusType
 from shop.models import ProductModel, ProductStatusType
 
 from core.device import filter_queryset_for_device
-from core.mixins import DeviceTemplateMixin
 
 from .models import *
 from .forms import ContactForm, NewsLetterForm
@@ -18,9 +17,8 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 # Create your views here.
 
-class IndexView(DeviceTemplateMixin, TemplateView):
+class IndexView(TemplateView):
     template_name = "website/index.html"
-    mobile_template_name = "website/index-mobile.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -59,15 +57,35 @@ class IndexView(DeviceTemplateMixin, TemplateView):
 
         return context
 
-class ContactView(DeviceTemplateMixin, TemplateView):
+class ContactView(TemplateView):
     template_name = "website/contact.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        settings = ContactPageSettings.get_solo()
+        context["contact_settings"] = settings
+        context["contact_social_links"] = settings.get_social_links()
+        context["faq_items"] = FAQItem.objects.filter(is_published=True)[:3]
+        return context
 
-class AboutView(DeviceTemplateMixin, TemplateView):
+
+class LegalPageView(TemplateView):
+    template_name = "website/legal-page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page_type = self.kwargs["page_type"]
+        if page_type not in LegalPage.PageType.values:
+            raise Http404()
+        context["page"] = LegalPage.get_by_type(page_type)
+        return context
+
+
+class AboutView(TemplateView):
     template_name = "website/about.html"
 
 
-class FAQView(DeviceTemplateMixin, TemplateView):
+class FAQView(TemplateView):
     template_name = "website/faq.html"
 
     def get_context_data(self, **kwargs):

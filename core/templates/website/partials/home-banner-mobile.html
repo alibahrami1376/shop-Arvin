@@ -1,0 +1,12 @@
+{% if home_banners %}
+<section class="banner-slider-section home-banner-block" aria-label="بنر صفحه اصلی">
+    <div class="js-swiper-banner swiper banner-swiper">
+        <div class="swiper-wrapper">
+            {% for banner in home_banners %}
+            {% include "website/partials/home-banner-slide.html" %}
+            {% endfor %}
+        </div>
+        <div class="swiper-pagination banner-pagination"></div>
+    </div>
+</section>
+{% endif %}
