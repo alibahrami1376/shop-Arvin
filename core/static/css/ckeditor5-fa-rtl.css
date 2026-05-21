@@ -1,0 +1,55 @@
+/**
+ * راست‌به‌چپ برای CKEditor 5 در پنل ادمین (فارسی)
+ * صفحهٔ عمومی از dir="rtl" روی html تبعیت می‌کند؛ ادیتور جداگانه LTR بود.
+ */
+
+.ck.ck-editor {
+    direction: rtl;
+}
+
+.ck.ck-content.ck-editor__editable {
+    direction: rtl;
+    text-align: right;
+    unicode-bidi: plaintext;
+}
+
+.ck.ck-content.ck-editor__editable h1,
+.ck.ck-content.ck-editor__editable h2,
+.ck.ck-content.ck-editor__editable h3,
+.ck.ck-content.ck-editor__editable h4,
+.ck.ck-content.ck-editor__editable p,
+.ck.ck-content.ck-editor__editable li {
+    text-align: right;
+}
+
+.ck.ck-content.ck-editor__editable ul,
+.ck.ck-content.ck-editor__editable ol {
+    padding-right: 2em;
+    padding-left: 0;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.ck.ck-content.ck-editor__editable blockquote {
+    border-right: 4px solid var(--ck-color-base-border, #c4c4c4);
+    border-left: none;
+    padding-right: 1em;
+    padding-left: 0;
+}
+
+html[dir="rtl"] form .aligned .ck ul,
+html[dir="rtl"] form .aligned .ck ol {
+    margin-right: 1.5em;
+    margin-left: 0;
+    padding-right: inherit;
+    padding-left: 0;
+}
+
+.ck.ck-toolbar {
+    direction: rtl;
+}
+
+.ck.ck-word-count {
+    direction: rtl;
+    text-align: right;
+}

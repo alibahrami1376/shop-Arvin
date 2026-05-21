@@ -1,0 +1,36 @@
+{% with b=object.get_pricing_breakdown %}
+<div class="order-pricing-breakdown">
+    <div class="row mb-2">
+        <dt class="col-6 col-md-4 text-muted">جمع کالاها</dt>
+        <dd class="col-6 col-md-8 text-end mb-0 formatted-price">{{ b.items_subtotal }}</dd>
+    </div>
+    {% if b.discount_amount %}
+    <div class="row mb-2">
+        <dt class="col-6 col-md-4 text-muted">
+            تخفیف{% if b.coupon %} ({{ b.coupon.discount_percent }}٪){% endif %}
+        </dt>
+        <dd class="col-6 col-md-8 text-end mb-0 formatted-price text-success">−{{ b.discount_amount }}</dd>
+    </div>
+    <div class="row mb-2">
+        <dt class="col-6 col-md-4 text-muted">جمع پس از تخفیف</dt>
+        <dd class="col-6 col-md-8 text-end mb-0 formatted-price">{{ b.after_discount }}</dd>
+    </div>
+    {% endif %}
+    {% if b.shipping_enabled and b.shipping_amount %}
+    <div class="row mb-2">
+        <dt class="col-6 col-md-4 text-muted">هزینه ارسال</dt>
+        <dd class="col-6 col-md-8 text-end mb-0 formatted-price">{{ b.shipping_amount }}</dd>
+    </div>
+    {% endif %}
+    {% if b.tax_enabled and b.tax_amount %}
+    <div class="row mb-2">
+        <dt class="col-6 col-md-4 text-muted">مالیات{% if b.tax_percent %} ({{ b.tax_percent }}٪){% endif %}</dt>
+        <dd class="col-6 col-md-8 text-end mb-0 formatted-price">{{ b.tax_amount }}</dd>
+    </div>
+    {% endif %}
+    <div class="row mt-3 pt-2 border-top">
+        <dt class="col-6 col-md-4 fw-bold">مبلغ قابل پرداخت</dt>
+        <dd class="col-6 col-md-8 text-end mb-0 fw-bold formatted-price">{{ b.grand_total }}</dd>
+    </div>
+</div>
+{% endwith %}

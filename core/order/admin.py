@@ -1,5 +1,11 @@
 from django.contrib import admin
-from .models import OrderModel, OrderItemModel, CouponModel, UserAddressModel
+from .models import (
+    CheckoutPricingSettings,
+    CouponModel,
+    OrderItemModel,
+    OrderModel,
+    UserAddressModel,
+)
 
 # Register your models here.
 
@@ -10,7 +16,12 @@ class OrderModelAdmin(admin.ModelAdmin):
         "id",
         "tracking_code",
         "user",
+        "shipping_method",
+        "city",
         "total_price",
+        "discount_amount",
+        "shipping_amount",
+        "tax_amount",
         "coupon",
         "status",
         "created_date",
@@ -45,6 +56,24 @@ class CouponModelAdmin(admin.ModelAdmin):
     
     def used_by_count(self, obj):
         return obj.used_by.all().count()
+
+
+@admin.register(CheckoutPricingSettings)
+class CheckoutPricingSettingsAdmin(admin.ModelAdmin):
+    list_display = (
+        "shipping_enabled",
+        "shipping_tehran_amount",
+        "shipping_province_amount",
+        "tax_enabled",
+        "tax_percent",
+        "updated_date",
+    )
+
+    def has_add_permission(self, request):
+        return not CheckoutPricingSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(UserAddressModel)

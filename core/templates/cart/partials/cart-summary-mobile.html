@@ -74,6 +74,10 @@
                 <dd class="formatted-price">{{ total_payment_price }}</dd>
             </div>
         </dl>
+        <p class="cart-page__support small text-muted mb-3">
+            نیاز به پشتیبانی دارید؟
+            <a href="{% url 'website:contact' %}"> تماس باما</a>
+        </p>
         <a class="btn btn-primary btn-lg w-100 cart-page__checkout" href="{% url 'order:checkout' %}">ثبت سفارش</a>
     </div>
 </section>

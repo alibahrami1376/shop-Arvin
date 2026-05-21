@@ -7,8 +7,16 @@ class SubmitReviewForm(forms.ModelForm):
         model = ReviewModel
         fields = ['product','rate', 'description']
         error_messages = {
-            'description': {
-                'required': 'فیلد توضیحات اجباری است',
+            "description": {
+                "required": "متن دیدگاه را وارد کنید.",
+            },
+            "rate": {
+                "required": "امتیاز را انتخاب کنید.",
+                "invalid_choice": "امتیاز انتخاب‌شده معتبر نیست.",
+            },
+            "product": {
+                "required": "محصول مشخص نیست.",
+                "invalid_choice": "محصول انتخاب‌شده معتبر نیست.",
             },
         }
     def clean(self):

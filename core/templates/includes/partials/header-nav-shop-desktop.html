@@ -1,0 +1,18 @@
+<li class="header__nav-item dropdown">
+    <a href="#"
+        class="header__nav-link dropdown-toggle {% if request.resolver_match.view_name == 'shop:product-grid' %}header__nav-link--active{% endif %}"
+        role="button"
+        id="headerShopDropdown"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        aria-haspopup="true">فروشگاه</a>
+    <ul class="dropdown-menu header__shop-dropdown shadow-sm" aria-labelledby="headerShopDropdown">
+        <li><a class="dropdown-item" href="{% url 'shop:product-grid' %}">همه محصولات</a></li>
+        {% if shop_categories %}
+        <li><hr class="dropdown-divider my-1"></li>
+        {% include "includes/partials/shop-category-nav-items.html" with variant="desktop" %}
+        {% else %}
+        <li><span class="dropdown-item-text text-muted small px-3">دسته‌بندی ثبت نشده</span></li>
+        {% endif %}
+    </ul>
+</li>

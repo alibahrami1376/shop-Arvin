@@ -4,6 +4,8 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from decimal import Decimal
 
+from order.shipping import ShippingMethodType
+
 TRACKING_CODE_MIN_LENGTH = 5
 TRACKING_CODE_MAX_LENGTH = 7
 
@@ -55,6 +57,17 @@ class OrderModel(models.Model):
         verbose_name="کد سفارش",
     )
 
+    shipping_method = models.IntegerField(
+        choices=ShippingMethodType.choices,
+        default=ShippingMethodType.address.value,
+        verbose_name="روش ارسال",
+    )
+    freight_notes = models.TextField(
+        blank=True,
+        default="",
+        verbose_name="توضیحات باربری",
+    )
+
     # order address information
     address = models.CharField(max_length=250)
     state = models.CharField(max_length=50)
@@ -64,7 +77,31 @@ class OrderModel(models.Model):
     payment = models.ForeignKey('payment.PaymentModel',on_delete=models.SET_NULL,null=True,blank=True)
     
     
-    total_price = models.DecimalField(default=0,max_digits=10,decimal_places=0)
+    total_price = models.DecimalField(
+        default=0,
+        max_digits=10,
+        decimal_places=0,
+        verbose_name="جمع کالاها",
+        help_text="جمع قیمت اقلام قبل از تخفیف، ارسال و مالیات.",
+    )
+    discount_amount = models.DecimalField(
+        default=0,
+        max_digits=10,
+        decimal_places=0,
+        verbose_name="مبلغ تخفیف",
+    )
+    shipping_amount = models.DecimalField(
+        default=0,
+        max_digits=10,
+        decimal_places=0,
+        verbose_name="هزینه ارسال",
+    )
+    tax_amount = models.DecimalField(
+        default=0,
+        max_digits=10,
+        decimal_places=0,
+        verbose_name="مالیات",
+    )
 
     coupon = models.ForeignKey(CouponModel,on_delete=models.PROTECT,null=True,blank=True)
     status = models.IntegerField(choices=OrderStatusType.choices,default=OrderStatusType.pending.value)
@@ -165,7 +202,15 @@ class OrderModel(models.Model):
         }
 
     def get_full_address(self):
+        if self.shipping_method == ShippingMethodType.freight.value:
+            parts = [ShippingMethodType.freight.label, self.city]
+            if self.freight_notes:
+                parts.append(self.freight_notes)
+            return " — ".join(parts)
         return f"{self.state},{self.city},{self.address}"
+
+    def get_shipping_method_label(self):
+        return ShippingMethodType(self.shipping_method).label
     
     @property
     def is_successful(self):
@@ -176,12 +221,48 @@ class OrderModel(models.Model):
         """فاکتور وقتی وضعیت پرداخت برای مشتری «موفق» است (تأیید ادمین یا درگاه)."""
         return self.get_customer_payment_status()["variant"] == "success"
 
-    def get_price(self):
-        
-        if self.coupon:            
-            return round(self.total_price - (self.total_price * Decimal( self.coupon.discount_percent /100)))
-        else:
-            return self.total_price
+    def get_items_subtotal(self) -> int:
+        """جمع قیمت کالاها (ذخیره‌شده یا محاسبه از اقلام)."""
+        if self.pk and self.order_items.exists():
+            return int(self.calculate_total_price())
+        return int(self.total_price)
+
+    def get_discount_amount(self) -> int:
+        if self.discount_amount:
+            return int(self.discount_amount)
+        if self.coupon:
+            subtotal = self.get_items_subtotal()
+            return round(subtotal * self.coupon.discount_percent / 100)
+        return 0
+
+    def get_shipping_amount(self) -> int:
+        return int(self.shipping_amount or 0)
+
+    def get_tax_amount(self) -> int:
+        return int(self.tax_amount or 0)
+
+    def get_price(self) -> int:
+        """مبلغ قابل پرداخت (پس از تخفیف + ارسال + مالیات)."""
+        base = self.get_items_subtotal() - self.get_discount_amount()
+        return base + self.get_shipping_amount() + self.get_tax_amount()
+
+    def get_pricing_breakdown(self) -> dict:
+        """ردیف‌های نمایشی برای فاکتور و جزئیات سفارش."""
+        settings = CheckoutPricingSettings.get_solo()
+        items = self.get_items_subtotal()
+        discount = self.get_discount_amount()
+        return {
+            "items_subtotal": items,
+            "discount_amount": discount,
+            "after_discount": items - discount,
+            "shipping_amount": self.get_shipping_amount(),
+            "tax_amount": self.get_tax_amount(),
+            "grand_total": self.get_price(),
+            "coupon": self.coupon,
+            "shipping_enabled": settings.shipping_enabled,
+            "tax_enabled": settings.tax_enabled,
+            "tax_percent": settings.tax_percent,
+        }
     
     
 class OrderItemModel(models.Model):
@@ -195,4 +276,59 @@ class OrderItemModel(models.Model):
     
     def __str__(self):
         return f"{self.product.title} - {self.order.tracking_code}"
-    
+
+
+class CheckoutPricingSettings(models.Model):
+    """تنظیمات نمایش هزینه ارسال و مالیات در صفحه تسویه حساب (یک ردیف)."""
+
+    shipping_enabled = models.BooleanField(
+        default=True,
+        verbose_name="نمایش هزینه ارسال",
+        help_text="غیرفعال: بخش هزینه ارسال در خلاصه سفارش نمایش داده نمی‌شود.",
+    )
+    shipping_tehran_label = models.CharField(
+        max_length=100,
+        default="تهران و حومه",
+        verbose_name="عنوان نرخ تهران",
+    )
+    shipping_tehran_amount = models.PositiveIntegerField(
+        default=35000,
+        verbose_name="هزینه ارسال تهران و حومه (تومان)",
+    )
+    shipping_province_label = models.CharField(
+        max_length=100,
+        default="شهرستان‌ها",
+        verbose_name="عنوان نرخ شهرستان",
+    )
+    shipping_province_amount = models.PositiveIntegerField(
+        default=50000,
+        verbose_name="هزینه ارسال شهرستان‌ها (تومان)",
+    )
+    tax_enabled = models.BooleanField(
+        default=True,
+        verbose_name="نمایش و محاسبه مالیات",
+        help_text="غیرفعال: مالیات در خلاصه سفارش محاسبه و نمایش داده نمی‌شود.",
+    )
+    tax_percent = models.PositiveSmallIntegerField(
+        default=9,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        verbose_name="درصد مالیات",
+    )
+    updated_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "تنظیمات هزینه ارسال و مالیات"
+        verbose_name_plural = "تنظیمات هزینه ارسال و مالیات"
+
+    def __str__(self):
+        return "تنظیمات هزینه ارسال و مالیات"
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def calculate_tax_amount(self, subtotal) -> int:
+        if not self.tax_enabled or self.tax_percent <= 0:
+            return 0
+        return round(subtotal * self.tax_percent / 100)

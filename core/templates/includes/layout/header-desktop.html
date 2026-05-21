@@ -8,20 +8,7 @@
         <nav class="header__nav header__nav--desktop" aria-label="منوی اصلی">
             <ul class="header__nav-list">
                 <li><a href="{% url 'website:index' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:index' %}header__nav-link--active{% endif %}">صفحه اصلی</a></li>
-                <li class="header__nav-item dropdown">
-                    <a href="#" class="header__nav-link dropdown-toggle {% if request.resolver_match.view_name == 'shop:product-grid' %}header__nav-link--active{% endif %}" role="button" id="headerShopDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">فروشگاه</a>
-                    <ul class="dropdown-menu header__shop-dropdown shadow-sm" aria-labelledby="headerShopDropdown">
-                        <li><a class="dropdown-item" href="{% url 'shop:product-grid' %}">همه محصولات</a></li>
-                        {% if shop_categories %}
-                        <li><hr class="dropdown-divider my-1"></li>
-                        {% for category in shop_categories %}
-                        <li><a class="dropdown-item" href="{% url 'shop:product-grid' %}?category_id={{ category.id }}">{{ category.title }}</a></li>
-                        {% endfor %}
-                        {% else %}
-                        <li><span class="dropdown-item-text text-muted small px-3">دسته‌بندی ثبت نشده</span></li>
-                        {% endif %}
-                    </ul>
-                </li>
+                {% include "includes/partials/header-nav-shop-desktop.html" %}
                 <li><a href="{% url 'blog:blog_home' %}" class="header__nav-link {% if 'blog' in request.resolver_match.namespace %}header__nav-link--active{% endif %}">بلاگ</a></li>
                 <li><a href="{% url 'website:faq' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:faq' %}header__nav-link--active{% endif %}">از آروین بپرس؟</a></li>
                 <li><a href="{% url 'website:about' %}" class="header__nav-link {% if request.resolver_match.view_name == 'website:about' %}header__nav-link--active{% endif %}">درباره ما</a></li>

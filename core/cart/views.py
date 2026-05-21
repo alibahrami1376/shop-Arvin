@@ -16,7 +16,7 @@ class SessionAddProductView(View):
         ).exists():
             cart.add_product(str(product_id))
         if request.user.is_authenticated:
-            cart.merge_session_cart_in_db(request.user)
+            cart.persist_to_db(request.user)
         return JsonResponse({"cart": cart.get_cart_dict(), "total_quantity": cart.get_total_quantity()})
 
 
@@ -41,7 +41,7 @@ class SessionUpdateProductQuantityView(View):
         if product_id and quantity:
             cart.update_product_quantity(product_id, quantity)
         if request.user.is_authenticated:
-            cart.merge_session_cart_in_db(request.user)
+            cart.persist_to_db(request.user)
         return JsonResponse({"cart": cart.get_cart_dict(), "total_quantity": cart.get_total_quantity()})
 
 
@@ -51,6 +51,8 @@ class CartSummaryView(TemplateView):
     def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         cart = CartSession(self.request.session)
+        if self.request.user.is_authenticated:
+            cart.ensure_user_cart(self.request.user)
         cart_items = cart.get_cart_items()
         context["cart_items"] = cart_items
         context["total_quantity"] = cart.get_total_quantity()

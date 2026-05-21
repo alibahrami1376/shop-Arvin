@@ -1,0 +1,31 @@
+{% for category in shop_categories %}
+{% with children=category.children.all %}
+<li class="header__mobile-cat-item">
+    {% if children %}
+    <button type="button"
+        class="header__mobile-cat-toggle w-100 d-flex align-items-center justify-content-between"
+        data-shop-cat-toggle
+        aria-expanded="false"
+        aria-controls="header-mobile-sub-{{ category.id }}">
+        <span class="fw-semibold">{{ category.title }}</span>
+        <i class="bi-chevron-down header__mobile-cat-chevron" aria-hidden="true"></i>
+    </button>
+    <ul class="header__mobile-subcats list-unstyled mb-0" id="header-mobile-sub-{{ category.id }}" hidden>
+        <li>
+            <a href="{% url 'shop:product-grid' %}?category_id={{ category.id }}"
+                class="header__mobile-category-link header__mobile-subcat-link">همه {{ category.title }}</a>
+        </li>
+        {% for child in children %}
+        <li>
+            <a href="{% url 'shop:product-grid' %}?category_id={{ child.id }}"
+                class="header__mobile-category-link header__mobile-subcat-link">{{ child.title }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <a href="{% url 'shop:product-grid' %}?category_id={{ category.id }}"
+        class="header__mobile-category-link fw-semibold">{{ category.title }}</a>
+    {% endif %}
+</li>
+{% endwith %}
+{% endfor %}

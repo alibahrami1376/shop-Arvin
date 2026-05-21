@@ -15,4 +15,14 @@ urlpatterns = [
         views.AdminPaymentMethodSettingsView.as_view(),
         name="payment-method-settings",
     ),
+    path(
+        "settings/sms/",
+        views.AdminSMSSettingsView.as_view(),
+        name="sms-settings",
+    ),
+    path(
+        "settings/checkout-pricing/",
+        views.AdminCheckoutPricingSettingsView.as_view(),
+        name="checkout-pricing-settings",
+    ),
 ]

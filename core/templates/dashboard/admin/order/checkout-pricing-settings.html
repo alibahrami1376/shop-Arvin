@@ -1,0 +1,96 @@
+{% extends dashboard_admin_base_template %}
+{% load static %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">فروشگاه</li>
+        <li class="breadcrumb-item active" aria-current="page">هزینه ارسال و مالیات</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="card-header border-bottom">
+        <h4 class="card-header-title mb-0">هزینه ارسال و مالیات (صفحه تسویه حساب)</h4>
+        <p class="card-text small text-muted mb-0 mt-1">
+            مقادیر زیر در «خلاصه سفارش» هنگام checkout نمایش داده می‌شوند.
+            غیرفعال کردن هر بخش، آن را از صفحه مشتری حذف می‌کند.
+        </p>
+    </div>
+    <form action="." method="post">
+        <div class="card-body">
+            {% csrf_token %}
+
+            <h5 class="h6 mb-3">هزینه ارسال</h5>
+            <div class="row mb-4 align-items-center">
+                <div class="col-lg-8">
+                    <div class="form-check form-switch">
+                        {{ form.shipping_enabled }}
+                        <label class="form-check-label" for="{{ form.shipping_enabled.id_for_label }}">
+                            نمایش هزینه ارسال فعال است
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label" for="{{ form.shipping_tehran_label.id_for_label }}">عنوان (تهران)</label>
+                    {{ form.shipping_tehran_label }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="{{ form.shipping_tehran_amount.id_for_label }}">مبلغ تهران (تومان)</label>
+                    {{ form.shipping_tehran_amount }}
+                    {% if form.shipping_tehran_amount.errors %}
+                    <div class="text-danger small">{{ form.shipping_tehran_amount.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="{{ form.shipping_province_label.id_for_label }}">عنوان (شهرستان)</label>
+                    {{ form.shipping_province_label }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="{{ form.shipping_province_amount.id_for_label }}">مبلغ شهرستان (تومان)</label>
+                    {{ form.shipping_province_amount }}
+                    {% if form.shipping_province_amount.errors %}
+                    <div class="text-danger small">{{ form.shipping_province_amount.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <h5 class="h6 mb-3">مالیات</h5>
+            <div class="row mb-3 align-items-center">
+                <div class="col-lg-8">
+                    <div class="form-check form-switch">
+                        {{ form.tax_enabled }}
+                        <label class="form-check-label" for="{{ form.tax_enabled.id_for_label }}">
+                            نمایش و محاسبه مالیات فعال است
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label" for="{{ form.tax_percent.id_for_label }}">درصد مالیات</label>
+                    <div class="input-group">
+                        {{ form.tax_percent }}
+                        <span class="input-group-text">٪</span>
+                    </div>
+                    {% if form.tax_percent.errors %}
+                    <div class="text-danger small">{{ form.tax_percent.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer pt-0">
+            <div class="d-flex justify-content-end gap-3">
+                <a class="btn btn-white" href="{% url 'dashboard:admin:home' %}">بازگشت</a>
+                <button type="submit" class="btn btn-primary">ذخیره</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

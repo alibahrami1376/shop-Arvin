@@ -21,7 +21,7 @@
         <select class="form-select" name="category_id" id="category-id-filter">
             <option value="">همه دسته‌ها</option>
             {% for category in categories %}
-            <option value="{{ category.id }}"{% if request.GET.category_id == category.id|stringformat:"s" %} selected{% endif %}>{{ category.title }}</option>
+            <option value="{{ category.id }}"{% if request.GET.category_id == category.id|stringformat:"s" %} selected{% endif %}>{{ category.get_indented_title }}</option>
             {% endfor %}
         </select>
     </div>

@@ -26,6 +26,9 @@
             <strong>{{ object.title }}</strong>
             <span class="text-muted">({{ object.slug }})</span>
         </div>
+        {% if object.children.exists %}
+        <p class="text-danger small mt-3 mb-0">با حذف این دسته، {{ object.children.count }} زیرگروه نیز حذف می‌شود.</p>
+        {% endif %}
     </div>
 
     <div class="card-footer">

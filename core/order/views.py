@@ -13,6 +13,8 @@ from cart.cart import CartSession
 from cart.models import CartModel, CartItemModel
 from order.forms import CheckOutForm, OrderTrackingForm
 from order.models import CouponModel, OrderItemModel, OrderModel, UserAddressModel
+from order.pricing import apply_pricing_to_order, get_checkout_pricing_context
+from order.shipping import DELIVERY_FREIGHT, ShippingMethodType
 from order.permissions import HasCustomerAccessPermission
 from payment.models import (
     CardToCardSettings,
@@ -31,6 +33,18 @@ class OrderCheckOutView(
     form_class = CheckOutForm
     success_url = reverse_lazy('order:completed')
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            u = request.user
+            if not u.phone_number or not u.phone_verified:
+                messages.error(
+                    request,
+                    "برای تکمیل سفارش، شماره موبایل باید ثبت و با کد پیامکی تأیید شده باشد. "
+                    "از بخش ویرایش پروفایل اقدام کنید.",
+                )
+                return redirect(reverse_lazy("dashboard:customer:profile-edit"))
+        return super().dispatch(request, *args, **kwargs)
+
     def get_form_kwargs(self):
         kwargs = super(OrderCheckOutView, self).get_form_kwargs()
         kwargs['request'] = self.request
@@ -39,18 +53,17 @@ class OrderCheckOutView(
     def form_valid(self, form):
         user = self.request.user
         cleaned_data = form.cleaned_data
-        address = cleaned_data["address_id"]
         coupon = cleaned_data["coupon"]
 
         cart = CartModel.objects.get(user=user)
         payment_method = cleaned_data["payment_method"]
         try:
             with transaction.atomic():
-                order = self.create_order(address)
+                order = self.create_order(cleaned_data)
                 self.create_order_items(order, cart)
-                total_price = order.calculate_total_price()
-                self.apply_coupon(coupon, order, user, total_price)
-                order.save()
+                self.apply_coupon(coupon, order, user)
+                coupon_percent = coupon.discount_percent if coupon else 0
+                apply_pricing_to_order(order, coupon_percent=coupon_percent)
                 self.request.session["last_order_tracking_code"] = order.tracking_code
                 if payment_method == PaymentMethodType.card_to_card.value:
                     redirect_url = self._create_card_payment_next_url(order)
@@ -91,13 +104,27 @@ class OrderCheckOutView(
             "order:card-payment-instructions", kwargs={"pk": order.pk}
         )
 
-    def create_order(self, address):
+    def create_order(self, cleaned_data):
+        user = self.request.user
+        if cleaned_data["delivery_type"] == DELIVERY_FREIGHT:
+            return OrderModel.objects.create(
+                user=user,
+                shipping_method=ShippingMethodType.freight.value,
+                state="باربری",
+                city=cleaned_data["freight_city"],
+                address="-",
+                zip_code="-",
+                freight_notes=cleaned_data["freight_notes"],
+            )
+        address = cleaned_data["address_id"]
         return OrderModel.objects.create(
-            user=self.request.user,
+            user=user,
+            shipping_method=ShippingMethodType.address.value,
             address=address.address,
             state=address.state,
             city=address.city,
             zip_code=address.zip_code,
+            freight_notes="",
         )
 
     def create_order_items(self, order, cart):
@@ -113,17 +140,11 @@ class OrderCheckOutView(
         cart.cart_items.all().delete()
         CartSession(self.request.session).clear()
 
-    def apply_coupon(self, coupon, order, user, total_price):
+    def apply_coupon(self, coupon, order, user):
         if coupon:
-            # discount_amount = round(
-            #     (total_price * Decimal(coupon.discount_percent / 100)))
-            # total_price -= discount_amount
-
             order.coupon = coupon
             coupon.used_by.add(user)
             coupon.save()
-
-        order.total_price = total_price
 
     def form_invalid(self, form):
         return super().form_invalid(form)
@@ -133,12 +154,28 @@ class OrderCheckOutView(
         cart = CartModel.objects.get(user=self.request.user)
         context["addresses"] = UserAddressModel.objects.filter(
             user=self.request.user)
-        total_price = cart.calculate_total_price()
-        context["total_price"] = total_price
-        context["total_tax"] = round((total_price * 9)/100)
+        items_subtotal = cart.calculate_total_price()
+        context.update(
+            get_checkout_pricing_context(
+                items_subtotal,
+                city="",
+                state="",
+            )
+        )
+        context["checkout_pricing_json"] = {
+            "tehran_amount": context["checkout_pricing"].shipping_tehran_amount,
+            "province_amount": context["checkout_pricing"].shipping_province_amount,
+            "shipping_enabled": context["checkout_pricing"].shipping_enabled,
+            "tax_enabled": context["checkout_pricing"].tax_enabled,
+            "tax_percent": context["checkout_pricing"].tax_percent,
+        }
         payment_settings = PaymentMethodSettings.get_solo()
         context["enabled_payment_methods"] = payment_settings.get_enabled_methods()
         context["payment_methods_available"] = bool(context["enabled_payment_methods"])
+        from order.shipping import FREIGHT_CITY_CHOICES, FREIGHT_NOTES_PLACEHOLDER
+
+        context["freight_city_choices"] = FREIGHT_CITY_CHOICES
+        context["freight_notes_placeholder"] = FREIGHT_NOTES_PLACEHOLDER
         return context
 
 
@@ -261,6 +298,7 @@ class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):
         message = "کد تخفیف با موفقیت ثبت شد"
         total_price = 0
         total_tax = 0
+        pricing_ctx = {}
 
         try:
             coupon = CouponModel.objects.get(code=code)
@@ -268,7 +306,7 @@ class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):
             return JsonResponse({"message": "کد تخفیف یافت نشد"}, status=404)
         else:
             if coupon.used_by.count() >= coupon.max_limit_usage:
-                status_code, message = 403, "محدودیت در تعداد استفاده"
+                status_code, message = 403, "ظرفیت استفاده از این کد تخفیف تکمیل شده است."
 
             elif coupon.expiration_date and coupon.expiration_date < timezone.now():
                 status_code, message = 403, "کد تخفیف منقضی شده است"
@@ -278,9 +316,26 @@ class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):
 
             else:
                 cart = CartModel.objects.get(user=self.request.user)
-
-                total_price = cart.calculate_total_price()
-                total_price = round(
-                    total_price - (total_price * (coupon.discount_percent/100)))
-                total_tax = round((total_price * 9)/100)
-        return JsonResponse({"message": message, "total_tax": total_tax, "total_price": total_price}, status=status_code)
+                items_subtotal = cart.calculate_total_price()
+                city = (request.POST.get("city") or "").strip()
+                state = (request.POST.get("state") or "").strip()
+                pricing_ctx = get_checkout_pricing_context(
+                    items_subtotal,
+                    city=city,
+                    state=state,
+                    coupon_percent=coupon.discount_percent,
+                )
+                total_tax = pricing_ctx["total_tax"]
+                total_price = pricing_ctx["grand_total"]
+        return JsonResponse(
+            {
+                "message": message,
+                "subtotal": pricing_ctx.get("subtotal", 0) if status_code == 200 else 0,
+                "discount_amount": pricing_ctx.get("discount_amount", 0) if status_code == 200 else 0,
+                "shipping_amount": pricing_ctx.get("shipping_amount", 0) if status_code == 200 else 0,
+                "total_tax": total_tax,
+                "total_price": total_price,
+                "coupon_percent": coupon.discount_percent if status_code == 200 else 0,
+            },
+            status=status_code,
+        )

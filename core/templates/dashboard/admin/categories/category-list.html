@@ -73,6 +73,7 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">عنوان</th>
+                            <th scope="col">دسته والد</th>
                             <th scope="col">اسلاگ</th>
                             <th scope="col">عملیات</th>
                         </tr>
@@ -81,7 +82,8 @@
                         {% for object in object_list %}
                         <tr>
                             <th scope="row">{{object.id}}</th>
-                            <td>{{object.title}}</td>
+                            <td>{{ object.get_indented_title }}</td>
+                            <td>{% if object.parent %}{{ object.parent.title }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
                             <td>{{object.slug}}</td>
                             <td class="d-flex">
                                 <a class="btn btn-sm btn-icon btn-ghost-secondary"

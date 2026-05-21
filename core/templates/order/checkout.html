@@ -1,33 +1,307 @@
 {% extends base_template %}
 {% load static %}
 
+{% block extra_css %}
+<style>
+    .checkout-choices {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .checkout-choice {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.875rem;
+        margin: 0;
+        padding: 1rem 1.125rem;
+        border: 2px solid #e8e4e0;
+        border-radius: 0.75rem;
+        background: #fff;
+        cursor: pointer;
+        transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .checkout-choice:hover {
+        border-color: #d4c4b8;
+        background: #faf8f6;
+    }
+
+    .checkout-choice:has(.checkout-choice__input:checked) {
+        border-color: var(--color-dusty-rose, #b8957a);
+        background: #fdf9f6;
+        box-shadow: 0 0 0 1px rgba(184, 149, 122, 0.25);
+    }
+
+    .checkout-choice:has(.checkout-choice__input:disabled) {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+
+    .checkout-choice__input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .checkout-choice__indicator {
+        flex-shrink: 0;
+        width: 1.375rem;
+        height: 1.375rem;
+        margin-top: 0.15rem;
+        border: 2px solid #b0a8a0;
+        border-radius: 50%;
+        background: #fff;
+        position: relative;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .checkout-choice:has(.checkout-choice__input:checked) .checkout-choice__indicator {
+        border-color: var(--color-dusty-rose, #b8957a);
+        background: var(--color-dusty-rose, #b8957a);
+    }
+
+    .checkout-choice:has(.checkout-choice__input:checked) .checkout-choice__indicator::after {
+        content: "";
+        position: absolute;
+        inset: 4px;
+        border-radius: 50%;
+        background: #fff;
+    }
+
+    .checkout-choice__body {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .checkout-choice__title {
+        display: block;
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--text-primary, #5c4338);
+        line-height: 1.4;
+    }
+
+    .checkout-choice__desc {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: #7a6f66;
+        line-height: 1.5;
+    }
+
+    .checkout-choice--address .checkout-choice__desc {
+        word-break: break-word;
+    }
+
+    .checkout-summary__card {
+        border: 1px solid #e8e4e0;
+        border-radius: 0.75rem;
+    }
+
+    .checkout-summary__body {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .checkout-summary__title {
+        font-weight: 700;
+        color: var(--text-primary, #5c4338);
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #ebe6e1;
+    }
+
+    .checkout-summary__coupon-row {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .checkout-summary__coupon-row .form-control {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .checkout-summary__coupon-btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    .checkout-summary__rows {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding-bottom: 0.25rem;
+        border-bottom: 1px solid #ebe6e1;
+    }
+
+    .checkout-summary__group .checkout-summary__label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.35rem;
+        color: var(--text-primary, #5c4338);
+    }
+
+    .checkout-summary__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 0.875rem;
+        color: #7a6f66;
+        line-height: 1.6;
+    }
+
+    .checkout-summary__row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .checkout-summary__label {
+        font-size: 0.9rem;
+        color: #7a6f66;
+    }
+
+    .checkout-summary__value {
+        font-weight: 600;
+        color: var(--text-primary, #5c4338);
+        text-align: left;
+        direction: ltr;
+        unicode-bidi: plaintext;
+    }
+
+    .checkout-summary__row--total {
+        padding-top: 0.75rem;
+        margin-top: 0.25rem;
+        border-top: 1px dashed #e0d8d0;
+    }
+
+    .checkout-summary__row--total .checkout-summary__label {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text-primary, #5c4338);
+    }
+
+    .checkout-summary__row--total .checkout-summary__value {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--color-dusty-rose, #b8957a);
+    }
+
+    .checkout-summary__submit {
+        border-radius: 999px;
+        font-weight: 700;
+    }
+
+    .checkout-summary__support {
+        text-align: center;
+        padding-top: 0.25rem;
+    }
+</style>
+{% endblock extra_css %}
 
 {% block content %}
-<!-- Content -->
-<div class="container content-space-3 content-space-lg-5">
-    <div class="row">
-        <div class="col-lg-8 mb-7 mb-lg-0">
-            <h4 class="mb-3">انتخاب آدرس </h4>
+<div class="container checkout-page content-space-3 content-space-lg-5">
+    <a class="checkout-page__back link d-inline-flex align-items-center gap-1 mb-3 d-lg-none" href="{% url 'cart:cart-summary' %}">
+        <i class="bi-chevron-right small" aria-hidden="true"></i>
+        بازگشت به سبد خرید
+    </a>
+
+    <div class="row checkout-page__row">
+        <div class="col-lg-8 order-1 mb-4 mb-lg-7 mb-lg-0">
+            <h4 class="checkout-page__section-title mb-3">روش و مقصد ارسال</h4>
 
             <!-- Form -->
             <form action="." method="post" id="checkout-form">
                 {% csrf_token %}
 
-                <hr class="my-4">
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                </div>
+                {% endif %}
 
-                <div class="d-grid gap-2">
+                <div class="checkout-choices mb-4" role="radiogroup" aria-label="روش ارسال">
+                    <label class="checkout-choice" for="delivery-address">
+                        <input type="radio" class="checkout-choice__input delivery-type-radio" name="delivery_type"
+                            id="delivery-address" value="address"
+                            {% if form.delivery_type.value != 'freight' %}checked{% endif %}>
+                        <span class="checkout-choice__indicator" aria-hidden="true"></span>
+                        <span class="checkout-choice__body">
+                            <span class="checkout-choice__title">ارسال به آدرس پستی</span>
+                            <span class="checkout-choice__desc">تحویل به یکی از آدرس‌های ذخیره‌شده شما</span>
+                        </span>
+                    </label>
+                    <label class="checkout-choice" for="delivery-freight">
+                        <input type="radio" class="checkout-choice__input delivery-type-radio" name="delivery_type"
+                            id="delivery-freight" value="freight"
+                            {% if form.delivery_type.value == 'freight' %}checked{% endif %}>
+                        <span class="checkout-choice__indicator" aria-hidden="true"></span>
+                        <span class="checkout-choice__body">
+                            <span class="checkout-choice__title">ارسال با باربری</span>
+                            <span class="checkout-choice__desc">انتخاب شهر مقصد و ثبت توضیحات برای باربری</span>
+                        </span>
+                    </label>
+                </div>
 
-                    <!-- Check -->
-                    {% for address in addresses %}
-                    <div class="form-check">
-                        <input type="radio" class="form-check-input" name="address_id" value="{{address.id}}" required>
-                        <label class="form-check-label" for="address">
-                            {{address.state}},{{address.city}},{{address.address}} ,{{address.zip_code}}</label>
+                <div id="checkout-address-section">
+                    <h5 class="h6 mb-3">انتخاب آدرس</h5>
+                    <div class="checkout-choices" role="radiogroup" aria-label="انتخاب آدرس">
+                        {% if addresses %}
+                        {% for address in addresses %}
+                        <label class="checkout-choice checkout-choice--address" for="address-{{ address.id }}"
+                            data-city="{{ address.city }}" data-state="{{ address.state }}">
+                            <input type="radio" class="checkout-choice__input address-radio" name="address_id"
+                                id="address-{{ address.id }}" value="{{ address.id }}"
+                                {% if forloop.first %}checked{% endif %}>
+                            <span class="checkout-choice__indicator" aria-hidden="true"></span>
+                            <span class="checkout-choice__body">
+                                <span class="checkout-choice__title">{{ address.state }}، {{ address.city }}</span>
+                                <span class="checkout-choice__desc">{{ address.address }} — کد پستی: {{ address.zip_code }}</span>
+                            </span>
+                        </label>
+                        {% endfor %}
+                        {% else %}
+                        <p class="text-muted small mb-0">آدرسی ثبت نشده است. آدرس اضافه کنید یا «ارسال با باربری» را انتخاب کنید.</p>
+                        {% endif %}
                     </div>
-                    {% endfor %}
+                    <div class="mt-2">
+                        <a href="{% url 'dashboard:customer:address-list' %}">مدیریت آدرس‌ها</a>
+                    </div>
+                    {% if form.address_id.errors %}
+                    <div class="text-danger small mt-2">{{ form.address_id.errors.0 }}</div>
+                    {% endif %}
+                </div>
 
-                    <div class="mt-3">
-                        <a class="" href="{% url 'dashboard:customer:address-list' %}">مدیریت آدرس ها</a>
+                <div id="checkout-freight-section" class="d-none mt-4">
+                    <h5 class="h6 mb-3">اطلاعات ارسال با باربری</h5>
+                    <div class="mb-3">
+                        <label class="form-label" for="freight-city">شهر مقصد</label>
+                        <select class="form-select form-select-lg" name="freight_city" id="freight-city">
+                            {% for value, label in freight_city_choices %}
+                            <option value="{{ value }}"{% if form.freight_city.value == value %} selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if form.freight_city.errors %}
+                        <div class="text-danger small mt-1">{{ form.freight_city.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label" for="freight-notes">توضیحات باربری</label>
+                        <textarea class="form-control" name="freight_notes" id="freight-notes" rows="4"
+                            placeholder="{{ freight_notes_placeholder }}">{{ form.freight_notes.value|default:'' }}</textarea>
+                        <div class="form-text text-muted">نام باربری، تماس گیرنده در مقصد، زمان تحویل و سایر نکات را بنویسید.</div>
+                        {% if form.freight_notes.errors %}
+                        <div class="text-danger small mt-1">{{ form.freight_notes.errors.0 }}</div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -35,15 +309,23 @@
 
                 <h4 class="mb-3">روش پرداخت</h4>
                 {% if payment_methods_available %}
-                <div class="d-grid gap-2">
+                <div class="checkout-choices" role="radiogroup" aria-label="روش پرداخت">
                     {% for value, label in enabled_payment_methods %}
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="payment_method" value="{{ value }}"
+                    <label class="checkout-choice" for="payment-method-{{ value }}">
+                        <input class="checkout-choice__input" type="radio" name="payment_method" value="{{ value }}"
                             id="payment-method-{{ value }}" {% if forloop.first %}checked{% endif %} required>
-                        <label class="form-check-label" for="payment-method-{{ value }}">
-                            {% if value == 1 %}درگاه آنلاین (زرین‌پال){% else %}{{ label }}{% endif %}
-                        </label>
-                    </div>
+                        <span class="checkout-choice__indicator" aria-hidden="true"></span>
+                        <span class="checkout-choice__body">
+                            <span class="checkout-choice__title">
+                                {% if value == 1 %}درگاه آنلاین (زرین‌پال){% else %}{{ label }}{% endif %}
+                            </span>
+                            {% if value == 1 %}
+                            <span class="checkout-choice__desc">پرداخت امن از طریق درگاه زرین‌پال</span>
+                            {% elif value == 2 %}
+                            <span class="checkout-choice__desc">واریز به حساب و ارسال رسید</span>
+                            {% endif %}
+                        </span>
+                    </label>
                     {% endfor %}
                 </div>
                 {% else %}
@@ -52,159 +334,282 @@
                 </div>
                 {% endif %}
 
-                <hr class="my-4">
+                <hr class="my-4 d-none d-lg-block">
 
-
-                <div class="row align-items-center">
-
-
-
-                    <div class="col-sm text-center text-sm-start">
-                        <a class="link" href="{% url 'cart:cart-summary' %}">
-                            بازگشت به سبد خرید<i class="bi-chevron-left small me-1"></i>
-                        </a>
-                    </div>
-                    <!-- End Col -->
+                <div class="d-none d-lg-block">
+                    <a class="link d-inline-flex align-items-center gap-1" href="{% url 'cart:cart-summary' %}">
+                        بازگشت به سبد خرید
+                        <i class="bi-chevron-left small" aria-hidden="true"></i>
+                    </a>
                 </div>
-                <!-- End Row -->
             </form>
-            <!-- End Form -->
         </div>
-        <!-- End Col -->
 
-        <div class="col-lg-4">
-            <div class="ps-lg-4">
-                <!-- Card -->
-                <div class="card card-sm shadow-sm mb-4">
-                    <div class="card-body">
-                        <div class="border-bottom pb-4 mb-4">
-                            <h3 class="card-header-title">خلاصه سفارش</h3>
-                        </div>
+        <div class="col-lg-4 order-2">
+            <div class="checkout-summary ps-lg-4">
+                <div class="card checkout-summary__card shadow-sm">
+                    <div class="card-body checkout-summary__body">
+                        <h2 class="checkout-summary__title h5 mb-0">خلاصه سفارش</h2>
 
-
-                        <div class="input-group border-bottom pb-4 mb-3 ">
-                            <input type="text" class="form-control text-center" name="coupon" placeholder="کد تخفیف"
-                                aria-label="کد تخفیف" form="checkout-form" id="coupon-input">
-                            <button class="btn btn-primary" type="button" onclick="validateCoupon()"> بررسی</button>
-                        </div>
-
-                        <div class="border-bottom pb-4 mb-4">
-                            <div class="d-grid gap-3">
-
-                                <!-- End Row -->
-
-                                <dl class="row">
-                                    <dt class="col-sm-6">هزینه ارسال</dt>
-                                    <dd class="col-sm-12 text-sm-end mb-0">برای تهران و حومه 35000 تومان</dd>
-                                    <dd class="col-sm-12 text-sm-end mb-0">برای شهرستان ها 50000 تومان</dd>
-                                </dl>
-                                <!-- End Row -->
+                        <div class="checkout-summary__coupon">
+                            <label class="form-label small text-muted mb-1" for="coupon-input">کد تخفیف</label>
+                            <div class="checkout-summary__coupon-row">
+                                <input type="text" class="form-control" name="coupon" placeholder="کد را وارد کنید"
+                                    aria-label="کد تخفیف" form="checkout-form" id="coupon-input">
+                                <button class="btn btn-primary checkout-summary__coupon-btn" type="button"
+                                    onclick="validateCoupon()">بررسی</button>
                             </div>
                         </div>
 
-                        <div class="d-grid gap-3 mb-4">
-                            <dl class="row">
-                                <dt class="col-sm-6">مالیات تخمینی</dt>
-                                <dd class="col-sm-12 text-sm-end mb-0">
-                                    9% مالیات - 
-                                    <span class="formatted-price" id="total-tax"> {{total_tax}}</span>
-                                </dd>
+                        {{ checkout_pricing_json|json_script:"checkout-pricing-config" }}
+                        <div class="checkout-summary__rows" id="checkout-pricing-root" data-subtotal="{{ subtotal }}">
+                            <div class="checkout-summary__row">
+                                <span class="checkout-summary__label">جمع کالاها</span>
+                                <span class="checkout-summary__value formatted-price" id="checkout-subtotal">{{ subtotal }}</span>
+                            </div>
+                            <div class="checkout-summary__row d-none" id="checkout-discount-row">
+                                <span class="checkout-summary__label">تخفیف</span>
+                                <span class="checkout-summary__value formatted-price text-success" id="checkout-discount">0</span>
+                            </div>
+                            {% if checkout_pricing.shipping_enabled %}
+                            <div class="checkout-summary__row d-none" id="checkout-shipping-row">
+                                <span class="checkout-summary__label">هزینه ارسال</span>
+                                <span class="checkout-summary__value formatted-price" id="checkout-shipping">0</span>
+                            </div>
+                            <div class="checkout-summary__group">
+                                <span class="checkout-summary__label small text-muted">تعرفه ارسال</span>
+                                <ul class="checkout-summary__list">
+                                    <li>{{ checkout_pricing.shipping_tehran_label }}: <span class="formatted-price">{{ checkout_pricing.shipping_tehran_amount }}</span></li>
+                                    <li>{{ checkout_pricing.shipping_province_label }}: <span class="formatted-price">{{ checkout_pricing.shipping_province_amount }}</span></li>
+                                </ul>
+                            </div>
+                            {% endif %}
 
-                            </dl>
-                            <!-- End Row -->
+                            {% if checkout_pricing.tax_enabled %}
+                            <div class="checkout-summary__row">
+                                <span class="checkout-summary__label">مالیات ({{ checkout_pricing.tax_percent }}٪)</span>
+                                <span class="checkout-summary__value formatted-price" id="total-tax">{{ total_tax }}</span>
+                            </div>
+                            {% else %}
+                            <span id="total-tax" class="d-none">0</span>
+                            {% endif %}
 
-                            <dl class="row">
-                                <dt class="col-sm-6">جمع کل</dt>
-                                <dd class="col-sm-6 text-sm-end mb-0 formatted-price" id="total-price">{{total_price}}</dd>
-                            </dl>
-                            <!-- End Row -->
+                            <div class="checkout-summary__row checkout-summary__row--total">
+                                <span class="checkout-summary__label">مبلغ قابل پرداخت</span>
+                                <span class="checkout-summary__value formatted-price" id="total-price">{{ total_price }}</span>
+                            </div>
                         </div>
 
-                        <div class="d-grid">
-                            <button class="btn btn-primary btn-lg" type="submit" form="checkout-form"
-                                {% if not payment_methods_available %}disabled{% endif %}>ثبت نهایی</button>
-                        </div>
+                        <button class="btn btn-primary btn-lg w-100 checkout-summary__submit d-none d-lg-block"
+                            type="submit" form="checkout-form"
+                            {% if not payment_methods_available %}disabled{% endif %}>
+                            ثبت نهایی
+                        </button>
 
+                        <p class="checkout-summary__support small text-muted mb-0">
+                            <i class="bi-chat-dots me-1" aria-hidden="true"></i>
+                            نیاز به پشتیبانی دارید؟
+                            <a href="{% url 'website:contact' %}">ارسال تیکت</a>
+                        </p>
                     </div>
-                    <!-- End Card -->
                 </div>
-
-                <!-- Media -->
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="svg-icon svg-icon-sm text-primary">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M22.1671 18.1421C22.4827 18.4577 23.0222 18.2331 23.0206 17.7868L23.0039 13.1053V5.52632C23.0039 4.13107 21.8729 3 20.4776 3H8.68815C7.2929 3 6.16183 4.13107 6.16183 5.52632V9H13C14.6568 9 16 10.3431 16 12V15.6316H19.6565L22.1671 18.1421Z"
-                                    fill="#035A4B" />
-                                <path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M1.98508 18V13C1.98508 11.8954 2.88051 11 3.98508 11H11.9851C13.0896 11 13.9851 11.8954 13.9851 13V18C13.9851 19.1046 13.0896 20 11.9851 20H4.10081L2.85695 21.1905C2.53895 21.4949 2.01123 21.2695 2.01123 20.8293V18.3243C1.99402 18.2187 1.98508 18.1104 1.98508 18ZM5.99999 14.5C5.99999 14.2239 6.22385 14 6.49999 14H11.5C11.7761 14 12 14.2239 12 14.5C12 14.7761 11.7761 15 11.5 15H6.49999C6.22385 15 5.99999 14.7761 5.99999 14.5ZM9.49999 16C9.22385 16 8.99999 16.2239 8.99999 16.5C8.99999 16.7761 9.22385 17 9.49999 17H11.5C11.7761 17 12 16.7761 12 16.5C12 16.2239 11.7761 16 11.5 16H9.49999Z"
-                                    fill="#035A4B" />
-                            </svg>
-
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-2">
-                        <span class="small me-1">نیاز به پشتیبانی دارید؟</span>
-                        <a class="link small" href="#">ارسال تیکت</a>
-                    </div>
-                </div>
-                <!-- End Media -->
             </div>
         </div>
-        <!-- End Col -->
     </div>
-    <!-- End Row -->
+
+    <div class="checkout-mobile-bar d-lg-none" aria-label="ثبت سفارش">
+        <div class="checkout-mobile-bar__info">
+            <span class="checkout-mobile-bar__label">مبلغ قابل پرداخت</span>
+            <span class="checkout-mobile-bar__price formatted-price" id="total-price-mobile">{{ total_price }}</span>
+        </div>
+        <button class="btn btn-primary checkout-mobile-bar__btn" type="submit" form="checkout-form"
+            {% if not payment_methods_available %}disabled{% endif %}>
+            ثبت نهایی
+        </button>
+    </div>
 </div>
-<!-- End Content -->
 {% endblock content %}
 
 {% block extra_js %}
 <script>
-    function applyDiscount(total_price,total_tax){
-        $("#total-price").html(total_price)
-        $("#total-tax").html(total_tax)
+    function syncCheckoutDeliverySections() {
+        var isFreight = document.getElementById('delivery-freight').checked;
+        var addressSection = document.getElementById('checkout-address-section');
+        var freightSection = document.getElementById('checkout-freight-section');
+        var addressRadios = document.querySelectorAll('.address-radio');
+        var citySelect = document.getElementById('freight-city');
+        var notesField = document.getElementById('freight-notes');
 
-        formatPriceInToman(document.getElementById("total-price"))
-        formatPriceInToman(document.getElementById("total-tax"))
+        addressSection.classList.toggle('d-none', isFreight);
+        freightSection.classList.toggle('d-none', !isFreight);
+
+        addressRadios.forEach(function (radio) {
+            radio.required = !isFreight;
+            radio.disabled = isFreight;
+        });
+        if (citySelect) {
+            citySelect.required = isFreight;
+            citySelect.disabled = !isFreight;
+        }
+        if (notesField) {
+            notesField.required = isFreight;
+            notesField.disabled = !isFreight;
+        }
     }
 
-    function validateCoupon(){
+    var checkoutCouponPercent = 0;
+    var checkoutPricingConfig = {};
+    try {
+        checkoutPricingConfig = JSON.parse(
+            document.getElementById('checkout-pricing-config').textContent
+        );
+    } catch (e) {
+        checkoutPricingConfig = {};
+    }
+
+    var TEHRAN_CITIES = ['تهران', 'کرج'];
+
+    function isTehranArea(city, state) {
+        city = (city || '').trim();
+        state = (state || '').trim();
+        if (TEHRAN_CITIES.indexOf(city) !== -1) return true;
+        if (state === 'البرز' && city === 'کرج') return true;
+        return false;
+    }
+
+    function getCheckoutCityState() {
+        if (document.getElementById('delivery-freight').checked) {
+            var sel = document.getElementById('freight-city');
+            return { city: sel ? sel.value : '', state: '' };
+        }
+        var radio = document.querySelector('.address-radio:checked');
+        if (radio) {
+            var label = document.querySelector('label[for="' + radio.id + '"]');
+            if (label) {
+                return {
+                    city: label.getAttribute('data-city') || '',
+                    state: label.getAttribute('data-state') || ''
+                };
+            }
+        }
+        return { city: '', state: '' };
+    }
+
+    function formatCheckoutPrices() {
+        ['checkout-subtotal', 'checkout-discount', 'checkout-shipping', 'total-tax', 'total-price', 'total-price-mobile'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) formatPriceInToman(el);
+        });
+    }
+
+    function recalcCheckoutTotals() {
+        var root = document.getElementById('checkout-pricing-root');
+        if (!root) return;
+
+        var subtotal = parseInt(root.getAttribute('data-subtotal'), 10) || 0;
+        var discount = checkoutCouponPercent > 0
+            ? Math.round(subtotal * checkoutCouponPercent / 100) : 0;
+        var afterDiscount = subtotal - discount;
+        var loc = getCheckoutCityState();
+        var shipping = 0;
+        if (checkoutPricingConfig.shipping_enabled) {
+            shipping = isTehranArea(loc.city, loc.state)
+                ? parseInt(checkoutPricingConfig.tehran_amount, 10)
+                : parseInt(checkoutPricingConfig.province_amount, 10);
+        }
+        var tax = 0;
+        if (checkoutPricingConfig.tax_enabled) {
+            tax = Math.round(afterDiscount * (parseInt(checkoutPricingConfig.tax_percent, 10) || 0) / 100);
+        }
+        var grand = afterDiscount + shipping + tax;
+
+        var discountRow = document.getElementById('checkout-discount-row');
+        var shippingRow = document.getElementById('checkout-shipping-row');
+        if (discountRow) {
+            discountRow.classList.toggle('d-none', discount <= 0);
+            document.getElementById('checkout-discount').textContent = discount;
+        }
+        if (shippingRow) {
+            shippingRow.classList.toggle('d-none', shipping <= 0);
+            document.getElementById('checkout-shipping').textContent = shipping;
+        }
+        var taxEl = document.getElementById('total-tax');
+        if (taxEl) taxEl.textContent = tax;
+        document.getElementById('total-price').textContent = grand;
+        var mobile = document.getElementById('total-price-mobile');
+        if (mobile) mobile.textContent = grand;
+        formatCheckoutPrices();
+    }
+
+    function syncCheckoutDeliverySections() {
+        var isFreight = document.getElementById('delivery-freight').checked;
+        var addressSection = document.getElementById('checkout-address-section');
+        var freightSection = document.getElementById('checkout-freight-section');
+        var addressRadios = document.querySelectorAll('.address-radio');
+        var citySelect = document.getElementById('freight-city');
+        var notesField = document.getElementById('freight-notes');
+
+        addressSection.classList.toggle('d-none', isFreight);
+        freightSection.classList.toggle('d-none', !isFreight);
+
+        addressRadios.forEach(function (radio) {
+            radio.required = !isFreight;
+            radio.disabled = isFreight;
+        });
+        if (citySelect) {
+            citySelect.required = isFreight;
+            citySelect.disabled = !isFreight;
+        }
+        if (notesField) {
+            notesField.required = isFreight;
+            notesField.disabled = !isFreight;
+        }
+        recalcCheckoutTotals();
+    }
+
+    document.querySelectorAll('.delivery-type-radio').forEach(function (el) {
+        el.addEventListener('change', syncCheckoutDeliverySections);
+    });
+    document.querySelectorAll('.address-radio').forEach(function (el) {
+        el.addEventListener('change', recalcCheckoutTotals);
+    });
+    var freightCity = document.getElementById('freight-city');
+    if (freightCity) freightCity.addEventListener('change', recalcCheckoutTotals);
+
+    syncCheckoutDeliverySections();
+
+    function validateCoupon() {
+        var loc = getCheckoutCityState();
         $.ajax({
-            url: "{%  url 'order:validate-coupon' %}",
+            url: "{% url 'order:validate-coupon' %}",
             method: 'POST',
             data: {
                 code: $('#coupon-input').val(),
+                city: loc.city,
+                state: loc.state,
                 csrfmiddlewaretoken: '{{ csrf_token }}'
-    
             },
             success: function (response) {
-                console.log("success",response);
+                checkoutCouponPercent = response.coupon_percent || 0;
                 Toastify({
-                    text:response.message,
-                    className: `info`,
-                    style: {
-                      background: "blue",
-                    }
-                  }).showToast();
-                  applyDiscount(response.total_price,response.total_tax)
-                // do something with the response data
+                    text: response.message,
+                    className: 'info',
+                    style: { background: 'blue' }
+                }).showToast();
+                recalcCheckoutTotals();
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log(errorThrown);
+            error: function (jqXHR) {
                 Toastify({
-                    text:jqXHR.responseJSON.message,
-                    className: `error`,
-                    style: {
-                      background: "red",
-                    }
-                  }).showToast();
-                
-                // handle the error case
+                    text: jqXHR.responseJSON && jqXHR.responseJSON.message
+                        ? jqXHR.responseJSON.message : 'خطا در بررسی کد',
+                    className: 'error',
+                    style: { background: 'red' }
+                }).showToast();
             }
         });
     }
+
+    document.addEventListener('DOMContentLoaded', formatCheckoutPrices);
 
 </script>
 

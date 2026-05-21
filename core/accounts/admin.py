@@ -1,47 +1,56 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Profile
 from django.contrib.auth import get_user_model
+
+from .models import Profile, SMSSettings
 
 User = get_user_model()
 
 
 class CustomUserAdmin(UserAdmin):
-    """
-    Custom admin panel for user management with add and change forms plus password
-    """
+    """پنل مدیریت کاربران؛ شناسه ورود = شماره موبایل."""
 
     model = User
-    list_display = ("id","email", "is_superuser", "is_active", "is_verified")
-    list_filter = ("email", "is_superuser", "is_active", "is_verified")
-    searching_fields = ("email",)
-    ordering = ("email",)
+    list_display = (
+        "id",
+        "phone_number",
+        "phone_verified",
+        "email",
+        "is_superuser",
+        "is_active",
+        "is_verified",
+    )
+    list_filter = ("is_superuser", "is_active", "is_verified", "phone_verified", "type")
+    search_fields = ("phone_number", "email")
+    ordering = ("id",)
     fieldsets = (
         (
-            "Authentication",
+            "احراز هویت",
             {
-                "fields": ("email", "password"),
+                "fields": ("email", "phone_number", "password"),
             },
         ),
         (
-            "permissions",
+            "وضعیت",
             {
                 "fields": (
                     "is_staff",
                     "is_active",
                     "is_superuser",
                     "is_verified",
+                    "phone_verified",
+                    "type",
                 ),
             },
         ),
         (
-            "group permissions",
+            "گروه‌ها و دسترسی‌ها",
             {
-                "fields": ("groups", "user_permissions","type"),
+                "fields": ("groups", "user_permissions"),
             },
         ),
         (
-            "important date",
+            "تاریخ‌ها",
             {
                 "fields": ("last_login",),
             },
@@ -54,30 +63,39 @@ class CustomUserAdmin(UserAdmin):
                 "classes": ("wide",),
                 "fields": (
                     "email",
+                    "phone_number",
                     "password1",
                     "password2",
                     "is_staff",
                     "is_active",
                     "is_superuser",
                     "is_verified",
-                    "type"
+                    "phone_verified",
+                    "type",
                 ),
             },
         ),
     )
 
+
 class CustomProfileAdmin(admin.ModelAdmin):
-    list_display = ("id","user", "first_name","last_name","phone_number")
-    searching_fields = ("user","first_name","last_name","phone_number")
+    list_display = ("id", "user", "first_name", "last_name")
+    search_fields = ("user__email", "user__phone_number", "first_name", "last_name")
 
 
-admin.site.register(Profile,CustomProfileAdmin)
+@admin.register(SMSSettings)
+class SMSSettingsAdmin(admin.ModelAdmin):
+    """فقط یک ردیف؛ از پنل ادمین ارسال پیامک OTP را روشن/خاموش کنید."""
+
+    list_display = ("id", "sms_enabled", "updated_date")
+    fields = ("sms_enabled",)
+
+    def has_add_permission(self, request):
+        return not SMSSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(Profile, CustomProfileAdmin)
 admin.site.register(User, CustomUserAdmin)
-
-# from django.contrib.sessions.models import Session
-# class SessionAdmin(admin.ModelAdmin):
-#     def _session_data(self, obj):
-#         return obj.get_decoded()
-#     list_display = ['session_key', '_session_data', 'expire_date']
-#     readonly_fields = ['_session_data']
-# admin.site.register(Session, SessionAdmin)

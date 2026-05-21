@@ -24,7 +24,12 @@ class ShopProductGridView(ListView):
         if search_q := self.request.GET.get("q"):
             queryset = queryset.filter(title__icontains=search_q)
         if category_id := self.request.GET.get("category_id"):
-            queryset = queryset.filter(category__id=category_id)
+            try:
+                category = ProductCategoryModel.objects.get(pk=category_id)
+                category_ids = category.get_self_and_descendant_ids()
+                queryset = queryset.filter(category__id__in=category_ids)
+            except (ProductCategoryModel.DoesNotExist, ValueError):
+                pass
         if min_price := self.request.GET.get("min_price"):
             queryset = queryset.filter(price__gte=min_price)
         if max_price := self.request.GET.get("max_price"):
@@ -41,7 +46,7 @@ class ShopProductGridView(ListView):
         context["total_items"] = self.get_queryset().count()
         context["wishlist_items"] = WishlistProductModel.objects.filter(user=self.request.user).values_list(
             "product__id", flat=True) if self.request.user.is_authenticated else []
-        context["categories"] = ProductCategoryModel.objects.all()
+        context["categories"] = ProductCategoryModel.get_tree_ordered()
         return context
 
 

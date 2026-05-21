@@ -23,9 +23,17 @@ class SubmitReviewView(LoginRequiredMixin, CreateView):
     
     def form_invalid(self, form):
         for field, errors in form.errors.items():
+            label = (
+                form.fields[field].label
+                if field in form.fields
+                else "فرم"
+            )
             for error in errors:
-                messages.error(self.request,error)
-        return redirect(self.request.META.get('HTTP_REFERER'))
+                if field == "__all__":
+                    messages.error(self.request, error)
+                else:
+                    messages.error(self.request, f"{label}: {error}")
+        return redirect(self.request.META.get("HTTP_REFERER", reverse_lazy("website:index")))
 
     def get_queryset(self):
         # You can customize the queryset if needed

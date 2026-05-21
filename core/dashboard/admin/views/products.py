@@ -36,7 +36,12 @@ class AdminProductListView(LoginRequiredMixin, HasAdminAccessPermission, ListVie
         if search_q := self.request.GET.get("q"):
             queryset = queryset.filter(title__icontains=search_q)
         if category_id := self.request.GET.get("category_id"):
-            queryset = queryset.filter(category__id=category_id)
+            try:
+                category = ProductCategoryModel.objects.get(pk=category_id)
+                category_ids = category.get_self_and_descendant_ids()
+                queryset = queryset.filter(category__id__in=category_ids)
+            except (ProductCategoryModel.DoesNotExist, ValueError):
+                pass
         if min_price := self.request.GET.get("min_price"):
             queryset = queryset.filter(price__gte=min_price)
         if max_price := self.request.GET.get("max_price"):
@@ -51,7 +56,7 @@ class AdminProductListView(LoginRequiredMixin, HasAdminAccessPermission, ListVie
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["total_items"] = self.get_queryset().count()
-        context["categories"] = ProductCategoryModel.objects.all()
+        context["categories"] = ProductCategoryModel.get_tree_ordered()
         return context
 
 from dashboard.admin.forms import ProductForm, ProductImageFormSet

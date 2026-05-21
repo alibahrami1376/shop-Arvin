@@ -3,6 +3,9 @@
  */
 document.addEventListener('DOMContentLoaded', function () {
     initMobileShopNav();
+    if (typeof initShopCategoryNavToggles === 'function') {
+        initShopCategoryNavToggles();
+    }
     initShopFilterOffcanvas();
     initHomeProductStripSwipers();
 

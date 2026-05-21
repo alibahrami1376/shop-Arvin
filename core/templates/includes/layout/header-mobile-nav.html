@@ -15,9 +15,7 @@
                     <div class="header__mobile-shop-panel" id="headerShopCategories" hidden>
                         <ul class="header__mobile-categories">
                             <li><a href="{% url 'shop:product-grid' %}" class="header__mobile-category-link">همه محصولات</a></li>
-                            {% for category in shop_categories %}
-                            <li><a href="{% url 'shop:product-grid' %}?category_id={{ category.id }}" class="header__mobile-category-link">{{ category.title }}</a></li>
-                            {% endfor %}
+                            {% include "includes/partials/shop-category-nav-items.html" with variant="mobile" %}
                         </ul>
                     </div>
                 </li>

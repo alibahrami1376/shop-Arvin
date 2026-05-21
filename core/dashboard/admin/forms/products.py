@@ -2,7 +2,7 @@ from django import forms
 from django.forms import inlineformset_factory
 from django_ckeditor_5.widgets import CKEditor5Widget
 
-from shop.models import ProductModel, ProductImageModel
+from shop.models import ProductModel, ProductImageModel, ProductCategoryModel
 
 
 class ProductForm(forms.ModelForm):
@@ -32,6 +32,7 @@ class ProductForm(forms.ModelForm):
         self.fields['title'].widget.attrs['class'] = 'form-control'
         self.fields['slug'].widget.attrs['class'] = 'form-control'
         self.fields['category'].widget.attrs['class'] = 'form-control'
+        self.fields['category'].label_from_instance = lambda obj: obj.get_indented_title()
         self.fields['image'].widget.attrs['class'] = 'form-control'
         self.fields['brief_description'].widget.attrs['class'] = 'form-control'
         self.fields['stock'].widget.attrs['class'] = 'form-control'

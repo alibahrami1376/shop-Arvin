@@ -42,7 +42,7 @@
                     <select class="form-select form-select-sm" name="category_id" id="category-id-filter">
                         <option value="" selected>دسته بندی</option>
                         {% for category in categories %}
-                        <option value="{{category.id}}">{{category.title}}</option>
+                        <option value="{{category.id}}">{{ category.get_indented_title }}</option>
                         {% endfor %}
                     </select>
                 </div>

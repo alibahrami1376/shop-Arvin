@@ -114,24 +114,30 @@
         <div class="row mb-3">
           <dt class="col-md-3"> تاریخ سفارش:</dt>
           <dl class="col-md-3">{{object.created_date|date:"Y-m-d h:i"}}</dl>
-          <dt class="col-md-3">قیمت نهایی</dt>
-          <dl class="col-md-3 formatted-price">{{object.total_price}}</dl>
         </div>
-        {% if object.coupon %}
         <div class="row mb-3">
-          <dt class="col-md-3">تخفیف</dt>
-          <dl class="col-md-3">{{object.coupon.discount_percent}}%</dl>
-          <dt class="col-md-3">قیمت با اعمال تخفیف</dt>
-          <dl class="col-md-3 formatted-price">{{object.get_price}}</dl>
+          <div class="col-12 col-lg-8">
+            {% include "includes/partials/order-pricing-breakdown.html" %}
+          </div>
         </div>
-        {% endif %}
         <!-- End Row -->
         <div class="row mb-3">
-          <dt class="col-md-3"> آدرس:</dt>
-          <dl class="col-md-3">{{object.get_full_address}}</dl>
-          <dt class="col-md-3"> کد پستی:</dt>
-          <dl class="col-md-3">{{object.zip_code}}</dl>
+          <dt class="col-md-3">روش ارسال:</dt>
+          <dl class="col-md-3">{{ object.get_shipping_method_label }}</dl>
+          <dt class="col-md-3">مقصد / آدرس:</dt>
+          <dl class="col-md-3">{{ object.get_full_address }}</dl>
         </div>
+        {% if object.shipping_method == 2 and object.freight_notes %}
+        <div class="row mb-3">
+          <dt class="col-md-3">توضیحات باربری:</dt>
+          <dl class="col-md-9">{{ object.freight_notes }}</dl>
+        </div>
+        {% elif object.shipping_method != 2 %}
+        <div class="row mb-3">
+          <dt class="col-md-3">کد پستی:</dt>
+          <dl class="col-md-3">{{ object.zip_code }}</dl>
+        </div>
+        {% endif %}
         <div class=" d-flex pt-5 justify-content-end">
           <a class="btn btn-secondary ms-3" href="{% url 'dashboard:admin:order-list' %}">بازگشت</a>
 

@@ -1,0 +1,9 @@
+{% extends "base-desktop.html" %}
+{% block title %}خطای سرور{% endblock %}
+{% block content %}
+<div class="container py-5 text-center">
+    <h1 class="display-6 mb-3">خطای سرور</h1>
+    <p class="lead mb-4">{{ message }}</p>
+    <a href="{% url 'website:index' %}" class="btn btn-primary">بازگشت به صفحه اصلی</a>
+</div>
+{% endblock %}

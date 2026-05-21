@@ -9,7 +9,8 @@ class ProductModelAdmin(admin.ModelAdmin):
 
 @admin.register(ProductCategoryModel)
 class ProductCategoryModelAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "created_date")
+    list_display = ("id", "title", "parent", "created_date")
+    list_filter = ("parent",)
 
 @admin.register(ProductImageModel)
 class ProductImageModelAdmin(admin.ModelAdmin):

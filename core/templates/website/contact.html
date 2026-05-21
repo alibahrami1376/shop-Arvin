@@ -112,6 +112,13 @@
                                     id="formEmail" placeholder="email@example.com" required>
                             </div>
                             <div class="col-md-12">
+                                <label class="form-label" for="formPhone">شماره موبایل</label>
+                                <input type="tel" class="form-control form-control-lg text-center" name="phone_number"
+                                    id="formPhone" placeholder="۰۹۱۲۳۴۵۶۷۸۹" dir="ltr" inputmode="tel"
+                                    maxlength="11" autocomplete="tel">
+                                <div class="form-text text-muted small">اختیاری — برای تماس سریع‌تر با شما</div>
+                            </div>
+                            <div class="col-md-12">
                                 <label class="form-label" for="formSubject">موضوع</label>
                                 <input type="text" class="form-control form-control-lg" name="subject"
                                     id="formSubject" placeholder="موضوع پیام خود را وارد کنید" required>
@@ -134,32 +141,16 @@
 </section>
 <!-- End Contact Section -->
 
-<!-- FAQ Section -->
+<!-- FAQ link -->
 <section class="section section-alt">
     <div class="container">
-        <h2 class="section-title">سوالات متداول</h2>
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                {% if faq_items %}
-                <div class="accordion" id="faqAccordion">
-                    {% for item in faq_items %}
-                    <div class="card-noorbanoo mb-3">
-                        <div class="card-body">
-                            <h5 class="mb-0">{{ item.question }}</h5>
-                            <p class="text-muted mt-2 mb-0">{{ item.answer }}</p>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <p class="text-center mt-3 mb-0">
-                    <a href="{% url 'website:faq' %}" class="btn btn-outline-primary btn-sm">مشاهده همه سوالات</a>
-                </p>
-                {% else %}
-                <p class="text-muted text-center mb-0">سوالی ثبت نشده است.</p>
-                {% endif %}
+            <div class="col-lg-8 text-center">
+                <h2 class="section-title">سوالات متداول</h2>
+                <p class="text-muted mb-4">پاسخ سوالات پرتکرار درباره محصولات، ارسال و خدمات فروشگاه را در صفحه «از آروین بپرس؟» ببینید.</p>
+                <a href="{% url 'website:faq' %}" class="btn btn-outline-primary btn-lg rounded-pill">مشاهده سوالات متداول</a>
             </div>
         </div>
     </div>
 </section>
-<!-- End FAQ Section -->
 {% endblock content %}

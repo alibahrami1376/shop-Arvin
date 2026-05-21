@@ -1,0 +1,32 @@
+{% for category in shop_categories %}
+{% with children=category.children.all %}
+<li class="{% if variant == 'mobile' %}header__mobile-cat-item{% else %}header__shop-cat-item{% endif %}">
+    {% if children %}
+    <button type="button"
+        class="{% if variant == 'mobile' %}header__mobile-category-toggle header__mobile-category-link{% else %}dropdown-item header__shop-cat-toggle{% endif %}"
+        aria-expanded="false"
+        aria-controls="headerShopSubcat{{ category.id }}"
+        data-shop-cat-toggle>
+        <span>{{ category.title }}</span>
+        <i class="bi-chevron-down {% if variant == 'mobile' %}header__mobile-shop-chevron{% else %}header__shop-cat-chevron{% endif %}" aria-hidden="true"></i>
+    </button>
+    <ul class="{% if variant == 'mobile' %}header__mobile-subcats{% else %}header__shop-subcats{% endif %} list-unstyled mb-0"
+        id="headerShopSubcat{{ category.id }}" hidden>
+        <li>
+            <a class="{% if variant == 'mobile' %}header__mobile-category-link header__mobile-category-link--all{% else %}dropdown-item header__shop-subcat-all{% endif %}"
+                href="{% url 'shop:product-grid' %}?category_id={{ category.id }}">همهٔ {{ category.title }}</a>
+        </li>
+        {% for child in children %}
+        <li>
+            <a class="{% if variant == 'mobile' %}header__mobile-category-link{% else %}dropdown-item{% endif %}"
+                href="{% url 'shop:product-grid' %}?category_id={{ child.id }}">{{ child.title }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <a class="{% if variant == 'mobile' %}header__mobile-category-link fw-semibold{% else %}dropdown-item fw-semibold{% endif %}"
+        href="{% url 'shop:product-grid' %}?category_id={{ category.id }}">{{ category.title }}</a>
+    {% endif %}
+</li>
+{% endwith %}
+{% endfor %}

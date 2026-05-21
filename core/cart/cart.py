@@ -1,5 +1,6 @@
-from shop.models import ProductModel,ProductStatusType
-from cart.models import CartModel,CartItemModel
+from shop.models import ProductModel, ProductStatusType
+from cart.models import CartModel, CartItemModel
+
 
 class CartSession:
     def __init__(self, session):
@@ -16,6 +17,14 @@ class CartSession:
     def _pid(product_id):
         return str(product_id)
 
+    def _get_db_cart_map(self, user):
+        cart, _ = CartModel.objects.get_or_create(user=user)
+        db_map = {}
+        for cart_item in CartItemModel.objects.filter(cart=cart).select_related("product"):
+            if cart_item.product.status == ProductStatusType.publish.value:
+                db_map[str(cart_item.product.id)] = cart_item.quantity
+        return db_map
+
     def update_product_quantity(self, product_id, quantity):
         product_id = self._pid(product_id)
         for item in self._cart["items"]:
@@ -25,7 +34,7 @@ class CartSession:
         else:
             return
         self.save()
-    
+
     def remove_product(self, product_id):
         product_id = self._pid(product_id)
         for item in self._cart["items"]:
@@ -35,7 +44,7 @@ class CartSession:
         else:
             return
         self.save()
-        
+
     def add_product(self, product_id):
         product_id = self._pid(product_id)
         for item in self._cart["items"]:
@@ -56,13 +65,20 @@ class CartSession:
 
     def get_cart_items(self):
         for item in self._cart["items"]:
-            product_obj = ProductModel.objects.get(id=item["product_id"], status=ProductStatusType.publish.value)
-            item.update({"product_obj": product_obj, "total_price": item["quantity"] * product_obj.get_price()})
+            product_obj = ProductModel.objects.get(
+                id=item["product_id"], status=ProductStatusType.publish.value
+            )
+            item.update(
+                {
+                    "product_obj": product_obj,
+                    "total_price": item["quantity"] * product_obj.get_price(),
+                }
+            )
 
         return self._cart["items"]
 
     def get_total_payment_amount(self):
-        return sum(item["total_price"] for item in self._cart["items"])
+        return sum(item["total_price"] for item in self.get_cart_items())
 
     def get_total_quantity(self):
         return sum(item["quantity"] for item in self._cart["items"])
@@ -83,26 +99,45 @@ class CartSession:
     def save(self):
         self.session.modified = True
 
-
-    def sync_cart_items_from_db(self,user):
-        cart,created = CartModel.objects.get_or_create(user=user)
-        cart_items = CartItemModel.objects.filter(cart=cart)
-        
-        for cart_item in cart_items:
-            for item in self._cart["items"]:
-                if str(cart_item.product.id) == item["product_id"]:
-                    cart_item.quantity = item["quantity"]
-                    cart_item.save()
-                    break
-            else:
-                new_item = {"product_id": str(cart_item.product.id), "quantity": cart_item.quantity}
-                self._cart["items"].append(new_item)
-        self.merge_session_cart_in_db(user)
+    def ensure_user_cart(self, user):
+        """
+        اگر کاربر لاگین است ولی سشن خالی است، سبد را از دیتابیس بازیابی می‌کند.
+        (پشتیبان برای زمانی که سیگنال ورود اجرا نشده باشد)
+        """
+        if self._cart["items"]:
+            return
+        db_map = self._get_db_cart_map(user)
+        if not db_map:
+            return
+        self._cart["items"] = [
+            {"product_id": pid, "quantity": qty} for pid, qty in db_map.items()
+        ]
         self.save()
-            
-        
-    def merge_session_cart_in_db(self, user):
-        cart, created = CartModel.objects.get_or_create(user=user)
+
+    def merge_carts(self, user):
+        """پس از ورود: ادغام سبد مهمان (سشن) با سبد ذخیره‌شده در دیتابیس."""
+        db_map = self._get_db_cart_map(user)
+        session_map = {item["product_id"]: item["quantity"] for item in self._cart["items"]}
+
+        if not session_map and not db_map:
+            return
+
+        merged = dict(db_map)
+        for pid, qty in session_map.items():
+            if pid in merged:
+                merged[pid] += qty
+            else:
+                merged[pid] = qty
+
+        self._cart["items"] = [
+            {"product_id": pid, "quantity": qty} for pid, qty in merged.items()
+        ]
+        self.persist_to_db(user)
+        self.save()
+
+    def persist_to_db(self, user):
+        """محتوای سشن را در دیتابیس ذخیره می‌کند (منبع حقیقت = سشن)."""
+        cart, _ = CartModel.objects.get_or_create(user=user)
         merged_ids = []
 
         for item in self._cart["items"]:
@@ -113,19 +148,21 @@ class CartSession:
             except (ProductModel.DoesNotExist, ValueError, TypeError):
                 continue
 
-            cart_item, created = CartItemModel.objects.get_or_create(
+            cart_item, _ = CartItemModel.objects.get_or_create(
                 cart=cart, product=product_obj
             )
             cart_item.quantity = item["quantity"]
             cart_item.save()
             merged_ids.append(str(product_obj.id))
 
-        if merged_ids:
-            CartItemModel.objects.filter(cart=cart).exclude(
-                product__id__in=merged_ids
-            ).delete()
-
+        CartItemModel.objects.filter(cart=cart).exclude(
+            product__id__in=merged_ids
+        ).delete()
         self.save()
-        
 
-        
+    # سازگاری با کد قبلی
+    def sync_cart_items_from_db(self, user):
+        self.merge_carts(user)
+
+    def merge_session_cart_in_db(self, user):
+        self.persist_to_db(user)

@@ -9,17 +9,57 @@ class ProductStatusType(models.IntegerChoices):
 
 
 class ProductCategoryModel(models.Model):
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="children",
+        verbose_name="دسته والد",
+    )
     title = models.CharField(max_length=255)
-    slug = models.SlugField(allow_unicode=True,unique=True)
-    
+    slug = models.SlugField(allow_unicode=True, unique=True)
+
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
-        ordering = ["-created_date"]
-        
+        ordering = ["title"]
+        verbose_name = "دسته‌بندی محصول"
+        verbose_name_plural = "دسته‌بندی‌های محصول"
+
     def __str__(self):
         return self.title
+
+    def get_self_and_descendant_ids(self):
+        if not self.pk:
+            return []
+        ids = [self.pk]
+        for child in self.children.all():
+            ids.extend(child.get_self_and_descendant_ids())
+        return ids
+
+    def get_indented_title(self, prefix="— "):
+        depth = 0
+        node = self.parent
+        while node:
+            depth += 1
+            node = node.parent
+        if depth == 0:
+            return self.title
+        return f"{prefix * depth}{self.title}"
+
+    @classmethod
+    def get_tree_ordered(cls):
+        result = []
+
+        def walk(parent=None):
+            for category in cls.objects.filter(parent=parent).order_by("title"):
+                result.append(category)
+                walk(category)
+
+        walk()
+        return result
 
 
 # Create your models here.

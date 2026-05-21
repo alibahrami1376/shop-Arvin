@@ -17,7 +17,7 @@ class AdminCategoryListView(LoginRequiredMixin, HasAdminAccessPermission, ListVi
         return self.request.GET.get("page_size", self.paginate_by)
 
     def get_queryset(self):
-        queryset = ProductCategoryModel.objects.all()
+        queryset = ProductCategoryModel.objects.select_related("parent")
         if search_q := self.request.GET.get("q"):
             queryset = queryset.filter(title__icontains=search_q)
         if order_by := self.request.GET.get("order_by"):

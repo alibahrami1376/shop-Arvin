@@ -5,23 +5,29 @@
     <div class="auth-page__card mx-auto">
         <header class="auth-page__header text-center">
             <h1 class="auth-page__title h2">فرم ورود</h1>
-            <p class="auth-page__subtitle mb-0">برای مدیریت حساب خود وارد شوید.</p>
+            <p class="auth-page__subtitle mb-0">با ایمیل (ادمین) یا شماره موبایل و رمز عبور وارد شوید.</p>
         </header>
 
         <form class="auth-form" action="{% url 'accounts:login' %}" method="post" novalidate>
             {% csrf_token %}
 
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger mb-3">{{ form.non_field_errors }}</div>
+            {% endif %}
+
             <div class="auth-form__field mb-4">
-                <label class="form-label" for="signupSimpleLoginEmail">ایمیل شما</label>
-                <input type="email" class="form-control form-control-lg auth-form__input auth-form__input--ltr"
-                    name="username" id="signupSimpleLoginEmail" placeholder="email@site.com" required
-                    autocomplete="email" inputmode="email" spellcheck="false">
+                <label class="form-label" for="signupSimpleLoginUsername">ایمیل یا شماره موبایل</label>
+                <input type="text" class="form-control form-control-lg auth-form__input auth-form__input--ltr {% if form.username.errors %}is-invalid{% endif %}"
+                    name="username" id="signupSimpleLoginUsername" placeholder="email@site.com یا ۰۹۱۲۳۴۵۶۷۸۹" required
+                    value="{{ form.username.value|default:'' }}"
+                    autocomplete="username" dir="ltr">
+                {% if form.username.errors %}<div class="invalid-feedback">{{ form.username.errors.0 }}</div>{% endif %}
             </div>
 
             <div class="auth-form__field mb-4">
                 <label class="form-label" for="signupSimpleLoginPassword">کلمه عبور</label>
                 <div class="auth-field-password">
-                    <input type="password" class="form-control form-control-lg auth-form__input" name="password"
+                    <input type="password" class="form-control form-control-lg auth-form__input {% if form.password.errors %}is-invalid{% endif %}" name="password"
                         id="signupSimpleLoginPassword" placeholder="رمز عبور" required
                         autocomplete="current-password">
                     <button type="button" class="auth-field-password__toggle js-password-toggle"
@@ -29,6 +35,7 @@
                         <i class="bi-eye" aria-hidden="true"></i>
                     </button>
                 </div>
+                {% if form.password.errors %}<div class="invalid-feedback d-block">{{ form.password.errors.0 }}</div>{% endif %}
             </div>
 
             <div class="auth-form__actions">

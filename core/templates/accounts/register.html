@@ -7,22 +7,51 @@
         <!-- Heading -->
         <div class="text-center mb-5 mb-md-7">
             <h1 class="h2">ثبت‌نام</h1>
-            <p>برای ساخت حساب کاربری فرم زیر را پر کنید.</p>
+            <p>با شماره موبایل خود حساب کاربری بسازید.</p>
         </div>
         <!-- End Heading -->
 
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} mb-3" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
         <!-- Form -->
-        <form action="{% url 'accounts:register' %}" method="post" novalidate>
+        <form id="registerForm" action="{% url 'accounts:register' %}" method="post" novalidate>
             {% csrf_token %}
             {% if form.non_field_errors %}
                 <div class="alert alert-danger mb-3">{{ form.non_field_errors }}</div>
             {% endif %}
 
             <div class="mb-4">
-                <label class="form-label" for="id_email">{{ form.email.label }}</label>
-                <input type="email" name="email" value="{{ form.email.value|default:'' }}" class="form-control form-control-lg text-center {% if form.email.errors %}is-invalid{% endif %}" id="id_email" placeholder="email@site.com" required>
-                {% if form.email.errors %}<div class="invalid-feedback">{{ form.email.errors.0 }}</div>{% endif %}
+                <label class="form-label" for="id_phone_number">{{ form.phone_number.label }}</label>
+                <input type="text" name="phone_number" value="{{ form.phone_number.value|default:'' }}" class="form-control form-control-lg text-center {% if form.phone_number.errors %}is-invalid{% endif %}" id="id_phone_number" placeholder="۰۹۱۲۳۴۵۶۷۸۹" dir="ltr" inputmode="tel" required>
+                {% if form.phone_number.errors %}<div class="invalid-feedback">{{ form.phone_number.errors.0 }}</div>{% endif %}
             </div>
+
+            {% if sms_otp_enabled %}
+            <div class="mb-4" id="otpSection"
+                data-otp-expires="{% if otp_expires_at %}{{ otp_expires_at }}{% endif %}"
+                data-otp-validity="{{ otp_validity_seconds }}">
+                <label class="form-label" for="id_otp_code">{{ form.otp_code.label }}</label>
+                <input type="text" name="otp_code" value="{{ form.otp_code.value|default:'' }}" class="form-control form-control-lg text-center {% if form.otp_code.errors %}is-invalid{% endif %}" id="id_otp_code" placeholder="۶ رقم" dir="ltr" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
+                {% if form.otp_code.errors %}<div class="invalid-feedback d-block">{{ form.otp_code.errors.0 }}</div>{% endif %}
+
+                <div id="otpTimerActive" class="form-text text-primary small mt-2 mb-0 d-none" aria-live="polite">
+                    <i class="bi-clock" aria-hidden="true"></i>
+                    زمان باقی‌مانده برای وارد کردن کد:
+                    <strong id="otpCountdown" dir="ltr">02:00</strong>
+                </div>
+                <div id="otpTimerExpired" class="form-text text-danger small mt-2 mb-0 d-none" role="alert">
+                    زمان وارد کردن کد تمام شد. دوباره «دریافت کد تأیید» را بزنید.
+                </div>
+                <p id="otpHintIdle" class="form-text text-muted small mb-0 mt-2">پس از وارد کردن موبایل، کد تأیید را دریافت کنید.</p>
+            </div>
+            <div class="d-grid mb-4">
+                <button type="submit" id="btnSendOtp" class="btn btn-outline-primary btn-lg" formaction="{% url 'accounts:register-send-otp' %}" formmethod="post" formnovalidate>دریافت کد تأیید</button>
+            </div>
+            {% endif %}
 
             <div class="row">
                 <div class="col-md-6 mb-4">
@@ -35,12 +64,6 @@
                     <input type="text" name="last_name" value="{{ form.last_name.value|default:'' }}" class="form-control form-control-lg text-center {% if form.last_name.errors %}is-invalid{% endif %}" id="id_last_name" placeholder="نام خانوادگی">
                     {% if form.last_name.errors %}<div class="invalid-feedback">{{ form.last_name.errors.0 }}</div>{% endif %}
                 </div>
-            </div>
-
-            <div class="mb-4">
-                <label class="form-label" for="id_phone_number">{{ form.phone_number.label }}</label>
-                <input type="text" name="phone_number" value="{{ form.phone_number.value|default:'' }}" class="form-control form-control-lg text-center {% if form.phone_number.errors %}is-invalid{% endif %}" id="id_phone_number" placeholder="۰۹۱۲۳۴۵۶۷۸۹" dir="ltr">
-                {% if form.phone_number.errors %}<div class="invalid-feedback">{{ form.phone_number.errors.0 }}</div>{% endif %}
             </div>
 
             <div class="mb-4">
@@ -79,4 +102,80 @@
 {% endblock content %}
 
 
-{% block extra_js %}{% endblock extra_js %}
+{% block extra_js %}
+{% if sms_otp_enabled %}
+<script>
+(function () {
+    var section = document.getElementById('otpSection');
+    if (!section) return;
+
+    var expiresRaw = section.getAttribute('data-otp-expires');
+    var expiresAt = expiresRaw ? parseFloat(expiresRaw, 10) : null;
+    var otpInput = document.getElementById('id_otp_code');
+    var btnSend = document.getElementById('btnSendOtp');
+    var elActive = document.getElementById('otpTimerActive');
+    var elExpired = document.getElementById('otpTimerExpired');
+    var elHint = document.getElementById('otpHintIdle');
+    var elCountdown = document.getElementById('otpCountdown');
+    var timerId = null;
+
+    function pad(n) {
+        return n < 10 ? '0' + n : String(n);
+    }
+
+    function setExpired() {
+        if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
+        }
+        elActive.classList.add('d-none');
+        elExpired.classList.remove('d-none');
+        elHint.classList.add('d-none');
+        if (otpInput) {
+            otpInput.value = '';
+            otpInput.disabled = true;
+            otpInput.removeAttribute('required');
+        }
+        if (btnSend) {
+            btnSend.disabled = false;
+            btnSend.textContent = 'دریافت کد تأیید';
+        }
+    }
+
+    function setActive(remainingSec) {
+        elHint.classList.add('d-none');
+        elExpired.classList.add('d-none');
+        elActive.classList.remove('d-none');
+        if (otpInput) {
+            otpInput.disabled = false;
+            otpInput.setAttribute('required', 'required');
+        }
+        if (btnSend) {
+            btnSend.disabled = true;
+        }
+
+        function tick() {
+            var left = Math.max(0, Math.ceil(expiresAt - Date.now() / 1000));
+            elCountdown.textContent = pad(Math.floor(left / 60)) + ':' + pad(left % 60);
+            if (left <= 0) {
+                setExpired();
+                return;
+            }
+            if (btnSend) {
+                btnSend.textContent = 'ارسال مجدد پس از ' + pad(Math.floor(left / 60)) + ':' + pad(left % 60);
+            }
+        }
+        tick();
+        timerId = setInterval(tick, 1000);
+    }
+
+    if (expiresAt && expiresAt > Date.now() / 1000) {
+        setActive(expiresAt - Date.now() / 1000);
+    } else if (expiresAt) {
+        setExpired();
+    }
+
+})();
+</script>
+{% endif %}
+{% endblock extra_js %}

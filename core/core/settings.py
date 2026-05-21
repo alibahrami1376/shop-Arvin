@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 from decouple import config
 
 
@@ -36,6 +37,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast= lambda v: [item.strip() for item i
 # Application definition
 
 INSTALLED_APPS = [
+    'core.apps.CoreConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,17 +49,20 @@ INSTALLED_APPS = [
     'accounts',
     'dashboard',
     'shop',
-    'cart',
+    'cart.apps.CartConfig',
     'order',
     'payment',
     'review',
     'blog',
     'django_user_agents',
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
     'core.middleware.SiteLayoutCookieMiddleware',
     'core.middleware.NoCacheHtmlMiddleware',
@@ -112,16 +117,17 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'core.password_validation.PersianUserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'core.password_validation.PersianMinimumLengthValidator',
+        'OPTIONS': {'min_length': 8},
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'core.password_validation.PersianCommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'core.password_validation.PersianNumericPasswordValidator',
     },
 ]
 
@@ -129,9 +135,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fa'
 
-TIME_ZONE = config("TIME_ZONE",default="UTC")
+TIME_ZONE = config("TIME_ZONE", default="Asia/Tehran")
 
 USE_I18N = True
 
@@ -160,6 +166,29 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailOrPhoneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'EXCEPTION_HANDLER': 'core.drf_handlers.persian_exception_handler',
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+
+KAVENEGAR_API_KEY = "5370563577666C304B7651337166474C3573612F56416A7A79556C6C4E4D5855452B72676B376249554D593D" 
+# config('KAVENEGAR_API_KEY', default='')
+# نام الگو در پنل کاوه‌نگار (بخش Lookup) — باید دقیقاً یکی باشد
+KAVENEGAR_TEMPLATE = config('KAVENEGAR_TEMPLATE', default='verify')
+# %token = کد ۶ رقمی OTP · %token2 = مدت اعتبار (دقیقه) از OTPCode.VALIDITY_MINUTES
 
 MERCHANT_ID = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
@@ -200,14 +229,19 @@ customColorPalette = [
 ]
 
 # CKEditor 5 Configuration
+CKEDITOR_5_USER_LANGUAGE = True
+CKEDITOR_5_CUSTOM_CSS = 'css/ckeditor5-fa-rtl.css'
+
 CKEDITOR_5_CONFIGS = {
     'default': {
         'toolbar': ['heading', '|', 'bold', 'italic', 'link',
                     'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
         'height': 400,
         'width': '100%',
+        'language': 'fa',
     },
     'extends': {
+        'language': 'fa',
         'blockToolbar': [
             'paragraph', 'heading1', 'heading2', 'heading3',
             '|',
@@ -251,7 +285,14 @@ CKEDITOR_5_CONFIGS = {
                 { 'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2' },
                 { 'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3' }
             ]
-        }
+        },
+        'list': {
+            'properties': {
+                'styles': True,
+                'startIndex': True,
+                'reversed': True,
+            },
+        },
     },
     'list': {
         'properties': {

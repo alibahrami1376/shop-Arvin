@@ -1,14 +1,18 @@
-from django.contrib.auth.signals import user_logged_in,user_logged_out
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
+
 from .cart import CartSession
 
+
 @receiver(user_logged_in)
-def post_login(sender, user, request, **kwargs):
-    cart= CartSession(request.session)
-    cart.sync_cart_items_from_db(user)
+def restore_cart_on_login(sender, user, request, **kwargs):
+    cart = CartSession(request.session)
+    cart.merge_carts(user)
 
 
 @receiver(user_logged_out)
-def pre_logout(sender, user, request, **kwargs):
-    cart= CartSession(request.session)
-    cart.merge_session_cart_in_db(user)
+def save_cart_on_logout(sender, user, request, **kwargs):
+    if user and getattr(user, "is_authenticated", False):
+        cart = CartSession(request.session)
+        if cart.get_cart_dict().get("items"):
+            cart.persist_to_db(user)

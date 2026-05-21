@@ -19,7 +19,7 @@
 <div class="card">
     <!-- Header -->
     <div class="card-header border-bottom">
-        <h5 class="card-header-title"> تیکت شماره 12345</h5>
+        <h5 class="card-header-title">تیکت شماره {{ object.id }}</h5>
     </div>
     <!-- End Header -->
 
@@ -35,6 +35,10 @@
                 <div class="col-md-6 mb-3">
                     <dt>ایمیل: </dt>
                     <dl>{{object.email}}</dl>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <dt>شماره موبایل: </dt>
+                    <dl dir="ltr">{% if object.phone_number %}{{ object.phone_number }}{% else %}<span class="text-muted">—</span>{% endif %}</dl>
                 </div>
                 <div class="col-md-6 mb-3">
                     <dt>نام و نام خانوادگی: </dt>

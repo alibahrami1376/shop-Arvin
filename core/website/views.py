@@ -65,7 +65,6 @@ class ContactView(TemplateView):
         settings = ContactPageSettings.get_solo()
         context["contact_settings"] = settings
         context["contact_social_links"] = settings.get_social_links()
-        context["faq_items"] = FAQItem.objects.filter(is_published=True)[:3]
         return context
 
 
