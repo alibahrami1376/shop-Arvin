@@ -208,3 +208,6 @@ __marimo__/
 
 #db 
 /postgres/*
+
+#drawio
+.$Untitled Diagram.drawio.dtmp
