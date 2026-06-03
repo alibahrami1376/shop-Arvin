@@ -32,9 +32,6 @@ class UserManager(BaseUserManager):
         if not phone:
             return None
         s = str(phone).strip().replace(" ", "")
-        persian = "۰۱۲۳۴۵۶۷۸۹"
-        latin = "0123456789"
-        s = s.translate(str.maketrans(persian, latin))
         validate_iranian_cellphone_number(s)
         return s
 

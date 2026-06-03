@@ -5,12 +5,11 @@ from django.core.exceptions import ValidationError
 
 def validate_iranian_cellphone_number(value):
     """
-    فقط شماره موبایل ایرانی معتبر: ۱۱ رقم، شروع با 09.
+    Validate an Iranian mobile phone number (11 digits, starts with 09).
     """
     if value is None:
         raise ValidationError("شماره موبایل الزامی است.")
-    s = str(value).strip().replace(" ", "")
-    # ارقام فارسی به لاتین
+    # Persian numbers to Latin    
     persian = "۰۱۲۳۴۵۶۷۸۹"
     latin = "0123456789"
     trans = str.maketrans(persian, latin)
