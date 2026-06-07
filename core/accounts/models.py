@@ -24,8 +24,8 @@ class UserType(models.IntegerChoices):
 
 class UserManager(BaseUserManager):
     """
-    مشتری: ثبت‌نام با موبایل (+ OTP در صورت فعال بودن).
-    سوپریوزر/ادمین: ایجاد با ایمیل (بدون الزام موبایل).
+    Customer: Registration via mobile number (+ OTP if enabled).
+    Superuser/Admin: Creation via email (mobile number not required).
     """
 
     def normalize_phone(self, phone):
