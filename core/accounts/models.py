@@ -119,10 +119,9 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
-    مشتری: ورود و ثبت‌نام با شماره موبایل.
-    سوپریوزر/ادمین: ورود با ایمیل (USERNAME_FIELD).
+    Customer: Login and registration via mobile number.
+    Superuser/Admin: Login via email (USERNAME_FIELD).
     """
-
     email = models.EmailField(
         _("ایمیل"),
         unique=True,
