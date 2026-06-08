@@ -58,7 +58,7 @@ class SendOTPSerializer(serializers.Serializer):
 
 
 class RegisterPhoneSerializer(serializers.Serializer):
-    """ثبت‌نام مستقیم با موبایل وقتی OTP در پنل ادمین غیرفعال است."""
+    """منسوخ: ثبت‌نام موبایل فقط با OTP؛ وقتی OTP غیرفعال است فقط ایمیل."""
 
     phone_number = serializers.CharField(max_length=20, label="شماره موبایل")
     password = serializers.CharField(write_only=True, min_length=8, label="رمز عبور")
@@ -74,10 +74,13 @@ class RegisterPhoneSerializer(serializers.Serializer):
         return phone
 
     def validate(self, attrs):
-        if sms_otp_enabled():
+        if not sms_otp_enabled():
             raise serializers.ValidationError(
-                "ثبت‌نام بدون کد تأیید فقط وقتی OTP غیرفعال است امکان‌پذیر است."
+                "ثبت‌نام با موبایل فقط وقتی تأیید پیامک فعال است امکان‌پذیر است. از ثبت‌نام با ایمیل استفاده کنید."
             )
+        raise serializers.ValidationError(
+            "ثبت‌نام با موبایل نیازمند کد تأیید پیامک است. از /api/accounts/register/phone/verify-otp/ استفاده کنید."
+        )
         if attrs["password"] != attrs["password2"]:
             raise serializers.ValidationError(
                 {"password2": "رمز عبور و تکرار آن یکسان نیستند."}

@@ -91,19 +91,48 @@ class RegisterView(FormView):
         context["sms_otp_enabled"] = sms_otp_enabled()
         context["otp_validity_seconds"] = OTPCode.validity_seconds()
         context["otp_expires_at"] = self.request.session.get(REGISTER_OTP_SESSION_EXPIRES)
+        form = context.get("form")
+        sms_on = context["sms_otp_enabled"]
+        if form:
+            method = (
+                (form.data.get("register_method") or "").strip()
+                if form.is_bound
+                else ""
+            )
+            if not sms_on:
+                method = UserRegistrationForm.REGISTER_EMAIL
+            elif method not in (
+                UserRegistrationForm.REGISTER_EMAIL,
+                UserRegistrationForm.REGISTER_PHONE,
+            ):
+                if self.request.session.get(REGISTER_OTP_SESSION_PHONE):
+                    method = UserRegistrationForm.REGISTER_PHONE
+                elif form.errors.get("phone_number") or (
+                    form.data.get("phone_number") or ""
+                ).strip():
+                    method = UserRegistrationForm.REGISTER_PHONE
+                elif form.errors.get("email") or (form.data.get("email") or "").strip():
+                    method = UserRegistrationForm.REGISTER_EMAIL
+                else:
+                    method = UserRegistrationForm.REGISTER_EMAIL
+            context["register_method"] = method
         return context
 
     def form_valid(self, form):
+        phone = form.cleaned_data.get("phone_number")
         otp_code = (form.cleaned_data.get("otp_code") or "").strip() or None
+        if not phone:
+            otp_code = None
         try:
             user = User.objects.create_customer(
-                form.cleaned_data["phone_number"],
-                form.cleaned_data["password1"],
+                phone_number=phone,
+                password=form.cleaned_data["password1"],
+                email=form.cleaned_data.get("email"),
                 is_verified=False,
                 otp_code=otp_code,
             )
         except ValueError as exc:
-            if sms_otp_enabled() and otp_code:
+            if sms_otp_enabled() and phone:
                 form.add_error("otp_code", str(exc))
             else:
                 form.add_error(None, str(exc))

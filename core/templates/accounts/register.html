@@ -7,7 +7,13 @@
         <!-- Heading -->
         <div class="text-center mb-5 mb-md-7">
             <h1 class="h2">ثبت‌نام</h1>
-            <p>با شماره موبایل خود حساب کاربری بسازید.</p>
+            {% if sms_otp_enabled %}
+            <p>با ایمیل یا شماره موبایل حساب کاربری بسازید.</p>
+            <p class="text-muted small mb-0">یکی از دو روش را انتخاب کنید.</p>
+            {% else %}
+            <p>با ایمیل حساب کاربری بسازید.</p>
+            <p class="text-muted small mb-0">ثبت‌نام با موبایل فقط وقتی تأیید پیامک فعال باشد امکان‌پذیر است.</p>
+            {% endif %}
         </div>
         <!-- End Heading -->
 
@@ -24,34 +30,95 @@
                 <div class="alert alert-danger mb-3">{{ form.non_field_errors }}</div>
             {% endif %}
 
-            <div class="mb-4">
-                <label class="form-label" for="id_phone_number">{{ form.phone_number.label }}</label>
-                <input type="text" name="phone_number" value="{{ form.phone_number.value|default:'' }}" class="form-control form-control-lg text-center {% if form.phone_number.errors %}is-invalid{% endif %}" id="id_phone_number" placeholder="۰۹۱۲۳۴۵۶۷۸۹" dir="ltr" inputmode="tel" required>
-                {% if form.phone_number.errors %}<div class="invalid-feedback">{{ form.phone_number.errors.0 }}</div>{% endif %}
-            </div>
+            <input type="hidden" name="register_method" id="registerMethod" value="{{ register_method|default:'email' }}">
 
-            {% if sms_otp_enabled %}
-            <div class="mb-4" id="otpSection"
-                data-otp-expires="{% if otp_expires_at %}{{ otp_expires_at }}{% endif %}"
-                data-otp-validity="{{ otp_validity_seconds }}">
-                <label class="form-label" for="id_otp_code">{{ form.otp_code.label }}</label>
-                <input type="text" name="otp_code" value="{{ form.otp_code.value|default:'' }}" class="form-control form-control-lg text-center {% if form.otp_code.errors %}is-invalid{% endif %}" id="id_otp_code" placeholder="۶ رقم" dir="ltr" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
-                {% if form.otp_code.errors %}<div class="invalid-feedback d-block">{{ form.otp_code.errors.0 }}</div>{% endif %}
+            <div class="accordion mb-4" id="registerMethodAccordion">
+                <!-- Email -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="registerEmailHeading">
+                        <button class="accordion-button {% if register_method != 'email' %}collapsed{% endif %}" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#registerEmailPanel"
+                            aria-expanded="{% if register_method == 'email' %}true{% else %}false{% endif %}"
+                            aria-controls="registerEmailPanel" data-register-method="email">
+                            <i class="bi-envelope ms-2" aria-hidden="true"></i>
+                            ثبت‌نام با ایمیل
+                        </button>
+                    </h2>
+                    <div id="registerEmailPanel" class="accordion-collapse collapse {% if register_method == 'email' %}show{% endif %}"
+                        aria-labelledby="registerEmailHeading" data-bs-parent="#registerMethodAccordion">
+                        <div class="accordion-body pt-0">
+                            <label class="form-label" for="id_email">{{ form.email.label }}</label>
+                            <input type="email" name="email" value="{{ form.email.value|default:'' }}"
+                                class="form-control form-control-lg text-center {% if form.email.errors %}is-invalid{% endif %}"
+                                id="id_email" placeholder="email@site.com" dir="ltr" autocomplete="email"
+                                {% if register_method != 'email' %}disabled{% endif %}>
+                            {% if form.email.errors %}<div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+                </div>
 
-                <div id="otpTimerActive" class="form-text text-primary small mt-2 mb-0 d-none" aria-live="polite">
-                    <i class="bi-clock" aria-hidden="true"></i>
-                    زمان باقی‌مانده برای وارد کردن کد:
-                    <strong id="otpCountdown" dir="ltr">02:00</strong>
+                <!-- Phone -->
+                <div class="accordion-item {% if not sms_otp_enabled %}opacity-50{% endif %}">
+                    <h2 class="accordion-header" id="registerPhoneHeading">
+                        <button class="accordion-button {% if register_method != 'phone' %}collapsed{% endif %}" type="button"
+                            {% if sms_otp_enabled %}
+                            data-bs-toggle="collapse" data-bs-target="#registerPhonePanel"
+                            {% else %}
+                            disabled aria-disabled="true"
+                            {% endif %}
+                            aria-expanded="{% if register_method == 'phone' %}true{% else %}false{% endif %}"
+                            aria-controls="registerPhonePanel" data-register-method="phone">
+                            <i class="bi-phone ms-2" aria-hidden="true"></i>
+                            ثبت‌نام با موبایل
+                            {% if not sms_otp_enabled %}<span class="badge bg-secondary me-2 small">غیرفعال</span>{% endif %}
+                        </button>
+                    </h2>
+                    <div id="registerPhonePanel" class="accordion-collapse collapse {% if register_method == 'phone' %}show{% endif %}"
+                        aria-labelledby="registerPhoneHeading" data-bs-parent="#registerMethodAccordion">
+                        <div class="accordion-body pt-0">
+                            {% if not sms_otp_enabled %}
+                            <div class="alert alert-warning small mb-0" role="alert">
+                                ثبت‌نام با موبایل فقط وقتی تأیید پیامک در پنل مدیریت فعال باشد امکان‌پذیر است. لطفاً با ایمیل ثبت‌نام کنید.
+                            </div>
+                            {% else %}
+                            <label class="form-label" for="id_phone_number">{{ form.phone_number.label }}</label>
+                            <input type="text" name="phone_number" value="{{ form.phone_number.value|default:'' }}"
+                                class="form-control form-control-lg text-center {% if form.phone_number.errors %}is-invalid{% endif %}"
+                                id="id_phone_number" placeholder="۰۹۱۲۳۴۵۶۷۸۹" dir="ltr" inputmode="tel" autocomplete="tel"
+                                {% if register_method != 'phone' %}disabled{% endif %}>
+                            {% if form.phone_number.errors %}<div class="invalid-feedback d-block">{{ form.phone_number.errors.0 }}</div>{% endif %}
+
+                            <div id="otpSection" class="mt-3 {% if register_method != 'phone' %}d-none{% endif %}"
+                                data-otp-expires="{% if otp_expires_at %}{{ otp_expires_at }}{% endif %}"
+                                data-otp-validity="{{ otp_validity_seconds }}"
+                                data-sms-enabled="{% if sms_otp_enabled %}1{% else %}0{% endif %}">
+                                <label class="form-label" for="id_otp_code">{{ form.otp_code.label }}</label>
+                                <input type="text" name="otp_code" value="{{ form.otp_code.value|default:'' }}"
+                                    class="form-control form-control-lg text-center {% if form.otp_code.errors %}is-invalid{% endif %}"
+                                    id="id_otp_code" placeholder="۶ رقم" dir="ltr" inputmode="numeric" maxlength="6"
+                                    autocomplete="one-time-code" {% if not sms_otp_enabled %}disabled{% endif %}>
+                                {% if form.otp_code.errors %}<div class="invalid-feedback d-block">{{ form.otp_code.errors.0 }}</div>{% endif %}
+
+                                <div id="otpTimerActive" class="form-text text-primary small mt-2 mb-0 d-none" aria-live="polite">
+                                    <i class="bi-clock" aria-hidden="true"></i>
+                                    زمان باقی‌مانده برای وارد کردن کد:
+                                    <strong id="otpCountdown" dir="ltr">02:00</strong>
+                                </div>
+                                <div id="otpTimerExpired" class="form-text text-danger small mt-2 mb-0 d-none" role="alert">
+                                    زمان وارد کردن کد تمام شد. دوباره «دریافت کد تأیید» را بزنید.
+                                </div>
+                                <p id="otpHintIdle" class="form-text text-muted small mb-0 mt-2">پس از وارد کردن موبایل، کد تأیید را دریافت کنید.</p>
+                            </div>
+
+                            <div class="d-grid mt-3 {% if register_method != 'phone' %}d-none{% endif %}" id="otpSendWrap">
+                                <button type="submit" id="btnSendOtp" class="btn btn-outline-primary btn-lg"
+                                    formaction="{% url 'accounts:register-send-otp' %}" formmethod="post" formnovalidate>دریافت کد تأیید</button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                <div id="otpTimerExpired" class="form-text text-danger small mt-2 mb-0 d-none" role="alert">
-                    زمان وارد کردن کد تمام شد. دوباره «دریافت کد تأیید» را بزنید.
-                </div>
-                <p id="otpHintIdle" class="form-text text-muted small mb-0 mt-2">پس از وارد کردن موبایل، کد تأیید را دریافت کنید.</p>
             </div>
-            <div class="d-grid mb-4">
-                <button type="submit" id="btnSendOtp" class="btn btn-outline-primary btn-lg" formaction="{% url 'accounts:register-send-otp' %}" formmethod="post" formnovalidate>دریافت کد تأیید</button>
-            </div>
-            {% endif %}
 
             <div class="row">
                 <div class="col-md-6 mb-4">
@@ -103,21 +170,94 @@
 
 
 {% block extra_js %}
-{% if sms_otp_enabled %}
 <script>
 (function () {
-    var section = document.getElementById('otpSection');
-    if (!section) return;
-
-    var expiresRaw = section.getAttribute('data-otp-expires');
-    var expiresAt = expiresRaw ? parseFloat(expiresRaw, 10) : null;
+    var methodInput = document.getElementById('registerMethod');
+    var emailInput = document.getElementById('id_email');
+    var phoneInput = document.getElementById('id_phone_number');
+    var otpSection = document.getElementById('otpSection');
+    var otpSendWrap = document.getElementById('otpSendWrap');
     var otpInput = document.getElementById('id_otp_code');
     var btnSend = document.getElementById('btnSendOtp');
+    var emailPanel = document.getElementById('registerEmailPanel');
+    var phonePanel = document.getElementById('registerPhonePanel');
+    var smsEnabled = otpSection && otpSection.getAttribute('data-sms-enabled') === '1';
+
+    function setMethod(method) {
+        if (!methodInput) return;
+        if (!smsEnabled && method === 'phone') {
+            method = 'email';
+        }
+        methodInput.value = method;
+        var isEmail = method === 'email';
+        var isPhone = method === 'phone';
+
+        if (emailInput) {
+            emailInput.disabled = !isEmail;
+            if (!isEmail) {
+                emailInput.value = '';
+                emailInput.removeAttribute('required');
+            } else {
+                emailInput.setAttribute('required', 'required');
+            }
+        }
+        if (phoneInput) {
+            phoneInput.disabled = !isPhone;
+            if (!isPhone) {
+                phoneInput.value = '';
+                phoneInput.removeAttribute('required');
+            } else {
+                phoneInput.setAttribute('required', 'required');
+            }
+        }
+
+        if (otpSection) {
+            otpSection.classList.toggle('d-none', !isPhone);
+        }
+        if (otpSendWrap) {
+            otpSendWrap.classList.toggle('d-none', !isPhone);
+        }
+        if (otpInput) {
+            if (!isPhone) {
+                otpInput.disabled = true;
+                otpInput.removeAttribute('required');
+            } else if (!otpInput.hasAttribute('data-timer-expired')) {
+                otpInput.disabled = false;
+            }
+        }
+        if (btnSend) {
+            btnSend.disabled = !isPhone;
+        }
+    }
+
+    document.querySelectorAll('[data-register-method]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            setMethod(btn.getAttribute('data-register-method'));
+        });
+    });
+
+    if (emailPanel) {
+        emailPanel.addEventListener('shown.bs.collapse', function () {
+            setMethod('email');
+        });
+    }
+    if (phonePanel && smsEnabled) {
+        phonePanel.addEventListener('shown.bs.collapse', function () {
+            setMethod('phone');
+        });
+    }
+
+    setMethod(methodInput ? methodInput.value : 'email');
+
+    var expiresRaw = otpSection ? otpSection.getAttribute('data-otp-expires') : '';
+    var expiresAt = expiresRaw ? parseFloat(expiresRaw, 10) : null;
     var elActive = document.getElementById('otpTimerActive');
     var elExpired = document.getElementById('otpTimerExpired');
     var elHint = document.getElementById('otpHintIdle');
     var elCountdown = document.getElementById('otpCountdown');
     var timerId = null;
+
+    if (!smsEnabled || !otpSection) return;
 
     function pad(n) {
         return n < 10 ? '0' + n : String(n);
@@ -128,12 +268,13 @@
             clearInterval(timerId);
             timerId = null;
         }
-        elActive.classList.add('d-none');
-        elExpired.classList.remove('d-none');
-        elHint.classList.add('d-none');
+        if (elActive) elActive.classList.add('d-none');
+        if (elExpired) elExpired.classList.remove('d-none');
+        if (elHint) elHint.classList.add('d-none');
         if (otpInput) {
             otpInput.value = '';
             otpInput.disabled = true;
+            otpInput.setAttribute('data-timer-expired', '1');
             otpInput.removeAttribute('required');
         }
         if (btnSend) {
@@ -142,12 +283,13 @@
         }
     }
 
-    function setActive(remainingSec) {
-        elHint.classList.add('d-none');
-        elExpired.classList.add('d-none');
-        elActive.classList.remove('d-none');
-        if (otpInput) {
+    function setActive() {
+        if (elHint) elHint.classList.add('d-none');
+        if (elExpired) elExpired.classList.add('d-none');
+        if (elActive) elActive.classList.remove('d-none');
+        if (otpInput && methodInput && methodInput.value === 'phone') {
             otpInput.disabled = false;
+            otpInput.removeAttribute('data-timer-expired');
             otpInput.setAttribute('required', 'required');
         }
         if (btnSend) {
@@ -156,7 +298,9 @@
 
         function tick() {
             var left = Math.max(0, Math.ceil(expiresAt - Date.now() / 1000));
-            elCountdown.textContent = pad(Math.floor(left / 60)) + ':' + pad(left % 60);
+            if (elCountdown) {
+                elCountdown.textContent = pad(Math.floor(left / 60)) + ':' + pad(left % 60);
+            }
             if (left <= 0) {
                 setExpired();
                 return;
@@ -170,12 +314,10 @@
     }
 
     if (expiresAt && expiresAt > Date.now() / 1000) {
-        setActive(expiresAt - Date.now() / 1000);
+        setActive();
     } else if (expiresAt) {
         setExpired();
     }
-
 })();
 </script>
-{% endif %}
 {% endblock extra_js %}

@@ -37,7 +37,7 @@ class UserManager(BaseUserManager):
 
     def create_customer(
         self,
-        phone_number,
+        phone_number=None,
         password=None,
         email=None,
         *,
@@ -45,33 +45,43 @@ class UserManager(BaseUserManager):
         phone_verified=None,
         **extra_fields,
     ):
-        """ثبت‌نام مشتری با شماره موبایل."""
+        """ثبت‌نام مشتری با ایمیل، موبایل، یا هر دو."""
         if not password:
             raise ValueError(_("رمز عبور الزامی است."))
-        if not phone_number:
-            raise ValueError(_("شماره موبایل الزامی است."))
 
-        phone_number = self.normalize_phone(phone_number)
         email = self.normalize_email(email) if email else None
         if email == "":
             email = None
 
-        if phone_verified is None:
-            from accounts.utils import consume_otp, get_valid_otp, sms_otp_enabled
+        if phone_number:
+            phone_number = self.normalize_phone(phone_number)
+        else:
+            phone_number = None
 
-            if sms_otp_enabled():
-                if not otp_code:
+        if not email and not phone_number:
+            raise ValueError(_("حداقل یکی از ایمیل یا شماره موبایل الزامی است."))
+
+        if phone_number:
+            if phone_verified is None:
+                from accounts.utils import consume_otp, get_valid_otp, sms_otp_enabled
+
+                if sms_otp_enabled():
+                    if not otp_code:
+                        raise ValueError(
+                            _("ثبت‌نام نیازمند کد تأیید پیامک است. ابتدا کد را دریافت و وارد کنید.")
+                        )
+                    try:
+                        otp = get_valid_otp(phone_number, otp_code)
+                    except ValidationError as exc:
+                        raise ValueError(exc.message) from exc
+                    consume_otp(otp)
+                    phone_verified = True
+                else:
                     raise ValueError(
-                        _("ثبت‌نام نیازمند کد تأیید پیامک است. ابتدا کد را دریافت و وارد کنید.")
+                        _("ثبت‌نام با موبایل فقط وقتی تأیید پیامک فعال است امکان‌پذیر است.")
                     )
-                try:
-                    otp = get_valid_otp(phone_number, otp_code)
-                except ValidationError as exc:
-                    raise ValueError(exc.message) from exc
-                consume_otp(otp)
-                phone_verified = True
-            else:
-                phone_verified = True
+        else:
+            phone_verified = False
 
         extra_fields.setdefault("phone_verified", phone_verified)
         extra_fields.setdefault("type", UserType.customer.value)
@@ -183,9 +193,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.is_staff_account:
             if not self.email:
                 raise ValidationError({"email": _("برای ادمین، ایمیل الزامی است.")})
-        elif not self.phone_number:
+        elif not self.phone_number and not self.email:
             raise ValidationError(
-                {"phone_number": _("برای مشتری، شماره موبایل الزامی است.")}
+                _("حداقل یکی از ایمیل یا شماره موبایل الزامی است.")
             )
 
     def __str__(self):
@@ -296,8 +306,8 @@ class SMSSettings(models.Model):
         _("ارسال پیامک OTP فعال است"),
         default=True,
         help_text=_(
-            "فعال: ثبت‌نام فقط پس از تأیید پیامک. "
-            "غیرفعال: ثبت‌نام با موبایل بدون ارسال پیامک."
+            "فعال: ثبت‌نام با موبایل فقط پس از تأیید پیامک. "
+            "غیرفعال: ثبت‌نام فقط با ایمیل."
         ),
     )
     updated_date = models.DateTimeField(_("آخرین به‌روزرسانی"), auto_now=True)
