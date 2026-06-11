@@ -33,7 +33,11 @@ class AuthenticationForm(auth_forms.AuthenticationForm):
 
 
 class UserRegistrationForm(forms.Form):
-    """ثبت‌نام با ایمیل یا شماره موبایل (یکی از دو)؛ در صورت موبایل و فعال بودن OTP، کد پیامک الزامی است."""
+    """
+    Registration using either email or mobile number.
+    If a mobile number is used and OTP is enabled,
+    SMS code verification is required.
+    """
 
     REGISTER_EMAIL = "email"
     REGISTER_PHONE = "phone"
