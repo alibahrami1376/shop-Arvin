@@ -302,3 +302,12 @@ CKEDITOR_5_CONFIGS = {
         }
     }
 }
+
+
+CSRF_TRUSTED_ORIGINS = config(
+    "CSRF_TRUSTED_ORIGINS",
+    cast=lambda v: [item.strip() for item in v.split(",")],
+    default=[],
+)
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
