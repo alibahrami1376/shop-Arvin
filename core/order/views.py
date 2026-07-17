@@ -24,6 +24,7 @@ from payment.models import (
     PaymentStatusType,
 )
 from payment.zarinpal_client import ZarinPalRequestFailed, ZarinPalSandbox
+from accounts.models import SMSSettings
 
 
 class OrderCheckOutView(
@@ -35,14 +36,15 @@ class OrderCheckOutView(
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            u = request.user
-            if not u.phone_number or not u.phone_verified:
-                messages.error(
-                    request,
-                    "برای تکمیل سفارش، شماره موبایل باید ثبت و با کد پیامکی تأیید شده باشد. "
-                    "از بخش ویرایش پروفایل اقدام کنید.",
-                )
-                return redirect(reverse_lazy("dashboard:customer:profile-edit"))
+            if SMSSettings.get_solo().sms_enabled :
+                u = request.user
+                if not u.phone_number or not u.phone_verified:
+                    messages.error(
+                        request,
+                        "برای تکمیل سفارش، شماره موبایل باید ثبت و با کد پیامکی تأیید شده باشد. "
+                        "از بخش ویرایش پروفایل اقدام کنید.",
+                    )
+                    return redirect(reverse_lazy("dashboard:customer:profile-edit"))
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
