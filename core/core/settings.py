@@ -14,9 +14,6 @@ from pathlib import Path
 from datetime import timedelta
 from decouple import config
 
-
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -149,16 +146,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-
-STATIC_URL = "/static/"
-MEDIA_URL = "/media/"
+STATIC_ROOT = config("STATIC_ROOT")
+MEDIA_ROOT = config("MEDIA_ROOT")
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-
-STATIC_ROOT = "/app/public/static"
-MEDIA_ROOT = "/app/public/media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -183,14 +176,15 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
+MERCHANT_ID = config("MERCHANT_ID")
+KAVENEGAR_API_KEY = config("KAVENEGAR_API_KEY")
 
-KAVENEGAR_API_KEY = "5370563577666C304B7651337166474C3573612F56416A7A79556C6C4E4D5855452B72676B376249554D593D" 
 # config('KAVENEGAR_API_KEY', default='')
 # نام الگو در پنل کاوه‌نگار (بخش Lookup) — باید دقیقاً یکی باشد
 KAVENEGAR_TEMPLATE = config('KAVENEGAR_TEMPLATE', default='verify')
 # %token = کد ۶ رقمی OTP · %token2 = مدت اعتبار (دقیقه) از OTPCode.VALIDITY_MINUTES
 
-MERCHANT_ID = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
 
 LOGOUT_REDIRECT_URL = "/"
 LOGIN_REDIRECT_URL = "/"
@@ -303,11 +297,11 @@ CKEDITOR_5_CONFIGS = {
     }
 }
 
-
 CSRF_TRUSTED_ORIGINS = config(
     "CSRF_TRUSTED_ORIGINS",
-    cast=lambda v: [item.strip() for item in v.split(",")],
     default=[],
+    cast=lambda v: v if isinstance(v, list) else [i.strip() for i in v.split(",") if i.strip()],
 )
+
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 

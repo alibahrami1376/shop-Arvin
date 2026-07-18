@@ -214,3 +214,4 @@ docs/*.drawio
 docs/*.drawio.bkp
 docs/*.drawio.dtmp
 docs/.$*
+*.jpg
