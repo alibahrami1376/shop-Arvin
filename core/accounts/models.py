@@ -20,7 +20,11 @@ class UserType(models.IntegerChoices):
     customer = 1, _("customer")
     admin = 2, _("admin")
     superuser = 3, _("superuser")
+    marketer = 4, _("marketer")
+    editor = 5, _("editor")
+    support = 6, _("support")
 
+    
 
 class UserManager(BaseUserManager):
     """
