@@ -10,9 +10,19 @@ class HasCustomerAccessPermission(UserPassesTestMixin):
         return False
     
 
+
 class HasAdminAccessPermission(UserPassesTestMixin):
 
+    allowed_types = (
+        UserType.admin.value,
+        UserType.superuser.value,
+    )
+
     def test_func(self):
-        if self.request.user.is_authenticated:
-            return self.request.user.type == UserType.admin.value
-        return False
+        return (
+            self.request.user.is_authenticated and
+            self.request.user.type in self.allowed_types
+        )
+
+
+
