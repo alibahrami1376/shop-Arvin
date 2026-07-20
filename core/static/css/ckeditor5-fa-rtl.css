@@ -1,18 +1,18 @@
+
+
 /**
- * راست‌به‌چپ برای CKEditor 5 در پنل ادمین (فارسی)
- * صفحهٔ عمومی از dir="rtl" روی html تبعیت می‌کند؛ ادیتور جداگانه LTR بود.
+ * Force RTL direction for the editable content area.
+ * This affects only what the user writes, not the editor layout.
  */
-
-.ck.ck-editor {
-    direction: rtl;
-}
-
 .ck.ck-content.ck-editor__editable {
     direction: rtl;
     text-align: right;
     unicode-bidi: plaintext;
 }
 
+/**
+ * Right-align common block elements inside the editor.
+ */
 .ck.ck-content.ck-editor__editable h1,
 .ck.ck-content.ck-editor__editable h2,
 .ck.ck-content.ck-editor__editable h3,
@@ -22,6 +22,11 @@
     text-align: right;
 }
 
+
+
+/**
+ * Adjust list indentation for RTL layout.
+ */
 .ck.ck-content.ck-editor__editable ul,
 .ck.ck-content.ck-editor__editable ol {
     padding-right: 2em;
@@ -30,13 +35,20 @@
     margin-left: 0;
 }
 
+
+
+/**
+ * Mirror blockquote styling for RTL.
+ */
 .ck.ck-content.ck-editor__editable blockquote {
     border-right: 4px solid var(--ck-color-base-border, #c4c4c4);
     border-left: none;
     padding-right: 1em;
     padding-left: 0;
 }
-
+/**
+ * Fix list spacing inside Django admin forms (RTL).
+ */
 html[dir="rtl"] form .aligned .ck ul,
 html[dir="rtl"] form .aligned .ck ol {
     margin-right: 1.5em;
@@ -45,11 +57,34 @@ html[dir="rtl"] form .aligned .ck ol {
     padding-left: 0;
 }
 
-.ck.ck-toolbar {
-    direction: rtl;
-}
 
+/**
+ * Right-align the Word Count plugin text.
+ * Safe because it only affects the plugin's text, not the editor layout.
+ */
 .ck.ck-word-count {
     direction: rtl;
     text-align: right;
 }
+
+/*
+ * DO NOT enable.
+ * Applying RTL to the entire editor container breaks CKEditor 5 layout
+ * (e.g. footer, word count, and sizing issues).
+ */
+/*
+.ck.ck-editor {
+    direction: rtl;
+}
+*/
+
+/*
+ * DO NOT enable.
+ * Applying RTL to the toolbar breaks its internal flex layout.
+ * Customize the toolbar with flex properties instead if needed.
+ */
+/*
+.ck.ck-toolbar {
+    direction: rtl;
+}
+*/
