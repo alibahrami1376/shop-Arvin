@@ -1444,17 +1444,20 @@ footer .text-muted {
 
 /* Footer دسکتاپ — فشرده و مرتب */
 .site-footer--desktop {
-    padding: 1.25rem 0 0.875rem;
+    padding: 1.5rem 0 1rem;
     margin-top: 2rem;
+    text-align: start;
 }
 
 .site-footer--desktop .site-footer__row {
-    --bs-gutter-y: 1rem;
-    padding: 0.25rem 0 0.5rem;
+    --bs-gutter-x: 1.75rem;
+    --bs-gutter-y: 1.25rem;
+    padding: 0.25rem 0 0.75rem;
+    align-items: flex-start;
 }
 
-.site-footer--desktop .site-footer__col--brand {
-    padding-left: 0;
+.site-footer--desktop .site-footer__col {
+    text-align: start;
 }
 
 .site-footer--desktop .site-footer__brand {
@@ -1469,7 +1472,7 @@ footer .text-muted {
     display: inline-flex;
     align-items: center;
     gap: 0.65rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .site-footer__store-name {
@@ -1584,7 +1587,7 @@ footer .text-muted {
     font-size: 0.8125rem;
     line-height: 1.55;
     margin-bottom: 0.625rem;
-    max-width: 22rem;
+    max-width: 26rem;
 }
 
 .site-footer--desktop .site-footer__social-btn {
@@ -1641,6 +1644,10 @@ footer .text-muted {
     line-height: 1.4;
 }
 
+.site-footer--desktop .site-footer__newsletter-form {
+    max-width: 18rem;
+}
+
 .site-footer--desktop .site-footer__newsletter-input .form-control {
     font-size: 0.875rem;
     padding: 0.45rem 0.75rem;
@@ -1685,12 +1692,13 @@ footer .text-muted {
 
 @media (min-width: 992px) {
     .site-footer--desktop .site-footer__col--nav {
-        padding-right: 1.5rem;
+        padding-inline: 0.5rem;
     }
 
     .site-footer--desktop .site-footer__col--newsletter {
-        max-width: 20rem;
-        margin-inline-start: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
     }
 }
 
@@ -3575,9 +3583,6 @@ body.device-desktop .container {
         padding-left: 0 !important;
         margin-top: var(--spacing-md);
         text-align: center;
-    }
-}
-        font-size: 1.1rem;
     }
     
     p {

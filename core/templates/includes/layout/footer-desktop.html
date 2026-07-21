@@ -1,6 +1,6 @@
 <footer class="site-footer site-footer--desktop">
     <div class="container site-footer__container">
-        <div class="row site-footer__row align-items-start">
+        <div class="row site-footer__row">
             <div class="col-lg-5 col-md-6 site-footer__col site-footer__col--brand">
                 <a class="site-footer__brand navbar-brand" href="{% url 'website:index' %}" aria-label="{{ site_branding.get_logo_alt }}">
                     <span class="site-footer__brand-inner">
@@ -17,9 +17,6 @@
             <div class="col-lg-3 col-md-6 site-footer__col site-footer__col--nav">
                 <h5 class="site-footer__title">دسترسی سریع</h5>
                 <ul class="site-footer__links list-unstyled mb-0">
-                    <li><a class="site-footer__link" href="{% url 'website:index' %}">صفحه اصلی</a></li>
-                    <li><a class="site-footer__link" href="{% url 'shop:product-grid' %}">محصولات</a></li>
-                    <li><a class="site-footer__link" href="{% url 'website:about' %}">درباره ما</a></li>
                     <li><a class="site-footer__link" href="{% url 'website:contact' %}">تماس با ما</a></li>
                     <li><a class="site-footer__link" href="{% url 'website:faq' %}">سوالات متداول</a></li>
                 </ul>
