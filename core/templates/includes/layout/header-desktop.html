@@ -24,7 +24,7 @@
             <a href="{% url 'accounts:login' %}" class="header__user-link" aria-label="ورود یا ثبت نام"><i class="bi-person" aria-hidden="true"></i> <span class="header__user-text">ورود / ثبت نام</span></a>
             {% endif %}
             <a href="{% url 'cart:cart-summary' %}" class="header__cart-link" aria-label="سبد خرید">
-                <span class="header__cart-text">سبد خرید</span>
+                {% include "includes/partials/header-cart-icon.html" %}
                 <span class="header__badge" id="total-cart-item-count">{{ cart.get_total_quantity|default:"۰" }}</span>
             </a>
         </div>

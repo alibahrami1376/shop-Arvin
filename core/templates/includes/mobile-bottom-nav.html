@@ -1,3 +1,4 @@
+{% load static %}
 <nav class="mobile-bottom-nav" aria-label="منوی پایین موبایل">
     <a href="{% url 'website:index' %}"
         class="mobile-bottom-nav__item {% if request.resolver_match.view_name == 'website:index' %}mobile-bottom-nav__item--active{% endif %}"
@@ -20,7 +21,13 @@
         class="mobile-bottom-nav__item mobile-bottom-nav__item--center {% if request.resolver_match.namespace == 'cart' %}mobile-bottom-nav__item--active{% endif %}"
         aria-label="سبد خرید">
         <span class="mobile-bottom-nav__center-btn">
-            <i class="bi-bag" aria-hidden="true"></i>
+            <img src="{% static 'shopping-cart.png' %}"
+                alt=""
+                class="mobile-bottom-nav__cart-icon"
+                width="24"
+                height="24"
+                decoding="async"
+                aria-hidden="true">
             <span class="mobile-bottom-nav__badge{% if not cart.get_total_quantity %} d-none{% endif %}"
                 id="mobile-bottom-cart-count">{{ cart.get_total_quantity|default:"" }}</span>
         </span>

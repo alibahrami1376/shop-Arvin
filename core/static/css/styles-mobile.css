@@ -871,6 +871,14 @@ body.device-mobile .mobile-bottom-nav__center-btn i {
     color: inherit;
 }
 
+body.device-mobile .mobile-bottom-nav__cart-icon {
+    width: clamp(1.2rem, 5vw, 1.45rem);
+    height: clamp(1.2rem, 5vw, 1.45rem);
+    object-fit: contain;
+    display: block;
+    filter: brightness(0) invert(1);
+}
+
 body.device-mobile .mobile-bottom-nav__item--center:focus-visible .mobile-bottom-nav__center-btn {
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(74, 55, 44, 0.32);

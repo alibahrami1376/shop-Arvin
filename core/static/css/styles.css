@@ -597,7 +597,11 @@ select,
 }
 
 .header__cart-icon {
-    font-size: 1.35rem;
+    width: 1.55rem;
+    height: 1.55rem;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
 }
 
 .header__offcanvas .offcanvas-header {
@@ -782,6 +786,14 @@ select,
     background: var(--color-accent-brown-dark);
 }
 
+.mobile-bottom-nav__cart-icon {
+    width: 1.45rem;
+    height: 1.45rem;
+    object-fit: contain;
+    display: block;
+    filter: brightness(0) invert(1);
+}
+
 /* PWA install banner (mobile) */
 .pwa-install-banner {
     position: fixed;
@@ -931,7 +943,8 @@ body.has-pwa-install-banner.has-mobile-bottom-nav .js-go-to.go-to {
     }
 
     .header__cart-icon {
-        display: none !important;
+        width: 1.65rem;
+        height: 1.65rem;
     }
 
     /* بنر — فقط دسکتاپ */

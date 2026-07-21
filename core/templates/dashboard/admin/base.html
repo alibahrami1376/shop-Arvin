@@ -50,7 +50,7 @@
                 <a href="{% url 'dashboard:home' %}" class="header__user-link"><i class="bi-speedometer2"></i> <span>پنل ادمین</span></a>
                 <a href="{% url 'accounts:logout' %}" class="header__user-link"><i class="bi-box-arrow-right"></i> <span>خروج</span></a>
                 <a href="{% url 'cart:cart-summary' %}" class="header__cart-link" aria-label="سبد خرید">
-                    <span class="header__cart-text">سبد خرید</span>
+                    {% include "includes/partials/header-cart-icon.html" %}
                     <span class="header__badge" id="total-cart-item-count">{{ cart.get_total_quantity|default:"۰" }}</span>
                 </a>
             </div>
