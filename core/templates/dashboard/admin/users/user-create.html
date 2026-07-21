@@ -31,34 +31,44 @@
                 {{ form.non_field_errors }}
             </div>
             {% endif %}
-            <div class="row d-flex align-items-center">
+            <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label>ایمیل</label>
+                    <label class="form-label">ایمیل</label>
                     {{ form.email }}
                     {{ form.email.errors }}
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label>شماره موبایل</label>
+                    <label class="form-label">شماره موبایل</label>
                     {{ form.phone_number }}
                     {{ form.phone_number.errors }}
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label>رمز عبور</label>
+                    <label class="form-label">رمز عبور</label>
                     {{ form.password1 }}
                     {{ form.password1.errors }}
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label>تکرار رمز عبور</label>
+                    <label class="form-label">تکرار رمز عبور</label>
                     {{ form.password2 }}
                     {{ form.password2.errors }}
                 </div>
-                <div class="col-md-3 mb-3">
-                    <label>وضعیت</label>
-                    {{ form.is_active }}
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">نوع کاربر</label>
+                    {{ form.type }}
+                    {{ form.type.errors }}
                 </div>
-                <div class="col-md-3 mb-3">
-                    <label>احرازشده</label>
-                    {{ form.is_verified }}
+                <div class="col-md-6 mb-3"></div>
+                <div class="col-md-6 mb-3">
+                    <div class="form-check form-switch">
+                        {{ form.is_active }}
+                        <label class="form-check-label" for="{{ form.is_active.id_for_label }}">وضعیت (فعال)</label>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="form-check form-switch">
+                        {{ form.is_verified }}
+                        <label class="form-check-label" for="{{ form.is_verified.id_for_label }}">احرازشده</label>
+                    </div>
                 </div>
             </div>
         </div>

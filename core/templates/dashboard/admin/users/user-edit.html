@@ -32,13 +32,24 @@
                     <label>ایمیل</label>
                     {{form.email}}
                 </div>
-                <div class="col-md-3 mb-3">
-                    <label>وضعیت</label>
-                    {{form.is_active}}
+                {% if can_change_type and form.type %}
+                <div class="col-md-6 mb-3">
+                    <label>نوع کاربر</label>
+                    {{form.type}}
+                    {{form.type.errors}}
                 </div>
-                <div class="col-md-3 mb-3">
-                    <label>احرازشده</label>
-                    {{form.is_verified}}
+                {% endif %}
+                <div class="col-md-6 mb-3">
+                    <div class="form-check form-switch">
+                        {{ form.is_active }}
+                        <label class="form-check-label" for="{{ form.is_active.id_for_label }}">وضعیت (فعال)</label>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="form-check form-switch">
+                        {{ form.is_verified }}
+                        <label class="form-check-label" for="{{ form.is_verified.id_for_label }}">احرازشده</label>
+                    </div>
                 </div>
             </div>
             <div class="card-footer">

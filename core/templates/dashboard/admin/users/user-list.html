@@ -21,7 +21,9 @@
     <div class="card-header border-bottom">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0">لیست کاربران</h5>
+            {% if can_create_user %}
             <a class="btn btn-primary" href="{% url 'dashboard:admin:user-create' %}">ساخت کاربر</a>
+            {% endif %}
         </div>
     </div>
     <!-- End Header -->
@@ -78,6 +80,7 @@
                                     <th scope="col">#</th>
                                     <th scope="col">شناسه کاربر</th>
                                     <th scope="col">ایمیل</th>
+                                    <th scope="col">نوع</th>
                                     <th scope="col">تاریخ ثبت</th>
                                     <th scope="col">وضعیت</th>
                                     <th scope="col">عملیات</th>
@@ -90,6 +93,14 @@
                                     <th scope="row">{{forloop.counter}}</th>
                                     <td>{{object.id}}</td>
                                     <td>{{object.email}}</td>
+                                    <td>
+                                        {% if object.type == 1 %}مشتری
+                                        {% elif object.type == 2 %}ادمین
+                                        {% elif object.type == 4 %}مارکتر
+                                        {% elif object.type == 5 %}ویراستار
+                                        {% elif object.type == 6 %}پشتیبانی
+                                        {% else %}-{% endif %}
+                                    </td>
                                     <td>{{object.created_date|date:"Y-m-d h:i"}}</td>
                                     <td>
                                         {% if object.is_active %}

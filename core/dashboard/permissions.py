@@ -25,4 +25,30 @@ class HasAdminAccessPermission(UserPassesTestMixin):
         )
 
 
+class HasSuperUserAccessPermission(UserPassesTestMixin):
+    """Only Django superuser or users with type=superuser."""
+
+    def test_func(self):
+        user = self.request.user
+        return (
+            user.is_authenticated
+            and (user.is_superuser or user.type == UserType.superuser.value)
+        )
+
+
+def user_can_manage_roles(user):
+    """Superuser and admin can change another user's type/status."""
+    if not user.is_authenticated:
+        return False
+    return user.is_superuser or user.type in (
+        UserType.admin.value,
+        UserType.superuser.value,
+    )
+
+
+def user_can_create_users(user):
+    """Only superuser can create users."""
+    if not user.is_authenticated:
+        return False
+    return user.is_superuser or user.type == UserType.superuser.value
 

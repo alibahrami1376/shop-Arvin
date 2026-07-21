@@ -11,7 +11,12 @@ from django.views.generic import (
 )
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from dashboard.permissions import *
+from dashboard.permissions import (
+    HasAdminAccessPermission,
+    HasSuperUserAccessPermission,
+    user_can_create_users,
+    user_can_manage_roles,
+)
 from django.db.models import F, Q
 from django.core import exceptions
 from django.contrib.auth import get_user_model
@@ -19,6 +24,10 @@ from accounts.models import UserType
 from dashboard.admin.forms import *
 
 User = get_user_model()
+
+
+def _manageable_users():
+    return User.objects.filter(is_superuser=False).exclude(type=UserType.superuser.value)
 
 
 class UserListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
@@ -34,13 +43,15 @@ class UserListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
         return self.request.GET.get('paginate_by', self.paginate_by)
 
     def get_queryset(self):
-        queryset = User.objects.filter(is_superuser=False, type=UserType.customer.value).order_by("-created_date")
+        queryset = User.objects.filter(is_superuser=False).exclude(
+            type=UserType.superuser.value
+        ).order_by("-created_date")
         search_query = self.request.GET.get('q', None)
         ordering_query = self.request.GET.get('ordering', None)
 
         if search_query:
             queryset = queryset.filter(
-                Q(email__icontains=search_query)
+                Q(email__icontains=search_query) | Q(phone_number__icontains=search_query)
             )
         if ordering_query:
             try:
@@ -52,10 +63,11 @@ class UserListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["total_result"] = self.get_queryset().count()
+        context["can_create_user"] = user_can_create_users(self.request.user)
         return context
 
 
-class UserCreateView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, CreateView):
+class UserCreateView(LoginRequiredMixin, HasSuperUserAccessPermission, SuccessMessageMixin, CreateView):
     title = "ساخت کاربر"
     template_name = "dashboard/admin/users/user-create.html"
     form_class = UserCreateForm
@@ -72,7 +84,7 @@ class UserDeleteView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessag
     success_message = "کاربر مورد نظر با موفقیت حذف شد"
 
     def get_queryset(self):
-        return User.objects.filter(is_superuser=False, type=UserType.customer.value)
+        return _manageable_users()
 
 
 class UserUpdateView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
@@ -81,8 +93,18 @@ class UserUpdateView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessag
     success_message = "کاربر مورد نظر با موفقیت ویرایش شد"
     form_class = UserForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["can_change_type"] = user_can_manage_roles(self.request.user)
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["can_change_type"] = user_can_manage_roles(self.request.user)
+        return context
+
     def get_success_url(self) -> str:
         return reverse_lazy("dashboard:admin:user-edit", kwargs={"pk": self.kwargs.get("pk")})
 
     def get_queryset(self):
-        return User.objects.filter(is_superuser=False, type=UserType.customer.value)
+        return _manageable_users()
