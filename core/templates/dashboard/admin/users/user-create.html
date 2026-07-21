@@ -1,0 +1,73 @@
+{% extends dashboard_admin_base_template %}
+{% load static %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">حساب</li>
+        <li class="breadcrumb-item">داشبورد ادمین</li>
+        <li class="breadcrumb-item">کاربران</li>
+        <li class="breadcrumb-item active" aria-current="page">
+            ساخت کاربر
+        </li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <!-- Header -->
+    <div class="card-header border-bottom">
+        <h5 class="card-header-title">ساخت کاربر</h5>
+    </div>
+    <!-- End Header -->
+
+    <!-- Body -->
+    <form action="." method="post">
+        {% csrf_token %}
+        <div class="card-body">
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+            <div class="row d-flex align-items-center">
+                <div class="col-md-6 mb-3">
+                    <label>ایمیل</label>
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>شماره موبایل</label>
+                    {{ form.phone_number }}
+                    {{ form.phone_number.errors }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>رمز عبور</label>
+                    {{ form.password1 }}
+                    {{ form.password1.errors }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>تکرار رمز عبور</label>
+                    {{ form.password2 }}
+                    {{ form.password2.errors }}
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label>وضعیت</label>
+                    {{ form.is_active }}
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label>احرازشده</label>
+                    {{ form.is_verified }}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex pt-5 justify-content-end">
+                <a class="btn btn-secondary ms-3" href="{% url 'dashboard:admin:user-list' %}">بازگشت</a>
+                <button class="btn btn-primary ms-3" type="submit">ساخت کاربر</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
