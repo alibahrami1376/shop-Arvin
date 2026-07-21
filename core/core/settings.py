@@ -114,6 +114,9 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
+        "NAME": "core.password_validation.ASCIIOnlyPasswordValidator",
+    },
+    {
         'NAME': 'core.password_validation.PersianUserAttributeSimilarityValidator',
     },
     {
