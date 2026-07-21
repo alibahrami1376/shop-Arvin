@@ -1,7 +1,7 @@
 import logging
 
 from django.contrib import messages
-from django.contrib.auth import get_user_model, login, views as auth_views
+from django.contrib.auth import get_user_model,authenticate, login, views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -126,7 +126,7 @@ class RegisterView(FormView):
         try:
             user = User.objects.create_customer(
                 phone_number=phone,
-                password=form.cleaned_data["password1"],
+                password=form.cleaned_data["password1"],       
                 email=form.cleaned_data.get("email"),
                 is_verified=False,
                 otp_code=otp_code,
@@ -143,7 +143,7 @@ class RegisterView(FormView):
         profile.save(update_fields=["first_name", "last_name", "updated_date"])
         self.request.session.pop(REGISTER_OTP_SESSION_EXPIRES, None)
         self.request.session.pop(REGISTER_OTP_SESSION_PHONE, None)
-        login(self.request, user)
+        login(self.request, user, backend="accounts.backends.EmailOrPhoneBackend",)
         return redirect(self.get_success_url())
 
 
