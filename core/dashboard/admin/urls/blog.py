@@ -27,4 +27,8 @@ urlpatterns = [
         views.AdminBlogCategoryDeleteView.as_view(),
         name="blog-category-delete",
     ),
+    path("blog/tag/list/", views.AdminBlogTagListView.as_view(), name="blog-tag-list"),
+    path("blog/tag/create/", views.AdminBlogTagCreateView.as_view(), name="blog-tag-create"),
+    path("blog/tag/<int:pk>/edit/", views.AdminBlogTagEditView.as_view(), name="blog-tag-edit"),
+    path("blog/tag/<int:pk>/delete/", views.AdminBlogTagDeleteView.as_view(), name="blog-tag-delete"),
 ]

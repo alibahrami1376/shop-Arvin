@@ -19,6 +19,7 @@ class ProductForm(forms.ModelForm):
             "stock",
             "status",
             "category",
+            "tags",
             "price",
             "discount_percent",
             "brief_description",
@@ -33,6 +34,8 @@ class ProductForm(forms.ModelForm):
         self.fields['slug'].widget.attrs['class'] = 'form-control'
         self.fields['category'].widget.attrs['class'] = 'form-control'
         self.fields['category'].label_from_instance = lambda obj: obj.get_indented_title()
+        self.fields['tags'].widget.attrs['class'] = 'form-control'
+        self.fields['tags'].required = False
         self.fields['image'].widget.attrs['class'] = 'form-control'
         self.fields['brief_description'].widget.attrs['class'] = 'form-control'
         self.fields['stock'].widget.attrs['class'] = 'form-control'

@@ -3,7 +3,7 @@ from django.contrib import admin
 
 from django_ckeditor_5.widgets import CKEditor5Widget
 
-from blog.models import Post, Category, PostImageModel
+from blog.models import Post, Category, Tag, PostImageModel
 
 
 class PostAdminForm(forms.ModelForm):
@@ -28,9 +28,9 @@ class PostAdmin(admin.ModelAdmin):
     date_hierarchy = "created_date"
     empty_value_display = "-خالی-"
     list_display = ("title", "author", "counted_view", "status", "published_date", "created_date")
-    list_filter = ("status", "category", "created_date")
+    list_filter = ("status", "category", "tags", "created_date")
     search_fields = ["title", "content"]
-    filter_horizontal = ("category",)
+    filter_horizontal = ("category", "tags")
     list_editable = ("status",)
     readonly_fields = ("counted_view", "created_date", "updated_date")
 
@@ -41,8 +41,8 @@ class PostAdmin(admin.ModelAdmin):
         ("محتوا", {
             "fields": ("content",)
         }),
-        ("دسته‌بندی و وضعیت", {
-            "fields": ("category", "status", "published_date")
+        ("دسته‌بندی، تگ و وضعیت", {
+            "fields": ("category", "tags", "status", "published_date")
         }),
         ("آمار و تاریخ", {
             "fields": ("counted_view", "created_date", "updated_date"),
@@ -53,6 +53,12 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
 

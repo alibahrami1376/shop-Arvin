@@ -108,6 +108,13 @@
                     {% if not forloop.last %} ,{% endif %}
                     {% endfor %}
                 </p>
+                {% if object.tags.exists %}
+                <p class="small text-muted mb-0">
+                    {% for tag in object.tags.all %}
+                    <span class="badge bg-soft-secondary text-secondary me-1">{{ tag.title }}</span>
+                    {% endfor %}
+                </p>
+                {% endif %}
                 <p>{{object.brief_description}}</p>
             </div>
             <!-- End Heading -->

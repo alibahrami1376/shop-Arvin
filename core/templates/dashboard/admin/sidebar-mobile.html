@@ -22,10 +22,11 @@
                 <span class="admin-sidebar-group__label"><i class="bi-shop"></i> کاتالوگ و فروش</span>
                 <i class="bi-chevron-down admin-sidebar-group__chev" aria-hidden="true"></i>
             </button>
-            <div class="collapse js-admin-sidebar-collapse" id="adminMobNavStoreSales" data-active-views="dashboard:admin:product-list,dashboard:admin:product-create,dashboard:admin:product-edit,dashboard:admin:product-delete,dashboard:admin:product-add-image,dashboard:admin:product-remove-image,dashboard:admin:category-list,dashboard:admin:category-create,dashboard:admin:category-edit,dashboard:admin:category-delete,dashboard:admin:order-list,dashboard:admin:order-detail,dashboard:admin:order-change-status,dashboard:admin:order-change-payment-status,dashboard:admin:order-invoice,dashboard:admin:coupon-list,dashboard:admin:coupon-create,dashboard:admin:coupon-edit,dashboard:admin:coupon-delete,dashboard:admin:checkout-pricing-settings">
+            <div class="collapse js-admin-sidebar-collapse" id="adminMobNavStoreSales" data-active-views="dashboard:admin:product-list,dashboard:admin:product-create,dashboard:admin:product-edit,dashboard:admin:product-delete,dashboard:admin:product-add-image,dashboard:admin:product-remove-image,dashboard:admin:category-list,dashboard:admin:category-create,dashboard:admin:category-edit,dashboard:admin:category-delete,dashboard:admin:product-tag-list,dashboard:admin:product-tag-create,dashboard:admin:product-tag-edit,dashboard:admin:product-tag-delete,dashboard:admin:order-list,dashboard:admin:order-detail,dashboard:admin:order-change-status,dashboard:admin:order-change-payment-status,dashboard:admin:order-invoice,dashboard:admin:coupon-list,dashboard:admin:coupon-create,dashboard:admin:coupon-edit,dashboard:admin:coupon-delete,dashboard:admin:checkout-pricing-settings">
                 <ul class="admin-sidebar-mobile__nav admin-sidebar-group__nav">
                     <li><a href="{% url 'dashboard:admin:product-list' %}"><i class="bi-shop-window"></i> محصولات</a></li>
                     <li><a href="{% url 'dashboard:admin:category-list' %}"><i class="bi-tags"></i> دسته‌بندی‌ها</a></li>
+                    <li><a href="{% url 'dashboard:admin:product-tag-list' %}"><i class="bi-hash"></i> تگ‌ها</a></li>
                     <li><a href="{% url 'dashboard:admin:order-list' %}"><i class="bi-receipt-cutoff"></i> سفارشات</a></li>
                     <li><a href="{% url 'dashboard:admin:coupon-list' %}"><i class="bi-ticket-perforated"></i> کد تخفیف</a></li>
                     <li><a href="{% url 'dashboard:admin:checkout-pricing-settings' %}"><i class="bi-truck"></i> هزینه ارسال و مالیات</a></li>
@@ -117,6 +118,7 @@
     <ul class="admin-sidebar-mobile__nav">
         <li><a href="{% url 'dashboard:admin:blog-post-list' %}"><i class="bi-journal-text"></i> پست‌ها</a></li>
         <li><a href="{% url 'dashboard:admin:blog-category-list' %}"><i class="bi-folder2-open"></i> دسته‌بندی بلاگ</a></li>
+        <li><a href="{% url 'dashboard:admin:blog-tag-list' %}"><i class="bi-hash"></i> تگ‌های بلاگ</a></li>
     </ul>
 
     <p class="admin-sidebar-mobile__section">کاربران</p>

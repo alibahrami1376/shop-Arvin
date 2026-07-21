@@ -4,7 +4,7 @@ from django.utils import timezone
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 from blog.models import Category as BlogCategory
-from blog.models import Post, PostImageModel
+from blog.models import Post, PostImageModel, Tag as BlogTag
 
 _DATETIME_LOCAL_INPUT_FORMATS = (
     "%Y-%m-%dT%H:%M",
@@ -17,6 +17,16 @@ _DATETIME_LOCAL_INPUT_FORMATS = (
 class BlogCategoryForm(forms.ModelForm):
     class Meta:
         model = BlogCategory
+        fields = ["name"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["name"].widget.attrs["class"] = "form-control"
+
+
+class BlogTagForm(forms.ModelForm):
+    class Meta:
+        model = BlogTag
         fields = ["name"]
 
     def __init__(self, *args, **kwargs):
@@ -40,6 +50,7 @@ class BlogPostForm(forms.ModelForm):
             "image",
             "url",
             "category",
+            "tags",
             "status",
             "published_date",
         ]
@@ -50,6 +61,8 @@ class BlogPostForm(forms.ModelForm):
         for fname in ("title", "image", "url"):
             self.fields[fname].widget.attrs.setdefault("class", "form-control")
         self.fields["category"].widget.attrs.setdefault("class", "form-select")
+        self.fields["tags"].widget.attrs.setdefault("class", "form-select")
+        self.fields["tags"].required = False
         self.fields["status"].widget.attrs.setdefault("class", "form-check-input")
         self.fields["url"].required = False
 

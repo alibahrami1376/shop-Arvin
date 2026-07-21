@@ -18,6 +18,18 @@ class Category(models.Model):
         return self.name
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=255, verbose_name="نام")
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "تگ"
+        verbose_name_plural = "تگ‌ها"
+
+    def __str__(self):
+        return self.name
+
+
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="نویسنده")
     image = models.ImageField(upload_to="blog/", default="blog/default.png", verbose_name="تصویر")
@@ -25,6 +37,7 @@ class Post(models.Model):
     content = CKEditor5Field(verbose_name="محتوا")
     url = models.URLField(max_length=500, null=True, blank=True, verbose_name="لینک")
     category = models.ManyToManyField(Category, verbose_name="دسته‌بندی")
+    tags = models.ManyToManyField(Tag, blank=True, related_name="posts", verbose_name="تگ‌ها")
     counted_view = models.IntegerField(default=0, verbose_name="تعداد بازدید")
     status = models.BooleanField(default=False, verbose_name="وضعیت انتشار")
     published_date = models.DateTimeField(null=True, blank=True, verbose_name="تاریخ انتشار")

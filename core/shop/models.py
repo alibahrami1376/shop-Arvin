@@ -62,10 +62,27 @@ class ProductCategoryModel(models.Model):
         return result
 
 
+class ProductTagModel(models.Model):
+    title = models.CharField(max_length=255, verbose_name="عنوان")
+    slug = models.SlugField(allow_unicode=True, unique=True, verbose_name="اسلاگ")
+
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["title"]
+        verbose_name = "تگ محصول"
+        verbose_name_plural = "تگ‌های محصول"
+
+    def __str__(self):
+        return self.title
+
+
 # Create your models here.
 class ProductModel(models.Model):
     user = models.ForeignKey("accounts.User",on_delete=models.PROTECT)
     category = models.ManyToManyField(ProductCategoryModel)
+    tags = models.ManyToManyField(ProductTagModel, blank=True, related_name="products", verbose_name="تگ‌ها")
     title = models.CharField(max_length=255)
     slug = models.SlugField(allow_unicode=True,unique=True)
     image = models.ImageField(default="/default/product-image.png",upload_to="product/img/")
