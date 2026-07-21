@@ -1,0 +1,49 @@
+{% comment %}
+فوتر دسکتاپ داشبورد — footer_role: "admin" | "customer"
+{% endcomment %}
+<footer class="dashboard-footer site-footer site-footer--desktop">
+    <div class="container site-footer__container">
+        <div class="row site-footer__row">
+            <div class="col-lg-4 col-md-6 site-footer__col site-footer__col--brand">
+                {% include "includes/partials/dashboard-footer-brand.html" %}
+                <p class="site-footer__desc text-muted mb-0">
+                    تامین قطعات یدکی اصلی برای انواع کامیون و کامیونت — بیش از ۱۰ سال تجربه.
+                </p>
+                {% include "includes/partials/site-wide-social-buttons.html" %}
+            </div>
+
+            <div class="col-lg-4 col-md-6 site-footer__col site-footer__col--nav">
+                {% if footer_role == "admin" %}
+                <h5 class="site-footer__title">مدیریت</h5>
+                <ul class="site-footer__links list-unstyled mb-0">
+                    <li><a class="site-footer__link" href="{% url 'dashboard:admin:order-list' %}">سفارشات</a></li>
+                    <li><a class="site-footer__link" href="{% url 'dashboard:admin:user-list' %}">کاربران</a></li>
+                </ul>
+                {% else %}
+                <h5 class="site-footer__title">حساب کاربری</h5>
+                <ul class="site-footer__links list-unstyled mb-0">
+                    <li><a class="site-footer__link" href="{% url 'dashboard:customer:home' %}">داشبورد</a></li>
+                    <li><a class="site-footer__link" href="{% url 'dashboard:customer:order-list' %}">سفارشات</a></li>
+                </ul>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-4 col-md-12 site-footer__col site-footer__col--nav">
+                <h5 class="site-footer__title">دسترسی سریع</h5>
+                <ul class="site-footer__links list-unstyled mb-0">
+                    <li><a class="site-footer__link" href="{% url 'website:index' %}">صفحه اصلی</a></li>
+                    <li><a class="site-footer__link" href="{% url 'shop:product-grid' %}">محصولات</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="site-footer__bottom">
+            <p class="site-footer__copyright text-muted mb-0">&copy; ۱۴۰۳ {{ site_branding.get_logo_alt }}. تمامی حقوق محفوظ است.</p>
+            <nav class="site-footer__legal" aria-label="صفحات قانونی">
+                <a class="site-footer__link site-footer__link--sm" href="{% url 'website:privacy' %}">حریم خصوصی</a>
+                <span class="site-footer__legal-sep" aria-hidden="true">|</span>
+                <a class="site-footer__link site-footer__link--sm" href="{% url 'website:terms' %}">قوانین و مقررات</a>
+            </nav>
+        </div>
+    </div>
+</footer>
