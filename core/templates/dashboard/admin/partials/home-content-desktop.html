@@ -1,80 +1,297 @@
-<!-- خلاصه آمار -->
-<div class="row g-4 mb-4">
-    <div class="col-sm-6 col-lg-4 col-xl-3">
-        <div class="card card-borderless h-100">
-            <div class="card-body">
-                <span class="text-muted small">کل سفارشات</span>
-                <h4 class="mb-0">{{ orders_count }}</h4>
-                <a href="{% url 'dashboard:admin:order-list' %}" class="btn btn-soft-primary btn-sm mt-2">مشاهده</a>
+<section class="admin-dashboard-welcome mb-4">
+    <div class="admin-dashboard-welcome__content">
+        <div class="admin-dashboard-welcome__avatar-wrap">
+            {% if dashboard_has_custom_avatar %}
+            <img src="{{ dashboard_profile.image.url }}" alt="{{ dashboard_user_full_name }}" class="admin-dashboard-welcome__avatar">
+            {% else %}
+            <div class="admin-dashboard-welcome__avatar admin-dashboard-welcome__avatar--fallback">
+                {{ dashboard_user_initials }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="admin-dashboard-welcome__body">
+            <div class="admin-dashboard-welcome__eyebrow">
+                <i class="bi bi-stars"></i>
+                <span>خوش آمدید به پنل مدیریت</span>
+            </div>
+            <h1 class="admin-dashboard-welcome__title">سلام {{ dashboard_user_full_name }}!</h1>
+            <p class="admin-dashboard-welcome__text">
+                امروز می‌توانید وضعیت فروشگاه، دسترسی‌های حساب و اعلان‌های مهم را از یک نمای یکپارچه مدیریت کنید.
+            </p>
+            <div class="admin-dashboard-welcome__meta">
+                <div class="admin-dashboard-welcome__meta-item">
+                    <span class="admin-dashboard-welcome__meta-label">تاریخ و زمان فعلی</span>
+                    <strong id="adminDashboardCurrentTime">{{ dashboard_now|date:"Y/m/d - H:i" }}</strong>
+                </div>
+                <div class="admin-dashboard-welcome__meta-item">
+                    <span class="admin-dashboard-welcome__meta-label">آخرین ورود</span>
+                    <strong>
+                        {% if dashboard_user.last_login %}
+                        {{ dashboard_user.last_login|date:"Y/m/d - H:i" }}
+                        {% else %}
+                        اولین ورود
+                        {% endif %}
+                    </strong>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-sm-6 col-lg-4 col-xl-3">
-        <div class="card card-borderless h-100">
+</section>
+
+<div class="row g-4 mb-4 admin-dashboard-top-cards">
+    <div class="col-lg-6">
+        <div class="card admin-info-card h-100">
+            <div class="card-header border-0 pb-0">
+                <h2 class="admin-info-card__title"><i class="bi bi-person-vcard"></i> اطلاعات حساب</h2>
+            </div>
             <div class="card-body">
-                <span class="text-muted small">سفارشات موفق</span>
-                <h4 class="mb-0 text-success">{{ orders_success_count }}</h4>
-                <a href="{% url 'dashboard:admin:order-list' %}?status=2" class="btn btn-soft-success btn-sm mt-2">مشاهده</a>
+                <div class="admin-info-grid">
+                    <div class="admin-info-grid__item">
+                        <span class="admin-info-grid__label">نام کامل</span>
+                        <strong>{{ dashboard_user_full_name }}</strong>
+                    </div>
+                    <div class="admin-info-grid__item">
+                        <span class="admin-info-grid__label">نام کاربری / شناسه ورود</span>
+                        <strong>{{ dashboard_user.email|default:dashboard_user.phone_number }}</strong>
+                    </div>
+                    <div class="admin-info-grid__item">
+                        <span class="admin-info-grid__label">ایمیل</span>
+                        <strong>{{ dashboard_user.email|default:"ثبت نشده" }}</strong>
+                    </div>
+                    <div class="admin-info-grid__item">
+                        <span class="admin-info-grid__label">شماره موبایل</span>
+                        <strong>{{ dashboard_user.phone_number|default:"ثبت نشده" }}</strong>
+                    </div>
+                    <div class="admin-info-grid__item">
+                        <span class="admin-info-grid__label">وضعیت حساب</span>
+                        <span class="badge admin-status-badge {% if dashboard_user.is_active %}admin-status-badge--success{% else %}admin-status-badge--muted{% endif %}">
+                            {% if dashboard_user.is_active %}فعال{% else %}غیرفعال{% endif %}
+                        </span>
+                    </div>
+                    <div class="admin-info-grid__item">
+                        <span class="admin-info-grid__label">تایید ایمیل</span>
+                        <span class="badge admin-status-badge {% if dashboard_user.is_verified %}admin-status-badge--success{% else %}admin-status-badge--muted{% endif %}">
+                            {% if dashboard_user.is_verified %}تایید شده{% else %}تایید نشده{% endif %}
+                        </span>
+                    </div>
+                    <div class="admin-info-grid__item">
+                        <span class="admin-info-grid__label">تایید موبایل</span>
+                        <span class="badge admin-status-badge {% if dashboard_user.phone_verified %}admin-status-badge--success{% else %}admin-status-badge--muted{% endif %}">
+                            {% if dashboard_user.phone_verified %}تایید شده{% else %}تایید نشده{% endif %}
+                        </span>
+                    </div>
+                    <div class="admin-info-grid__item">
+                        <span class="admin-info-grid__label">تاریخ عضویت</span>
+                        <strong>{{ dashboard_user.created_date|date:"Y/m/d - H:i" }}</strong>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-sm-6 col-lg-4 col-xl-3">
-        <div class="card card-borderless h-100">
-            <div class="card-body">
-                <span class="text-muted small">در انتظار پرداخت</span>
-                <h4 class="mb-0 text-warning">{{ orders_pending_count }}</h4>
-                <a href="{% url 'dashboard:admin:order-list' %}?status=1" class="btn btn-soft-warning btn-sm mt-2">مشاهده</a>
+
+    <div class="col-lg-6">
+        <div class="card admin-info-card h-100">
+            <div class="card-header border-0 pb-0">
+                <h2 class="admin-info-card__title"><i class="bi bi-shield-check"></i> نقش و دسترسی‌ها</h2>
             </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-lg-4 col-xl-3">
-        <div class="card card-borderless h-100">
             <div class="card-body">
-                <span class="text-muted small">کاربران (مشتری)</span>
-                <h4 class="mb-0">{{ users_count }}</h4>
-                <a href="{% url 'dashboard:admin:user-list' %}" class="btn btn-soft-info btn-sm mt-2">مشاهده</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-lg-4 col-xl-3">
-        <div class="card card-borderless h-100">
-            <div class="card-body">
-                <span class="text-muted small">محصولات</span>
-                <h4 class="mb-0">{{ products_count }}</h4>
-                <a href="{% url 'dashboard:admin:product-list' %}" class="btn btn-soft-secondary btn-sm mt-2">مشاهده</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-lg-4 col-xl-3">
-        <div class="card card-borderless h-100">
-            <div class="card-body">
-                <span class="text-muted small">تماس‌ها</span>
-                <h4 class="mb-0">{{ contacts_count }}</h4>
-                <a href="{% url 'dashboard:admin:contact-list' %}" class="btn btn-soft-primary btn-sm mt-2">مشاهده</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-lg-4 col-xl-3">
-        <div class="card card-borderless h-100">
-            <div class="card-body">
-                <span class="text-muted small">نظرات</span>
-                <h4 class="mb-0">{{ reviews_count }}</h4>
-                <a href="{% url 'dashboard:admin:review-list' %}" class="btn btn-soft-primary btn-sm mt-2">مشاهده</a>
+                <div class="admin-role-summary">
+                    <div class="admin-role-summary__item">
+                        <span class="admin-info-grid__label">نقش کاربر</span>
+                        <strong>{{ dashboard_user_role }}</strong>
+                    </div>
+                    <div class="admin-role-summary__item">
+                        <span class="admin-info-grid__label">گروه‌ها</span>
+                        <div class="admin-badge-list">
+                            {% for group in dashboard_groups %}
+                            <span class="badge admin-chip">{{ group }}</span>
+                            {% empty %}
+                            <span class="text-muted small">عضو هیچ گروهی نیست</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="admin-role-summary__item">
+                        <span class="admin-info-grid__label">سطح دسترسی</span>
+                        <div class="admin-badge-list">
+                            {% for badge in dashboard_permission_badges %}
+                            <span class="badge admin-permission-badge {% if badge.granted %}admin-permission-badge--granted{% else %}admin-permission-badge--denied{% endif %}">
+                                {{ badge.label }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- آخرین سفارشات -->
-<div class="card">
+<div class="row g-4 mb-4 admin-dashboard-secondary-cards">
+    <div class="col-lg-6">
+        <div class="card admin-info-card h-100">
+            <div class="card-header border-0 pb-0">
+                <h2 class="admin-info-card__title"><i class="bi bi-activity"></i> فعالیت اخیر</h2>
+            </div>
+            <div class="card-body">
+                <div class="admin-activity-list">
+                    <div class="admin-activity-list__item">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <div>
+                            <span class="admin-info-grid__label">آخرین ورود</span>
+                            <strong>{% if dashboard_user.last_login %}{{ dashboard_user.last_login|date:"Y/m/d - H:i" }}{% else %}اولین ورود{% endif %}</strong>
+                        </div>
+                    </div>
+                    <div class="admin-activity-list__item">
+                        <i class="bi bi-pencil-square"></i>
+                        <div>
+                            <span class="admin-info-grid__label">آخرین بروزرسانی پروفایل</span>
+                            <strong>{{ dashboard_last_profile_update|date:"Y/m/d - H:i" }}</strong>
+                        </div>
+                    </div>
+                    <div class="admin-activity-list__item">
+                        <i class="bi bi-key"></i>
+                        <div>
+                            <span class="admin-info-grid__label">آخرین تغییر اطلاعات امنیتی</span>
+                            <strong>{{ dashboard_password_last_changed|date:"Y/m/d - H:i" }}</strong>
+                        </div>
+                    </div>
+                    <div class="admin-activity-list__item">
+                        <i class="bi bi-laptop"></i>
+                        <div>
+                            <span class="admin-info-grid__label">تعداد نشست‌های فعال</span>
+                            <strong>{{ dashboard_active_session_count }} نشست</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card admin-info-card h-100">
+            <div class="card-header border-0 pb-0">
+                <h2 class="admin-info-card__title"><i class="bi bi-bell"></i> اعلان‌ها</h2>
+            </div>
+            <div class="card-body">
+                <div class="admin-notification-list">
+                    <a class="admin-notification-item" href="{% url 'dashboard:admin:order-list' %}?status=1">
+                        <span class="admin-notification-item__icon admin-notification-item__icon--warning"><i class="bi bi-credit-card-2-front"></i></span>
+                        <span class="admin-notification-item__body">
+                            <span class="admin-notification-item__title">پرداخت‌های در انتظار</span>
+                            <span class="admin-notification-item__meta">{{ notification_pending_payments }} مورد نیازمند بررسی</span>
+                        </span>
+                    </a>
+                    <a class="admin-notification-item" href="{% url 'dashboard:admin:review-list' %}">
+                        <span class="admin-notification-item__icon admin-notification-item__icon--info"><i class="bi bi-chat-square-text"></i></span>
+                        <span class="admin-notification-item__body">
+                            <span class="admin-notification-item__title">نظرات در انتظار تایید</span>
+                            <span class="admin-notification-item__meta">{{ notification_pending_comments }} نظر منتشر نشده</span>
+                        </span>
+                    </a>
+                    <a class="admin-notification-item" href="{% url 'dashboard:admin:product-list' %}">
+                        <span class="admin-notification-item__icon admin-notification-item__icon--danger"><i class="bi bi-box-seam"></i></span>
+                        <span class="admin-notification-item__body">
+                            <span class="admin-notification-item__title">موجودی پایین کالاها</span>
+                            <span class="admin-notification-item__meta">{{ notification_low_stock_products }} محصول با موجودی کم</span>
+                        </span>
+                    </a>
+                    <a class="admin-notification-item" href="{% url 'dashboard:admin:contact-list' %}">
+                        <span class="admin-notification-item__icon admin-notification-item__icon--success"><i class="bi bi-life-preserver"></i></span>
+                        <span class="admin-notification-item__body">
+                            <span class="admin-notification-item__title">تیکت‌ها و پیام‌های جدید</span>
+                            <span class="admin-notification-item__meta">{{ notification_new_support_tickets }} پیام خوانده نشده</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+            <h2 class="h4 mb-1">شاخص‌های کلیدی فروشگاه</h2>
+            <p class="text-muted mb-0">خلاصه‌ای از وضعیت جاری فروش، محصولات و تعامل کاربران</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">کل سفارشات</span>
+                    <h3 class="admin-kpi-card__value">{{ orders_count }}</h3>
+                    <a href="{% url 'dashboard:admin:order-list' %}" class="btn btn-soft-primary btn-sm mt-2">مشاهده</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">سفارشات موفق</span>
+                    <h3 class="admin-kpi-card__value text-success">{{ orders_success_count }}</h3>
+                    <a href="{% url 'dashboard:admin:order-list' %}?status=2" class="btn btn-soft-success btn-sm mt-2">مشاهده</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">در انتظار پرداخت</span>
+                    <h3 class="admin-kpi-card__value text-warning">{{ orders_pending_count }}</h3>
+                    <a href="{% url 'dashboard:admin:order-list' %}?status=1" class="btn btn-soft-warning btn-sm mt-2">مشاهده</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">کاربران (مشتری)</span>
+                    <h3 class="admin-kpi-card__value">{{ users_count }}</h3>
+                    <a href="{% url 'dashboard:admin:user-list' %}" class="btn btn-soft-info btn-sm mt-2">مشاهده</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">محصولات</span>
+                    <h3 class="admin-kpi-card__value">{{ products_count }}</h3>
+                    <a href="{% url 'dashboard:admin:product-list' %}" class="btn btn-soft-secondary btn-sm mt-2">مشاهده</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">تماس‌ها</span>
+                    <h3 class="admin-kpi-card__value">{{ contacts_count }}</h3>
+                    <a href="{% url 'dashboard:admin:contact-list' %}" class="btn btn-soft-primary btn-sm mt-2">مشاهده</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">نظرات</span>
+                    <h3 class="admin-kpi-card__value">{{ reviews_count }}</h3>
+                    <a href="{% url 'dashboard:admin:review-list' %}" class="btn btn-soft-primary btn-sm mt-2">مشاهده</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="card admin-info-card">
     <div class="card-header border-bottom d-flex justify-content-between align-items-center">
-        <h5 class="card-header-title mb-0">آخرین سفارشات</h5>
+        <h2 class="h5 mb-0">آخرین سفارشات</h2>
         <a href="{% url 'dashboard:admin:order-list' %}" class="btn btn-sm btn-ghost-primary">همه سفارشات</a>
     </div>
     <div class="card-body">
         {% if recent_orders %}
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
+            <table class="table table-hover align-middle admin-dashboard-table">
                 <thead>
                     <tr>
                         <th>کد سفارش</th>
@@ -102,3 +319,20 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+    (function () {
+        var timeEl = document.getElementById("adminDashboardCurrentTime");
+        if (!timeEl) return;
+        function pad(value) {
+            return String(value).padStart(2, "0");
+        }
+        function updateClock() {
+            var now = new Date();
+            var formatted = now.getFullYear() + "/" + pad(now.getMonth() + 1) + "/" + pad(now.getDate()) + " - " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+            timeEl.textContent = formatted;
+        }
+        updateClock();
+        window.setInterval(updateClock, 60000);
+    })();
+</script>

@@ -103,14 +103,14 @@
         </div>
         <!-- End Breadcrumb -->
         <!-- Content Section -->
-        <div class="container content-space-1 content-space-t-lg-0 content-space-b-lg-2 mt-lg-n10">
-            <div class="row">
-                <div class="col-lg-3">
+        <div class="container admin-dashboard-shell content-space-1 content-space-t-lg-0 content-space-b-lg-2 mt-lg-n10">
+            <div class="row admin-dashboard-layout">
+                <div class="col-lg-3 admin-dashboard-layout__sidebar">
                     {% include 'dashboard/admin/sidebar.html' %}
                 </div>
                 <!-- End Col -->
 
-                <div class="col-lg-9">
+                <div class="col-lg-9 admin-dashboard-layout__content">
                     {% block content %}
                     {% endblock %}
 
