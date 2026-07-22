@@ -9,9 +9,23 @@ class CartSession:
         self._normalize_item_product_ids()
 
     def _normalize_item_product_ids(self):
+        clean_items = []
+        changed = False
         for item in self._cart.get("items", []):
-            if "product_id" in item:
-                item["product_id"] = str(item["product_id"])
+            if "product_id" not in item:
+                changed = True
+                continue
+            clean_item = {
+                "product_id": str(item["product_id"]),
+                "quantity": int(item.get("quantity") or 0),
+            }
+            if item != clean_item:
+                changed = True
+            clean_items.append(clean_item)
+        self._cart["items"] = clean_items
+        if changed:
+            self.session["cart"] = self._cart
+            self.session.modified = True
 
     @staticmethod
     def _pid(product_id):
@@ -45,15 +59,18 @@ class CartSession:
             return
         self.save()
 
-    def add_product(self, product_id):
+    def add_product(self, product_id, quantity=1):
         product_id = self._pid(product_id)
+        try:
+            quantity = max(1, int(quantity))
+        except (TypeError, ValueError):
+            quantity = 1
         for item in self._cart["items"]:
             if product_id == item["product_id"]:
-                item["quantity"] += 1
+                item["quantity"] += quantity
                 break
         else:
-            new_item = {"product_id": product_id, "quantity": 1}
-            self._cart["items"].append(new_item)
+            self._cart["items"].append({"product_id": product_id, "quantity": quantity})
         self.save()
 
     def clear(self):
@@ -64,18 +81,23 @@ class CartSession:
         return self._cart
 
     def get_cart_items(self):
+        cart_items = []
         for item in self._cart["items"]:
-            product_obj = ProductModel.objects.get(
-                id=item["product_id"], status=ProductStatusType.publish.value
-            )
-            item.update(
+            try:
+                product_obj = ProductModel.objects.get(
+                    id=item["product_id"], status=ProductStatusType.publish.value
+                )
+            except (ProductModel.DoesNotExist, ValueError, TypeError):
+                continue
+            cart_items.append(
                 {
+                    "product_id": item["product_id"],
+                    "quantity": item["quantity"],
                     "product_obj": product_obj,
                     "total_price": item["quantity"] * product_obj.get_price(),
                 }
             )
-
-        return self._cart["items"]
+        return cart_items
 
     def get_total_payment_amount(self):
         return sum(item["total_price"] for item in self.get_cart_items())
@@ -97,6 +119,19 @@ class CartSession:
         return total
 
     def save(self):
+        # فقط داده‌های JSON-قابل‌سریال در سشن بماند
+        clean_items = []
+        for item in self._cart.get("items", []):
+            if "product_id" not in item:
+                continue
+            clean_items.append(
+                {
+                    "product_id": str(item["product_id"]),
+                    "quantity": int(item.get("quantity") or 0),
+                }
+            )
+        self._cart["items"] = clean_items
+        self.session["cart"] = self._cart
         self.session.modified = True
 
     def ensure_user_cart(self, user):

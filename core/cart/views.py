@@ -11,10 +11,11 @@ class SessionAddProductView(View):
     def post(self, request, *args, **kwargs):
         cart = CartSession(request.session)
         product_id = request.POST.get("product_id")
+        quantity = request.POST.get("quantity", 1)
         if product_id and ProductModel.objects.filter(
             id=product_id, status=ProductStatusType.publish.value
         ).exists():
-            cart.add_product(str(product_id))
+            cart.add_product(str(product_id), quantity)
         if request.user.is_authenticated:
             cart.persist_to_db(request.user)
         return JsonResponse({"cart": cart.get_cart_dict(), "total_quantity": cart.get_total_quantity()})

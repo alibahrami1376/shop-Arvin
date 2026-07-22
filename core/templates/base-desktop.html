@@ -345,16 +345,14 @@
     <script src="{% static 'js/custom.js' %}"></script>
     <!-- JS Cart-->
     <script>
-        function addToCart(product_id) {
-     
-            console.log(product_id)
+        function addToCart(product_id, quantity) {
             $.ajax({
                 url: "{%  url 'cart:session-add-product' %}",
                 method: 'POST',
                 data: {
                     product_id: product_id,
+                    quantity: quantity || 1,
                     csrfmiddlewaretoken: '{{ csrf_token }}'
-        
                 },
                 success: function (response) {
                     if (typeof updateCartBadges === 'function') {
@@ -363,7 +361,6 @@
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     console.log(errorThrown);
-                    // handle the error case
                 }
             });
         }
