@@ -21,12 +21,23 @@
                 <div class="accordion faq-accordion" id="faqAccordion">
                     {% for item in faq_items %}
                     <div class="accordion-item faq-accordion__item">
-                        <h2 class="accordion-header" id="faq-heading-{{ item.pk }}">
-                            <button class="accordion-button faq-accordion__button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-{{ item.pk }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="faq-collapse-{{ item.pk }}">
-                                {{ item.question }}
+                        <h2 class="accordion-header faq-accordion__header" id="faq-heading-{{ item.pk }}">
+                            <button
+                                class="accordion-button faq-accordion__button {% if not forloop.first %}collapsed{% endif %}"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#faq-collapse-{{ item.pk }}"
+                                aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                                aria-controls="faq-collapse-{{ item.pk }}">
+                                <span class="faq-accordion__question">{{ item.question }}</span>
+                                <i class="bi-chevron-down faq-accordion__chevron" aria-hidden="true"></i>
                             </button>
                         </h2>
-                        <div id="faq-collapse-{{ item.pk }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="faq-heading-{{ item.pk }}" data-bs-parent="#faqAccordion">
+                        <div
+                            id="faq-collapse-{{ item.pk }}"
+                            class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+                            aria-labelledby="faq-heading-{{ item.pk }}"
+                            data-bs-parent="#faqAccordion">
                             <div class="accordion-body faq-accordion__body">
                                 {{ item.answer|linebreaks }}
                             </div>

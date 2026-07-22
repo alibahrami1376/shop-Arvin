@@ -5,29 +5,29 @@
 
 {% block content %}
 <!-- ========== HERO ========== -->
-<div class="bg-light">
+<div class="bg-light blog-home-hero">
     <div class="container content-space-t-3 content-space-t-lg-4 content-space-b-2">
-        <div class="w-lg-65 text-center mx-lg-auto">
-            <h1 class="display-4 mb-3">بلاگ فروشگاه کامیون</h1>
-            <p class="lead">آخرین مقالات، اخبار و راهنماهای تخصصی در زمینه لوازم کامیون</p>
+        <div class="w-lg-65 text-center mx-lg-auto blog-home-hero__inner">
+            <h1 class="display-4 mb-3 blog-home-hero__title">بلاگ فروشگاه کامیون</h1>
+            <p class="lead blog-home-hero__subtitle">آخرین مقالات، اخبار و راهنماهای تخصصی در زمینه لوازم کامیون</p>
         </div>
     </div>
 </div>
 <!-- ========== END HERO ========== -->
 
 <!-- ========== MAIN CONTENT ========== -->
-<div class="container content-space-2 content-space-lg-3">
+<div class="container content-space-2 content-space-lg-3 blog-home-page">
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-lg-3 mb-5 mb-lg-0">
+        <div class="col-lg-3 mb-5 mb-lg-0 blog-sidebar">
             <!-- Search -->
-            <div class="card mb-4">
+            <div class="card mb-4 blog-sidebar__card">
                 <div class="card-body">
                     <h5 class="card-title mb-3">جستجو در بلاگ</h5>
                     <form action="{% url 'blog:search' %}" method="get">
-                        <div class="input-group">
+                        <div class="input-group blog-sidebar__search">
                             <input type="text" class="form-control" name="q" placeholder="جستجو..." value="{{ query|default:'' }}">
-                            <button class="btn btn-primary" type="submit">
+                            <button class="btn btn-primary" type="submit" aria-label="جستجو">
                                 <i class="bi-search"></i>
                             </button>
                         </div>
@@ -36,18 +36,18 @@
             </div>
 
             <!-- Categories -->
-            <div class="card">
+            <div class="card blog-sidebar__card">
                 <div class="card-body">
                     <h5 class="card-title mb-3">دسته‌بندی‌ها</h5>
-                    <ul class="list-unstyled mb-0">
+                    <ul class="list-unstyled mb-0 blog-sidebar__list">
                         <li class="mb-2">
-                            <a href="{% url 'blog:blog_home' %}" class="text-body {% if not category %}fw-bold{% endif %}">
+                            <a href="{% url 'blog:blog_home' %}" class="blog-sidebar__link {% if not category %}blog-sidebar__link--active{% endif %}">
                                 <i class="bi-chevron-left me-1"></i> همه مقالات
                             </a>
                         </li>
                         {% for cat in categories %}
                         <li class="mb-2">
-                            <a href="{% url 'blog:category' cat.name %}" class="text-body {% if category == cat.name %}fw-bold{% endif %}">
+                            <a href="{% url 'blog:category' cat.name %}" class="blog-sidebar__link {% if category == cat.name %}blog-sidebar__link--active{% endif %}">
                                 <i class="bi-chevron-left me-1"></i> {{ cat.name }}
                             </a>
                         </li>
@@ -66,13 +66,14 @@
             {% endif %}
 
             {% if posts %}
-            <div class="row">
+            <div class="row blog-post-list">
                 {% for post in posts %}
                 <div class="col-md-6 mb-5">
                     <!-- Card -->
-                    <article class="card card-bordered h-100">
-                        <div class="card-img-top position-relative">
-                            <img class="img-fluid rounded-top-2" src="{{ post.image.url }}" alt="{{ post.title }}" style="height: 250px; object-fit: cover; width: 100%;">
+                    <article class="card card-bordered h-100 blog-post-card">
+                        <a href="{{ post.get_absolute_url }}" class="blog-post-card__overlay-link" aria-label="مشاهده جزئیات {{ post.title }}"></a>
+                        <div class="card-img-top position-relative blog-post-card__media">
+                            <img class="img-fluid rounded-top-2 blog-post-card__img" src="{{ post.image.url }}" alt="{{ post.title }}">
                             <div class="position-absolute top-0 start-0 mt-3 ms-3">
                                 {% for cat in post.category.all|slice:":1" %}
                                 <span class="badge bg-primary">{{ cat.name }}</span>
@@ -80,9 +81,9 @@
                             </div>
                         </div>
 
-                        <div class="card-body">
+                        <div class="card-body blog-post-card__body">
                             <div class="mb-3">
-                                <small class="text-muted">
+                                <small class="text-muted blog-post-card__meta">
                                     <i class="bi-calendar3 me-1"></i>
                                     {{ post.published_date|date:"Y/m/d" }}
                                     <span class="mx-2">|</span>
@@ -91,18 +92,18 @@
                                 </small>
                             </div>
 
-                            <h4 class="card-title">
+                            <h4 class="card-title blog-post-card__title">
                                 <a class="text-dark text-decoration-none" href="{{ post.get_absolute_url }}">
                                     {{ post.title }}
                                 </a>
                             </h4>
 
-                            <p class="card-text">
+                            <p class="card-text blog-post-card__excerpt">
                                 {{ post.content|striptags|truncatewords:20 }}
                             </p>
                         </div>
 
-                        <div class="card-footer border-0 pt-0">
+                        <div class="card-footer border-0 pt-0 blog-post-card__footer">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
                                     {% if post.author %}
@@ -114,7 +115,7 @@
                                     <span class="small text-muted">{{ post.author.get_full_name|default:post.author.email }}</span>
                                     {% endif %}
                                 </div>
-                                <a class="btn btn-sm btn-ghost-primary" href="{{ post.get_absolute_url }}">
+                                <a class="btn btn-sm btn-ghost-primary blog-post-card__cta" href="{{ post.get_absolute_url }}">
                                     ادامه مطلب <i class="bi-chevron-left ms-1"></i>
                                 </a>
                             </div>

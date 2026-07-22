@@ -4687,23 +4687,63 @@ body.device-desktop .container {
     background: #fff;
 }
 
+.faq-accordion__header {
+    margin: 0;
+}
+
 .faq-accordion__button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    text-align: right;
     font-weight: 600;
     font-size: 1rem;
+    line-height: 1.6;
     color: var(--text-dark);
     background: #fff;
+    border: 0;
     box-shadow: none;
     padding: 1rem 1.15rem;
+    cursor: pointer;
+}
+
+.faq-accordion__button::after {
+    display: none;
+}
+
+.faq-accordion__question {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.faq-accordion__chevron {
+    flex-shrink: 0;
+    font-size: 1rem;
+    color: rgba(107, 78, 61, 0.7);
+    transition: transform 0.2s ease;
 }
 
 .faq-accordion__button:not(.collapsed) {
     color: var(--text-dark);
-    background: rgba(230, 180, 34, 0.12);
+    background: rgba(253, 185, 78, 0.16);
     box-shadow: none;
+}
+
+.faq-accordion__button:not(.collapsed) .faq-accordion__chevron {
+    transform: rotate(180deg);
+    color: #6b4e3d;
 }
 
 .faq-accordion__button:focus {
     box-shadow: none;
+    outline: none;
+}
+
+.faq-accordion__button:focus-visible {
+    outline: 2px solid rgba(107, 78, 61, 0.35);
+    outline-offset: -2px;
 }
 
 .faq-accordion__body {

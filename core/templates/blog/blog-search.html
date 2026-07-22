@@ -47,13 +47,14 @@
                     <h5 class="text-muted">{{ posts.paginator.count }} مقاله یافت شد</h5>
                 </div>
 
-                <div class="row">
+                <div class="row blog-post-list">
                     {% for post in posts %}
                     <div class="col-md-6 col-lg-4 mb-5">
                         <!-- Card -->
-                        <article class="card card-bordered h-100">
-                            <div class="card-img-top position-relative">
-                                <img class="img-fluid rounded-top-2" src="{{ post.image.url }}" alt="{{ post.title }}" style="height: 200px; object-fit: cover; width: 100%;">
+                        <article class="card card-bordered h-100 blog-post-card">
+                            <a href="{{ post.get_absolute_url }}" class="blog-post-card__overlay-link" aria-label="مشاهده جزئیات {{ post.title }}"></a>
+                            <div class="card-img-top position-relative blog-post-card__media">
+                                <img class="img-fluid rounded-top-2 blog-post-card__img blog-post-card__img--search" src="{{ post.image.url }}" alt="{{ post.title }}">
                                 <div class="position-absolute top-0 start-0 mt-3 ms-3">
                                     {% for cat in post.category.all|slice:":1" %}
                                     <span class="badge bg-primary">{{ cat.name }}</span>
@@ -61,9 +62,9 @@
                                 </div>
                             </div>
 
-                            <div class="card-body">
+                            <div class="card-body blog-post-card__body">
                                 <div class="mb-3">
-                                    <small class="text-muted">
+                                    <small class="text-muted blog-post-card__meta">
                                         <i class="bi-calendar3 me-1"></i>
                                         {{ post.published_date|date:"Y/m/d" }}
                                         <span class="mx-2">|</span>
@@ -72,19 +73,19 @@
                                     </small>
                                 </div>
 
-                                <h5 class="card-title">
+                                <h5 class="card-title blog-post-card__title">
                                     <a class="text-dark text-decoration-none" href="{{ post.get_absolute_url }}">
                                         {{ post.title }}
                                     </a>
                                 </h5>
 
-                                <p class="card-text text-muted">
+                                <p class="card-text text-muted blog-post-card__excerpt">
                                     {{ post.content|striptags|truncatewords:15 }}
                                 </p>
                             </div>
 
-                            <div class="card-footer border-0 pt-0">
-                                <a class="btn btn-sm btn-ghost-primary" href="{{ post.get_absolute_url }}">
+                            <div class="card-footer border-0 pt-0 blog-post-card__footer">
+                                <a class="btn btn-sm btn-ghost-primary blog-post-card__cta" href="{{ post.get_absolute_url }}">
                                     ادامه مطلب <i class="bi-chevron-left ms-1"></i>
                                 </a>
                             </div>
