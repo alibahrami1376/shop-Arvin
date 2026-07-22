@@ -116,6 +116,7 @@
 
     <p class="admin-sidebar-mobile__section">بلاگ</p>
     <ul class="admin-sidebar-mobile__nav">
+        <li><a href="{% url 'dashboard:admin:blog-dashboard' %}"><i class="bi-speedometer2"></i> داشبورد بلاگ</a></li>
         <li><a href="{% url 'dashboard:admin:blog-post-list' %}"><i class="bi-journal-text"></i> پست‌ها</a></li>
         <li><a href="{% url 'dashboard:admin:blog-category-list' %}"><i class="bi-folder2-open"></i> دسته‌بندی بلاگ</a></li>
         <li><a href="{% url 'dashboard:admin:blog-tag-list' %}"><i class="bi-hash"></i> تگ‌های بلاگ</a></li>

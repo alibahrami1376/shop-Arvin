@@ -2,15 +2,84 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import FieldError
+from django.db.models import Count, Sum
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.utils import timezone
+from django.views.generic import CreateView, DeleteView, ListView, TemplateView, UpdateView
 
 from blog.models import Category as BlogCategory
 from blog.models import Post
+from blog.models import PostImageModel
 from blog.models import Tag as BlogTag
 from dashboard.admin.forms import BlogCategoryForm, BlogPostForm, BlogTagForm, PostImageFormSet
 from dashboard.permissions import HasAdminAccessPermission
+
+
+class AdminBlogDashboardView(LoginRequiredMixin, HasAdminAccessPermission, TemplateView):
+    template_name = "dashboard/admin/blog/blog-dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        now = timezone.now()
+        week_ago = now - timezone.timedelta(days=7)
+        month_ago = now - timezone.timedelta(days=30)
+
+        posts = Post.objects.all()
+        published_qs = posts.filter(status=True)
+        draft_qs = posts.filter(status=False)
+
+        context["posts_count"] = posts.count()
+        context["published_count"] = published_qs.count()
+        context["draft_count"] = draft_qs.count()
+        context["total_views"] = posts.aggregate(total=Sum("counted_view"))["total"] or 0
+        context["categories_count"] = BlogCategory.objects.count()
+        context["tags_count"] = BlogTag.objects.count()
+        context["gallery_images_count"] = PostImageModel.objects.count()
+        context["posts_created_week"] = posts.filter(created_date__gte=week_ago).count()
+        context["posts_created_month"] = posts.filter(created_date__gte=month_ago).count()
+        context["posts_published_week"] = published_qs.filter(
+            published_date__gte=week_ago
+        ).count()
+        context["zero_view_published_count"] = published_qs.filter(counted_view=0).count()
+        context["missing_published_date_count"] = published_qs.filter(
+            published_date__isnull=True
+        ).count()
+
+        context["top_posts"] = (
+            posts.select_related("author")
+            .prefetch_related("category", "tags")
+            .order_by("-counted_view", "-created_date")[:8]
+        )
+        context["recent_posts"] = (
+            posts.select_related("author")
+            .prefetch_related("category")
+            .order_by("-created_date")[:8]
+        )
+        context["draft_posts"] = (
+            draft_qs.select_related("author").order_by("-updated_date")[:6]
+        )
+        context["category_stats"] = (
+            BlogCategory.objects.annotate(
+                posts_count=Count("post", distinct=True),
+                views_sum=Sum("post__counted_view"),
+            )
+            .order_by("-posts_count", "name")[:10]
+        )
+        context["tag_stats"] = (
+            BlogTag.objects.annotate(posts_count=Count("posts", distinct=True))
+            .order_by("-posts_count", "name")[:10]
+        )
+        context["author_stats"] = (
+            posts.filter(author__isnull=False)
+            .values("author_id", "author__email", "author__phone_number")
+            .annotate(
+                posts_count=Count("id"),
+                views_sum=Sum("counted_view"),
+            )
+            .order_by("-posts_count")[:8]
+        )
+        return context
 
 
 class AdminBlogPostListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):

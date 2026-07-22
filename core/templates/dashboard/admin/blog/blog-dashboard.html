@@ -1,0 +1,393 @@
+{% extends dashboard_admin_base_template %}
+{% load static %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">حساب</li>
+        <li class="breadcrumb-item">داشبورد ادمین</li>
+        <li class="breadcrumb-item active" aria-current="page">داشبورد بلاگ</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block title %}داشبورد بلاگ{% endblock title %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header border-bottom">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h5 class="mb-0">داشبورد بلاگ</h5>
+                <p class="text-muted small mb-0 mt-1">خلاصه وضعیت محتوا، بازدید و مدیریت پست‌ها</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{% url 'dashboard:admin:blog-post-list' %}" class="btn btn-soft-secondary btn-sm">همه پست‌ها</a>
+                <a href="{% url 'dashboard:admin:blog-post-create' %}" class="btn btn-primary btn-sm">
+                    <i class="bi-plus-lg"></i> پست جدید
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="mb-4">
+    <div class="row g-4">
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">کل پست‌ها</span>
+                    <h3 class="admin-kpi-card__value">{{ posts_count }}</h3>
+                    <a href="{% url 'dashboard:admin:blog-post-list' %}" class="btn btn-soft-primary btn-sm mt-2">مشاهده</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">منتشرشده</span>
+                    <h3 class="admin-kpi-card__value text-success">{{ published_count }}</h3>
+                    <a href="{% url 'dashboard:admin:blog-post-list' %}" class="btn btn-soft-success btn-sm mt-2">مشاهده</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">پیش‌نویس</span>
+                    <h3 class="admin-kpi-card__value text-warning">{{ draft_count }}</h3>
+                    <a href="{% url 'dashboard:admin:blog-post-list' %}" class="btn btn-soft-warning btn-sm mt-2">مشاهده</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">کل بازدیدها</span>
+                    <h3 class="admin-kpi-card__value">{{ total_views }}</h3>
+                    <span class="text-muted small d-block mt-2">مجموع بازدید همه پست‌ها</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">دسته‌بندی‌ها</span>
+                    <h3 class="admin-kpi-card__value">{{ categories_count }}</h3>
+                    <a href="{% url 'dashboard:admin:blog-category-list' %}" class="btn btn-soft-secondary btn-sm mt-2">مدیریت</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">تگ‌ها</span>
+                    <h3 class="admin-kpi-card__value">{{ tags_count }}</h3>
+                    <a href="{% url 'dashboard:admin:blog-tag-list' %}" class="btn btn-soft-secondary btn-sm mt-2">مدیریت</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">تصاویر گالری</span>
+                    <h3 class="admin-kpi-card__value">{{ gallery_images_count }}</h3>
+                    <span class="text-muted small d-block mt-2">تصاویر اضافی پست‌ها</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card card-borderless admin-kpi-card h-100">
+                <div class="card-body">
+                    <span class="admin-kpi-card__label">پست بدون بازدید</span>
+                    <h3 class="admin-kpi-card__value {% if zero_view_published_count %}text-danger{% endif %}">{{ zero_view_published_count }}</h3>
+                    <span class="text-muted small d-block mt-2">منتشرشده با ۰ بازدید</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-4">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card admin-info-card h-100">
+                <div class="card-body">
+                    <span class="text-muted small d-block mb-1">ایجادشده در ۷ روز اخیر</span>
+                    <h3 class="mb-0">{{ posts_created_week }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card admin-info-card h-100">
+                <div class="card-body">
+                    <span class="text-muted small d-block mb-1">ایجادشده در ۳۰ روز اخیر</span>
+                    <h3 class="mb-0">{{ posts_created_month }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card admin-info-card h-100">
+                <div class="card-body">
+                    <span class="text-muted small d-block mb-1">انتشار در ۷ روز اخیر</span>
+                    <h3 class="mb-0">{{ posts_published_week }}</h3>
+                    {% if missing_published_date_count %}
+                    <span class="text-warning small d-block mt-2">{{ missing_published_date_count }} پست منتشرشده بدون تاریخ انتشار</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-7">
+        <div class="card admin-info-card h-100">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">پربازدیدترین پست‌ها</h2>
+                <a href="{% url 'dashboard:admin:blog-post-list' %}" class="btn btn-sm btn-ghost-primary">همه</a>
+            </div>
+            <div class="card-body">
+                {% if top_posts %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle admin-dashboard-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>عنوان</th>
+                                <th>وضعیت</th>
+                                <th>بازدید</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for post in top_posts %}
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">{{ post.title|truncatechars:50 }}</div>
+                                    <div class="small text-muted">
+                                        {% if post.author %}{{ post.author.email|default:post.author.phone_number }}{% else %}بدون نویسنده{% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if post.status %}
+                                    <span class="badge bg-soft-success">منتشرشده</span>
+                                    {% else %}
+                                    <span class="badge bg-soft-warning">پیش‌نویس</span>
+                                    {% endif %}
+                                </td>
+                                <td dir="ltr">{{ post.counted_view }}</td>
+                                <td>
+                                    <a href="{% url 'dashboard:admin:blog-post-edit' pk=post.pk %}" class="btn btn-ghost-primary btn-sm">ویرایش</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">هنوز پستی ثبت نشده است.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card admin-info-card h-100">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">پیش‌نویس‌های اخیر</h2>
+                <a href="{% url 'dashboard:admin:blog-post-create' %}" class="btn btn-sm btn-ghost-primary">جدید</a>
+            </div>
+            <div class="card-body">
+                {% if draft_posts %}
+                <ul class="list-unstyled mb-0">
+                    {% for post in draft_posts %}
+                    <li class="d-flex justify-content-between align-items-start gap-2 {% if not forloop.last %}border-bottom pb-3 mb-3{% endif %}">
+                        <div>
+                            <div class="fw-semibold">{{ post.title|truncatechars:40 }}</div>
+                            <div class="small text-muted">بروزرسانی: {{ post.updated_date|date:"Y/m/d H:i" }}</div>
+                        </div>
+                        <a href="{% url 'dashboard:admin:blog-post-edit' pk=post.pk %}" class="btn btn-sm btn-soft-warning">ادامه</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted mb-0">پیش‌نویسی وجود ندارد.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card admin-info-card mb-4">
+    <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+        <h2 class="h5 mb-0">آخرین پست‌ها</h2>
+        <a href="{% url 'dashboard:admin:blog-post-list' %}" class="btn btn-sm btn-ghost-primary">همه پست‌ها</a>
+    </div>
+    <div class="card-body">
+        {% if recent_posts %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle admin-dashboard-table mb-0">
+                <thead>
+                    <tr>
+                        <th>عنوان</th>
+                        <th>دسته‌ها</th>
+                        <th>تاریخ ایجاد</th>
+                        <th>وضعیت</th>
+                        <th>بازدید</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in recent_posts %}
+                    <tr>
+                        <td>{{ post.title|truncatechars:45 }}</td>
+                        <td>
+                            {% for cat in post.category.all %}
+                            <span class="badge bg-soft-secondary">{{ cat.name }}</span>
+                            {% empty %}
+                            <span class="text-muted">—</span>
+                            {% endfor %}
+                        </td>
+                        <td>{{ post.created_date|date:"Y/m/d H:i" }}</td>
+                        <td>
+                            {% if post.status %}
+                            <span class="badge bg-soft-success">منتشرشده</span>
+                            {% else %}
+                            <span class="badge bg-soft-warning">پیش‌نویس</span>
+                            {% endif %}
+                        </td>
+                        <td dir="ltr">{{ post.counted_view }}</td>
+                        <td class="text-nowrap">
+                            <a href="{% url 'dashboard:admin:blog-post-edit' pk=post.pk %}" class="btn btn-ghost-primary btn-sm">ویرایش</a>
+                            {% if post.status %}
+                            <a href="{% url 'blog:blog_detail' post.id %}" class="btn btn-ghost-secondary btn-sm" target="_blank" rel="noopener">نمایش</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">هنوز پستی ثبت نشده است.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="card admin-info-card h-100">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">آمار دسته‌بندی‌ها</h2>
+                <a href="{% url 'dashboard:admin:blog-category-list' %}" class="btn btn-sm btn-ghost-primary">مدیریت</a>
+            </div>
+            <div class="card-body">
+                {% if category_stats %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle admin-dashboard-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>دسته</th>
+                                <th>تعداد پست</th>
+                                <th>بازدید</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cat in category_stats %}
+                            <tr>
+                                <td>{{ cat.name }}</td>
+                                <td>{{ cat.posts_count }}</td>
+                                <td dir="ltr">{{ cat.views_sum|default:0 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">دسته‌بندی‌ای ثبت نشده است.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card admin-info-card h-100">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">آمار تگ‌ها</h2>
+                <a href="{% url 'dashboard:admin:blog-tag-list' %}" class="btn btn-sm btn-ghost-primary">مدیریت</a>
+            </div>
+            <div class="card-body">
+                {% if tag_stats %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle admin-dashboard-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>تگ</th>
+                                <th>تعداد پست</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tag in tag_stats %}
+                            <tr>
+                                <td>{{ tag.name }}</td>
+                                <td>{{ tag.posts_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">تگی ثبت نشده است.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card admin-info-card mb-4">
+    <div class="card-header border-bottom">
+        <h2 class="h5 mb-0">نویسندگان</h2>
+    </div>
+    <div class="card-body">
+        {% if author_stats %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle admin-dashboard-table mb-0">
+                <thead>
+                    <tr>
+                        <th>نویسنده</th>
+                        <th>تعداد پست</th>
+                        <th>مجموع بازدید</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for author in author_stats %}
+                    <tr>
+                        <td>{{ author.author__email|default:author.author__phone_number|default:"—" }}</td>
+                        <td>{{ author.posts_count }}</td>
+                        <td dir="ltr">{{ author.views_sum|default:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">نویسنده‌ای یافت نشد.</p>
+        {% endif %}
+    </div>
+</div>
+
+<section class="mb-2">
+    <div class="card admin-info-card">
+        <div class="card-header border-bottom">
+            <h2 class="h5 mb-0">دسترسی سریع</h2>
+        </div>
+        <div class="card-body d-flex flex-wrap gap-2">
+            <a href="{% url 'dashboard:admin:blog-post-create' %}" class="btn btn-primary btn-sm">ایجاد پست</a>
+            <a href="{% url 'dashboard:admin:blog-post-list' %}" class="btn btn-soft-primary btn-sm">لیست پست‌ها</a>
+            <a href="{% url 'dashboard:admin:blog-category-create' %}" class="btn btn-soft-secondary btn-sm">ایجاد دسته</a>
+            <a href="{% url 'dashboard:admin:blog-tag-create' %}" class="btn btn-soft-secondary btn-sm">ایجاد تگ</a>
+            <a href="{% url 'blog:blog_home' %}" class="btn btn-soft-info btn-sm" target="_blank" rel="noopener">مشاهده بلاگ سایت</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
