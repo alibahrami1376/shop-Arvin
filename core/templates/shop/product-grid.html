@@ -34,11 +34,15 @@
     </div>
 
     <div class="offcanvas offcanvas-bottom shop-filter-offcanvas" tabindex="-1" id="shopFilterOffcanvas" aria-labelledby="shopFilterOffcanvasLabel">
-        <div class="offcanvas-header">
-            <h2 class="offcanvas-title h6 mb-0" id="shopFilterOffcanvasLabel">فیلتر محصولات</h2>
+        <div class="shop-filter-offcanvas__grabber" aria-hidden="true"></div>
+        <div class="offcanvas-header shop-filter-offcanvas__header">
+            <div class="shop-filter-offcanvas__heading">
+                <h2 class="offcanvas-title h6 mb-0" id="shopFilterOffcanvasLabel">فیلتر محصولات</h2>
+                <p class="shop-filter-offcanvas__subtitle mb-0">نتایج را دقیق‌تر کنید</p>
+            </div>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="بستن"></button>
         </div>
-        <div class="offcanvas-body">
+        <div class="offcanvas-body shop-filter-offcanvas__body">
             {% include "shop/partials/product-grid-filter-form.html" %}
         </div>
     </div>

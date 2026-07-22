@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
         initShopCategoryNavToggles();
     }
     initShopFilterOffcanvas();
+    initMobileHeaderSearch();
     initHomeProductStripSwipers();
 
     document.querySelectorAll('.swiper').forEach(function (el) {
@@ -93,6 +94,21 @@ function initShopFilterOffcanvas() {
         var instance = bootstrap.Offcanvas.getInstance(offcanvasEl);
         if (instance) {
             instance.hide();
+        }
+    });
+}
+
+function initMobileHeaderSearch() {
+    var offcanvas = document.getElementById('headerMobileSearch');
+    var input = document.getElementById('headerMobileSearchInput');
+    if (!offcanvas || !input) {
+        return;
+    }
+
+    offcanvas.addEventListener('shown.bs.offcanvas', function () {
+        input.focus();
+        if (typeof input.select === 'function') {
+            input.select();
         }
     });
 }

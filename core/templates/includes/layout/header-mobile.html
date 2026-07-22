@@ -1,8 +1,54 @@
 {% load static %}
 <header id="header" class="header header--mobile" role="banner" aria-label="منوی موبایل">
     <div class="header__container">
-        <a href="{% url 'website:index' %}" class="header__logo" aria-label="خانه - {{ site_branding.get_logo_alt }}">
-            {% include "includes/partials/site-logo-img.html" with extra_class="header__logo-img" %}
+        <button type="button"
+            class="header__action-btn"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#headerMobileSearch"
+            aria-controls="headerMobileSearch"
+            aria-label="جستجوی محصولات">
+            <i class="bi-search" aria-hidden="true"></i>
+        </button>
+
+        <a href="{% url 'website:index' %}" class="header__logo header__logo--mobile" aria-label="خانه - {{ site_branding.get_logo_alt }}">
+            <span class="header__logo-plate">
+                {% include "includes/partials/site-logo-img.html" with extra_class="header__logo-img" %}
+            </span>
+        </a>
+
+        <a href="{% url 'order:track' %}"
+            class="header__action-btn"
+            aria-label="پیگیری سفارش">
+            <i class="bi-box-seam" aria-hidden="true"></i>
         </a>
     </div>
 </header>
+
+<div class="offcanvas offcanvas-bottom header__search-offcanvas"
+    tabindex="-1"
+    id="headerMobileSearch"
+    aria-labelledby="headerMobileSearchLabel"
+    aria-hidden="true">
+    <div class="header__search-grabber" aria-hidden="true"></div>
+    <div class="offcanvas-header border-0 pb-0">
+        <h2 class="offcanvas-title h6 mb-0" id="headerMobileSearchLabel">جستجو در فروشگاه</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="بستن جستجو"></button>
+    </div>
+    <div class="offcanvas-body pt-2">
+        <form action="{% url 'shop:product-grid' %}" method="get" class="header__search-form" role="search">
+            <label class="visually-hidden" for="headerMobileSearchInput">جستجوی محصولات</label>
+            <div class="header__search-field">
+                <i class="bi-search header__search-field-icon" aria-hidden="true"></i>
+                <input type="search"
+                    class="form-control"
+                    id="headerMobileSearchInput"
+                    name="q"
+                    placeholder="نام محصول را بنویسید…"
+                    autocomplete="off"
+                    enterkeyhint="search">
+                <button type="submit" class="header__search-submit">جستجو</button>
+            </div>
+        </form>
+        <p class="header__search-hint">مثلاً: صندلی کامیون، لوازم جانبی</p>
+    </div>
+</div>

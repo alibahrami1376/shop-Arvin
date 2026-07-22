@@ -196,9 +196,9 @@ LOGOUT_REDIRECT_URL = "/"
 LOGIN_REDIRECT_URL = "/"
 
 # PWA
-PWA_APP_NAME = "آروین صندلی"
-PWA_SHORT_NAME = "آروین"
-PWA_APP_DESCRIPTION = "فروشگاه آنلاین آروین صندلی"
+PWA_APP_NAME = "arvinofficial"
+PWA_SHORT_NAME = "Arvin"
+PWA_APP_DESCRIPTION = "arvinofficial.ir"
 PWA_CACHE_VERSION = "v3"
 
 customColorPalette = [

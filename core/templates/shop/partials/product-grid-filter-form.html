@@ -1,24 +1,35 @@
 <form action="." class="shop-filter-form w-100" id="shopFilterForm">
-    <div class="shop-filter-form__section">
-        <label class="form-label" for="search-query-filter">جستجو</label>
-        <input class="form-control" placeholder="نام محصول..." type="text" name="q" id="search-query-filter" value="{{ request.GET.q|default:'' }}">
+    <div class="shop-filter-form__section mb-3">
+        <label class="form-label shop-filter-form__label" for="search-query-filter">
+            <i class="bi-search" aria-hidden="true"></i>
+            <span>جستجو</span>
+        </label>
+        <input class="form-control shop-filter-form__control" placeholder="نام محصول را بنویسید…" type="search" name="q" id="search-query-filter" value="{{ request.GET.q|default:'' }}" enterkeyhint="search" autocomplete="off">
     </div>
 
-    <div class="shop-filter-form__section">
-        <span class="form-label d-block mb-2">محدوده قیمت (تومان)</span>
-        <div class="row g-2">
-            <div class="col-6">
-                <input class="form-control" type="number" name="min_price" placeholder="از" id="min-price-filter" value="{{ request.GET.min_price|default:'' }}">
+    <div class="shop-filter-form__section mb-3">
+        <span class="form-label shop-filter-form__label d-inline-flex">
+            <i class="bi-cash-coin" aria-hidden="true"></i>
+            <span>محدوده قیمت (تومان)</span>
+        </span>
+        <div class="row g-2 shop-filter-form__price">
+            <div class="col-6 shop-filter-form__price-field">
+                <label class="shop-filter-form__price-hint" for="min-price-filter">از</label>
+                <input class="form-control shop-filter-form__control" type="number" name="min_price" placeholder="۰" id="min-price-filter" value="{{ request.GET.min_price|default:'' }}" inputmode="numeric" min="0">
             </div>
-            <div class="col-6">
-                <input class="form-control" type="number" name="max_price" placeholder="تا" id="max-price-filter" value="{{ request.GET.max_price|default:'' }}">
+            <div class="col-6 shop-filter-form__price-field">
+                <label class="shop-filter-form__price-hint" for="max-price-filter">تا</label>
+                <input class="form-control shop-filter-form__control" type="number" name="max_price" placeholder="مثلاً ۱۰٬۰۰۰٬۰۰۰" id="max-price-filter" value="{{ request.GET.max_price|default:'' }}" inputmode="numeric" min="0">
             </div>
         </div>
     </div>
 
-    <div class="shop-filter-form__section">
-        <label class="form-label" for="category-id-filter">دسته‌بندی</label>
-        <select class="form-select" name="category_id" id="category-id-filter">
+    <div class="shop-filter-form__section mb-3">
+        <label class="form-label shop-filter-form__label" for="category-id-filter">
+            <i class="bi-grid" aria-hidden="true"></i>
+            <span>دسته‌بندی</span>
+        </label>
+        <select class="form-select shop-filter-form__control" name="category_id" id="category-id-filter">
             <option value="">همه دسته‌ها</option>
             {% for category in categories %}
             <option value="{{ category.id }}"{% if request.GET.category_id == category.id|stringformat:"s" %} selected{% endif %}>{{ category.get_indented_title }}</option>
@@ -26,9 +37,11 @@
         </select>
     </div>
 
-
     <div class="shop-filter-form__actions d-grid gap-2">
-        <button type="submit" class="btn btn-primary">اعمال فیلتر</button>
-        <a href="{% url 'shop:product-grid' %}" class="btn btn-outline-secondary">پاک کردن فیلترها</a>
+        <button type="submit" class="btn btn-primary shop-filter-form__apply">
+            <i class="bi-funnel" aria-hidden="true"></i>
+            <span>اعمال فیلتر</span>
+        </button>
+        <a href="{% url 'shop:product-grid' %}" class="btn btn-outline-secondary shop-filter-form__clear">پاک کردن فیلترها</a>
     </div>
 </form>
