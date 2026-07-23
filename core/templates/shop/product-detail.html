@@ -2,6 +2,8 @@
 {% load static %}
 {% load shop_tags %}
 
+{% block title %}{{ object.title }} - فروشگاه آروین{% endblock title %}
+
 {% block content %}
 {% if is_mobile_site %}
 <section class="pdp-mobile" aria-label="جزئیات محصول">

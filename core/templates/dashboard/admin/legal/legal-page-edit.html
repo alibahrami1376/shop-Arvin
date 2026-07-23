@@ -1,6 +1,8 @@
 {% extends dashboard_admin_base_template %}
 {% load static %}
 
+{% block title %}{{ page_type_label }} - پنل ادمین{% endblock title %}
+
 {% block extra_js_no_compress %}
 {{ form.media }}
 {% endblock %}
