@@ -3208,6 +3208,106 @@ section.home-product-strip.section + section.home-product-strip.section {
     color: var(--text-secondary);
 }
 
+/* محصولات مشابه */
+.similar-products {
+    padding-block: clamp(1.5rem, 4vw, 3rem);
+}
+
+.similar-products__title {
+    margin: 0 auto 1.5rem;
+    text-align: center;
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.similar-products__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .similar-products__grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 992px) {
+    .similar-products__grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.similar-products__card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid rgba(74, 55, 44, 0.1);
+    border-radius: var(--radius-md);
+    background: #fff;
+    text-align: center;
+}
+
+.similar-products__media img {
+    display: block;
+    width: 100%;
+    height: 12rem;
+    object-fit: cover;
+}
+
+.similar-products__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 1rem;
+    flex: 1;
+}
+
+.similar-products__cats {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.similar-products__name {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.similar-products__name a {
+    color: var(--text-dark);
+    text-decoration: none;
+}
+
+.similar-products__name a:hover {
+    color: var(--color-accent-brown, #6b4e3d);
+}
+
+.similar-products__price {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.similar-products__price-old {
+    margin-inline-start: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+
+.similar-products__cart {
+    margin-top: auto;
+}
+
+.similar-products__empty {
+    padding: 2rem 0;
+}
+
 /* ============================================
    Feature Cards
    ============================================ */

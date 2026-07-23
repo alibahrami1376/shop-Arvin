@@ -21,7 +21,13 @@
                 </li>
                 <li><a href="{% url 'website:faq' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:faq' %}header__mobile-nav-link--active{% endif %}">از آروین بپرس؟</a></li>
                 <li><a href="{% url 'website:about' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:about' %}header__mobile-nav-link--active{% endif %}">درباره ما</a></li>
-                <li><a href="{% url 'website:contact' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:contact' %}header__mobile-nav-link--active{% endif %}">تماس با ما</a></li>
+                <li>
+                    {% if contact_phone_tel %}
+                    <a href="{{ contact_phone_tel }}" class="header__mobile-nav-link" aria-label="تماس تلفنی{% if contact_settings.phone %} با {{ contact_settings.phone }}{% endif %}">تماس با ما</a>
+                    {% else %}
+                    <a href="{% url 'website:contact' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'website:contact' %}header__mobile-nav-link--active{% endif %}">تماس با ما</a>
+                    {% endif %}
+                </li>
                 <li><a href="{% url 'order:track' %}" class="header__mobile-nav-link {% if request.resolver_match.view_name == 'order:track' %}header__mobile-nav-link--active{% endif %}">پیگیری سفارش</a></li>
             </ul>
         </nav>

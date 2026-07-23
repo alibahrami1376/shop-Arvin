@@ -278,6 +278,19 @@ class ContactPageSettings(models.Model):
                 links.append({"key": key, "label": label, "url": url, "icon": icon})
         return links
 
+    def get_phone_tel_href(self):
+        """لینک tel: برای تماس مستقیم از موبایل."""
+        phone = (self.phone or "").strip()
+        if not phone:
+            return ""
+        phone = phone.translate(
+            str.maketrans("۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩", "01234567890123456789")
+        )
+        cleaned = "".join(ch for ch in phone if ch.isdigit() or ch == "+")
+        if not cleaned:
+            return ""
+        return f"tel:{cleaned}"
+
 
 class SiteWideSocialSettings(models.Model):
     """لینک شبکه‌های اجتماعی در فوتر و سایر بخش‌های عمومی سایت (جدا از بلوک صفحهٔ تماس با ما)."""

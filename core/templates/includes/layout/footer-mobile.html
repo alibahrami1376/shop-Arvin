@@ -12,7 +12,13 @@
         <ul class="list-inline text-center mb-2">
             <li class="list-inline-item"><a class="text-secondary small site-footer__link" href="{% url 'shop:product-grid' %}">محصولات</a></li>
             <li class="list-inline-item text-muted">|</li>
-            <li class="list-inline-item"><a class="text-secondary small" href="{% url 'website:contact' %}">تماس</a></li>
+            <li class="list-inline-item">
+                {% if contact_phone_tel %}
+                <a class="text-secondary small" href="{{ contact_phone_tel }}" aria-label="تماس تلفنی">تماس</a>
+                {% else %}
+                <a class="text-secondary small" href="{% url 'website:contact' %}">تماس</a>
+                {% endif %}
+            </li>
             <li class="list-inline-item text-muted">|</li>
             <li class="list-inline-item"><a class="text-secondary small" href="{% url 'order:track' %}">پیگیری سفارش</a></li>
             <li class="list-inline-item text-muted">|</li>

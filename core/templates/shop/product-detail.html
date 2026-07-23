@@ -2,90 +2,265 @@
 {% load static %}
 {% load shop_tags %}
 
-
 {% block content %}
+{% if is_mobile_site %}
+<section class="pdp-mobile" aria-label="جزئیات محصول">
+    <div class="pdp-mobile__gallery">
+        <div class="js-swiper-shop-product swiper pdp-mobile__swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img class="pdp-mobile__img" src="{{ object.image.url }}" alt="{{ object.title }}">
+                </div>
+                {% for product_image in object.product_images.all %}
+                <div class="swiper-slide">
+                    <img class="pdp-mobile__img" src="{{ product_image.file.url }}" alt="{{ object.title }}">
+                </div>
+                {% endfor %}
+            </div>
+            <div class="js-swiper-shop-product-button-next swiper-button-next"></div>
+            <div class="js-swiper-shop-product-button-prev swiper-button-prev"></div>
+        </div>
 
+        {% if object.product_images.all %}
+        <div class="js-swiper-shop-product-thumb swiper pdp-mobile__thumbs">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <button type="button" class="pdp-mobile__thumb">
+                        <img src="{{ object.image.url }}" alt="">
+                    </button>
+                </div>
+                {% for product_image in object.product_images.all %}
+                <div class="swiper-slide">
+                    <button type="button" class="pdp-mobile__thumb">
+                        <img src="{{ product_image.file.url }}" alt="">
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="pdp-mobile__panel container">
+        <div class="pdp-mobile__top">
+            <a class="pdp-mobile__rating" href="#reviewSection">
+                {% for i in "12345" %}
+                {% if i|add:0 <= object.avg_rate %}
+                <i class="bi bi-star-fill star-rate" aria-hidden="true"></i>
+                {% else %}
+                <i class="bi bi-star star-rate" aria-hidden="true"></i>
+                {% endif %}
+                {% endfor %}
+                <span>{{ object.avg_rate }}/5</span>
+            </a>
+            {% if request.user.is_authenticated %}
+            <button type="button"
+                class="pdp-mobile__wish btn btn-outline-secondary btn-xs btn-icon rounded-circle{% if is_wished %} active{% endif %}"
+                aria-label="افزودن به علاقه‌مندی‌ها"
+                onclick="addToWishlist(this,'{{ object.id }}')">
+                <i class="bi-heart" aria-hidden="true"></i>
+            </button>
+            {% endif %}
+        </div>
+
+        <h1 class="pdp-mobile__title">{{ object.title }}</h1>
+
+        {% if object.category.all %}
+        <p class="pdp-mobile__cats">
+            {% for category in object.category.all %}
+            <span>{{ category.title }}</span>{% if not forloop.last %}، {% endif %}
+            {% endfor %}
+        </p>
+        {% endif %}
+
+        {% if object.tags.exists %}
+        <div class="pdp-mobile__tags">
+            {% for tag in object.tags.all %}
+            <span class="badge bg-soft-secondary text-secondary">{{ tag.title }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if object.brief_description %}
+        <p class="pdp-mobile__brief">{{ object.brief_description }}</p>
+        {% endif %}
+
+        <div class="pdp-mobile__price">
+            <span class="pdp-mobile__price-label">قیمت</span>
+            {% if object.is_discounted %}
+            <div class="pdp-mobile__price-row">
+                <strong class="formatted-price">{{ object.get_price }}</strong>
+                <span class="formatted-price pdp-mobile__price-old">{{ object.price }}</span>
+            </div>
+            {% else %}
+            <strong class="formatted-price">{{ object.price }}</strong>
+            {% endif %}
+        </div>
+
+        <div class="pdp-mobile__buy">
+            <div class="quantity-counter pdp-mobile__qty">
+                <span class="pdp-mobile__qty-label">تعداد</span>
+                <div class="js-quantity-counter pdp-mobile__qty-controls">
+                    <button type="button" class="js-minus pdp-mobile__qty-btn" aria-label="کاهش تعداد">−</button>
+                    <input class="js-result form-control form-control-quantity-counter pdp-mobile__qty-input" type="number" value="1" min="1" max="99" inputmode="numeric">
+                    <button type="button" class="js-plus pdp-mobile__qty-btn" aria-label="افزایش تعداد">+</button>
+                </div>
+            </div>
+            <button type="button"
+                class="btn btn-primary pdp-mobile__cart-btn"
+                onclick="addToCart('{{ object.id }}', (parseInt(document.querySelector('.js-quantity-counter .js-result').value, 10) || 1))">
+                <i class="bi-bag-plus" aria-hidden="true"></i>
+                افزودن به سبد خرید
+            </button>
+        </div>
+    </div>
+
+    {% if object.description %}
+    <div class="pdp-mobile__desc container">
+        <h2 class="pdp-mobile__section-title">توضیحات محصول</h2>
+        <div class="pdp-mobile__desc-body">
+            {{ object.description|safe }}
+        </div>
+    </div>
+    {% endif %}
+
+    {% show_similar_products object %}
+
+    <div id="reviewSection" class="pdp-mobile__reviews container">
+        <div class="pdp-mobile__review-summary">
+            <div class="pdp-mobile__review-score">
+                <strong>{{ object.avg_rate }}</strong>
+                <div class="pdp-mobile__review-stars">
+                    {% for i in "12345" %}
+                    {% if i|add:0 <= object.avg_rate %}
+                    <i class="bi bi-star-fill star-rate" aria-hidden="true"></i>
+                    {% else %}
+                    <i class="bi bi-star star-rate" aria-hidden="true"></i>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <span>{{ reviews|length }} نظر</span>
+            </div>
+
+            <div class="pdp-mobile__bars">
+                <h3 class="pdp-mobile__section-title">تجزیه رتبه</h3>
+                <div class="pdp-mobile__bar-row">
+                    <span>۵ ستاره</span>
+                    <div class="progress"><div class="progress-bar" style="width: {{ reviews_avg.rate_5 }}%;"></div></div>
+                    <span>{{ reviews_count.rate_5 }}</span>
+                </div>
+                <div class="pdp-mobile__bar-row">
+                    <span>۴ ستاره</span>
+                    <div class="progress"><div class="progress-bar" style="width: {{ reviews_avg.rate_4 }}%;"></div></div>
+                    <span>{{ reviews_count.rate_4 }}</span>
+                </div>
+                <div class="pdp-mobile__bar-row">
+                    <span>۳ ستاره</span>
+                    <div class="progress"><div class="progress-bar" style="width: {{ reviews_avg.rate_3 }}%;"></div></div>
+                    <span>{{ reviews_count.rate_3 }}</span>
+                </div>
+                <div class="pdp-mobile__bar-row">
+                    <span>۲ ستاره</span>
+                    <div class="progress"><div class="progress-bar" style="width: {{ reviews_avg.rate_2 }}%;"></div></div>
+                    <span>{{ reviews_count.rate_2 }}</span>
+                </div>
+                <div class="pdp-mobile__bar-row">
+                    <span>۱ ستاره</span>
+                    <div class="progress"><div class="progress-bar" style="width: {{ reviews_avg.rate_1 }}%;"></div></div>
+                    <span>{{ reviews_count.rate_1 }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="pdp-mobile__comments-head">
+            <h2 class="pdp-mobile__section-title mb-0">دیدگاه‌ها</h2>
+            <button type="button" class="btn btn-primary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#submitReviewModal">ثبت دیدگاه</button>
+        </div>
+
+        <ul class="pdp-mobile__comments list-unstyled mb-0">
+            {% for review in reviews %}
+            <li class="pdp-mobile__comment">
+                <div class="pdp-mobile__comment-stars">
+                    {% for i in "12345" %}
+                    {% if i|add:0 <= review.rate %}
+                    <i class="bi bi-star-fill star-rate" aria-hidden="true"></i>
+                    {% else %}
+                    <i class="bi bi-star star-rate" aria-hidden="true"></i>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="pdp-mobile__comment-meta">
+                    <strong>{{ review.user.user_profile.get_fullname }}</strong>
+                    <span>{{ review.created_date|date:"Y/m/d" }}</span>
+                </div>
+                <p>{{ review.description }}</p>
+            </li>
+            {% empty %}
+            <li class="pdp-mobile__comment-empty text-muted">هنوز دیدگاهی ثبت نشده است.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{% else %}
 <!-- Hero -->
 <div class="container content-space-t-2 content-space-t-sm-3">
     <div class="row">
         <div class="col-md-7 mb-7 mb-md-0">
             <div class="pe-md-4">
-
                 <div class="card-pinned">
-
-                    <!-- Swiper Main Slider -->
                     <div class="js-swiper-shop-product swiper">
                         <div class="swiper-wrapper">
-                            <!-- Slide -->
                             <div class="swiper-slide">
                                 <div class="card card-bordered shadow-none">
-                                    <img class="card-img" src="{{object.image.url}}" alt="Image Description">
+                                    <img class="card-img" src="{{object.image.url}}" alt="{{ object.title }}">
                                 </div>
                             </div>
                             {% for product_image in object.product_images.all %}
                             <div class="swiper-slide">
                                 <div class="card card-bordered shadow-none">
-                                    <img class="card-img" src="{{product_image.file.url}}" alt="Image Description">
+                                    <img class="card-img" src="{{product_image.file.url}}" alt="{{ object.title }}">
                                 </div>
                             </div>
                             {% endfor %}
-                            <!-- End Slide -->
-
-
                         </div>
-
-                        <!-- Arrows -->
                         <div class="js-swiper-shop-product-button-next swiper-button-next"></div>
                         <div class="js-swiper-shop-product-button-prev swiper-button-prev"></div>
                     </div>
-                    <!-- End Swiper Main Slider -->
 
-                    <!-- Swiper Thumb Slider -->
                     <div class="position-absolute bottom-0 end-0 start-0 zi-1 p-4">
                         <div class="js-swiper-shop-product-thumb swiper" style="max-width: 15rem;">
                             <div class="swiper-wrapper">
-                                <!-- Slide -->
                                 <div class="swiper-slide">
                                     <a class="avatar avatar-circle" href="javascript:;">
-                                        <img class="avatar-img" src="{{object.image.url}}" alt="Image Description">
+                                        <img class="avatar-img" src="{{object.image.url}}" alt="">
                                     </a>
                                 </div>
                                 {% for product_image in object.product_images.all %}
                                 <div class="swiper-slide">
                                     <a class="avatar avatar-circle" href="javascript:;">
-                                        <img class="avatar-img" src="{{product_image.file.url}}"
-                                            alt="Image Description">
+                                        <img class="avatar-img" src="{{product_image.file.url}}" alt="">
                                     </a>
                                 </div>
                                 {% endfor %}
-                                <!-- End Slide -->
-
-
-                                <!-- End Slide -->
                             </div>
                         </div>
                     </div>
-                    <!-- End Swiper Thumb Slider -->
                 </div>
             </div>
         </div>
-        <!-- End Col -->
 
         <div class="col-md-5">
             <div class="d-flex justify-content-between">
-
-                <!-- Rating -->
                 <a class="d-flex gap-1 mb-4" href="#reviewSection">
                     {% for i in "12345" %}
                     {% if i|add:0 <= object.avg_rate %} <span><i class="bi bi-star-fill star-rate"></i></span>
                         {% else %}
                         <span><i class="bi bi-star star-rate"></i></span>
                         {% endif %}
-
                         {% endfor %}
                         <span class="ms-1">{{object.avg_rate}}/5</span>
                 </a>
-                <!-- End Rating -->
                 {% if request.user.is_authenticated %}
                 <button type="button"
                     class="btn btn-outline-secondary btn-xs btn-icon rounded-circle {% if is_wished %} active {% endif %}"
@@ -96,12 +271,8 @@
                 {% endif %}
             </div>
 
-
-            <!-- Heading -->
             <div class="mb-5">
-
                 <h1 class="h2">{{object.title}}</h1>
-
                 <p>
                     {% for category in object.category.all %}
                     <a href="#">{{category.title}} </a>
@@ -117,9 +288,7 @@
                 {% endif %}
                 <p>{{object.brief_description}}</p>
             </div>
-            <!-- End Heading -->
 
-            <!-- Price -->
             <div class="mb-5">
                 <span class="d-block mb-2">قیمت کل:</span>
                 {% if object.is_discounted %}
@@ -133,241 +302,114 @@
                 </div>
                 {% endif %}
             </div>
-            <!-- End Price -->
 
-            <!-- Quantity -->
             <div class="quantity-counter mb-3">
                 <div class="js-quantity-counter row align-items-center">
                     <div class="col">
                         <span class="d-block small">تعداد را انتخاب کنید</span>
                         <input class="js-result form-control form-control-quantity-counter" type="text" value="1">
                     </div>
-                    <!-- End Col -->
-
                     <div class="col-auto">
-                        <a class="js-minus btn btn-outline-secondary btn-xs btn-icon rounded-circle"
-                            href="javascript:;">
-                            <svg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M0 1C0 0.723858 0.223858 0.5 0.5 0.5H7.5C7.77614 0.5 8 0.723858 8 1C8 1.27614 7.77614 1.5 7.5 1.5H0.5C0.223858 1.5 0 1.27614 0 1Z"
-                                    fill="currentColor" />
-                            </svg>
+                        <a class="js-minus btn btn-outline-secondary btn-xs btn-icon rounded-circle" href="javascript:;">
+                            <svg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 1C0 0.723858 0.223858 0.5 0.5 0.5H7.5C7.77614 0.5 8 0.723858 8 1C8 1.27614 7.77614 1.5 7.5 1.5H0.5C0.223858 1.5 0 1.27614 0 1Z" fill="currentColor"/></svg>
                         </a>
                         <a class="js-plus btn btn-outline-secondary btn-xs btn-icon rounded-circle" href="javascript:;">
-                            <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M4 0C4.27614 0 4.5 0.223858 4.5 0.5V3.5H7.5C7.77614 3.5 8 3.72386 8 4C8 4.27614 7.77614 4.5 7.5 4.5H4.5V7.5C4.5 7.77614 4.27614 8 4 8C3.72386 8 3.5 7.77614 3.5 7.5V4.5H0.5C0.223858 4.5 0 4.27614 0 4C0 3.72386 0.223858 3.5 0.5 3.5H3.5V0.5C3.5 0.223858 3.72386 0 4 0Z"
-                                    fill="currentColor" />
-                            </svg>
+                            <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0C4.27614 0 4.5 0.223858 4.5 0.5V3.5H7.5C7.77614 3.5 8 3.72386 8 4C8 4.27614 7.77614 4.5 7.5 4.5H4.5V7.5C4.5 7.77614 4.27614 8 4 8C3.72386 8 3.5 7.77614 3.5 7.5V4.5H0.5C0.223858 4.5 0 4.27614 0 4C0 3.72386 0.223858 3.5 0.5 3.5H3.5V0.5C3.5 0.223858 3.72386 0 4 0Z" fill="currentColor"/></svg>
                         </a>
                     </div>
-                    <!-- End Col -->
                 </div>
-                <!-- End Row -->
             </div>
-            <!-- End Quantity -->
-
-        
 
             <div class="d-grid mb-4">
-                <button type="button"
-                    class="btn btn-primary btntransition"
+                <button type="button" class="btn btn-primary btntransition"
                     onclick="addToCart('{{ object.id }}', (parseInt(document.querySelector('.js-quantity-counter .js-result').value, 10) || 1))">
                     افزودن به سبد خرید
                 </button>
             </div>
         </div>
-        <!-- End Col -->
     </div>
-    <!-- End Row -->
 </div>
-<!-- End Hero -->
 
-<!-- Content -->
 <div class="container content-space-t-2 content-space-md-3">
     <div class="row">
         {{object.description|safe}}
     </div>
-    <!-- End Row -->
 </div>
-<!-- End Content -->
 
 {% show_similar_products object %}
 
-<!-- Review Section -->
 <div id="reviewSection" class="container content-space-b-2 content-space-b-lg-3">
     <div class="row">
         <div class="col-md-4 mb-7 mb-md-0">
             <div class="border-bottom pb-4 mb-4">
-                <!-- Card -->
                 <div class="card bg-primary mb-3">
                     <div class="card-body">
-                        <!-- Media -->
                         <div class="d-flex justify-content-center">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <span class="display-4 text-white">{{object.avg_rate}}</span>
                                 </div>
-
                                 <div class="flex-grow-1 me-3">
-                                    <!-- Rating -->
                                     <div class="d-flex gap-1 small">
                                         {% for i in "12345" %}
-                                        {% if i|add:0 <= object.avg_rate %} <span><i
-                                                class="bi bi-star-fill star-rate"></i></span>
+                                        {% if i|add:0 <= object.avg_rate %} <span><i class="bi bi-star-fill star-rate"></i></span>
                                             {% else %}
                                             <span><i class="bi bi-star star-rate"></i></span>
                                             {% endif %}
-
                                             {% endfor %}
                                     </div>
-                                    <!-- End Rating -->
                                     <span class="text-white">{{ reviews|length }} نظر</span>
                                 </div>
                             </div>
                         </div>
-                        <!-- End Media -->
                     </div>
                 </div>
-                <!-- End Card -->
 
                 <h3>تجزیه رتبه</h3>
-
-                <!-- Ratings -->
                 <div class="d-grid gap-1">
                     <a class="row align-items-center" href="#" style="max-width: 25rem;">
-                        <div class="col-3">
-                            <span class="text-dark">5 ستاره</span>
-                        </div>
-                        <!-- End Col -->
-
-                        <div class="col-7">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: {{reviews_avg.rate_5}}%;"
-                                    aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                        <!-- End Col -->
-
-                        <div class="col-2 text-end">
-                            <span>{{reviews_count.rate_5}}</span>
-                        </div>
-                        <!-- End Col -->
+                        <div class="col-3"><span class="text-dark">5 ستاره</span></div>
+                        <div class="col-7"><div class="progress"><div class="progress-bar" role="progressbar" style="width: {{reviews_avg.rate_5}}%;"></div></div></div>
+                        <div class="col-2 text-end"><span>{{reviews_count.rate_5}}</span></div>
                     </a>
-                    <!-- End Row -->
-
                     <a class="row align-items-center" href="#" style="max-width: 25rem;">
-                        <div class="col-3">
-                            <span class="text-dark">4 ستاره</span>
-                        </div>
-                        <!-- End Col -->
-
-                        <div class="col-7">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width:  {{reviews_avg.rate_4}}%;"
-                                    aria-valuenow="53" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                        <!-- End Col -->
-
-                        <div class="col-2 text-end">
-                            <span>{{reviews_count.rate_4}}</span>
-                        </div>
-                        <!-- End Col -->
+                        <div class="col-3"><span class="text-dark">4 ستاره</span></div>
+                        <div class="col-7"><div class="progress"><div class="progress-bar" role="progressbar" style="width: {{reviews_avg.rate_4}}%;"></div></div></div>
+                        <div class="col-2 text-end"><span>{{reviews_count.rate_4}}</span></div>
                     </a>
-                    <!-- End Row -->
-
                     <a class="row align-items-center" href="#" style="max-width: 25rem;">
-                        <div class="col-3">
-                            <span class="text-dark">3 ستاره</span>
-                        </div>
-                        <!-- End Col -->
-
-                        <div class="col-7">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width:  {{reviews_avg.rate_3}}%;"
-                                    aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                        <!-- End Col -->
-
-                        <div class="col-2 text-end">
-                            <span>{{reviews_count.rate_3}}</span>
-                        </div>
-                        <!-- End Col -->
+                        <div class="col-3"><span class="text-dark">3 ستاره</span></div>
+                        <div class="col-7"><div class="progress"><div class="progress-bar" role="progressbar" style="width: {{reviews_avg.rate_3}}%;"></div></div></div>
+                        <div class="col-2 text-end"><span>{{reviews_count.rate_3}}</span></div>
                     </a>
-                    <!-- End Row -->
-
                     <a class="row align-items-center" href="#" style="max-width: 25rem;">
-                        <div class="col-3">
-                            <span class="text-dark">2 ستاره</span>
-                        </div>
-                        <!-- End Col -->
-
-                        <div class="col-7">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width:  {{reviews_avg.rate_2}}%;"
-                                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                        <!-- End Col -->
-
-                        <div class="col-2 text-end">
-                            <span>{{reviews_count.rate_2}}</span>
-                        </div>
-                        <!-- End Col -->
+                        <div class="col-3"><span class="text-dark">2 ستاره</span></div>
+                        <div class="col-7"><div class="progress"><div class="progress-bar" role="progressbar" style="width: {{reviews_avg.rate_2}}%;"></div></div></div>
+                        <div class="col-2 text-end"><span>{{reviews_count.rate_2}}</span></div>
                     </a>
-                    <!-- End Row -->
-
                     <a class="row align-items-center" href="#" style="max-width: 25rem;">
-                        <div class="col-3">
-                            <span class="text-dark">1 ستاره</span>
-                        </div>
-                        <!-- End Col -->
-
-                        <div class="col-7">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width:  {{reviews_avg.rate_1}}%;"
-                                    aria-valuenow="1" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                        <!-- End Col -->
-
-                        <div class="col-2 text-end">
-                            <span>{{reviews_count.rate_1}}</span>
-                        </div>
-                        <!-- End Col -->
+                        <div class="col-3"><span class="text-dark">1 ستاره</span></div>
+                        <div class="col-7"><div class="progress"><div class="progress-bar" role="progressbar" style="width: {{reviews_avg.rate_1}}%;"></div></div></div>
+                        <div class="col-2 text-end"><span>{{reviews_count.rate_1}}</span></div>
                     </a>
-                    <!-- End Row -->
                 </div>
-                <!-- End Ratings -->
             </div>
         </div>
-        <!-- End Col -->
 
         <div class="col-md-8">
             <div class="ps-md-4">
-                <!-- Heading -->
                 <div class="border-bottom pb-4 mb-4">
                     <div class="row align-items-center">
                         <div class="col-sm mb-2 mb-sm-0">
                             <h4 class="mb-0">دیدگاه ها</h4>
                         </div>
-
                         <div class="col-sm-auto mb-2 text-center">
-                            <button type="button" class="btn btn-primary btn-transition rounded-pill"
-                                data-bs-toggle="modal" data-bs-target="#submitReviewModal">
-                                ثبت دیدگاه</button>
+                            <button type="button" class="btn btn-primary btn-transition rounded-pill" data-bs-toggle="modal" data-bs-target="#submitReviewModal">ثبت دیدگاه</button>
                         </div>
-                        <!-- End Col -->
                     </div>
-                    <!-- End Row -->
                 </div>
-                <!-- End Heading -->
 
-                <!-- Comment -->
                 <ul class="list-comment list-comment-divider mb-5">
-                    <!-- Item -->
                     {% for review in reviews %}
                     <li class="list-comment-item">
                         <div class="d-flex gap-1 mb-3">
@@ -376,96 +418,61 @@
                                 {% else %}
                                 <span><i class="bi bi-star star-rate"></i></span>
                                 {% endif %}
-
                                 {% endfor %}
-
                         </div>
-
-                        <!-- Media -->
                         <div class="d-flex align-items-center mb-3">
                             <div class="flex-shrink-0">
-                                <img class="avatar avatar-sm avatar-circle" src="{{review.user.user_profile.image.url}}"
-                                    alt="Image Description">
+                                <img class="avatar avatar-sm avatar-circle" src="{{review.user.user_profile.image.url}}" alt="">
                             </div>
-
                             <div class="flex-grow-1 me-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">{{review.user.user_profile.get_fullname}}</h5>
-                                    <span class="d-block small text-muted">
-                                        {{review.created_date|date:"Y-m-d h:i"}}</span>
+                                    <span class="d-block small text-muted">{{review.created_date|date:"Y-m-d h:i"}}</span>
                                 </div>
                             </div>
                         </div>
-                        <!-- End Media -->
-
-                        <div class="mb-5">
-                            <p>{{review.description}}</p>
-                        </div>
-
-
-                        <!-- End Media -->
+                        <div class="mb-5"><p>{{review.description}}</p></div>
                     </li>
-                    <!-- End Item -->
                     {% endfor %}
-
                 </ul>
-                <!-- End Comment -->
-
-
             </div>
         </div>
-        <!-- End Col -->
     </div>
-    <!-- End Row -->
 </div>
-<!-- End Review Section -->
 
-<!-- Subscribe -->
 <div class="bg-light">
     <div class="container content-space-2">
         <div class="w-md-75 w-lg-50 text-center mx-md-auto">
             <div class="row justify-content-lg-between">
-                <!-- Heading -->
                 <div class="mb-5">
                     <span class="text-cap">ثبت نام</span>
                     <h2>اخبار جدید را دریافت کنید</h2>
                 </div>
-                <!-- End Heading -->
-
                 <form method="post" action="#">
                     {% csrf_token %}
-                    <!-- Input Card -->
                     <div class="input-card input-card-pill input-card-sm border mb-3">
                         <div class="input-card-form">
-                            <input class="form-control border-0 me-1" type="text" placeholder="نام" name="first_name"
-                                hidden="">
+                            <input class="form-control border-0 me-1" type="text" placeholder="نام" name="first_name" hidden="">
                             <label for="subscribeForm" class="form-label visually-hidden">ایمیل را وارد کنید</label>
-                            <input type="email" class="form-control form-control-lg" name="email"
-                                placeholder="ایمیل خود را وارد نمایید" aria-label="ایمیل خود را وارد کنید">
+                            <input type="email" class="form-control form-control-lg" name="email" placeholder="ایمیل خود را وارد نمایید" aria-label="ایمیل خود را وارد کنید">
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg rounded-pill">ثبت نام</button>
                     </div>
-                    <!-- End Input Card -->
                 </form>
-
-                <p class="small">می توانید در هر زمانی اشتراک خود را لغو کنید <a href="#">سیاست حفظ حریم خصوصی</a> ما را
-                    بخوانید</p>
+                <p class="small">می توانید در هر زمانی اشتراک خود را لغو کنید <a href="#">سیاست حفظ حریم خصوصی</a> ما را بخوانید</p>
             </div>
         </div>
     </div>
 </div>
-<!-- End Subscribe -->
+{% endif %}
 
-<!-- Modal -->
-<div class="modal fade" id="submitReviewModal" tabindex="-1" aria-labelledby="submitReviewModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="submitReviewModal" tabindex="-1" aria-labelledby="submitReviewModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="submitReviewModalLabel">فرم ارسال دیدگاه</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
             </div>
-
             <div class="modal-body">
                 <form action="{% url 'review:submit-review' %}" method="post" id="review-form">
                     {% csrf_token %}
@@ -479,17 +486,14 @@
                                 <option value="3">3 ستاره</option>
                                 <option value="4">4 ستاره</option>
                                 <option value="5" selected>5 ستاره</option>
-
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="descriptionModalInput">توضیحات</label>
-                            <textarea type="email" class="form-control form-control-lg" id="descriptionModalInput"
-                                name="description" required> </textarea>
+                            <textarea class="form-control form-control-lg" id="descriptionModalInput" name="description" required></textarea>
                         </div>
                     </div>
                 </form>
-
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>

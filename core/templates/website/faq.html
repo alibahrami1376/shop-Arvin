@@ -48,13 +48,21 @@
                 {% else %}
                 <div class="faq-empty text-center py-5">
                     <p class="text-muted mb-4">فعلاً سوالی ثبت نشده است.</p>
+                    {% if is_mobile_site and contact_phone_tel %}
+                    <a href="{{ contact_phone_tel }}" class="btn btn-primary rounded-pill">تماس با پشتیبانی</a>
+                    {% else %}
                     <a href="{% url 'website:contact' %}" class="btn btn-primary rounded-pill">تماس با پشتیبانی</a>
+                    {% endif %}
                 </div>
                 {% endif %}
 
                 <div class="faq-cta text-center mt-5">
                     <p class="mb-3">پاسخ سوال خود را پیدا نکردید؟</p>
+                    {% if is_mobile_site and contact_phone_tel %}
+                    <a href="{{ contact_phone_tel }}" class="btn btn-outline-primary rounded-pill">با ما تماس بگیرید</a>
+                    {% else %}
                     <a href="{% url 'website:contact' %}" class="btn btn-outline-primary rounded-pill">با ما تماس بگیرید</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
