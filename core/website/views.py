@@ -30,7 +30,7 @@ class IndexView(TemplateView):
         )
 
         context["top_products"] = base.order_by("-avg_rate", "-created_date")[:8]
-        context["newest_products"] = base.order_by("-created_date")[:8]
+        context["newest_products"] = base.order_by("-created_date")[:4]
         context["bestseller_products"] = (
             base.annotate(
                 sold_qty=Coalesce(
@@ -42,7 +42,7 @@ class IndexView(TemplateView):
                     output_field=IntegerField(),
                 )
             )
-            .order_by("-sold_qty", "-avg_rate")[:8]
+            .order_by("-sold_qty", "-avg_rate")[:4]
         )
 
         context["latest_posts"] = (
