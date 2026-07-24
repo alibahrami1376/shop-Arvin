@@ -49,7 +49,7 @@ class IndexView(TemplateView):
             Post.objects.filter(status=True)
             .select_related("author")
             .prefetch_related("category")
-            .order_by("-published_date", "-created_date")[:4]
+            .order_by("-published_date", "-created_date")[:3]
         )
 
         banners = HomeBanner.objects.filter(is_active=True)
