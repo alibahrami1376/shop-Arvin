@@ -29,6 +29,11 @@ DEBUG = config("DEBUG",cast=bool,default=True)
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast= lambda v: [item.strip() for item in v.split(',')] ,default="*")
 
+# Django Sites Framework
+SITE_ID = config("SITE_ID", cast=int, default=1)
+SITE_DOMAIN = config("SITE_DOMAIN", default="arvinofficial.ir")
+SITE_NAME = config("SITE_NAME", default="فروشگاه آروین")
+
 
 
 # Application definition
@@ -41,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'compressor',
     'django_ckeditor_5',
     'website',
@@ -61,6 +67,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
     'core.middleware.SiteLayoutCookieMiddleware',
     'core.middleware.NoCacheHtmlMiddleware',
@@ -84,6 +91,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.contrib.sites.context_processors.site',
                 'shop.context_processors.shop_categories',
                 'cart.context_processors.cart_processor',
                 'core.context_processors.device.device',

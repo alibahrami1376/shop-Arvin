@@ -16,11 +16,15 @@ def get_domain():
 
         return Site.objects.get_current().domain
     except Exception:
-        return "example.com"
+        return getattr(settings, "SITE_DOMAIN", "localhost:8000")
 
 
 def get_protocol():
     return "https" if getattr(settings, "SECURE_SSL_REDIRECT", False) else "http"
+
+
+def get_callback_url():
+    return f"{get_protocol()}://{get_domain()}/payment/verify"
 
 
 def _http_json_or_errors(response):
@@ -48,10 +52,13 @@ class ZarinPalSandbox:
     _payment_request_url = "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequest.json"
     _payment_verify_url = "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerification.json"
     _payment_page_url = "https://sandbox.zarinpal.com/pg/StartPay/"
-    _callback_url = f"{get_protocol()}://{get_domain()}/payment/verify"
 
     def __init__(self, merchant_id=settings.MERCHANT_ID):
         self.merchant_id = merchant_id
+
+    @property
+    def _callback_url(self):
+        return get_callback_url()
 
     def payment_request(self, amount, description="پرداختی کاربر"):
         payload = {
