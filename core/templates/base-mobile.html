@@ -1,4 +1,5 @@
 {% load static %}
+{% load compress %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl" class="device-mobile-root">
 
@@ -18,12 +19,14 @@
 
     <title>{% block title %}فروشگاه آروین{% endblock title %}</title>
 
+    {% compress css %}
     <link rel="stylesheet" href="{% static 'css/vendor.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/toastify/toastify.css' %}">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/styles-mobile.css' %}">
     {% block extra_css %}{% endblock extra_css %}
+    {% endcompress %}
     {% block extra_css_no_compress %}{% endblock extra_css_no_compress %}
 </head>
 
@@ -36,12 +39,14 @@
 
     {% include 'includes/layout/footer-mobile.html' %}
 
+    {% compress js %}
     <script src="{% static 'js/jquery.min.js' %}"></script>
     {% include 'includes/layout/scripts-vendor.html' %}
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="{% static 'js/shop-category-nav.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
+    {% endcompress %}
     <script>
         function addToCart(product_id, quantity) {
             $.ajax({

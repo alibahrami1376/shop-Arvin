@@ -1,4 +1,5 @@
 {% load static %}
+{% load compress %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 
@@ -13,6 +14,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'favicon/arvinofficial_favicon.ico' %}">
 
+    {% compress css %}
     <!-- CSS Implementing Plugins -->
     <link rel="stylesheet" href="{% static 'css/vendor.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
@@ -24,6 +26,7 @@
     <link rel="stylesheet" href="{% static 'css/styles-desktop.css' %}">
     <link rel="stylesheet" href="{% static 'css/styles-dashboard-customer-desktop.css' %}">
     {% block extra_css %} {% endblock extra_css %}
+    {% endcompress %}
 
     {% block extra_css_no_compress %} {% endblock extra_css_no_compress %}
 </head>
@@ -180,7 +183,8 @@
 
 
     <!-- ========== END SECONDARY CONTENTS ========== -->
-    <!-- JS Jquery-->
+{% compress js %}
+<!-- JS Jquery-->
     <script src="{% static 'js/jquery.min.js' %}"></script>
 
     <!-- JS Implementing Plugins -->
@@ -192,6 +196,10 @@
 
     <!-- JS Toastify -->
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
+<!-- JS Custom-->
+    <script src="{% static 'js/custom.js' %}"></script>
+    {% endcompress %}
+
 
     <!-- JS Plugins Init. -->
     <script>
@@ -322,8 +330,7 @@
         // INITIALIZATION OF  QUANTITY COUNTER
         // =======================================================
     </script>
-    <!-- JS Custom-->
-    <script src="{% static 'js/custom.js' %}"></script>
+    
     <!-- JS Cart-->
 
     {% block extra_js %} {% endblock extra_js %}

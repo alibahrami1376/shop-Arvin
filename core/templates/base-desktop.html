@@ -1,4 +1,5 @@
 {% load static %}
+{% load compress %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 
@@ -20,6 +21,7 @@
     <!-- Title -->
     <title>{% block title %}فروشگاه آروین{% endblock title %}</title>
 
+    {% compress css %}
     <!-- CSS Implementing Plugins -->
     <link rel="stylesheet" href="{% static 'css/vendor.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
@@ -30,6 +32,7 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/styles-desktop.css' %}">
     {% block extra_css %} {% endblock extra_css %}
+    {% endcompress %}
 
     {% block extra_css_no_compress %} {% endblock extra_css_no_compress %}
 </head>
@@ -205,6 +208,7 @@
         </div>
     </div>
     <!-- ========== END SECONDARY CONTENTS ========== -->
+    {% compress js %}
     <!-- JS Jquery-->
     <script src="{% static 'js/jquery.min.js' %}"></script>
     {% include 'includes/layout/scripts-vendor.html' %}
@@ -213,6 +217,9 @@
 
     <!-- JS Toastify -->
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
+    <!-- JS Custom-->
+    <script src="{% static 'js/custom.js' %}"></script>
+    {% endcompress %}
 
     <!-- JS Plugins Init. -->
     <script>
@@ -341,8 +348,6 @@
         // INITIALIZATION OF  QUANTITY COUNTER
         // =======================================================
     </script>
-    <!-- JS Custom-->
-    <script src="{% static 'js/custom.js' %}"></script>
     <!-- JS Cart-->
     <script>
         function addToCart(product_id, quantity) {

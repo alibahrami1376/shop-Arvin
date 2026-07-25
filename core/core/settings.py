@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'compressor',
     'django_ckeditor_5',
     'website',
     'accounts',
@@ -152,12 +153,65 @@ USE_TZ = True
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
 
-STATIC_ROOT = config("STATIC_ROOT", default="/app/public/static")
-MEDIA_ROOT = config("MEDIA_ROOT", default="/app/public/media")
+_static_root = config("STATIC_ROOT", default=str(BASE_DIR / "staticfiles"))
+STATIC_ROOT = Path(_static_root)
+if not STATIC_ROOT.is_absolute():
+    STATIC_ROOT = BASE_DIR / STATIC_ROOT
+
+_media_root = config("MEDIA_ROOT", default=str(BASE_DIR / "media"))
+MEDIA_ROOT = Path(_media_root)
+if not MEDIA_ROOT.is_absolute():
+    MEDIA_ROOT = BASE_DIR / MEDIA_ROOT
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+# django-compressor
+COMPRESS_ENABLED = config("COMPRESS_ENABLED", cast=bool, default=False)
+COMPRESS_OFFLINE = config("COMPRESS_OFFLINE", cast=bool, default=False)
+
+STATICFILES_FINDERS = (
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
+)
+
+COMPRESS_FILTERS = {
+    "css": [
+        "compressor.filters.css_default.CssAbsoluteFilter",
+        "compressor.filters.cssmin.rCSSMinFilter",
+    ],
+    "js": [
+        "compressor.filters.jsmin.rJSMinFilter",
+    ],
+}
+
+# Needed if COMPRESS_OFFLINE=True — templates use variable {% extends %}
+def compress_offline_context():
+    shared = {"STATIC_URL": STATIC_URL}
+    yield {
+        **shared,
+        "is_mobile_site": False,
+        "is_desktop_site": True,
+        "base_template": "base-desktop.html",
+        "dashboard_admin_base_template": "dashboard/admin/base-desktop.html",
+        "dashboard_customer_base_template": "dashboard/customer/base-desktop.html",
+    }
+    yield {
+        **shared,
+        "is_mobile_site": True,
+        "is_desktop_site": False,
+        "base_template": "base-mobile.html",
+        "dashboard_admin_base_template": "dashboard/admin/base-mobile.html",
+        "dashboard_customer_base_template": "dashboard/customer/base-mobile.html",
+    }
+
+
+COMPRESS_OFFLINE_CONTEXT = "core.settings.compress_offline_context"
+
+if config("COMPRESS_GZIP_ENABLED", cast=bool, default=False):
+    COMPRESS_STORAGE = "compressor.storage.GzipCompressorFileStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

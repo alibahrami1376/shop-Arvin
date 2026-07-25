@@ -1,4 +1,5 @@
 {% load static %}
+{% load compress %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl" class="device-mobile-root">
 <head>
@@ -7,6 +8,7 @@
     <title>{% block title %}پنل ادمین - فروشگاه آروین{% endblock title %}</title>
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'favicon/arvinofficial_favicon.ico' %}">
+{% compress css %}
     <link rel="stylesheet" href="{% static 'css/vendor.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/toastify/toastify.css' %}">
@@ -14,6 +16,7 @@
     <link rel="stylesheet" href="{% static 'css/styles-mobile.css' %}">
     <link rel="stylesheet" href="{% static 'css/styles-dashboard-admin-mobile.css' %}">
     {% block extra_css %}{% endblock extra_css %}
+    {% endcompress %}
     {% block extra_css_no_compress %}{% endblock extra_css_no_compress %}
 </head>
 <body class="device-mobile dashboard-layout dashboard-layout--admin">
@@ -53,11 +56,13 @@
         </div>
     </div>
 
+{% compress js %}
     <script src="{% static 'js/jquery.min.js' %}"></script>
     {% include 'includes/layout/scripts-vendor.html' %}
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
+    {% endcompress %}
     <script>
         document.querySelectorAll(".admin-mobile-page table").forEach(function (table) {
             var headers = Array.from(table.querySelectorAll("thead th")).map(function (th) {
