@@ -2,7 +2,7 @@
     <article class="home-banner-slide{% if not banner.subtitle and not banner.button_text %} home-banner-slide--full{% endif %}" style="background: {{ banner.background_gradient }};">
         <div class="home-banner-slide__media">
             <img
-                src="{{ banner.image.url }}"
+                src="{{ banner.image_display_url }}"
                 alt="{{ banner.image_alt|default:banner.title }}"
                 class="home-banner-slide__img"
                 loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"

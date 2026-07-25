@@ -4,6 +4,8 @@ from django.templatetags.static import static
 from django_ckeditor_5.fields import CKEditor5Field
 
 from website.logo_validation import SITE_LOGO_HEIGHT, SITE_LOGO_WIDTH
+from core.imagekit_specs import banner_display_image
+from shop.image_urls import safe_imagekit_url
 
 
 # fetching user model
@@ -81,6 +83,7 @@ class HomeBanner(models.Model):
         verbose_name="تصویر یا GIF",
         help_text="فرمت‌های JPG، PNG، WEBP و GIF",
     )
+    image_display = banner_display_image("image")
     image_alt = models.CharField(
         max_length=200, blank=True, verbose_name="متن alt تصویر"
     )
@@ -123,6 +126,18 @@ class HomeBanner(models.Model):
     def is_gif(self):
         name = (self.image.name or "").lower()
         return name.endswith(".gif")
+
+    @property
+    def image_display_url(self):
+        """Compressed WebP for display; GIF stays original (animation)."""
+        if not self.image:
+            return ""
+        if self.is_gif:
+            try:
+                return self.image.url
+            except Exception:
+                return ""
+        return safe_imagekit_url(self, "image_display", "image")
 
     @property
     def background_gradient(self):

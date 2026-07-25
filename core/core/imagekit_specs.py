@@ -62,3 +62,16 @@ def blog_hero_image(source="image"):
         format="WEBP",
         options={"quality": 85},
     )
+
+
+def banner_display_image(source="image"):
+    """
+    Home banners: keep aspect (no crop), cap huge uploads, compress to WebP.
+    Display size stays CSS-controlled — only file weight drops.
+    """
+    return ImageSpecField(
+        source=source,
+        processors=[ResizeToFit(1920, 1080)],
+        format="WEBP",
+        options={"quality": 72},
+    )
