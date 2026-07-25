@@ -55,7 +55,7 @@
 
                 <!-- Featured Image -->
                 <div class="mb-5 blog-detail-article__hero-wrap">
-                    <img class="img-fluid rounded-2 blog-detail-article__hero" src="{{ post.image.url }}" alt="{{ post.title }}">
+                    <img class="img-fluid rounded-2 blog-detail-article__hero" src="{{ post.image_hero_url }}" alt="{{ post.title }}">
                 </div>
 
                 <!-- Content -->
@@ -70,7 +70,7 @@
                         {% for img in post.post_images.all %}
                         <div class="col-md-6">
                             <a href="{{ img.file.url }}" target="_blank" rel="noopener noreferrer">
-                                <img class="img-fluid rounded-2 blog-detail-gallery__img" src="{{ img.file.url }}" alt="">
+                                <img class="img-fluid rounded-2 blog-detail-gallery__img" src="{{ img.file_detail_url }}" alt="">
                             </a>
                         </div>
                         {% endfor %}
@@ -145,7 +145,7 @@
                     <div class="col-md-4 mb-4">
                         <article class="card card-bordered h-100 blog-post-card">
                             <a href="{{ related.get_absolute_url }}" class="blog-post-card__overlay-link" aria-label="مشاهده جزئیات {{ related.title }}"></a>
-                            <img class="card-img-top blog-post-card__img blog-post-card__img--related" src="{{ related.image.url }}" alt="{{ related.title }}">
+                            <img class="card-img-top blog-post-card__img blog-post-card__img--related" src="{{ related.image_card_url }}" alt="{{ related.title }}">
                             <div class="card-body blog-post-card__body">
                                 <h6 class="card-title blog-post-card__title">
                                     <a class="text-dark text-decoration-none" href="{{ related.get_absolute_url }}">

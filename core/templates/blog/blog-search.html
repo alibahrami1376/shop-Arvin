@@ -54,7 +54,7 @@
                         <article class="card card-bordered h-100 blog-post-card">
                             <a href="{{ post.get_absolute_url }}" class="blog-post-card__overlay-link" aria-label="مشاهده جزئیات {{ post.title }}"></a>
                             <div class="card-img-top position-relative blog-post-card__media">
-                                <img class="img-fluid rounded-top-2 blog-post-card__img blog-post-card__img--search" src="{{ post.image.url }}" alt="{{ post.title }}">
+                                <img class="img-fluid rounded-top-2 blog-post-card__img blog-post-card__img--search" src="{{ post.image_card_url }}" alt="{{ post.title }}">
                                 <div class="position-absolute top-0 start-0 mt-3 ms-3">
                                     {% for cat in post.category.all|slice:":1" %}
                                     <span class="badge bg-primary">{{ cat.name }}</span>
