@@ -115,6 +115,11 @@ class ProductModel(models.Model):
     
     def is_published(self):
         return self.status == ProductStatusType.publish.value
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+
+        return reverse("shop:product-detail", kwargs={"slug": self.slug})
     
 class ProductImageModel(models.Model):
     product = models.ForeignKey(ProductModel,on_delete=models.CASCADE,related_name="product_images")

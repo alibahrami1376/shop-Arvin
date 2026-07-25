@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /accounts/
+Disallow: /cart/
+Disallow: /order/
+Disallow: /payment/
+Disallow: /api/
+Disallow: /ckeditor5/
+
+Sitemap: {{ sitemap_url }}
