@@ -1,5 +1,5 @@
+from django.conf import settings
 from django.views.generic import (
-    TemplateView,
     ListView,
     DetailView,
     View
@@ -9,14 +9,30 @@ from django.core.exceptions import FieldError
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from review.models import ReviewModel, ReviewStatusType
+from core.views_meta import ObjectMetadataMixin, SiteMetadataMixin
 
 
-class ShopProductGridView(ListView):
+class ShopProductGridView(SiteMetadataMixin, ListView):
     template_name = "shop/product-grid.html"
     paginate_by = 9
+    title = f"محصولات - {settings.SITE_NAME}"
+    description = "مشاهده و خرید محصولات فروشگاه آروین."
 
     def get_paginate_by(self, queryset):
         return self.request.GET.get('page_size', self.paginate_by)
+
+    def get_meta_title(self, context=None):
+        category_id = self.request.GET.get("category_id")
+        if category_id:
+            try:
+                category = ProductCategoryModel.objects.get(pk=category_id)
+                return f"{category.title} - {settings.SITE_NAME}"
+            except (ProductCategoryModel.DoesNotExist, ValueError):
+                pass
+        q = self.request.GET.get("q")
+        if q:
+            return f"جستجو: {q} - {settings.SITE_NAME}"
+        return super().get_meta_title(context)
 
     def get_queryset(self):
         queryset = ProductModel.objects.filter(
@@ -50,7 +66,7 @@ class ShopProductGridView(ListView):
         return context
 
 
-class ShopProductDetailView(DetailView):
+class ShopProductDetailView(ObjectMetadataMixin, DetailView):
     template_name = "shop/product-detail.html"
     queryset = ProductModel.objects.filter(
         status=ProductStatusType.publish.value)

@@ -34,6 +34,22 @@ SITE_ID = config("SITE_ID", cast=int, default=1)
 SITE_DOMAIN = config("SITE_DOMAIN", default="arvinofficial.ir")
 SITE_NAME = config("SITE_NAME", default="فروشگاه آروین")
 
+# django-meta
+META_SITE_PROTOCOL = "https"
+META_SITE_DOMAIN = SITE_DOMAIN
+META_SITE_TYPE = "website"
+META_SITE_NAME = SITE_NAME
+META_USE_SITES = True
+META_USE_OG_PROPERTIES = True
+META_USE_TWITTER_PROPERTIES = True
+META_USE_SCHEMAORG_PROPERTIES = True
+META_USE_TITLE_TAG = False  # title از {% block title %} می‌آید
+META_DEFAULT_KEYWORDS = ["فروشگاه آروین", "لوازم کامیون", "آروین"]
+META_INCLUDE_KEYWORDS = ["آروین"]
+META_DEFAULT_IMAGE = "/static/img/900x900/img1.jpg"
+META_FB_TYPE = "website"
+META_TWITTER_TYPE = "summary_large_image"
+
 
 
 # Application definition
@@ -49,6 +65,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'imagekit',
+    'meta',
     'compressor',
     'django_ckeditor_5',
     'website',

@@ -1,6 +1,7 @@
 from django.db import models
 from decimal import Decimal
 from django.core.validators import MaxValueValidator, MinValueValidator
+from meta.models import ModelMeta
 
 from core.imagekit_specs import (
     product_card_image,
@@ -87,7 +88,7 @@ class ProductTagModel(models.Model):
 
 
 # Create your models here.
-class ProductModel(models.Model):
+class ProductModel(ModelMeta, models.Model):
     user = models.ForeignKey("accounts.User",on_delete=models.PROTECT)
     category = models.ManyToManyField(ProductCategoryModel)
     tags = models.ManyToManyField(ProductTagModel, blank=True, related_name="products", verbose_name="تگ‌ها")
@@ -109,6 +110,16 @@ class ProductModel(models.Model):
     
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+
+    _metadata = {
+        "title": "title",
+        "description": "get_meta_description",
+        "image": "get_meta_image",
+        "url": "get_absolute_url",
+        "og_type": "product",
+        "twitter_type": "summary_large_image",
+        "schemaorg_type": "Product",
+    }
     
     class Meta:
         ordering = ["-created_date"]
@@ -131,6 +142,13 @@ class ProductModel(models.Model):
         from django.urls import reverse
 
         return reverse("shop:product-detail", kwargs={"slug": self.slug})
+
+    def get_meta_description(self):
+        text = (self.brief_description or self.description or self.title or "").strip()
+        return text[:300]
+
+    def get_meta_image(self):
+        return self.image_card_url or ""
 
     @property
     def image_card_url(self):

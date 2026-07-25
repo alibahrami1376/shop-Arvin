@@ -9,7 +9,7 @@
             <div class="col-12 col-sm-6 col-lg-3">
                 <article class="home-blog-card h-100">
                     <a href="{% url 'blog:blog_detail' post.id %}" class="home-blog-card__media-link">
-                        <img src="{{ post.image_card_url }}" alt="" class="home-blog-card__img">
+                        <img src="{{ post.image_card_url }}" alt="" class="home-blog-card__img" loading="lazy" fetchpriority="low" decoding="async">
                     </a>
                     <div class="home-blog-card__body">
                         <h3 class="home-blog-card__title">

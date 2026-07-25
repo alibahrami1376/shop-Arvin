@@ -2,12 +2,14 @@ from django.http import Http404
 from django.views.generic import TemplateView
 from django.db.models import IntegerField, Q, Sum, Value
 from django.db.models.functions import Coalesce
+from django.conf import settings
 
 from blog.models import Post
 from order.models import OrderStatusType
 from shop.models import ProductModel, ProductStatusType
 
 from core.device import filter_queryset_for_device
+from core.views_meta import SiteMetadataMixin
 
 from .models import *
 from .forms import ContactForm, NewsLetterForm
@@ -17,8 +19,10 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 # Create your views here.
 
-class IndexView(TemplateView):
+class IndexView(SiteMetadataMixin, TemplateView):
     template_name = "website/index.html"
+    title = f"{settings.SITE_NAME}"
+    description = "فروشگاه آروین — خرید آنلاین لوازم و قطعات کامیون با ارسال سریع."
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -57,35 +61,57 @@ class IndexView(TemplateView):
 
         return context
 
-class ContactView(TemplateView):
+class ContactView(SiteMetadataMixin, TemplateView):
     template_name = "website/contact.html"
+    title = f"تماس با ما - {settings.SITE_NAME}"
+    description = "راه‌های ارتباط با فروشگاه آروین؛ تلفن، آدرس و فرم تماس."
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        settings = ContactPageSettings.get_solo()
-        context["contact_settings"] = settings
-        context["contact_social_links"] = settings.get_social_links()
+        settings_obj = ContactPageSettings.get_solo()
+        context["contact_settings"] = settings_obj
+        context["contact_social_links"] = settings_obj.get_social_links()
         return context
 
 
-class LegalPageView(TemplateView):
+class LegalPageView(SiteMetadataMixin, TemplateView):
     template_name = "website/legal-page.html"
 
+    def get_meta_title(self, context=None):
+        page = getattr(self, "_legal_page", None) or (context or {}).get("page")
+        if page:
+            return f"{page.title} - {settings.SITE_NAME}"
+        return super().get_meta_title(context)
+
+    def get_meta_description(self, context=None):
+        page = getattr(self, "_legal_page", None) or (context or {}).get("page")
+        if page and page.content:
+            from django.utils.html import strip_tags
+
+            return strip_tags(page.content)[:300]
+        return super().get_meta_description(context)
+
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
         page_type = self.kwargs["page_type"]
         if page_type not in LegalPage.PageType.values:
             raise Http404()
-        context["page"] = LegalPage.get_by_type(page_type)
+        self._legal_page = LegalPage.get_by_type(page_type)
+        context = super().get_context_data(**kwargs)
+        context["page"] = self._legal_page
+        context["meta"] = self.get_meta(context=context)
         return context
 
 
-class AboutView(TemplateView):
+class AboutView(SiteMetadataMixin, TemplateView):
     template_name = "website/about.html"
+    title = f"درباره ما - {settings.SITE_NAME}"
+    description = "آشنایی با فروشگاه آروین و خدمات فروش لوازم کامیون."
 
 
-class FAQView(TemplateView):
+class FAQView(SiteMetadataMixin, TemplateView):
     template_name = "website/faq.html"
+    title = f"سوالات متداول - {settings.SITE_NAME}"
+    description = "پاسخ سوالات پرتکرار درباره خرید، ارسال و پشتیبانی فروشگاه آروین."
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

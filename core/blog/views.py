@@ -1,19 +1,30 @@
+from django.conf import settings
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator
 from django.views.generic import ListView
 from django.db.models import Q
 from django.core.exceptions import FieldError
 from blog.models import Post, Category
+from core.views_meta import SiteMetadataMixin
+from meta.views import Meta
 
 
-class BlogPostListView(ListView):
+class BlogPostListView(SiteMetadataMixin, ListView):
     model = Post
     template_name = "blog/blog-home.html"
     context_object_name = "posts"
     paginate_by = 9
+    title = f"بلاگ - {settings.SITE_NAME}"
+    description = "مقالات و اخبار فروشگاه آروین."
 
     def get_paginate_by(self, queryset):
         return self.request.GET.get("page_size", self.paginate_by)
+
+    def get_meta_title(self, context=None):
+        cat_name = self.kwargs.get("cat_name")
+        if cat_name:
+            return f"{cat_name} - بلاگ {settings.SITE_NAME}"
+        return super().get_meta_title(context)
 
     def get_queryset(self):
         queryset = Post.objects.filter(status=True).prefetch_related(
@@ -67,6 +78,7 @@ def blog_detail(request, post_id):
     context = {
         'post': post,
         'related_posts': related_posts,
+        'meta': post.as_meta(request),
     }
     return render(request, "blog/blog-detail.html", context)
 
@@ -89,8 +101,21 @@ def blog_search(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    title = f"جستجو در بلاگ - {settings.SITE_NAME}"
+    if query:
+        title = f"جستجو: {query} - بلاگ {settings.SITE_NAME}"
+
     context = {
         'posts': page_obj,
         'query': query,
+        'meta': Meta(
+            title=title,
+            description="جستجو در مقالات بلاگ فروشگاه آروین.",
+            url=request.path,
+            use_og=True,
+            use_twitter=True,
+            use_sites=True,
+            site_name=settings.SITE_NAME,
+        ),
     }
     return render(request, "blog/blog-search.html", context)

@@ -1,7 +1,8 @@
 {% load static %}
 {% load compress %}
+{% load meta %}
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl"{% meta_namespaces %}>
 
 <head>
     <!-- Required Meta Tags Always Come First -->
@@ -20,6 +21,7 @@
 
     <!-- Title -->
     <title>{% block title %}فروشگاه آروین{% endblock title %}</title>
+    {% include "meta/meta.html" %}
 
     {% compress css %}
     <!-- CSS Implementing Plugins -->
@@ -40,6 +42,7 @@
 
 <body class="device-desktop {% block body_class %}{% endblock body_class %}">
     <script src="{% static 'js/layout-sync.js' %}"></script>
+    <script src="{% static 'js/defer-images.js' %}"></script>
 
     {% include 'includes/layout/header-desktop.html' %}
 

@@ -1,7 +1,8 @@
 {% load static %}
 {% load compress %}
+{% load meta %}
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" class="device-mobile-root">
+<html lang="fa" dir="rtl" class="device-mobile-root"{% meta_namespaces %}>
 
 <head>
     <meta charset="utf-8">
@@ -18,6 +19,7 @@
     <link rel="shortcut icon" href="{% static 'favicon/arvinofficial_favicon.ico' %}">
 
     <title>{% block title %}فروشگاه آروین{% endblock title %}</title>
+    {% include "meta/meta.html" %}
 
     {% compress css %}
     <link rel="stylesheet" href="{% static 'css/vendor.min.css' %}">
@@ -32,6 +34,7 @@
 
 <body class="device-mobile {% block body_class %}has-mobile-bottom-nav{% endblock body_class %}">
     <script src="{% static 'js/layout-sync.js' %}"></script>
+    <script src="{% static 'js/defer-images.js' %}"></script>
 
     {% include 'includes/layout/header-mobile.html' %}
 

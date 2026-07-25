@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django_ckeditor_5.fields import CKEditor5Field
+from meta.models import ModelMeta
 
 from core.imagekit_specs import blog_card_image, blog_hero_image, product_detail_image, product_gallery_thumb_image
 from shop.image_urls import safe_imagekit_url
@@ -33,7 +34,7 @@ class Tag(models.Model):
         return self.name
 
 
-class Post(models.Model):
+class Post(ModelMeta, models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="نویسنده")
     image = models.ImageField(upload_to="blog/", default="blog/default.png", verbose_name="تصویر")
     image_card = blog_card_image("image")
@@ -49,6 +50,18 @@ class Post(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
     updated_date = models.DateTimeField(auto_now=True, verbose_name="تاریخ بروزرسانی")
 
+    _metadata = {
+        "title": "title",
+        "description": "get_meta_description",
+        "image": "get_meta_image",
+        "url": "get_absolute_url",
+        "og_type": "article",
+        "twitter_type": "summary_large_image",
+        "schemaorg_type": "Article",
+        "published_time": "published_date",
+        "modified_time": "updated_date",
+    }
+
     class Meta:
         ordering = ["-created_date"]
         verbose_name = "پست"
@@ -59,6 +72,15 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse("blog:blog_detail", args=[str(self.id)])
+
+    def get_meta_description(self):
+        from django.utils.html import strip_tags
+
+        text = strip_tags(self.content or "")[:300].strip()
+        return text or self.title
+
+    def get_meta_image(self):
+        return self.image_card_url or ""
 
     @property
     def image_card_url(self):
