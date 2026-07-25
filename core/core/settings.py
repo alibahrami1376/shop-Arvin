@@ -91,7 +91,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.contrib.sites.context_processors.site',
+                'core.context_processors.site.site',
                 'shop.context_processors.shop_categories',
                 'cart.context_processors.cart_processor',
                 'core.context_processors.device.device',
