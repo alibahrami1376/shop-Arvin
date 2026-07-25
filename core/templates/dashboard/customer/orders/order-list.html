@@ -141,7 +141,7 @@
                                         {% for order_item in object.order_items.all|slice:":4" %}
                                         <div class="col">
                                             <img class="img-fluid" style="width:100px; height:100px"
-                                                src="{{order_item.product.image.url}}" alt="Image Description">
+                                                src="{{order_item.product.image_thumb_url}}" alt="Image Description">
                                         </div>
                                         {% endfor %}
 

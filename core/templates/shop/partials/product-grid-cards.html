@@ -4,7 +4,7 @@
         <article class="card card-bordered shadow-none text-center h-100 shop-product-card">
             <div class="card-pinned">
                 <a href="{% url 'shop:product-detail' slug=object.slug %}" class="d-block shop-product-card__img-wrap">
-                    <img class="card-img-top" src="{{ object.image.url }}" alt="{{ object.title }}">
+                    <img class="card-img-top" src="{{ object.image_card_url }}" alt="{{ object.title }}">
                 </a>
                 {% if request.user.is_authenticated %}
                 <div class="card-pinned-top-end">

@@ -7,7 +7,7 @@
         {% for similar_prodcut in similar_prodcuts %}
         <article class="similar-products__card">
             <a href="{% url 'shop:product-detail' slug=similar_prodcut.slug %}" class="similar-products__media">
-                <img src="{{ similar_prodcut.image.url }}" alt="{{ similar_prodcut.title }}" loading="lazy">
+                <img src="{{ similar_prodcut.image_card_url }}" alt="{{ similar_prodcut.title }}" loading="lazy">
             </a>
             <div class="similar-products__body">
                 {% if similar_prodcut.category.all %}

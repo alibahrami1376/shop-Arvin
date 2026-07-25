@@ -11,11 +11,11 @@
         <div class="js-swiper-shop-product swiper pdp-mobile__swiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
-                    <img class="pdp-mobile__img" src="{{ object.image.url }}" alt="{{ object.title }}">
+                    <img class="pdp-mobile__img" src="{{ object.image_detail_url }}" alt="{{ object.title }}">
                 </div>
                 {% for product_image in object.product_images.all %}
                 <div class="swiper-slide">
-                    <img class="pdp-mobile__img" src="{{ product_image.file.url }}" alt="{{ object.title }}">
+                    <img class="pdp-mobile__img" src="{{ product_image.file_detail_url }}" alt="{{ object.title }}">
                 </div>
                 {% endfor %}
             </div>
@@ -28,13 +28,13 @@
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
                     <button type="button" class="pdp-mobile__thumb">
-                        <img src="{{ object.image.url }}" alt="">
+                        <img src="{{ object.image_thumb_url }}" alt="">
                     </button>
                 </div>
                 {% for product_image in object.product_images.all %}
                 <div class="swiper-slide">
                     <button type="button" class="pdp-mobile__thumb">
-                        <img src="{{ product_image.file.url }}" alt="">
+                        <img src="{{ product_image.file_thumb_url }}" alt="">
                     </button>
                 </div>
                 {% endfor %}
@@ -215,13 +215,13 @@
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
                                 <div class="card card-bordered shadow-none">
-                                    <img class="card-img" src="{{object.image.url}}" alt="{{ object.title }}">
+                                    <img class="card-img" src="{{ object.image_detail_url }}" alt="{{ object.title }}">
                                 </div>
                             </div>
                             {% for product_image in object.product_images.all %}
                             <div class="swiper-slide">
                                 <div class="card card-bordered shadow-none">
-                                    <img class="card-img" src="{{product_image.file.url}}" alt="{{ object.title }}">
+                                    <img class="card-img" src="{{ product_image.file_detail_url }}" alt="{{ object.title }}">
                                 </div>
                             </div>
                             {% endfor %}
@@ -235,13 +235,13 @@
                             <div class="swiper-wrapper">
                                 <div class="swiper-slide">
                                     <a class="avatar avatar-circle" href="javascript:;">
-                                        <img class="avatar-img" src="{{object.image.url}}" alt="">
+                                        <img class="avatar-img" src="{{ object.image_thumb_url }}" alt="">
                                     </a>
                                 </div>
                                 {% for product_image in object.product_images.all %}
                                 <div class="swiper-slide">
                                     <a class="avatar avatar-circle" href="javascript:;">
-                                        <img class="avatar-img" src="{{product_image.file.url}}" alt="">
+                                        <img class="avatar-img" src="{{ product_image.file_thumb_url }}" alt="">
                                     </a>
                                 </div>
                                 {% endfor %}

@@ -26,7 +26,7 @@
             <div class="col">
                 <div class="card card-bordered shadow-none text-center h-100 position-relative">
                     <div class="card-pinned">
-                        <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" width="400" height="400" loading="lazy" onerror="this.onerror=null;this.src='{% static 'img/900x900/img1.jpg' %}';">
+                        <img class="card-img-top" src="{{ product.image_card_url }}" alt="{{ product.title }}" width="400" height="400" loading="lazy" onerror="this.onerror=null;this.src='{% static 'img/900x900/img1.jpg' %}';">
                         {% if request.user.is_authenticated %}
                         <div class="card-pinned-top-end home-product-strip__above-stretch">
                             <button type="button"

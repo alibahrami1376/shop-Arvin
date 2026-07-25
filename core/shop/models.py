@@ -2,6 +2,14 @@ from django.db import models
 from decimal import Decimal
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+from core.imagekit_specs import (
+    product_card_image,
+    product_detail_image,
+    product_gallery_thumb_image,
+    product_thumb_image,
+)
+from shop.image_urls import safe_imagekit_url
+
 
 class ProductStatusType(models.IntegerChoices):
     publish = 1 ,("نمایش")
@@ -86,6 +94,9 @@ class ProductModel(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(allow_unicode=True,unique=True)
     image = models.ImageField(default="/default/product-image.png",upload_to="product/img/")
+    image_card = product_card_image("image")
+    image_detail = product_detail_image("image")
+    image_thumb = product_thumb_image("image")
     description = models.TextField()
     brief_description = models.TextField(null=True,blank=True)
     
@@ -120,16 +131,38 @@ class ProductModel(models.Model):
         from django.urls import reverse
 
         return reverse("shop:product-detail", kwargs={"slug": self.slug})
+
+    @property
+    def image_card_url(self):
+        return safe_imagekit_url(self, "image_card", "image")
+
+    @property
+    def image_detail_url(self):
+        return safe_imagekit_url(self, "image_detail", "image")
+
+    @property
+    def image_thumb_url(self):
+        return safe_imagekit_url(self, "image_thumb", "image")
     
 class ProductImageModel(models.Model):
     product = models.ForeignKey(ProductModel,on_delete=models.CASCADE,related_name="product_images")
     file = models.ImageField(upload_to="product/extra-img/")
+    file_detail = product_detail_image("file")
+    file_thumb = product_gallery_thumb_image("file")
     
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     
     class Meta:
         ordering = ["-created_date"]
+
+    @property
+    def file_detail_url(self):
+        return safe_imagekit_url(self, "file_detail", "file")
+
+    @property
+    def file_thumb_url(self):
+        return safe_imagekit_url(self, "file_thumb", "file")
         
 class WishlistProductModel(models.Model):
     user = models.ForeignKey("accounts.User",on_delete=models.PROTECT)
