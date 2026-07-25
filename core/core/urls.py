@@ -38,8 +38,7 @@ class RobotsTxtView(TemplateView):
         context = super().get_context_data(**kwargs)
         site = getattr(self.request, "site", None)
         domain = site.domain if site is not None else settings.SITE_DOMAIN
-        protocol = "https" if getattr(settings, "SECURE_SSL_REDIRECT", False) else self.request.scheme
-        context["sitemap_url"] = f"{protocol}://{domain}{reverse('sitemap-index')}"
+        context["sitemap_url"] = f"https://{domain}{reverse('sitemap-index')}"
         return context
 
 

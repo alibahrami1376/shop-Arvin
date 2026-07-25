@@ -6,7 +6,11 @@ from blog.models import Post
 from shop.models import ProductCategoryModel, ProductModel, ProductStatusType
 
 
-class StaticViewSitemap(Sitemap):
+class HttpsSitemap(Sitemap):
+    protocol = "https"
+
+
+class StaticViewSitemap(HttpsSitemap):
     changefreq = "weekly"
     priority = 0.8
 
@@ -26,7 +30,7 @@ class StaticViewSitemap(Sitemap):
         return reverse(item)
 
 
-class ProductSitemap(Sitemap):
+class ProductSitemap(HttpsSitemap):
     changefreq = "daily"
     priority = 0.9
 
@@ -39,7 +43,7 @@ class ProductSitemap(Sitemap):
         return obj.updated_date
 
 
-class ProductCategorySitemap(Sitemap):
+class ProductCategorySitemap(HttpsSitemap):
     changefreq = "weekly"
     priority = 0.7
 
@@ -53,7 +57,7 @@ class ProductCategorySitemap(Sitemap):
         return f"{reverse('shop:product-grid')}?category_id={obj.pk}"
 
 
-class BlogPostSitemap(Sitemap):
+class BlogPostSitemap(HttpsSitemap):
     changefreq = "weekly"
     priority = 0.8
 
@@ -64,7 +68,7 @@ class BlogPostSitemap(Sitemap):
         return obj.updated_date
 
 
-class BlogCategorySitemap(Sitemap):
+class BlogCategorySitemap(HttpsSitemap):
     changefreq = "weekly"
     priority = 0.6
 
