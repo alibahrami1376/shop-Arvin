@@ -76,16 +76,6 @@ class AdminDashboardHomeView(LoginRequiredMixin, HasAdminAccessPermission, Templ
                 ),
             },
             {
-                "label": "پیامک",
-                "granted": self._has_any_perm(
-                    user,
-                    [
-                        "accounts.view_smssettings",
-                        "accounts.change_smssettings",
-                    ],
-                ),
-            },
-            {
                 "label": "تنظیمات",
                 "granted": self._has_any_perm(
                     user,

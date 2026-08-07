@@ -187,29 +187,6 @@ def patch_django_forms():
     _patch_init(model_forms.BaseModelForm, apply_persian_errors_to_form)
 
 
-def patch_rest_framework_fields():
-    try:
-        from rest_framework import serializers
-    except ImportError:
-        return
-
-    serializers.Field.default_error_messages.update(
-        {
-            "required": "پر کردن این فیلد الزامی است.",
-            "null": "این فیلد نمی‌تواند خالی باشد.",
-            "blank": "پر کردن این فیلد الزامی است.",
-            "invalid": "مقدار وارد شده معتبر نیست.",
-            "invalid_choice": "گزینه انتخاب‌شده معتبر نیست.",
-            "max_length": "حداکثر %(max_length)s کاراکتر مجاز است.",
-            "min_length": "حداقل %(min_length)s کاراکتر لازم است.",
-            "max_value": "مقدار باید حداکثر %(max_value)s باشد.",
-            "min_value": "مقدار باید حداقل %(min_value)s باشد.",
-            "overflow": "عدد وارد شده بیش از حد بزرگ است.",
-            "empty": "حداقل یک مورد انتخاب کنید.",
-        }
-    )
-
-
 def _patch_init(base_cls, callback):
     if getattr(base_cls.__init__, "_persian_patched", False):
         return

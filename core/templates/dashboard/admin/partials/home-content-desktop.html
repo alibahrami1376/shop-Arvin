@@ -75,12 +75,6 @@
                         </span>
                     </div>
                     <div class="admin-info-grid__item">
-                        <span class="admin-info-grid__label">تایید موبایل</span>
-                        <span class="badge admin-status-badge {% if dashboard_user.phone_verified %}admin-status-badge--success{% else %}admin-status-badge--muted{% endif %}">
-                            {% if dashboard_user.phone_verified %}تایید شده{% else %}تایید نشده{% endif %}
-                        </span>
-                    </div>
-                    <div class="admin-info-grid__item">
                         <span class="admin-info-grid__label">تاریخ عضویت</span>
                         <strong>{{ dashboard_user.created_date|date:"Y/m/d - H:i" }}</strong>
                     </div>

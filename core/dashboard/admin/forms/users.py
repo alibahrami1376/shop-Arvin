@@ -145,7 +145,6 @@ class UserCreateForm(forms.ModelForm):
             email=email,
             phone_number=phone_number,
             password=password,
-            phone_verified=bool(phone_number),
             type=user_type,
             is_staff=(user_type == UserType.admin.value),
             is_active=self.cleaned_data.get("is_active", True),

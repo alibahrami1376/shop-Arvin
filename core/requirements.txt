@@ -9,9 +9,6 @@ django-ckeditor-5>=0.2.12
 django-compressor>=4.5,<5
 django-imagekit>=5.0,<6
 django-meta>=2.5,<3
-djangorestframework>=3.14,<3.16
-djangorestframework-simplejwt>=5.3,<5.4
-kavenegar>=1.1.2
 idna==3.6
 pillow==10.2.0
 psycopg==3.1.12

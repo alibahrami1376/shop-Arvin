@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from datetime import timedelta
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -78,8 +77,6 @@ INSTALLED_APPS = [
     'review',
     'blog',
     'django_user_agents',
-    'rest_framework',
-    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -252,24 +249,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'EXCEPTION_HANDLER': 'core.drf_handlers.persian_exception_handler',
-}
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-}
 MERCHANT_ID = config("MERCHANT_ID")
-KAVENEGAR_API_KEY = config("KAVENEGAR_API_KEY")
-
-# config('KAVENEGAR_API_KEY', default='')
-# نام الگو در پنل کاوه‌نگار (بخش Lookup) — باید دقیقاً یکی باشد
-KAVENEGAR_TEMPLATE = config('KAVENEGAR_TEMPLATE', default='verify')
-# %token = کد ۶ رقمی OTP · %token2 = مدت اعتبار (دقیقه) از OTPCode.VALIDITY_MINUTES
 
 
 

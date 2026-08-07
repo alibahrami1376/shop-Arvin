@@ -10,7 +10,6 @@ class CoreConfig(AppConfig):
 
     def ready(self):
         activate("fa")
-        from core.forms_persian import patch_django_forms, patch_rest_framework_fields
+        from core.forms_persian import patch_django_forms
 
         patch_django_forms()
-        patch_rest_framework_fields()

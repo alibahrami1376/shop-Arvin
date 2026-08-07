@@ -61,7 +61,6 @@ urlpatterns = [
     path('sw.js', ServiceWorkerView.as_view(), name='pwa-service-worker'),
     path('', include('website.urls')),
     path('accounts/', include('accounts.urls')),
-    path('api/accounts/', include('accounts.api_urls')),
     path('shop/', include('shop.urls')),
     path('cart/', include('cart.urls')),
     path('dashboard/', include('dashboard.urls')),

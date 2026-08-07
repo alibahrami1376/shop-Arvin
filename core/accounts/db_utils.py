@@ -6,8 +6,6 @@ from django.db import connection
 ACCOUNTS_SEQUENCE_TABLES = (
     "accounts_user",
     "accounts_profile",
-    "accounts_otpcode",
-    "accounts_smssettings",
 )
 
 

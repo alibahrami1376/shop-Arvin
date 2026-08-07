@@ -74,10 +74,7 @@ class CustomerProfileEditForm(forms.ModelForm):
     def save(self, commit=True):
         profile = super().save(commit=False)
         user = profile.user
-        new_phone = self.cleaned_data["phone_number"]
-        if user.phone_number != new_phone:
-            user.phone_verified = False
-        user.phone_number = new_phone
+        user.phone_number = self.cleaned_data["phone_number"]
         if commit:
             user.save()
             profile.save()
