@@ -22,6 +22,41 @@ class OrderStatusType(models.IntegerChoices):
     success = 2, "موفقیت آمیز"
     failed = 3,"لغو شده"
 
+class Province(models.Model):
+    name = models.CharField(max_length=100, unique=True, verbose_name="نام استان")
+    is_active = models.BooleanField(default=True, verbose_name="فعال")
+    sort_order = models.PositiveIntegerField(default=0, verbose_name="ترتیب نمایش")
+
+    class Meta:
+        ordering = ["sort_order", "name"]
+        verbose_name = "استان"
+        verbose_name_plural = "استان‌ها"
+
+    def __str__(self):
+        return self.name
+
+
+class City(models.Model):
+    province = models.ForeignKey(
+        Province,
+        on_delete=models.CASCADE,
+        related_name="cities",
+        verbose_name="استان",
+    )
+    name = models.CharField(max_length=100, verbose_name="نام شهر")
+    is_active = models.BooleanField(default=True, verbose_name="فعال")
+    sort_order = models.PositiveIntegerField(default=0, verbose_name="ترتیب نمایش")
+
+    class Meta:
+        ordering = ["sort_order", "name"]
+        verbose_name = "شهر"
+        verbose_name_plural = "شهرها"
+        unique_together = ("province", "name")
+
+    def __str__(self):
+        return f"{self.name} ({self.province.name})"
+
+
 class UserAddressModel(models.Model):
     user = models.ForeignKey('accounts.User',on_delete=models.CASCADE)
     

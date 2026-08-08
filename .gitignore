@@ -209,6 +209,10 @@ __marimo__/
 #db 
 /postgres/*
 
+# django-compressor generated bundles
+**/static/CACHE/
+core/public/static/CACHE/
+
 #drawio
 docs/*.drawio
 docs/*.drawio.bkp

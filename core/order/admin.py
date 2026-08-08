@@ -1,13 +1,32 @@
 from django.contrib import admin
 from .models import (
     CheckoutPricingSettings,
+    City,
     CouponModel,
     OrderItemModel,
     OrderModel,
+    Province,
     UserAddressModel,
 )
 
 # Register your models here.
+
+
+@admin.register(Province)
+class ProvinceAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "is_active", "sort_order")
+    list_filter = ("is_active",)
+    search_fields = ("name",)
+    ordering = ("sort_order", "name")
+
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "province", "is_active", "sort_order")
+    list_filter = ("province", "is_active")
+    search_fields = ("name", "province__name")
+    autocomplete_fields = ("province",)
+    ordering = ("province__name", "sort_order", "name")
 
 
 @admin.register(OrderModel)

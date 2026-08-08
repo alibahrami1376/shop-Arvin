@@ -1,0 +1,58 @@
+{% extends dashboard_admin_base_template %}
+{% load static %}
+
+{% block title %}ویرایش شهر - پنل ادمین{% endblock title %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">حساب</li>
+        <li class="breadcrumb-item">داشبورد ادمین</li>
+        <li class="breadcrumb-item"><a href="{% url 'dashboard:admin:city-list' %}">شهرها</a></li>
+        <li class="breadcrumb-item active" aria-current="page">ویرایش شهر</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header border-bottom">
+        <h5 class="card-header-title">ویرایش شهر</h5>
+    </div>
+    <form action="." method="post">
+        {% csrf_token %}
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">استان</label>
+                    {{ form.province }}
+                    {% if form.province.errors %}<div class="text-danger small">{{ form.province.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">نام شهر</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">ترتیب نمایش</label>
+                    {{ form.sort_order }}
+                    {% if form.sort_order.errors %}<div class="text-danger small">{{ form.sort_order.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-3 mb-3 d-flex align-items-end">
+                    <div class="form-check">
+                        {{ form.is_active }}
+                        <label class="form-check-label" for="{{ form.is_active.id_for_label }}">فعال</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-end gap-2">
+                <a class="btn btn-danger" href="{% url 'dashboard:admin:city-delete' pk=object.pk %}">حذف</a>
+                <a class="btn btn-secondary" href="{% url 'dashboard:admin:city-list' %}?province={{ object.province_id }}">بازگشت</a>
+                <button class="btn btn-primary" type="submit">ثبت تغییرات</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

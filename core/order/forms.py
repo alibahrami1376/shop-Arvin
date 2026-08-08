@@ -1,13 +1,11 @@
 from django import forms
 from django.utils import timezone
-from payment.models import PaymentMethodSettings, PaymentMethodType
+from payment.models import PaymentMethodSettings
 
-from order.models import CouponModel, UserAddressModel
+from order.models import City, CouponModel, Province
 from order.shipping import (
-    DELIVERY_ADDRESS,
     DELIVERY_FREIGHT,
     DELIVERY_TYPE_CHOICES,
-    FREIGHT_CITY_CHOICES,
     FREIGHT_NOTES_PLACEHOLDER,
 )
 
@@ -16,23 +14,35 @@ class CheckOutForm(forms.Form):
     delivery_type = forms.ChoiceField(
         label="روش ارسال",
         choices=DELIVERY_TYPE_CHOICES,
-        initial=DELIVERY_ADDRESS,
-        widget=forms.RadioSelect,
+        initial=DELIVERY_FREIGHT,
+        widget=forms.HiddenInput,
         error_messages={"required": "روش ارسال را انتخاب کنید."},
     )
-    address_id = forms.IntegerField(
-        required=False,
-        error_messages={"invalid": "آدرس انتخاب‌شده معتبر نیست."},
+    freight_province = forms.ModelChoiceField(
+        label="استان مقصد",
+        queryset=Province.objects.none(),
+        empty_label="استان را انتخاب کنید",
+        required=True,
+        error_messages={
+            "required": "استان مقصد را انتخاب کنید.",
+            "invalid_choice": "استان انتخاب‌شده معتبر نیست.",
+        },
+        widget=forms.Select(attrs={"class": "form-select form-select-lg", "id": "freight-province"}),
     )
-    freight_city = forms.ChoiceField(
+    freight_city = forms.ModelChoiceField(
         label="شهر مقصد",
-        choices=FREIGHT_CITY_CHOICES,
-        required=False,
-        error_messages={"invalid_choice": "شهر انتخاب‌شده معتبر نیست."},
+        queryset=City.objects.none(),
+        empty_label="ابتدا استان را انتخاب کنید",
+        required=True,
+        error_messages={
+            "required": "شهر مقصد را انتخاب کنید.",
+            "invalid_choice": "شهر انتخاب‌شده معتبر نیست.",
+        },
+        widget=forms.Select(attrs={"class": "form-select form-select-lg", "id": "freight-city"}),
     )
     freight_notes = forms.CharField(
         label="توضیحات باربری",
-        required=False,
+        required=True,
         max_length=500,
         widget=forms.Textarea(
             attrs={
@@ -41,6 +51,7 @@ class CheckOutForm(forms.Form):
                 "placeholder": FREIGHT_NOTES_PLACEHOLDER,
             }
         ),
+        error_messages={"required": "توضیحات باربری را برای هماهنگی ارسال وارد کنید."},
     )
     coupon = forms.CharField(required=False)
     payment_method = forms.TypedChoiceField(
@@ -61,46 +72,46 @@ class CheckOutForm(forms.Form):
             self.fields["payment_method"].initial = enabled[0][0]
         else:
             self.fields["payment_method"].required = False
+        self.fields["delivery_type"].initial = DELIVERY_FREIGHT
 
-    def clean_address_id(self):
-        address_id = self.cleaned_data.get("address_id")
-        if not address_id:
-            return None
-        user = self.request.user
-        try:
-            return UserAddressModel.objects.get(id=address_id, user=user)
-        except UserAddressModel.DoesNotExist:
-            raise forms.ValidationError("آدرس انتخاب‌شده معتبر نیست.")
+        provinces = Province.objects.filter(is_active=True)
+        self.fields["freight_province"].queryset = provinces
 
-    def clean_freight_city(self):
-        city = self.cleaned_data.get("freight_city")
-        if city:
-            return city
-        return None
+        province_id = None
+        if self.data.get("freight_province"):
+            try:
+                province_id = int(self.data.get("freight_province"))
+            except (TypeError, ValueError):
+                province_id = None
+        elif self.initial.get("freight_province"):
+            initial_province = self.initial["freight_province"]
+            province_id = getattr(initial_province, "pk", initial_province)
+
+        if province_id:
+            self.fields["freight_city"].queryset = City.objects.filter(
+                province_id=province_id,
+                is_active=True,
+                province__is_active=True,
+            )
+            self.fields["freight_city"].empty_label = "شهر را انتخاب کنید"
+        else:
+            self.fields["freight_city"].queryset = City.objects.none()
+
+    def clean_freight_notes(self):
+        notes = (self.cleaned_data.get("freight_notes") or "").strip()
+        if not notes:
+            raise forms.ValidationError(
+                "توضیحات باربری را برای هماهنگی ارسال وارد کنید."
+            )
+        return notes
 
     def clean(self):
-        cleaned_data = super().clean()
-        delivery_type = cleaned_data.get("delivery_type")
-
-        if delivery_type == DELIVERY_FREIGHT:
-            if not cleaned_data.get("freight_city"):
-                self.add_error("freight_city", "شهر مقصد را انتخاب کنید.")
-            notes = (cleaned_data.get("freight_notes") or "").strip()
-            if not notes:
-                self.add_error(
-                    "freight_notes",
-                    "توضیحات باربری را برای هماهنگی ارسال وارد کنید.",
-                )
-            else:
-                cleaned_data["freight_notes"] = notes
-        elif delivery_type == DELIVERY_ADDRESS:
-            if not cleaned_data.get("address_id"):
-                self.add_error(
-                    "address_id",
-                    "یک آدرس را انتخاب کنید یا «ارسال با باربری» را برگزینید.",
-                )
-
-        return cleaned_data
+        cleaned = super().clean()
+        province = cleaned.get("freight_province")
+        city = cleaned.get("freight_city")
+        if province and city and city.province_id != province.id:
+            self.add_error("freight_city", "شهر انتخاب‌شده متعلق به این استان نیست.")
+        return cleaned
 
     def clean_coupon(self):
         code = self.cleaned_data.get("coupon")

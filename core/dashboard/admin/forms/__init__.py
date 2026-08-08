@@ -5,6 +5,7 @@ from .tags import *
 from .reviews import *
 from .users import *
 from .coupons import *
+from .locations import *
 from .blog import *
 from .card_to_card_settings import *
 from .payment_method_settings import *

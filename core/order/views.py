@@ -12,9 +12,9 @@ from django.views.generic import DetailView, FormView, TemplateView, View
 from cart.cart import CartSession
 from cart.models import CartModel, CartItemModel
 from order.forms import CheckOutForm, OrderTrackingForm
-from order.models import CouponModel, OrderItemModel, OrderModel, UserAddressModel
+from order.models import CouponModel, OrderItemModel, OrderModel
 from order.pricing import apply_pricing_to_order, get_checkout_pricing_context
-from order.shipping import DELIVERY_FREIGHT, ShippingMethodType
+from order.shipping import ShippingMethodType
 from order.permissions import HasCustomerAccessPermission
 from payment.models import (
     CardToCardSettings,
@@ -94,25 +94,16 @@ class OrderCheckOutView(
 
     def create_order(self, cleaned_data):
         user = self.request.user
-        if cleaned_data["delivery_type"] == DELIVERY_FREIGHT:
-            return OrderModel.objects.create(
-                user=user,
-                shipping_method=ShippingMethodType.freight.value,
-                state="باربری",
-                city=cleaned_data["freight_city"],
-                address="-",
-                zip_code="-",
-                freight_notes=cleaned_data["freight_notes"],
-            )
-        address = cleaned_data["address_id"]
+        province = cleaned_data["freight_province"]
+        city = cleaned_data["freight_city"]
         return OrderModel.objects.create(
             user=user,
-            shipping_method=ShippingMethodType.address.value,
-            address=address.address,
-            state=address.state,
-            city=address.city,
-            zip_code=address.zip_code,
-            freight_notes="",
+            shipping_method=ShippingMethodType.freight.value,
+            state=province.name,
+            city=city.name,
+            address="-",
+            zip_code="-",
+            freight_notes=cleaned_data["freight_notes"],
         )
 
     def create_order_items(self, order, cart):
@@ -140,8 +131,6 @@ class OrderCheckOutView(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cart = CartModel.objects.get(user=self.request.user)
-        context["addresses"] = UserAddressModel.objects.filter(
-            user=self.request.user)
         items_subtotal = cart.calculate_total_price()
         context.update(
             get_checkout_pricing_context(
@@ -160,9 +149,21 @@ class OrderCheckOutView(
         payment_settings = PaymentMethodSettings.get_solo()
         context["enabled_payment_methods"] = payment_settings.get_enabled_methods()
         context["payment_methods_available"] = bool(context["enabled_payment_methods"])
-        from order.shipping import FREIGHT_CITY_CHOICES, FREIGHT_NOTES_PLACEHOLDER
+        from order.models import City, Province
+        from order.shipping import FREIGHT_NOTES_PLACEHOLDER
 
-        context["freight_city_choices"] = FREIGHT_CITY_CHOICES
+        provinces = list(
+            Province.objects.filter(is_active=True).values("id", "name")
+        )
+        cities_by_province = {}
+        for city in City.objects.filter(
+            is_active=True, province__is_active=True
+        ).values("id", "name", "province_id"):
+            cities_by_province.setdefault(city["province_id"], []).append(
+                {"id": city["id"], "name": city["name"]}
+            )
+        context["freight_provinces"] = provinces
+        context["freight_cities_by_province"] = cities_by_province
         context["freight_notes_placeholder"] = FREIGHT_NOTES_PLACEHOLDER
         return context
 
