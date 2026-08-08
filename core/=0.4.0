@@ -1,8 +1,0 @@
-Looking in indexes: https://mirror-pypi.runflare.com/simple
-Requirement already satisfied: django-user-agents in /usr/local/lib/python3.12/site-packages (0.4.0)
-Requirement already satisfied: django in /usr/local/lib/python3.12/site-packages (from django-user-agents) (4.2.30)
-Requirement already satisfied: user-agents in /usr/local/lib/python3.12/site-packages (from django-user-agents) (2.2.0)
-Requirement already satisfied: asgiref<4,>=3.6.0 in /usr/local/lib/python3.12/site-packages (from django->django-user-agents) (3.7.2)
-Requirement already satisfied: sqlparse>=0.3.1 in /usr/local/lib/python3.12/site-packages (from django->django-user-agents) (0.4.4)
-Requirement already satisfied: ua-parser>=0.10.0 in /usr/local/lib/python3.12/site-packages (from user-agents->django-user-agents) (1.0.2)
-Requirement already satisfied: ua-parser-builtins in /usr/local/lib/python3.12/site-packages (from ua-parser>=0.10.0->user-agents->django-user-agents) (202605)
