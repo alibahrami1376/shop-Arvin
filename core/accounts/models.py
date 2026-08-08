@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models import Q
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from accounts.validators import validate_iranian_cellphone_number
@@ -115,7 +116,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    is_verified = models.BooleanField(_("ایمیل تأیید شده"), default=False)
+    is_verified = models.BooleanField(
+        _("حساب تأیید شده"),
+        default=False,
+        help_text=_("با تأیید پیامک (ثبت‌نام موبایل) یا تأیید ایمیل True می‌شود."),
+    )
     type = models.IntegerField(
         choices=UserType.choices, default=UserType.customer.value
     )
@@ -223,3 +228,50 @@ def create_user_profile(sender, instance, created, **kwargs):
     """با ایجاد کاربر، پروفایل خالی ساخته می‌شود."""
     if created:
         ensure_user_profile(instance)
+
+
+class OTPCode(models.Model):
+    """کد یک‌بارمصرف برای ثبت‌نام / تأیید موبایل."""
+
+    VALIDITY_MINUTES = 5
+
+    user = models.ForeignKey(
+        "User",
+        on_delete=models.CASCADE,
+        related_name="otp_codes",
+        null=True,
+        blank=True,
+        verbose_name=_("کاربر"),
+        help_text=_(
+            "در ثبت‌نام اولیه هنوز کاربر ساخته نشده؛ بعد از تأیید موفق به کاربر وصل می‌شود."
+        ),
+    )
+    mobile = models.CharField(_("موبایل"), max_length=11)
+    code = models.CharField(_("کد"), max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(_("استفاده شده"), default=False)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = _("کد OTP")
+        verbose_name_plural = _("کدهای OTP")
+
+    def save(self, *args, **kwargs):
+        if not self.pk and not self.code:
+            import random
+
+            self.code = str(random.randint(100000, 999999))
+        super().save(*args, **kwargs)
+
+    def is_valid(self):
+        if self.is_used:
+            return False
+        limit = self.created_at + timezone.timedelta(minutes=self.VALIDITY_MINUTES)
+        return timezone.now() <= limit
+
+    @classmethod
+    def validity_seconds(cls):
+        return cls.VALIDITY_MINUTES * 60
+
+    def __str__(self):
+        return f"{self.mobile} — {self.code}"
