@@ -64,6 +64,28 @@
                     if (typeof updateCartBadges === 'function') {
                         updateCartBadges(response.total_quantity);
                     }
+                    Toastify({
+                        text: 'محصول به سبد خرید اضافه شد',
+                        className: 'success',
+                        duration: 2500,
+                        gravity: 'top',
+                        position: 'left',
+                        style: {
+                            background: '#2e7d32',
+                        }
+                    }).showToast();
+                },
+                error: function () {
+                    Toastify({
+                        text: 'خطا در افزودن محصول به سبد خرید',
+                        className: 'error',
+                        duration: 3000,
+                        gravity: 'top',
+                        position: 'left',
+                        style: {
+                            background: '#c62828',
+                        }
+                    }).showToast();
                 }
             });
         }
