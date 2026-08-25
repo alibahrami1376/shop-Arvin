@@ -1,22 +1,20 @@
-from django.http import Http404
-from django.views.generic import TemplateView
+from blog.models import Post
+from core.device import filter_queryset_for_device
+from core.views_meta import SiteMetadataMixin
+from django.conf import settings
+from django.contrib import messages
 from django.db.models import IntegerField, Q, Sum, Value
 from django.db.models.functions import Coalesce
-from django.conf import settings
-
-from blog.models import Post
+from django.http import Http404
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, TemplateView
 from order.models import OrderStatusType
 from shop.models import ProductModel, ProductStatusType
 
-from core.device import filter_queryset_for_device
-from core.views_meta import SiteMetadataMixin
-
-from .models import *
 from .forms import ContactForm, NewsLetterForm
-from django.contrib import messages
-from django.views.generic import CreateView
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from .models import ContactPageSettings, FAQItem, HomeBanner, LegalPage
+
 # Create your views here.
 
 class IndexView(SiteMetadataMixin, TemplateView):
