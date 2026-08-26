@@ -1,10 +1,6 @@
-import uuid
-
-from cart.cart import CartSession
 from cart.models import CartModel
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -14,16 +10,16 @@ from payment.models import (
     CardToCardSettings,
     PaymentMethodSettings,
     PaymentMethodType,
-    PaymentModel,
     PaymentStatusType,
 )
-from payment.zarinpal_client import ZarinPalRequestFailed, ZarinPalSandbox
+from payment.zarinpal_client import ZarinPalRequestFailed
 
 from order.forms import CheckOutForm, OrderTrackingForm
 from order.models import CouponModel, OrderModel
 from order.permissions import HasCustomerAccessPermission
-from order.pricing import apply_pricing_to_order, get_checkout_pricing_context
-from order.repositories.order import order_repo
+from order.pricing import get_checkout_pricing_context
+from order.repositories import order_repo
+from order.services import checkout_service
 
 
 class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormView):
@@ -38,76 +34,18 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
 
     def form_valid(self, form):
         user = self.request.user
-        cleaned_data = form.cleaned_data
-        coupon = cleaned_data["coupon"]
-
         cart = CartModel.objects.get(user=user)
-        payment_method = cleaned_data["payment_method"]
         try:
-            with transaction.atomic():
-                order = self.create_order(cleaned_data)
-                self.create_order_items(order, cart)
-                self.apply_coupon(coupon, order, user)
-                coupon_percent = coupon.discount_percent if coupon else 0
-                apply_pricing_to_order(order, coupon_percent=coupon_percent)
-                self.request.session["last_order_tracking_code"] = order.tracking_code
-                if payment_method == PaymentMethodType.card_to_card.value:
-                    redirect_url = self._create_card_payment_next_url(order)
-                else:
-                    redirect_url = self._create_gateway_payment_url(order)
+            redirect_url = checkout_service.place_order(
+                user=user,
+                cleaned_data=form.cleaned_data,
+                cart=cart,
+                session=self.request.session,
+            )
         except ZarinPalRequestFailed as exc:
             messages.error(self.request, str(exc))
             return redirect(reverse_lazy("order:checkout"))
-
-        self.clear_cart(cart)
         return redirect(redirect_url)
-
-    def _create_gateway_payment_url(self, order):
-        zarinpal = ZarinPalSandbox()
-        response = zarinpal.payment_request(order.get_price())
-        authority = response["Authority"]
-        payment_obj = PaymentModel.objects.create(
-            authority_id=authority,
-            amount=order.get_price(),
-            method=PaymentMethodType.gateway.value,
-            response_json=response,
-        )
-        order.payment = payment_obj
-        order.save()
-        return zarinpal.generate_payment_url(authority)
-
-    def _create_card_payment_next_url(self, order):
-        authority = f"card-{order.pk}-{uuid.uuid4().hex}"
-        payment_obj = PaymentModel.objects.create(
-            authority_id=authority,
-            amount=order.get_price(),
-            method=PaymentMethodType.card_to_card.value,
-            response_json={},
-        )
-        order.payment = payment_obj
-        order.save()
-        return reverse_lazy("order:card-payment-instructions", kwargs={"pk": order.pk})
-
-    def create_order(self, cleaned_data):
-        return order_repo.create(
-            user=self.request.user,
-            province=cleaned_data["freight_province"],
-            city=cleaned_data["freight_city"],
-            freight_notes=cleaned_data["freight_notes"],
-        )
-
-    def create_order_items(self, order, cart):
-        order_repo.create_items(order=order, cart=cart)
-
-    def clear_cart(self, cart):
-        cart.cart_items.all().delete()
-        CartSession(self.request.session).clear()
-
-    def apply_coupon(self, coupon, order, user):
-        if coupon:
-            order.coupon = coupon
-            coupon.used_by.add(user)
-            coupon.save()
 
     def form_invalid(self, form):
         return super().form_invalid(form)
