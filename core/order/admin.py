@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import (
     CheckoutPricingSettings,
     City,
@@ -51,14 +52,7 @@ class OrderModelAdmin(admin.ModelAdmin):
 
 @admin.register(OrderItemModel)
 class OrderItemModelAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "order",
-        "product",
-        "quantity",
-        "price",
-        "created_date"
-    )
+    list_display = ("id", "order", "product", "quantity", "price", "created_date")
 
 
 @admin.register(CouponModel)
@@ -70,9 +64,9 @@ class CouponModelAdmin(admin.ModelAdmin):
         "max_limit_usage",
         "used_by_count",
         "expiration_date",
-        "created_date"
+        "created_date",
     )
-    
+
     def used_by_count(self, obj):
         return obj.used_by.all().count()
 
@@ -97,11 +91,4 @@ class CheckoutPricingSettingsAdmin(admin.ModelAdmin):
 
 @admin.register(UserAddressModel)
 class UserAddressModelAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "user",
-        "state",
-        "city",
-        "zip_code",
-        "created_date"
-    )
+    list_display = ("id", "user", "state", "city", "zip_code", "created_date")

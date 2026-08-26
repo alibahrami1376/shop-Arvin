@@ -1,9 +1,6 @@
 """محاسبه هزینه ارسال، مالیات و مبلغ نهایی سفارش."""
 
-from decimal import Decimal
-
 from order.models import CheckoutPricingSettings
-from order.shipping import ShippingMethodType
 
 # شهرهایی که نرخ «تهران و حومه» برایشان اعمال می‌شود
 TEHRAN_AREA_CITIES = frozenset({"تهران", "کرج"})

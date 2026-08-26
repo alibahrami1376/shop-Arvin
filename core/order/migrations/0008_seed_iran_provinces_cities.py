@@ -4,7 +4,7 @@ from django.db import migrations
 def seed_locations(apps, schema_editor):
     Province = apps.get_model("order", "Province")
     City = apps.get_model("order", "City")
-    from order.iran_locations import IRAN_PROVINCES_CITIES
+    from core.order.utils.iran_locations import IRAN_PROVINCES_CITIES
 
     for sort_order, (province_name, cities) in enumerate(IRAN_PROVINCES_CITIES.items(), start=1):
         province, _ = Province.objects.get_or_create(
@@ -25,7 +25,7 @@ def seed_locations(apps, schema_editor):
 def unseed_locations(apps, schema_editor):
     Province = apps.get_model("order", "Province")
     City = apps.get_model("order", "City")
-    from order.iran_locations import IRAN_PROVINCES_CITIES
+    from core.order.utils.iran_locations import IRAN_PROVINCES_CITIES
 
     province_names = list(IRAN_PROVINCES_CITIES.keys())
     City.objects.filter(province__name__in=province_names).delete()

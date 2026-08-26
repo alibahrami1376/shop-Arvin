@@ -1,21 +1,15 @@
 import uuid
 
+from cart.cart import CartSession
+from cart.models import CartModel
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView, FormView, TemplateView, View
-
-from cart.cart import CartSession
-from cart.models import CartModel, CartItemModel
-from order.forms import CheckOutForm, OrderTrackingForm
-from order.models import CouponModel, OrderItemModel, OrderModel
-from order.pricing import apply_pricing_to_order, get_checkout_pricing_context
-from order.shipping import ShippingMethodType
-from order.permissions import HasCustomerAccessPermission
 from payment.models import (
     CardToCardSettings,
     PaymentMethodSettings,
@@ -25,17 +19,21 @@ from payment.models import (
 )
 from payment.zarinpal_client import ZarinPalRequestFailed, ZarinPalSandbox
 
+from order.forms import CheckOutForm, OrderTrackingForm
+from order.models import CouponModel, OrderItemModel, OrderModel
+from order.permissions import HasCustomerAccessPermission
+from order.pricing import apply_pricing_to_order, get_checkout_pricing_context
+from order.shipping import ShippingMethodType
 
-class OrderCheckOutView(
-    LoginRequiredMixin, HasCustomerAccessPermission, FormView
-):
+
+class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormView):
     template_name = "order/checkout.html"
     form_class = CheckOutForm
-    success_url = reverse_lazy('order:completed')
+    success_url = reverse_lazy("order:completed")
 
     def get_form_kwargs(self):
-        kwargs = super(OrderCheckOutView, self).get_form_kwargs()
-        kwargs['request'] = self.request
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request
         return kwargs
 
     def form_valid(self, form):
@@ -88,9 +86,7 @@ class OrderCheckOutView(
         )
         order.payment = payment_obj
         order.save()
-        return reverse_lazy(
-            "order:card-payment-instructions", kwargs={"pk": order.pk}
-        )
+        return reverse_lazy("order:card-payment-instructions", kwargs={"pk": order.pk})
 
     def create_order(self, cleaned_data):
         user = self.request.user
@@ -152,9 +148,7 @@ class OrderCheckOutView(
         from order.models import City, Province
         from order.shipping import FREIGHT_NOTES_PLACEHOLDER
 
-        provinces = list(
-            Province.objects.filter(is_active=True).values("id", "name")
-        )
+        provinces = list(Province.objects.filter(is_active=True).values("id", "name"))
         cities_by_province = {}
         for city in City.objects.filter(
             is_active=True, province__is_active=True
@@ -168,9 +162,7 @@ class OrderCheckOutView(
         return context
 
 
-class OrderCompletedView(
-    LoginRequiredMixin, HasCustomerAccessPermission, TemplateView
-):
+class OrderCompletedView(LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):
     template_name = "order/completed.html"
 
     def get_context_data(self, **kwargs):
@@ -207,13 +199,9 @@ class OrderTrackingView(FormView):
                     "tracking_code",
                     "سفارشی با این کد سفارش یافت نشد.",
                 )
-                return self.render_to_response(
-                    self.get_context_data(form=form)
-                )
+                return self.render_to_response(self.get_context_data(form=form))
             form = self.form_class(initial={"tracking_code": code})
-            return self.render_to_response(
-                self.get_context_data(form=form)
-            )
+            return self.render_to_response(self.get_context_data(form=form))
         return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -236,9 +224,7 @@ class OrderTrackingView(FormView):
         )
 
 
-class OrderFailedView(
-    LoginRequiredMixin, HasCustomerAccessPermission, TemplateView
-):
+class OrderFailedView(LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):
     template_name = "order/failed.html"
 
 
@@ -278,7 +264,6 @@ class CardPaymentInstructionsView(
 
 
 class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):
-
     def post(self, request, *args, **kwargs):
         code = request.POST.get("code")
         user = self.request.user
@@ -295,7 +280,10 @@ class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):
             return JsonResponse({"message": "کد تخفیف یافت نشد"}, status=404)
         else:
             if coupon.used_by.count() >= coupon.max_limit_usage:
-                status_code, message = 403, "ظرفیت استفاده از این کد تخفیف تکمیل شده است."
+                status_code, message = (
+                    403,
+                    "ظرفیت استفاده از این کد تخفیف تکمیل شده است.",
+                )
 
             elif coupon.expiration_date and coupon.expiration_date < timezone.now():
                 status_code, message = 403, "کد تخفیف منقضی شده است"
@@ -320,8 +308,12 @@ class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):
             {
                 "message": message,
                 "subtotal": pricing_ctx.get("subtotal", 0) if status_code == 200 else 0,
-                "discount_amount": pricing_ctx.get("discount_amount", 0) if status_code == 200 else 0,
-                "shipping_amount": pricing_ctx.get("shipping_amount", 0) if status_code == 200 else 0,
+                "discount_amount": pricing_ctx.get("discount_amount", 0)
+                if status_code == 200
+                else 0,
+                "shipping_amount": pricing_ctx.get("shipping_amount", 0)
+                if status_code == 200
+                else 0,
                 "total_tax": total_tax,
                 "total_price": total_price,
                 "coupon_percent": coupon.discount_percent if status_code == 200 else 0,

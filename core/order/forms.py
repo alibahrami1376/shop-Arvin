@@ -27,7 +27,9 @@ class CheckOutForm(forms.Form):
             "required": "استان مقصد را انتخاب کنید.",
             "invalid_choice": "استان انتخاب‌شده معتبر نیست.",
         },
-        widget=forms.Select(attrs={"class": "form-select form-select-lg", "id": "freight-province"}),
+        widget=forms.Select(
+            attrs={"class": "form-select form-select-lg", "id": "freight-province"}
+        ),
     )
     freight_city = forms.ModelChoiceField(
         label="شهر مقصد",
@@ -38,7 +40,9 @@ class CheckOutForm(forms.Form):
             "required": "شهر مقصد را انتخاب کنید.",
             "invalid_choice": "شهر انتخاب‌شده معتبر نیست.",
         },
-        widget=forms.Select(attrs={"class": "form-select form-select-lg", "id": "freight-city"}),
+        widget=forms.Select(
+            attrs={"class": "form-select form-select-lg", "id": "freight-city"}
+        ),
     )
     freight_notes = forms.CharField(
         label="توضیحات باربری",
@@ -125,13 +129,17 @@ class CheckOutForm(forms.Form):
             raise forms.ValidationError("کد تخفیف اشتباه است")
         if coupon:
             if coupon.used_by.count() >= coupon.max_limit_usage:
-                raise forms.ValidationError("ظرفیت استفاده از این کد تخفیف تکمیل شده است.")
+                raise forms.ValidationError(
+                    "ظرفیت استفاده از این کد تخفیف تکمیل شده است."
+                )
 
             if coupon.expiration_date and coupon.expiration_date < timezone.now():
                 raise forms.ValidationError("کد تخفیف منقضی شده است")
 
             if user in coupon.used_by.all():
-                raise forms.ValidationError("این کد تخفیف قبلا توسط شما استفاده شده است")
+                raise forms.ValidationError(
+                    "این کد تخفیف قبلا توسط شما استفاده شده است"
+                )
 
         return coupon
 
