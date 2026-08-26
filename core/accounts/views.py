@@ -1,5 +1,6 @@
 from django.contrib import messages
-from django.contrib.auth import get_user_model, login, views as auth_views
+from django.contrib.auth import get_user_model, login
+from django.contrib.auth import views as auth_views
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -56,8 +57,12 @@ class RegisterView(FormView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["otp_expires_at"] = self.request.session.get(REGISTER_OTP_SESSION_EXPIRES)
-        kwargs["otp_session_phone"] = self.request.session.get(REGISTER_OTP_SESSION_PHONE)
+        kwargs["otp_expires_at"] = self.request.session.get(
+            REGISTER_OTP_SESSION_EXPIRES
+        )
+        kwargs["otp_session_phone"] = self.request.session.get(
+            REGISTER_OTP_SESSION_PHONE
+        )
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -73,9 +78,11 @@ class RegisterView(FormView):
                 UserRegistrationForm.REGISTER_PHONE,
             ):
                 method = raw
-            elif form.errors.get("phone_number") or form.errors.get("otp_code") or (
-                form.data.get("phone_number") or ""
-            ).strip():
+            elif (
+                form.errors.get("phone_number")
+                or form.errors.get("otp_code")
+                or (form.data.get("phone_number") or "").strip()
+            ):
                 method = UserRegistrationForm.REGISTER_PHONE
             elif form.errors.get("email") or (form.data.get("email") or "").strip():
                 method = UserRegistrationForm.REGISTER_EMAIL
@@ -84,7 +91,9 @@ class RegisterView(FormView):
 
         context["register_method"] = method
         context["otp_validity_seconds"] = OTPCode.validity_seconds()
-        context["otp_expires_at"] = self.request.session.get(REGISTER_OTP_SESSION_EXPIRES)
+        context["otp_expires_at"] = self.request.session.get(
+            REGISTER_OTP_SESSION_EXPIRES
+        )
         context["otp_session_phone"] = session_phone or ""
         return context
 

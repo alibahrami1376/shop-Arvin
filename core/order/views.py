@@ -20,10 +20,10 @@ from payment.models import (
 from payment.zarinpal_client import ZarinPalRequestFailed, ZarinPalSandbox
 
 from order.forms import CheckOutForm, OrderTrackingForm
-from order.models import CouponModel, OrderItemModel, OrderModel
+from order.models import CouponModel, OrderModel
 from order.permissions import HasCustomerAccessPermission
 from order.pricing import apply_pricing_to_order, get_checkout_pricing_context
-from order.shipping import ShippingMethodType
+from order.repositories.order import order_repo
 
 
 class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormView):
@@ -89,27 +89,15 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
         return reverse_lazy("order:card-payment-instructions", kwargs={"pk": order.pk})
 
     def create_order(self, cleaned_data):
-        user = self.request.user
-        province = cleaned_data["freight_province"]
-        city = cleaned_data["freight_city"]
-        return OrderModel.objects.create(
-            user=user,
-            shipping_method=ShippingMethodType.freight.value,
-            state=province.name,
-            city=city.name,
-            address="-",
-            zip_code="-",
+        return order_repo.create(
+            user=self.request.user,
+            province=cleaned_data["freight_province"],
+            city=cleaned_data["freight_city"],
             freight_notes=cleaned_data["freight_notes"],
         )
 
     def create_order_items(self, order, cart):
-        for item in cart.cart_items.all():
-            OrderItemModel.objects.create(
-                order=order,
-                product=item.product,
-                quantity=item.quantity,
-                price=item.product.get_price(),
-            )
+        order_repo.create_items(order=order, cart=cart)
 
     def clear_cart(self, cart):
         cart.cart_items.all().delete()
@@ -216,12 +204,7 @@ class OrderTrackingView(FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
     def _get_order(self, code):
-        return (
-            OrderModel.objects.filter(tracking_code=code)
-            .select_related("payment")
-            .prefetch_related("order_items__product")
-            .first()
-        )
+        return order_repo.get_by_tracking_code(code)
 
 
 class OrderFailedView(LoginRequiredMixin, HasCustomerAccessPermission, TemplateView):

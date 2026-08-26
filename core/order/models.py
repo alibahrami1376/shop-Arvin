@@ -92,6 +92,7 @@ class CouponModel(models.Model):
 # Create your models here.
 class OrderModel(models.Model):
     user = models.ForeignKey("accounts.User", on_delete=models.PROTECT)
+
     tracking_code = models.CharField(
         max_length=7,
         unique=True,
@@ -104,6 +105,7 @@ class OrderModel(models.Model):
         default=ShippingMethodType.address.value,
         verbose_name="روش ارسال",
     )
+
     freight_notes = models.TextField(
         blank=True,
         default="",
