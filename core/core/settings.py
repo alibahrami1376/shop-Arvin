@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,12 +22,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY",default='django-insecure-vhvotq9y&(y6g(0u1a199yz7v^@ig3n%y!-#%z_oj=4q!%3^w!')
+SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG",cast=bool,default=True)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast= lambda v: [item.strip() for item in v.split(',')] ,default="*")
+ALLOWED_HOSTS = config(
+    "ALLOWED_HOSTS", cast=lambda v: [item.strip() for item in v.split(",")], default="*"
+)
 
 # Django Sites Framework
 SITE_ID = config("SITE_ID", cast=int, default=1)
@@ -50,74 +53,73 @@ META_FB_TYPE = "website"
 META_TWITTER_TYPE = "summary_large_image"
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
-    'core.apps.CoreConfig',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sites',
-    'django.contrib.sitemaps',
-    'imagekit',
-    'meta',
-    'compressor',
-    'django_ckeditor_5',
-    'website',
-    'accounts',
-    'dashboard',
-    'shop',
-    'cart.apps.CartConfig',
-    'order',
-    'payment',
-    'review',
-    'blog',
-    'django_user_agents',
+    "core.apps.CoreConfig",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "django.contrib.sitemaps",
+    "imagekit",
+    "meta",
+    "compressor",
+    "django_ckeditor_5",
+    "website",
+    "accounts",
+    "dashboard",
+    "shop",
+    "cart.apps.CartConfig",
+    "order",
+    "payment",
+    "review",
+    "blog",
+    "django_user_agents",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.contrib.sites.middleware.CurrentSiteMiddleware',
-    'django_user_agents.middleware.UserAgentMiddleware',
-    'core.middleware.SiteLayoutCookieMiddleware',
-    'core.middleware.NoCacheHtmlMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.contrib.sites.middleware.CurrentSiteMiddleware",
+    "django_user_agents.middleware.UserAgentMiddleware",
+    "core.middleware.SiteLayoutCookieMiddleware",
+    "core.middleware.NoCacheHtmlMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'core.urls'
+ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'core.context_processors.site.site',
-                'shop.context_processors.shop_categories',
-                'cart.context_processors.cart_processor',
-                'core.context_processors.device.device',
-                'website.context_processors.site_branding',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "core.context_processors.site.site",
+                "shop.context_processors.shop_categories",
+                "cart.context_processors.cart_processor",
+                "core.context_processors.device.device",
+                "website.context_processors.site_branding",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'core.wsgi.application'
+WSGI_APPLICATION = "core.wsgi.application"
 
 
 # Database
@@ -125,13 +127,13 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config("PGDB_NAME", default="shop_arvin"),
-        'USER': config("PGDB_USER", default="shop_arvin_user"),
-        'PASSWORD': config("PGDB_PASSWORD", default="your_password"),
-        'HOST': config("PGDB_HOST", default="postgres"),
-        'PORT': config("PGDB_PORT", default="5432"),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config("PGDB_NAME"),
+        "USER": config("PGDB_USER"),
+        "PASSWORD": config("PGDB_PASSWORD"),
+        "HOST": config("PGDB_HOST", default="postgres"),
+        "PORT": config("PGDB_PORT", default="5432"),
     }
 }
 # Password validation
@@ -142,17 +144,17 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "core.password_validation.ASCIIOnlyPasswordValidator",
     },
     {
-        'NAME': 'core.password_validation.PersianUserAttributeSimilarityValidator',
+        "NAME": "core.password_validation.PersianUserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'core.password_validation.PersianMinimumLengthValidator',
-        'OPTIONS': {'min_length': 8},
+        "NAME": "core.password_validation.PersianMinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
     },
     {
-        'NAME': 'core.password_validation.PersianCommonPasswordValidator',
+        "NAME": "core.password_validation.PersianCommonPasswordValidator",
     },
     {
-        'NAME': 'core.password_validation.PersianNumericPasswordValidator',
+        "NAME": "core.password_validation.PersianNumericPasswordValidator",
     },
 ]
 
@@ -160,7 +162,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'fa'
+LANGUAGE_CODE = "fa"
 
 TIME_ZONE = config("TIME_ZONE", default="Asia/Tehran")
 
@@ -211,6 +213,7 @@ COMPRESS_FILTERS = {
     ],
 }
 
+
 # Needed if COMPRESS_OFFLINE=True — templates use variable {% extends %}
 def compress_offline_context():
     shared = {"STATIC_URL": STATIC_URL}
@@ -240,13 +243,13 @@ if config("COMPRESS_GZIP_ENABLED", cast=bool, default=False):
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = "accounts.User"
 
 AUTHENTICATION_BACKENDS = [
-    'accounts.backends.EmailOrPhoneBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    "accounts.backends.EmailOrPhoneBackend",
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 MERCHANT_ID = config("MERCHANT_ID")
@@ -261,111 +264,167 @@ PWA_APP_DESCRIPTION = "arvinofficial.ir"
 PWA_CACHE_VERSION = "v3"
 
 customColorPalette = [
-    {
-        'color': 'hsl(4, 90%, 58%)',
-        'label': 'Red'
-    },
-    {
-        'color': 'hsl(340, 82%, 52%)',
-        'label': 'Pink'
-    },
-    {
-        'color': 'hsl(291, 64%, 42%)',
-        'label': 'Purple'
-    },
-    {
-        'color': 'hsl(262, 52%, 47%)',
-        'label': 'Deep Purple'
-    },
-    {
-        'color': 'hsl(231, 48%, 48%)',
-        'label': 'Indigo'
-    },
-    {
-        'color': 'hsl(207, 90%, 54%)',
-        'label': 'Blue'
-    },
+    {"color": "hsl(4, 90%, 58%)", "label": "Red"},
+    {"color": "hsl(340, 82%, 52%)", "label": "Pink"},
+    {"color": "hsl(291, 64%, 42%)", "label": "Purple"},
+    {"color": "hsl(262, 52%, 47%)", "label": "Deep Purple"},
+    {"color": "hsl(231, 48%, 48%)", "label": "Indigo"},
+    {"color": "hsl(207, 90%, 54%)", "label": "Blue"},
 ]
 
 # CKEditor 5 Configuration
 CKEDITOR_5_USER_LANGUAGE = True
-CKEDITOR_5_CUSTOM_CSS = 'css/ckeditor5-fa-rtl.css'
+CKEDITOR_5_CUSTOM_CSS = "css/ckeditor5-fa-rtl.css"
 
 CKEDITOR_5_CONFIGS = {
-    'default': {
-        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
-                    'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
-        'height': 400,
-        'width': '100%',
-        'language': 'fa',
-    },
-    'extends': {
-        'language': 'fa',
-        'blockToolbar': [
-            'paragraph', 'heading1', 'heading2', 'heading3',
-            '|',
-            'bulletedList', 'numberedList',
-            '|',
-            'blockQuote',
+    "default": {
+        "toolbar": [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "link",
+            "bulletedList",
+            "numberedList",
+            "blockQuote",
+            "imageUpload",
         ],
-        'toolbar': ['heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'link', 'underline', 'strikethrough',
-        'code','subscript', 'superscript', 'highlight', '|', 'codeBlock', 'sourceEditing', 'insertImage',
-                    'bulletedList', 'numberedList', 'todoList', '|',  'blockQuote', 'imageUpload', '|',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'mediaEmbed', 'removeFormat',
-                    'insertTable',],
-        'image': {
-            'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft',
-                        'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side',  '|'],
-            'styles': [
-                'full',
-                'side',
-                'alignLeft',
-                'alignRight',
-                'alignCenter',
-            ]
-
+        "height": 400,
+        "width": "100%",
+        "language": "fa",
+    },
+    "extends": {
+        "language": "fa",
+        "blockToolbar": [
+            "paragraph",
+            "heading1",
+            "heading2",
+            "heading3",
+            "|",
+            "bulletedList",
+            "numberedList",
+            "|",
+            "blockQuote",
+        ],
+        "toolbar": [
+            "heading",
+            "|",
+            "outdent",
+            "indent",
+            "|",
+            "bold",
+            "italic",
+            "link",
+            "underline",
+            "strikethrough",
+            "code",
+            "subscript",
+            "superscript",
+            "highlight",
+            "|",
+            "codeBlock",
+            "sourceEditing",
+            "insertImage",
+            "bulletedList",
+            "numberedList",
+            "todoList",
+            "|",
+            "blockQuote",
+            "imageUpload",
+            "|",
+            "fontSize",
+            "fontFamily",
+            "fontColor",
+            "fontBackgroundColor",
+            "mediaEmbed",
+            "removeFormat",
+            "insertTable",
+        ],
+        "image": {
+            "toolbar": [
+                "imageTextAlternative",
+                "|",
+                "imageStyle:alignLeft",
+                "imageStyle:alignRight",
+                "imageStyle:alignCenter",
+                "imageStyle:side",
+                "|",
+            ],
+            "styles": [
+                "full",
+                "side",
+                "alignLeft",
+                "alignRight",
+                "alignCenter",
+            ],
         },
-        'table': {
-            'contentToolbar': [ 'tableColumn', 'tableRow', 'mergeTableCells',
-            'tableProperties', 'tableCellProperties' ],
-            'tableProperties': {
-                'borderColors': customColorPalette,
-                'backgroundColors': customColorPalette
+        "table": {
+            "contentToolbar": [
+                "tableColumn",
+                "tableRow",
+                "mergeTableCells",
+                "tableProperties",
+                "tableCellProperties",
+            ],
+            "tableProperties": {
+                "borderColors": customColorPalette,
+                "backgroundColors": customColorPalette,
             },
-            'tableCellProperties': {
-                'borderColors': customColorPalette,
-                'backgroundColors': customColorPalette
-            }
+            "tableCellProperties": {
+                "borderColors": customColorPalette,
+                "backgroundColors": customColorPalette,
+            },
         },
-        'heading' : {
-            'options': [
-                { 'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph' },
-                { 'model': 'heading1', 'view': 'h1', 'title': 'Heading 1', 'class': 'ck-heading_heading1' },
-                { 'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2' },
-                { 'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3' }
+        "heading": {
+            "options": [
+                {
+                    "model": "paragraph",
+                    "title": "Paragraph",
+                    "class": "ck-heading_paragraph",
+                },
+                {
+                    "model": "heading1",
+                    "view": "h1",
+                    "title": "Heading 1",
+                    "class": "ck-heading_heading1",
+                },
+                {
+                    "model": "heading2",
+                    "view": "h2",
+                    "title": "Heading 2",
+                    "class": "ck-heading_heading2",
+                },
+                {
+                    "model": "heading3",
+                    "view": "h3",
+                    "title": "Heading 3",
+                    "class": "ck-heading_heading3",
+                },
             ]
         },
-        'list': {
-            'properties': {
-                'styles': True,
-                'startIndex': True,
-                'reversed': True,
+        "list": {
+            "properties": {
+                "styles": True,
+                "startIndex": True,
+                "reversed": True,
             },
         },
     },
-    'list': {
-        'properties': {
-            'styles': 'true',
-            'startIndex': 'true',
-            'reversed': 'true',
+    "list": {
+        "properties": {
+            "styles": "true",
+            "startIndex": "true",
+            "reversed": "true",
         }
-    }
+    },
 }
 
 CSRF_TRUSTED_ORIGINS = config(
     "CSRF_TRUSTED_ORIGINS",
     default=[],
-    cast=lambda v: v if isinstance(v, list) else [i.strip() for i in v.split(",") if i.strip()],
+    cast=lambda v: v
+    if isinstance(v, list)
+    else [i.strip() for i in v.split(",") if i.strip()],
 )
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
