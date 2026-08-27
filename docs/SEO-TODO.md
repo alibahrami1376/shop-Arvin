@@ -21,7 +21,7 @@
 | `noindex` (meta robots) | ✅ هست | صفحات خصوصی/تراکنشی `noindex,follow`؛ عمومی `index,follow` |
 | `{% block extra_head %}` | ✅ هست | در `base-desktop` / `base-mobile` (+ داشبوردها) |
 | Product JSON-LD کامل | ✅ | Product + Offer از `as_json_ld` در PDP `extra_head` |
-| Breadcrumb Schema | ❌ نیست | UI محدود؛ در PDP تقریباً نیست |
+| Breadcrumb Schema | ✅ | UI + BreadcrumbList روی PDP، دسته، گرید، بلاگ |
 | URL دسته محصول | ✅ لندینگ اسلاگ | `/shop/category/<slug>/` + ۳۰۱ از `?category_id=` |
 | اسلاگ بلاگ | ✅ | `/blog/<slug>/` + ۳۰۱ از `/blog/<id>/` |
 | صفحه‌بندی قابل کراول | ✅ | `<a href>` + تگ `pagination_url` |
@@ -206,10 +206,12 @@
 ---
 
 ### SEO-F12 — Breadcrumb UI + BreadcrumbList Schema
-**وضعیت:** UI فقط در بعضی صفحات؛ Schema نیست؛ PDP ضعیف  
-**مسیر هدف:** خانه › دسته › محصول / خانه › بلاگ › پست
+**وضعیت:** ✅ مسیر قابل‌مشاهده + JSON-LD  
+**مسیر:** خانه › فروشگاه › [دسته…] › محصول / خانه › بلاگ › [دسته] › پست  
 
-- [ ] SEO-F12
+**کجا:** `core/seo.py` (helpers)، `includes/breadcrumb.html`، PDP / گرید / دسته / بلاگ
+
+- [x] SEO-F12
 
 ---
 
@@ -317,7 +319,6 @@
   SEO-F8  لندینگ دسته با اسلاگ + sitemap + لینک‌های داخلی
 
 ⏭️ بعدی پیشنهادی (P2 on-page / schema)
-  SEO-F12 Breadcrumb + schema
   SEO-F11 Article JSON-LD
   SEO-F13 FAQ schema
 

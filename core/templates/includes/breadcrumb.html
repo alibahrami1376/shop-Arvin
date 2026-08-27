@@ -1,0 +1,13 @@
+{% if breadcrumb_items %}
+<nav class="{{ breadcrumb_nav_class|default:'mb-3' }}" aria-label="مسیر صفحه">
+    <ol class="breadcrumb mb-0{% if breadcrumb_ol_class %} {{ breadcrumb_ol_class }}{% endif %}">
+        {% for item in breadcrumb_items %}
+        {% if forloop.last %}
+        <li class="breadcrumb-item active" aria-current="page">{{ item.name }}</li>
+        {% else %}
+        <li class="breadcrumb-item"><a href="{{ item.url }}">{{ item.name }}</a></li>
+        {% endif %}
+        {% endfor %}
+    </ol>
+</nav>
+{% endif %}

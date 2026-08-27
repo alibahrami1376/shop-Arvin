@@ -3,22 +3,18 @@
 
 {% block title %}محصولات - فروشگاه آروین{% endblock title %}
 
+{% block extra_head %}
+{% if breadcrumb_json_ld %}
+<script type="application/ld+json">{{ breadcrumb_json_ld|safe }}</script>
+{% endif %}
+{% endblock extra_head %}
+
 {% block content %}
 {% if is_mobile_site %}
 <section class="shop-mobile-page" aria-label="فروشگاه">
     <header class="shop-mobile-page__header container">
         <h1 class="shop-mobile-page__title">{% if active_category %}{{ active_category.title }}{% else %}فروشگاه{% endif %}</h1>
-        <nav class="shop-mobile-page__crumbs" aria-label="مسیر">
-            <a href="{% url 'website:index' %}">خانه</a>
-            <span aria-hidden="true">/</span>
-            {% if active_category %}
-            <a href="{% url 'shop:product-grid' %}">محصولات</a>
-            <span aria-hidden="true">/</span>
-            <span>{{ active_category.title }}</span>
-            {% else %}
-            <span>محصولات</span>
-            {% endif %}
-        </nav>
+        {% include "includes/breadcrumb.html" with breadcrumb_nav_class="shop-mobile-page__crumbs" breadcrumb_ol_class="" %}
     </header>
 
     <div class="shop-mobile-toolbar container" role="toolbar" aria-label="ابزارهای فروشگاه">
@@ -63,17 +59,7 @@
                 <h1 class="h4 mb-0">{% if active_category %}{{ active_category.title }}{% else %}شبکه محصولات{% endif %}</h1>
             </div>
             <div class="col-sm-auto">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="{% url 'website:index' %}">خانه</a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'shop:product-grid' %}">فروشگاه</a></li>
-                        {% if active_category %}
-                        <li class="breadcrumb-item active" aria-current="page">{{ active_category.title }}</li>
-                        {% else %}
-                        <li class="breadcrumb-item active" aria-current="page">محصولات</li>
-                        {% endif %}
-                    </ol>
-                </nav>
+                {% include "includes/breadcrumb.html" with breadcrumb_nav_class="" %}
             </div>
         </div>
     </div>

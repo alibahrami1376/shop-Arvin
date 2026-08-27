@@ -6,7 +6,13 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView, View
 from review.models import ReviewModel, ReviewStatusType
 
-from core.seo import normalize_meta_description
+from core.seo import (
+    breadcrumb_for_category,
+    breadcrumb_for_product,
+    breadcrumb_home_shop,
+    breadcrumb_json_ld,
+    normalize_meta_description,
+)
 from core.views_meta import ObjectMetadataMixin, SiteMetadataMixin
 
 from .models import (
@@ -100,7 +106,14 @@ class ShopProductGridView(ShopProductListMixin, SiteMetadataMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        return self.get_list_context_data(context)
+        context = self.get_list_context_data(context)
+        items = [
+            *breadcrumb_home_shop(),
+            {"name": "محصولات", "url": self.request.path},
+        ]
+        context["breadcrumb_items"] = items
+        context["breadcrumb_json_ld"] = breadcrumb_json_ld(items)
+        return context
 
 
 class ShopProductCategoryView(ShopProductListMixin, SiteMetadataMixin, ListView):
@@ -128,6 +141,9 @@ class ShopProductCategoryView(ShopProductListMixin, SiteMetadataMixin, ListView)
         context = super().get_context_data(**kwargs)
         context = self.get_list_context_data(context)
         context["active_category"] = self.category
+        items = breadcrumb_for_category(self.category)
+        context["breadcrumb_items"] = items
+        context["breadcrumb_json_ld"] = breadcrumb_json_ld(items)
         return context
 
 
@@ -155,6 +171,9 @@ class ShopProductDetailView(ObjectMetadataMixin, DetailView):
             }
         else:
             context["reviews_avg"] = {f"rate_{rate}": 0 for rate in range(1, 6)}
+        items = breadcrumb_for_product(product)
+        context["breadcrumb_items"] = items
+        context["breadcrumb_json_ld"] = breadcrumb_json_ld(items)
         return context
 
     def get_object(self, queryset=None):

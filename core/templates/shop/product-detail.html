@@ -6,6 +6,9 @@
 
 {% block extra_head %}
 <script type="application/ld+json">{{ object.as_json_ld_json|safe }}</script>
+{% if breadcrumb_json_ld %}
+<script type="application/ld+json">{{ breadcrumb_json_ld|safe }}</script>
+{% endif %}
 {% endblock extra_head %}
 
 {% block content %}
@@ -48,6 +51,7 @@
     </div>
 
     <div class="pdp-mobile__panel container">
+        {% include "includes/breadcrumb.html" with breadcrumb_nav_class="pdp-mobile__crumbs mb-3" %}
         <div class="pdp-mobile__top">
             <a class="pdp-mobile__rating" href="#reviewSection">
                 {% for i in "12345" %}
@@ -211,6 +215,7 @@
 {% else %}
 <!-- Hero -->
 <div class="container content-space-t-2 content-space-t-sm-3">
+    {% include "includes/breadcrumb.html" with breadcrumb_nav_class="mb-4" %}
     <div class="row">
         <div class="col-md-7 mb-7 mb-md-0">
             <div class="pe-md-4">

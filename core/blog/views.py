@@ -7,7 +7,12 @@ from django.views.generic import ListView
 from meta.views import Meta
 
 from blog.models import Category, Post
-from core.seo import normalize_meta_description
+from core.seo import (
+    breadcrumb_for_blog_list,
+    breadcrumb_for_blog_post,
+    breadcrumb_json_ld,
+    normalize_meta_description,
+)
 from core.views_meta import SiteMetadataMixin
 
 
@@ -66,6 +71,9 @@ class BlogPostListView(SiteMetadataMixin, ListView):
         context["categories"] = Category.objects.all()
         context["category"] = self.kwargs.get("cat_name")
         context["query"] = self.request.GET.get("q", "")
+        items = breadcrumb_for_blog_list(cat_name=self.kwargs.get("cat_name"))
+        context["breadcrumb_items"] = items
+        context["breadcrumb_json_ld"] = breadcrumb_json_ld(items)
         return context
 
 
@@ -94,10 +102,13 @@ def blog_detail(request, slug):
         .distinct()[:3]
     )
 
+    items = breadcrumb_for_blog_post(post)
     context = {
         "post": post,
         "related_posts": related_posts,
         "meta": post.as_meta(request),
+        "breadcrumb_items": items,
+        "breadcrumb_json_ld": breadcrumb_json_ld(items),
     }
     return render(request, "blog/blog-detail.html", context)
 

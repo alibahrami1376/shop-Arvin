@@ -87,3 +87,105 @@ def get_meta_robots(request) -> str:
     if should_noindex(request.path):
         return "noindex,follow"
     return "index,follow"
+
+
+def breadcrumb_json_ld(items: list[dict]) -> str:
+    """
+    Build BreadcrumbList JSON-LD from UI items.
+
+    Each item: {"name": str, "url": str} — url may be a path or absolute URL.
+    """
+    import json
+
+    elements = []
+    for position, item in enumerate(items, start=1):
+        name = (item.get("name") or "").strip()
+        if not name:
+            continue
+        entry = {
+            "@type": "ListItem",
+            "position": position,
+            "name": name,
+        }
+        url = item.get("url")
+        if url:
+            entry["item"] = absolute_site_url(url)
+        elements.append(entry)
+    data = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": elements,
+    }
+    return json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+
+
+def breadcrumb_home_shop() -> list[dict]:
+    from django.urls import reverse
+
+    return [
+        {"name": "خانه", "url": reverse("website:index")},
+        {"name": "فروشگاه", "url": reverse("shop:product-grid")},
+    ]
+
+
+def breadcrumb_for_category(category) -> list[dict]:
+    items = breadcrumb_home_shop()
+    chain = []
+    node = category
+    while node is not None:
+        chain.append(node)
+        node = getattr(node, "parent", None)
+    for cat in reversed(chain):
+        items.append({"name": cat.title, "url": cat.get_absolute_url()})
+    return items
+
+
+def breadcrumb_for_product(product) -> list[dict]:
+    items = breadcrumb_home_shop()
+    category = product.category.select_related("parent").order_by("title").first()
+    if category is not None:
+        chain = []
+        node = category
+        while node is not None:
+            chain.append(node)
+            node = getattr(node, "parent", None)
+        for cat in reversed(chain):
+            items.append({"name": cat.title, "url": cat.get_absolute_url()})
+    items.append({"name": product.title, "url": product.get_absolute_url()})
+    return items
+
+
+def breadcrumb_for_blog_post(post) -> list[dict]:
+    from django.urls import reverse
+
+    items = [
+        {"name": "خانه", "url": reverse("website:index")},
+        {"name": "بلاگ", "url": reverse("blog:blog_home")},
+    ]
+    category = post.category.order_by("name").first()
+    if category is not None:
+        items.append(
+            {
+                "name": category.name,
+                "url": reverse("blog:category", kwargs={"cat_name": category.name}),
+            }
+        )
+    items.append({"name": post.title, "url": post.get_absolute_url()})
+    return items
+
+
+def breadcrumb_for_blog_list(*, cat_name: str | None = None) -> list[dict]:
+    from django.urls import reverse
+
+    items = [
+        {"name": "خانه", "url": reverse("website:index")},
+        {"name": "بلاگ", "url": reverse("blog:blog_home")},
+    ]
+    if cat_name:
+        items.append(
+            {
+                "name": cat_name,
+                "url": reverse("blog:category", kwargs={"cat_name": cat_name}),
+            }
+        )
+    return items

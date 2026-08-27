@@ -3,9 +3,16 @@
 
 {% block title %}{{ post.title }} - بلاگ فروشگاه آروین{% endblock title %}
 
+{% block extra_head %}
+{% if breadcrumb_json_ld %}
+<script type="application/ld+json">{{ breadcrumb_json_ld|safe }}</script>
+{% endif %}
+{% endblock extra_head %}
+
 {% block content %}
 <!-- ========== MAIN CONTENT ========== -->
 <div class="container content-space-2 content-space-lg-3 blog-detail-page">
+    {% include "includes/breadcrumb.html" with breadcrumb_nav_class="mb-4" %}
     <div class="row">
         <!-- Main Content -->
         <div class="col-lg-8 mb-5 mb-lg-0">
