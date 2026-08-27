@@ -1,6 +1,9 @@
 """Helpers for technical SEO (canonical URLs, robots meta, etc.)."""
 
+import re
+
 from django.conf import settings
+from django.utils.html import strip_tags
 
 # Reserved for later: if we keep selected query params on canonical, strip these.
 STRIP_QUERY_KEYS = frozenset(
@@ -22,6 +25,29 @@ NOINDEX_PATH_PREFIXES = (
     "/api/",
     "/ckeditor5/",
 )
+
+# Target length for meta description (Google snippet guidance).
+META_DESCRIPTION_MAX_LENGTH = 160
+
+
+def normalize_meta_description(
+    text: str | None,
+    *,
+    max_length: int = META_DESCRIPTION_MAX_LENGTH,
+) -> str:
+    """Strip HTML, collapse whitespace, and truncate for meta description."""
+    if not text:
+        return ""
+    cleaned = strip_tags(str(text))
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    if len(cleaned) <= max_length:
+        return cleaned
+    truncated = cleaned[: max_length + 1]
+    if " " in truncated:
+        truncated = truncated.rsplit(" ", 1)[0]
+    else:
+        truncated = cleaned[:max_length]
+    return truncated.rstrip(" ،,.;:") + "…"
 
 
 def build_canonical_url(request) -> str:

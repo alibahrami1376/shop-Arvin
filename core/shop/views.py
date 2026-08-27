@@ -1,25 +1,32 @@
 from django.conf import settings
-from django.views.generic import (
-    ListView,
-    DetailView,
-    View
-)
-from .models import ProductModel, ProductStatusType, ProductCategoryModel, WishlistProductModel
-from django.core.exceptions import FieldError
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import FieldError
 from django.http import JsonResponse
+from django.views.generic import DetailView, ListView, View
 from review.models import ReviewModel, ReviewStatusType
+
+from core.seo import normalize_meta_description
 from core.views_meta import ObjectMetadataMixin, SiteMetadataMixin
+
+from .models import (
+    ProductCategoryModel,
+    ProductModel,
+    ProductStatusType,
+    WishlistProductModel,
+)
 
 
 class ShopProductGridView(SiteMetadataMixin, ListView):
     template_name = "shop/product-grid.html"
     paginate_by = 9
     title = f"محصولات - {settings.SITE_NAME}"
-    description = "مشاهده و خرید محصولات فروشگاه آروین."
+    description = (
+        "لیست محصولات فروشگاه آروین؛ لوازم و قطعات کامیون را ببینید، "
+        "مقایسه کنید و آنلاین سفارش دهید با ارسال سریع به سراسر کشور."
+    )
 
     def get_paginate_by(self, queryset):
-        return self.request.GET.get('page_size', self.paginate_by)
+        return self.request.GET.get("page_size", self.paginate_by)
 
     def get_meta_title(self, context=None):
         category_id = self.request.GET.get("category_id")
@@ -34,9 +41,27 @@ class ShopProductGridView(SiteMetadataMixin, ListView):
             return f"جستجو: {q} - {settings.SITE_NAME}"
         return super().get_meta_title(context)
 
+    def get_meta_description(self, context=None):
+        category_id = self.request.GET.get("category_id")
+        if category_id:
+            try:
+                category = ProductCategoryModel.objects.get(pk=category_id)
+                return normalize_meta_description(
+                    f"خرید {category.title} از فروشگاه آروین؛ محصولات این دسته را "
+                    f"مشاهده کنید و آنلاین سفارش دهید با ارسال سریع و پشتیبانی تخصصی."
+                )
+            except (ProductCategoryModel.DoesNotExist, ValueError):
+                pass
+        q = self.request.GET.get("q")
+        if q:
+            return normalize_meta_description(
+                f"نتایج جستجو برای «{q}» در فروشگاه آروین؛ "
+                f"محصولات مرتبط با لوازم و قطعات کامیون را پیدا کنید."
+            )
+        return super().get_meta_description(context)
+
     def get_queryset(self):
-        queryset = ProductModel.objects.filter(
-            status=ProductStatusType.publish.value)
+        queryset = ProductModel.objects.filter(status=ProductStatusType.publish.value)
         if search_q := self.request.GET.get("q"):
             queryset = queryset.filter(title__icontains=search_q)
         if category_id := self.request.GET.get("category_id"):
@@ -60,16 +85,20 @@ class ShopProductGridView(SiteMetadataMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["total_items"] = self.get_queryset().count()
-        context["wishlist_items"] = WishlistProductModel.objects.filter(user=self.request.user).values_list(
-            "product__id", flat=True) if self.request.user.is_authenticated else []
+        context["wishlist_items"] = (
+            WishlistProductModel.objects.filter(user=self.request.user).values_list(
+                "product__id", flat=True
+            )
+            if self.request.user.is_authenticated
+            else []
+        )
         context["categories"] = ProductCategoryModel.get_tree_ordered()
         return context
 
 
 class ShopProductDetailView(ObjectMetadataMixin, DetailView):
     template_name = "shop/product-detail.html"
-    queryset = ProductModel.objects.filter(
-        status=ProductStatusType.publish.value)
+    queryset = ProductModel.objects.filter(status=ProductStatusType.publish.value)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -98,20 +127,22 @@ class ShopProductDetailView(ObjectMetadataMixin, DetailView):
         obj.product_images.prefetch_related()
         return obj
 
-class AddOrRemoveWishlistView(LoginRequiredMixin, View):
 
+class AddOrRemoveWishlistView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         product_id = request.POST.get("product_id")
         message = ""
         if product_id:
             try:
                 wishlist_item = WishlistProductModel.objects.get(
-                    user=request.user, product__id=product_id)
+                    user=request.user, product__id=product_id
+                )
                 wishlist_item.delete()
                 message = "محصول از لیست علایق حذف شد"
             except WishlistProductModel.DoesNotExist:
                 WishlistProductModel.objects.create(
-                    user=request.user, product_id=product_id)
+                    user=request.user, product_id=product_id
+                )
                 message = "محصول به لیست علایق اضافه شد"
 
         return JsonResponse({"message": message})

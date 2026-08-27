@@ -1,11 +1,16 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.urls import reverse
 from django_ckeditor_5.fields import CKEditor5Field
 from meta.models import ModelMeta
-
-from core.imagekit_specs import blog_card_image, blog_hero_image, product_detail_image, product_gallery_thumb_image
 from shop.image_urls import safe_imagekit_url
+
+from core.imagekit_specs import (
+    blog_card_image,
+    blog_hero_image,
+    product_detail_image,
+    product_gallery_thumb_image,
+)
 
 # fetching user model
 User = get_user_model()
@@ -35,18 +40,26 @@ class Tag(models.Model):
 
 
 class Post(ModelMeta, models.Model):
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="نویسنده")
-    image = models.ImageField(upload_to="blog/", default="blog/default.png", verbose_name="تصویر")
+    author = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, verbose_name="نویسنده"
+    )
+    image = models.ImageField(
+        upload_to="blog/", default="blog/default.png", verbose_name="تصویر"
+    )
     image_card = blog_card_image("image")
     image_hero = blog_hero_image("image")
     title = models.CharField(max_length=255, verbose_name="عنوان")
     content = CKEditor5Field(verbose_name="محتوا")
     url = models.URLField(max_length=500, null=True, blank=True, verbose_name="لینک")
     category = models.ManyToManyField(Category, verbose_name="دسته‌بندی")
-    tags = models.ManyToManyField(Tag, blank=True, related_name="posts", verbose_name="تگ‌ها")
+    tags = models.ManyToManyField(
+        Tag, blank=True, related_name="posts", verbose_name="تگ‌ها"
+    )
     counted_view = models.IntegerField(default=0, verbose_name="تعداد بازدید")
     status = models.BooleanField(default=False, verbose_name="وضعیت انتشار")
-    published_date = models.DateTimeField(null=True, blank=True, verbose_name="تاریخ انتشار")
+    published_date = models.DateTimeField(
+        null=True, blank=True, verbose_name="تاریخ انتشار"
+    )
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
     updated_date = models.DateTimeField(auto_now=True, verbose_name="تاریخ بروزرسانی")
 
@@ -74,10 +87,9 @@ class Post(ModelMeta, models.Model):
         return reverse("blog:blog_detail", args=[str(self.id)])
 
     def get_meta_description(self):
-        from django.utils.html import strip_tags
+        from core.seo import normalize_meta_description
 
-        text = strip_tags(self.content or "")[:300].strip()
-        return text or self.title
+        return normalize_meta_description(self.content) or self.title
 
     def get_meta_image(self):
         return self.image_card_url or ""

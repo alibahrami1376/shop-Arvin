@@ -3,12 +3,15 @@
 from django.conf import settings
 from meta.views import MetadataMixin
 
+from core.seo import normalize_meta_description
+
 
 class SiteMetadataMixin(MetadataMixin):
     """Base meta for public pages — defaults + site name from settings."""
 
     site_name = settings.SITE_NAME
     locale = "fa_IR"
+    description = settings.META_DEFAULT_DESCRIPTION
 
     def get_meta_site_name(self, context=None):
         return self.site_name or settings.SITE_NAME
@@ -17,6 +20,13 @@ class SiteMetadataMixin(MetadataMixin):
         if self.url:
             return self.url
         return self.request.path
+
+    def get_meta_description(self, context=None):
+        raw = super().get_meta_description(context)
+        normalized = normalize_meta_description(raw)
+        if normalized:
+            return normalized
+        return normalize_meta_description(settings.META_DEFAULT_DESCRIPTION)
 
 
 class ObjectMetadataMixin(SiteMetadataMixin):

@@ -1,6 +1,4 @@
 from blog.models import Post
-from core.device import filter_queryset_for_device
-from core.views_meta import SiteMetadataMixin
 from django.conf import settings
 from django.contrib import messages
 from django.db.models import IntegerField, Q, Sum, Value
@@ -12,15 +10,22 @@ from django.views.generic import CreateView, TemplateView
 from order.models import OrderStatusType
 from shop.models import ProductModel, ProductStatusType
 
+from core.device import filter_queryset_for_device
+from core.views_meta import SiteMetadataMixin
+
 from .forms import ContactForm, NewsLetterForm
 from .models import ContactPageSettings, FAQItem, HomeBanner, LegalPage
 
 # Create your views here.
 
+
 class IndexView(SiteMetadataMixin, TemplateView):
     template_name = "website/index.html"
     title = f"{settings.SITE_NAME}"
-    description = "فروشگاه آروین — خرید آنلاین لوازم و قطعات کامیون با ارسال سریع."
+    description = (
+        "فروشگاه آروین؛ خرید آنلاین صندلی راننده ماشین سنگین، نیمه‌سنگین و راهسازی "
+        "مشاوره تخصصی، پشتیبانی مطمئن و  ارسال سریع به سراسر ایران."
+    )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -33,19 +38,16 @@ class IndexView(SiteMetadataMixin, TemplateView):
 
         context["top_products"] = base.order_by("-avg_rate", "-created_date")[:8]
         context["newest_products"] = base.order_by("-created_date")[:4]
-        context["bestseller_products"] = (
-            base.annotate(
-                sold_qty=Coalesce(
-                    Sum(
-                        "orderitemmodel__quantity",
-                        filter=Q(orderitemmodel__order__status=order_success),
-                    ),
-                    Value(0),
-                    output_field=IntegerField(),
-                )
+        context["bestseller_products"] = base.annotate(
+            sold_qty=Coalesce(
+                Sum(
+                    "orderitemmodel__quantity",
+                    filter=Q(orderitemmodel__order__status=order_success),
+                ),
+                Value(0),
+                output_field=IntegerField(),
             )
-            .order_by("-sold_qty", "-avg_rate")[:4]
-        )
+        ).order_by("-sold_qty", "-avg_rate")[:4]
 
         context["latest_posts"] = (
             Post.objects.filter(status=True)
@@ -59,10 +61,14 @@ class IndexView(SiteMetadataMixin, TemplateView):
 
         return context
 
+
 class ContactView(SiteMetadataMixin, TemplateView):
     template_name = "website/contact.html"
     title = f"تماس با ما - {settings.SITE_NAME}"
-    description = "راه‌های ارتباط با فروشگاه آروین؛ تلفن، آدرس و فرم تماس."
+    description = (
+        "تماس با فروشگاه آروین؛ تلفن، آدرس، شبکه‌های اجتماعی و فرم پیام. "
+        "برای مشاوره خرید لوازم کامیون و پیگیری سفارش با ما در ارتباط باشید."
+    )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -82,11 +88,11 @@ class LegalPageView(SiteMetadataMixin, TemplateView):
         return super().get_meta_title(context)
 
     def get_meta_description(self, context=None):
+        from core.seo import normalize_meta_description
+
         page = getattr(self, "_legal_page", None) or (context or {}).get("page")
         if page and page.content:
-            from django.utils.html import strip_tags
-
-            return strip_tags(page.content)[:300]
+            return normalize_meta_description(page.content)
         return super().get_meta_description(context)
 
     def get_context_data(self, **kwargs):
@@ -103,13 +109,19 @@ class LegalPageView(SiteMetadataMixin, TemplateView):
 class AboutView(SiteMetadataMixin, TemplateView):
     template_name = "website/about.html"
     title = f"درباره ما - {settings.SITE_NAME}"
-    description = "آشنایی با فروشگاه آروین و خدمات فروش لوازم کامیون."
+    description = (
+        "درباره فروشگاه آروین؛ عرضه‌کننده لوازم و قطعات کامیون و ماشین سنگین "
+        "با تمرکز بر کیفیت، ارسال سریع و خدمات پس از فروش قابل اعتماد."
+    )
 
 
 class FAQView(SiteMetadataMixin, TemplateView):
     template_name = "website/faq.html"
     title = f"سوالات متداول - {settings.SITE_NAME}"
-    description = "پاسخ سوالات پرتکرار درباره خرید، ارسال و پشتیبانی فروشگاه آروین."
+    description = (
+        "سوالات متداول فروشگاه آروین درباره خرید آنلاین، ارسال، مرجوعی، "
+        "پرداخت و پشتیبانی؛ پاسخ‌های کوتاه برای تصمیم سریع‌تر در خرید لوازم کامیون."
+    )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -121,35 +133,47 @@ class SendContactView(CreateView):
     """
     a class based view to show index page
     """
-    http_method_names = ['post']
+
+    http_method_names = ["post"]
     form_class = ContactForm
-    success_url = reverse_lazy('website:contact')
+    success_url = reverse_lazy("website:contact")
 
     def form_valid(self, form):
         form.save()
         messages.success(
-            self.request, 'تیکت شما با موفقیت ثبت شد و در اسرع وقت با شما تماس حاصل خواهد شد')
+            self.request,
+            "تیکت شما با موفقیت ثبت شد و در اسرع وقت با شما تماس حاصل خواهد شد",
+        )
         return super().form_valid(form)
 
     def form_invalid(self, form):
         # handle unsuccessful form submission
         messages.error(
-            self.request, 'مشکلی در ارسال فرم شما پیش آمد لطفا ورودی ها رو بررسی کنین و مجدد ارسال نمایید')
-        return redirect('website:contact')
-    
+            self.request,
+            (
+                "مشکلی در ارسال فرم شما پیش آمد لطفا ورودی ها رو بررسی کنین "
+                "و مجدد ارسال نمایید"
+            ),
+        )
+        return redirect("website:contact")
+
+
 class NewsletterView(CreateView):
-    http_method_names = ['post']
+    http_method_names = ["post"]
     form_class = NewsLetterForm
-    success_url = '/'
+    success_url = "/"
 
     def form_valid(self, form):
         # handle successful form submission
         messages.success(
-            self.request, 'از ثبت نام شما ممنونم، اخبار جدید رو براتون ارسال می کنم 😊👍')
+            self.request,
+            "از ثبت نام شما ممنونم، اخبار جدید رو براتون ارسال می کنم 😊👍",
+        )
         return super().form_valid(form)
 
     def form_invalid(self, form):
         # handle unsuccessful form submission
         messages.error(
-            self.request, 'مشکلی در ارسال فرم شما وجود داشت که می دونم برا چی بود!! چون ربات هستید!')
-        return redirect('website:index')
+            self.request, "مشکلی در ارسال فرم شما وجود داشت که می دونم برا چی بود!!"
+        )
+        return redirect("website:index")
