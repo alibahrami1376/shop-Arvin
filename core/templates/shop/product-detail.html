@@ -4,6 +4,10 @@
 
 {% block title %}{{ object.title }} - فروشگاه آروین{% endblock title %}
 
+{% block extra_head %}
+<script type="application/ld+json">{{ object.as_json_ld_json|safe }}</script>
+{% endblock extra_head %}
+
 {% block content %}
 {% if is_mobile_site %}
 <section class="pdp-mobile" aria-label="جزئیات محصول">

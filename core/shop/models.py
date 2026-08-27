@@ -1,5 +1,7 @@
+import json
 from decimal import Decimal
 
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from meta.models import ModelMeta
@@ -165,6 +167,63 @@ class ProductModel(ModelMeta, models.Model):
 
     def get_meta_image(self):
         return self.image_card_url or ""
+
+    def as_json_ld(self) -> dict:
+        """Product + Offer JSON-LD for rich results (one source from the model)."""
+        from core.seo import absolute_site_url
+
+        product_url = absolute_site_url(self.get_absolute_url())
+        images = []
+        for src in (
+            self.image_detail_url,
+            self.image_card_url,
+            *(img.file_detail_url for img in self.product_images.all()),
+        ):
+            abs_src = absolute_site_url(src) if src else ""
+            if abs_src and abs_src not in images:
+                images.append(abs_src)
+
+        availability = (
+            "https://schema.org/InStock"
+            if self.stock > 0
+            else "https://schema.org/OutOfStock"
+        )
+        data = {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": self.title,
+            "description": self.get_meta_description(),
+            "sku": str(self.pk),
+            "url": product_url,
+            "image": images,
+            "brand": {"@type": "Brand", "name": settings.SITE_NAME},
+            "offers": {
+                "@type": "Offer",
+                "url": product_url,
+                "priceCurrency": "IRR",
+                "price": str(int(self.get_price())),
+                "availability": availability,
+                "itemCondition": "https://schema.org/NewCondition",
+            },
+        }
+        if self.avg_rate and self.avg_rate > 0:
+            from review.models import ReviewModel, ReviewStatusType
+
+            review_count = ReviewModel.objects.filter(
+                product=self, status=ReviewStatusType.accepted.value
+            ).count()
+            if review_count:
+                data["aggregateRating"] = {
+                    "@type": "AggregateRating",
+                    "ratingValue": round(float(self.avg_rate), 2),
+                    "reviewCount": review_count,
+                    "bestRating": 5,
+                    "worstRating": 1,
+                }
+        return data
+
+    def as_json_ld_json(self) -> str:
+        return json.dumps(self.as_json_ld(), ensure_ascii=False, separators=(",", ":"))
 
     @property
     def image_card_url(self):

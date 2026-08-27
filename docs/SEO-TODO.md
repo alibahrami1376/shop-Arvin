@@ -20,7 +20,7 @@
 | Canonical | ✅ هست | `build_canonical_url` — path بدون query (`?site=` و فیلترها حذف) |
 | `noindex` (meta robots) | ✅ هست | صفحات خصوصی/تراکنشی `noindex,follow`؛ عمومی `index,follow` |
 | `{% block extra_head %}` | ✅ هست | در `base-desktop` / `base-mobile` (+ داشبوردها) |
-| Product JSON-LD کامل | ❌ نیست | `schemaorg_type=Product` فقط props قدیمی؛ Offer/price/availability نیست |
+| Product JSON-LD کامل | ✅ | Product + Offer از `as_json_ld` در PDP `extra_head` |
 | Breadcrumb Schema | ❌ نیست | UI محدود؛ در PDP تقریباً نیست |
 | URL دسته محصول | ✅ لندینگ اسلاگ | `/shop/category/<slug>/` + ۳۰۱ از `?category_id=` |
 | اسلاگ بلاگ | ✅ | `/blog/<slug>/` + ۳۰۱ از `/blog/<id>/` |
@@ -188,12 +188,12 @@
 ## P2 — Schema و On-page (غنی‌سازی SERP) ← اولویت بعدی کد
 
 ### SEO-F10 — JSON-LD محصول (Product + Offer)
-**وضعیت:** ❌ schema واقعی قیمت/موجودی نیست  
-**کجا:** PDP + ساخت از `ProductModel` (قیمت `get_price()`، stock → InStock/OutOfStock، برند آروین، تصویر)
+**وضعیت:** ✅ `ProductModel.as_json_ld` → `<script type="application/ld+json">` در PDP  
+**کجا:** `shop/models.py`, `product-detail.html` (`extra_head`)
 
-**نباید** دستی داخل هر محصول paste شود — از مدل/تمپلیت یک‌بار تولید شود (مثلاً در `extra_head` یا متد `as_json_ld`).
+شامل: name، description، image، brand آروین، Offer (قیمت `get_price()`، IRR، InStock/OutOfStock)، و در صورت وجود نظر `aggregateRating`.
 
-- [ ] SEO-F10
+- [x] SEO-F10
 
 ---
 
@@ -317,7 +317,6 @@
   SEO-F8  لندینگ دسته با اسلاگ + sitemap + لینک‌های داخلی
 
 ⏭️ بعدی پیشنهادی (P2 on-page / schema)
-  SEO-F10 Product JSON-LD
   SEO-F12 Breadcrumb + schema
   SEO-F11 Article JSON-LD
   SEO-F13 FAQ schema
@@ -359,9 +358,9 @@
 - [x] Description یکتا روی صفحات ایندکس‌شونده (پایه)  
 - [x] noindex روی صفحات تراکنشی/پنل  
 - [x] Sitemap فقط URLهای canonical باارزش (محصول + دسته اسلاگ + بلاگ + استاتیک)  
-- [ ] Product JSON-LD معتبر (تست Rich Results) — **F10**  
+- [x] Product JSON-LD معتبر (تست Rich Results) — **F10** (بعد از دیپلوی در Rich Results Test تأیید کن)  
 - [x] Pagination و URL دستهٔ تمیز (`/shop/category/<slug>/`)  
-- [ ] GSC سایت را می‌بیند و sitemap بدون خطای بحرانی است — **F19**  
+- [ ] GSC سایت را می‌بیند و sitemap بدون خطای بحرانی است — **F19**
 
 **بعد از این → تکمیل P2 (schema/H1 خانه/image) سپس Keyword Map و Pillar.**
 

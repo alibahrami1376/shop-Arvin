@@ -57,10 +57,22 @@ def build_canonical_url(request) -> str:
     Drops ?site=, filters, and sort so layout/filter variants share one URL.
     Meaningful params (e.g. page) can be allow-listed later using STRIP_QUERY_KEYS.
     """
+    path = request.path or "/"
+    return absolute_site_url(path)
+
+
+def absolute_site_url(path_or_url: str) -> str:
+    """Build https://SITE_DOMAIN/... from a path; leave absolute http(s) URLs as-is."""
+    if not path_or_url:
+        return ""
+    value = str(path_or_url).strip()
+    if value.startswith(("http://", "https://")):
+        return value
     protocol = getattr(settings, "META_SITE_PROTOCOL", "https")
     domain = settings.SITE_DOMAIN
-    path = request.path or "/"
-    return f"{protocol}://{domain}{path}"
+    if not value.startswith("/"):
+        value = f"/{value}"
+    return f"{protocol}://{domain}{value}"
 
 
 def should_noindex(path: str) -> bool:
