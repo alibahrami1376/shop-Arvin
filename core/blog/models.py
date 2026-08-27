@@ -49,6 +49,12 @@ class Post(ModelMeta, models.Model):
     image_card = blog_card_image("image")
     image_hero = blog_hero_image("image")
     title = models.CharField(max_length=255, verbose_name="عنوان")
+    slug = models.SlugField(
+        max_length=255,
+        allow_unicode=True,
+        unique=True,
+        verbose_name="اسلاگ",
+    )
     content = CKEditor5Field(verbose_name="محتوا")
     url = models.URLField(max_length=500, null=True, blank=True, verbose_name="لینک")
     category = models.ManyToManyField(Category, verbose_name="دسته‌بندی")
@@ -84,7 +90,14 @@ class Post(ModelMeta, models.Model):
         return f"{self.title}"
 
     def get_absolute_url(self):
-        return reverse("blog:blog_detail", args=[str(self.id)])
+        return reverse("blog:blog_detail", kwargs={"slug": self.slug})
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            from blog.utils import unique_post_slug
+
+            self.slug = unique_post_slug(self.title, exclude_pk=self.pk)
+        super().save(*args, **kwargs)
 
     def get_meta_description(self):
         from core.seo import normalize_meta_description

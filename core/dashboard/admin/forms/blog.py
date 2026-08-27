@@ -1,10 +1,10 @@
+from blog.models import Category as BlogCategory
+from blog.models import Post, PostImageModel
+from blog.models import Tag as BlogTag
 from django import forms
 from django.forms import inlineformset_factory
 from django.utils import timezone
 from django_ckeditor_5.widgets import CKEditor5Widget
-
-from blog.models import Category as BlogCategory
-from blog.models import Post, PostImageModel, Tag as BlogTag
 
 _DATETIME_LOCAL_INPUT_FORMATS = (
     "%Y-%m-%dT%H:%M",
@@ -46,6 +46,7 @@ class BlogPostForm(forms.ModelForm):
         model = Post
         fields = [
             "title",
+            "slug",
             "content",
             "image",
             "url",
@@ -58,8 +59,12 @@ class BlogPostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["content"].widget = CKEditor5Widget(config_name="extends")
-        for fname in ("title", "image", "url"):
+        for fname in ("title", "slug", "image", "url"):
             self.fields[fname].widget.attrs.setdefault("class", "form-control")
+        self.fields["slug"].required = False
+        self.fields["slug"].widget.attrs.setdefault(
+            "placeholder", "در صورت خالی بودن، از عنوان ساخته می‌شود"
+        )
         self.fields["category"].widget.attrs.setdefault("class", "form-select")
         self.fields["tags"].widget.attrs.setdefault("class", "form-select")
         self.fields["tags"].required = False
@@ -85,6 +90,25 @@ class BlogPostForm(forms.ModelForm):
             if timezone.is_aware(dt):
                 dt = timezone.localtime(dt)
             self.initial["published_date"] = dt.strftime("%Y-%m-%dT%H:%M")
+
+    def clean_slug(self):
+        from blog.utils import unique_post_slug
+        from django.utils.text import slugify
+
+        raw = (self.cleaned_data.get("slug") or "").strip()
+        title = self.cleaned_data.get("title") or getattr(self.instance, "title", "")
+        if raw:
+            base = slugify(raw, allow_unicode=True) or raw
+            slug = base
+            qs = Post.objects.all()
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            i = 2
+            while qs.filter(slug=slug).exists():
+                slug = f"{base}-{i}"
+                i += 1
+            return slug
+        return unique_post_slug(title, exclude_pk=self.instance.pk)
 
 
 class PostImageForm(forms.ModelForm):

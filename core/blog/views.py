@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.exceptions import FieldError
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView
 from meta.views import Meta
 
@@ -69,19 +69,23 @@ class BlogPostListView(SiteMetadataMixin, ListView):
         return context
 
 
-def blog_detail(request, post_id):
-    """
-    نمایش جزئیات یک پست بلاگ
-    """
+def blog_detail_id_redirect(request, post_id):
+    """301 from legacy /blog/<id>/ URLs to the slug canonical."""
+    post = get_object_or_404(Post, pk=post_id)
+    return redirect(post.get_absolute_url(), permanent=True)
+
+
+def blog_detail(request, slug):
+    """نمایش جزئیات یک پست بلاگ."""
     post = get_object_or_404(
         Post.objects.prefetch_related("post_images", "category", "author"),
-        id=post_id,
+        slug=slug,
         status=True,
     )
 
     # افزایش تعداد بازدید
     post.counted_view += 1
-    post.save()
+    post.save(update_fields=["counted_view", "updated_date"])
 
     # پست‌های مرتبط (از همان دسته‌بندی)
     related_posts = (

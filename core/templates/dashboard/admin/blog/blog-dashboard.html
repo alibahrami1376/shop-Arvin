@@ -260,7 +260,7 @@
                         <td class="text-nowrap">
                             <a href="{% url 'dashboard:admin:blog-post-edit' pk=post.pk %}" class="btn btn-ghost-primary btn-sm">ویرایش</a>
                             {% if post.status %}
-                            <a href="{% url 'blog:blog_detail' post.id %}" class="btn btn-ghost-secondary btn-sm" target="_blank" rel="noopener">نمایش</a>
+                            <a href="{{ post.get_absolute_url }}" class="btn btn-ghost-secondary btn-sm" target="_blank" rel="noopener">نمایش</a>
                             {% endif %}
                         </td>
                     </tr>
