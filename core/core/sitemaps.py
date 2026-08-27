@@ -1,8 +1,7 @@
-from django.contrib.sitemaps import Sitemap
-from django.urls import reverse
-
 from blog.models import Category as BlogCategory
 from blog.models import Post
+from django.contrib.sitemaps import Sitemap
+from django.urls import reverse
 from shop.models import ProductCategoryModel, ProductModel, ProductStatusType
 
 
@@ -44,6 +43,13 @@ class ProductSitemap(HttpsSitemap):
 
 
 class ProductCategorySitemap(HttpsSitemap):
+    """
+    Not registered in urls.sitemaps until SEO-F8.
+
+    Current location uses ?category_id= which duplicates the product-grid
+    canonical. Re-enable with /shop/category/<slug>/ locations after F8.
+    """
+
     changefreq = "weekly"
     priority = 0.7
 

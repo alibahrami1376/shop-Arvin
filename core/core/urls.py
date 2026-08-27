@@ -1,18 +1,16 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import index as sitemap_index
 from django.contrib.sitemaps.views import sitemap
-from django.urls import path, include, reverse
-from django.conf import settings
-from django.conf.urls.static import static
+from django.urls import include, path, reverse
 from django.views.generic import TemplateView
-
 from website.pwa_views import ServiceWorkerView, WebAppManifestView
 
 from core.error_views import page_not_found, permission_denied, server_error
 from core.sitemaps import (
     BlogCategorySitemap,
     BlogPostSitemap,
-    ProductCategorySitemap,
     ProductSitemap,
     StaticViewSitemap,
 )
@@ -21,10 +19,10 @@ handler404 = page_not_found
 handler403 = permission_denied
 handler500 = server_error
 
+
 sitemaps = {
     "static": StaticViewSitemap,
     "products": ProductSitemap,
-    "product-categories": ProductCategorySitemap,
     "blog": BlogPostSitemap,
     "blog-categories": BlogCategorySitemap,
 }
@@ -43,32 +41,32 @@ class RobotsTxtView(TemplateView):
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     path(
-        'sitemap.xml',
+        "sitemap.xml",
         sitemap_index,
-        {'sitemaps': sitemaps},
-        name='sitemap-index',
+        {"sitemaps": sitemaps},
+        name="sitemap-index",
     ),
     path(
-        'sitemap-<section>.xml',
+        "sitemap-<section>.xml",
         sitemap,
-        {'sitemaps': sitemaps},
-        name='django.contrib.sitemaps.views.sitemap',
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
     ),
-    path('robots.txt', RobotsTxtView.as_view(), name='robots-txt'),
-    path('manifest.webmanifest', WebAppManifestView.as_view(), name='pwa-manifest'),
-    path('sw.js', ServiceWorkerView.as_view(), name='pwa-service-worker'),
-    path('', include('website.urls')),
-    path('accounts/', include('accounts.urls')),
-    path('shop/', include('shop.urls')),
-    path('cart/', include('cart.urls')),
-    path('dashboard/', include('dashboard.urls')),
-    path('order/', include('order.urls')),
-    path('payment/', include('payment.urls')),
-    path('review/', include('review.urls')),
-    path('blog/', include('blog.urls')),
-    path('ckeditor5/', include('django_ckeditor_5.urls')),
+    path("robots.txt", RobotsTxtView.as_view(), name="robots-txt"),
+    path("manifest.webmanifest", WebAppManifestView.as_view(), name="pwa-manifest"),
+    path("sw.js", ServiceWorkerView.as_view(), name="pwa-service-worker"),
+    path("", include("website.urls")),
+    path("accounts/", include("accounts.urls")),
+    path("shop/", include("shop.urls")),
+    path("cart/", include("cart.urls")),
+    path("dashboard/", include("dashboard.urls")),
+    path("order/", include("order.urls")),
+    path("payment/", include("payment.urls")),
+    path("review/", include("review.urls")),
+    path("blog/", include("blog.urls")),
+    path("ckeditor5/", include("django_ckeditor_5.urls")),
 ]
 
 if settings.DEBUG:
