@@ -7,7 +7,6 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, FormView, TemplateView, View
 from payment.models import (
     CardToCardSettings,
-    PaymentMethodSettings,
     PaymentMethodType,
     PaymentStatusType,
 )
@@ -51,39 +50,9 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cart = CartModel.objects.get(user=self.request.user)
-        items_subtotal = cart.calculate_total_price()
         context.update(
-            get_checkout_pricing_context(
-                items_subtotal,
-                city="",
-                state="",
-            )
+            checkout_service.get_checkout_page_context(user=self.request.user)
         )
-        context["checkout_pricing_json"] = {
-            "tehran_amount": context["checkout_pricing"].shipping_tehran_amount,
-            "province_amount": context["checkout_pricing"].shipping_province_amount,
-            "shipping_enabled": context["checkout_pricing"].shipping_enabled,
-            "tax_enabled": context["checkout_pricing"].tax_enabled,
-            "tax_percent": context["checkout_pricing"].tax_percent,
-        }
-        payment_settings = PaymentMethodSettings.get_solo()
-        context["enabled_payment_methods"] = payment_settings.get_enabled_methods()
-        context["payment_methods_available"] = bool(context["enabled_payment_methods"])
-        from order.models import City, Province
-        from order.shipping import FREIGHT_NOTES_PLACEHOLDER
-
-        provinces = list(Province.objects.filter(is_active=True).values("id", "name"))
-        cities_by_province = {}
-        for city in City.objects.filter(
-            is_active=True, province__is_active=True
-        ).values("id", "name", "province_id"):
-            cities_by_province.setdefault(city["province_id"], []).append(
-                {"id": city["id"], "name": city["name"]}
-            )
-        context["freight_provinces"] = provinces
-        context["freight_cities_by_province"] = cities_by_province
-        context["freight_notes_placeholder"] = FREIGHT_NOTES_PLACEHOLDER
         return context
 
 
