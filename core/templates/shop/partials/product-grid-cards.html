@@ -1,3 +1,4 @@
+{% load shop_tags %}
 <div class="row shop-product-grid row-cols-2{% if not is_mobile_site %} row-cols-sm-2 row-cols-md-3{% endif %} g-2 g-md-3 mb-4 mb-md-10">
     {% for object in object_list %}
     <div class="col">
@@ -67,9 +68,9 @@
     <ul class="pagination justify-content-center flex-wrap gap-1 mb-0">
         {% if page_obj.has_previous %}
         <li class="page-item">
-            <button type="button" class="page-link" onclick="changePage('{{ page_obj.previous_page_number }}')" aria-label="صفحه قبل">
+            <a class="page-link" href="{% pagination_url page_obj.previous_page_number %}" aria-label="صفحه قبل">
                 <i class="bi-chevron-right" aria-hidden="true"></i>
-            </button>
+            </a>
         </li>
         {% endif %}
         {% for i in page_obj.paginator.page_range %}
@@ -77,15 +78,15 @@
         <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
         {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
         <li class="page-item">
-            <button type="button" class="page-link" onclick="changePage('{{ i }}')">{{ i }}</button>
+            <a class="page-link" href="{% pagination_url i %}">{{ i }}</a>
         </li>
         {% endif %}
         {% endfor %}
         {% if page_obj.has_next %}
         <li class="page-item">
-            <button type="button" class="page-link" onclick="changePage('{{ page_obj.next_page_number }}')" aria-label="صفحه بعد">
+            <a class="page-link" href="{% pagination_url page_obj.next_page_number %}" aria-label="صفحه بعد">
                 <i class="bi-chevron-left" aria-hidden="true"></i>
-            </button>
+            </a>
         </li>
         {% endif %}
     </ul>

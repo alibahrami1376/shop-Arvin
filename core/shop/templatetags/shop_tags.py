@@ -1,16 +1,42 @@
 from django import template
-from shop.models import ProductStatusType, ProductModel,WishlistProductModel
+
+from shop.models import ProductModel, ProductStatusType, WishlistProductModel
 
 register = template.Library()
 
 
-@register.inclusion_tag("includes/latest-products.html",takes_context=True)
+@register.simple_tag(takes_context=True)
+def pagination_url(context, page_number):
+    """Build current path + query string with page replaced (crawlable pagination)."""
+    request = context.get("request")
+    if request is None:
+        return f"?page={page_number}"
+    params = request.GET.copy()
+    params["page"] = str(page_number)
+    query = params.urlencode()
+    return f"{request.path}?{query}" if query else f"{request.path}?page={page_number}"
+
+
+@register.inclusion_tag("includes/latest-products.html", takes_context=True)
 def show_latest_products(context):
     request = context.get("request")
-    latest_products = ProductModel.objects.filter(
-        status=ProductStatusType.publish.value).distinct().order_by("-created_date")[:4]
-    wishlist_items = WishlistProductModel.objects.filter(user=request.user).values_list("product__id",flat=True) if request.user.is_authenticated else []
-    return {"latest_products": latest_products,"request":request,"wishlist_items":wishlist_items}
+    latest_products = (
+        ProductModel.objects.filter(status=ProductStatusType.publish.value)
+        .distinct()
+        .order_by("-created_date")[:4]
+    )
+    wishlist_items = (
+        WishlistProductModel.objects.filter(user=request.user).values_list(
+            "product__id", flat=True
+        )
+        if request.user.is_authenticated
+        else []
+    )
+    return {
+        "latest_products": latest_products,
+        "request": request,
+        "wishlist_items": wishlist_items,
+    }
 
 
 @register.inclusion_tag("includes/home-product-strip.html", takes_context=True)
@@ -43,11 +69,28 @@ def show_home_product_strip(
     }
 
 
-@register.inclusion_tag("includes/similar-products.html",takes_context=True)
-def show_similar_products(context,product):
+@register.inclusion_tag("includes/similar-products.html", takes_context=True)
+def show_similar_products(context, product):
     request = context.get("request")
-    product_categories= product.category.all()
-    similar_prodcuts = ProductModel.objects.filter(
-        status=ProductStatusType.publish.value,category__in=product_categories).distinct().exclude(id=product.id).order_by("-created_date")[:4]
-    wishlist_items =  WishlistProductModel.objects.filter(user=request.user).values_list("product__id",flat=True) if request.user.is_authenticated else []
-    return {"similar_prodcuts": similar_prodcuts,"request":request,"wishlist_items":wishlist_items}
+    product_categories = product.category.all()
+    similar_prodcuts = (
+        ProductModel.objects.filter(
+            status=ProductStatusType.publish.value,
+            category__in=product_categories,
+        )
+        .distinct()
+        .exclude(id=product.id)
+        .order_by("-created_date")[:4]
+    )
+    wishlist_items = (
+        WishlistProductModel.objects.filter(user=request.user).values_list(
+            "product__id", flat=True
+        )
+        if request.user.is_authenticated
+        else []
+    )
+    return {
+        "similar_prodcuts": similar_prodcuts,
+        "request": request,
+        "wishlist_items": wishlist_items,
+    }

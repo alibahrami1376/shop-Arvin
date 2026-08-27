@@ -155,10 +155,5 @@ $('#order-by-filter').change(function () {
     current_url_params.set("order_by", $(this).val());
     window.location.href = window.location.pathname + "?" + current_url_params.toString();
 });
-function changePage(page) {
-    var current_url_params = new URLSearchParams(window.location.search);
-    current_url_params.set("page", page);
-    window.location.href = window.location.pathname + "?" + current_url_params.toString();
-}
 </script>
 {% endblock extra_js %}

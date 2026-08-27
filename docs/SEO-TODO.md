@@ -157,10 +157,10 @@
 ---
 
 ### SEO-F7 — صفحه‌بندی قابل کراول
-**وضعیت:** ❌ دکمه + JS در `product-grid-cards.html`  
+**وضعیت:** ✅ `<a href>` + تگ `pagination_url` (حفظ فیلترها) در `product-grid-cards.html`  
 **باید:** `<a href="?page=N&...">` (پارامترهای فیلتر لازم حفظ شوند) + در صورت نیاز `rel=prev/next` یا حداقل لینک واقعی در HTML.
 
-- [ ] SEO-F7
+- [x] SEO-F7
 
 ---
 
