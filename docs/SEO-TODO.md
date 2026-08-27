@@ -1,6 +1,7 @@
 # SEO Technical Foundation — تسک‌لیست اولویت‌دار آروین
 
-**مرحله فعلی:** ۱ — Technical SEO Foundation  
+**مرحله فعلی:** ۱ — Technical SEO Foundation (P0 و بخش زیادی از P1 تمام)  
+**شاخه کار:** `seo/foundation-p0`  
 **قبل از:** Pillar / Keyword Map / Topic Clusters / Backlinks
 
 > داشتن `sitemap` و `robots.txt` ≠ Technical SEO تمام‌شده.  
@@ -13,18 +14,19 @@
 | مورد | وضعیت | توضیح کوتاه |
 |------|--------|-------------|
 | `robots.txt` | ✅ هست | Disallow برای admin/cart/order/…؛ Sitemap لینک دارد |
-| Sitemap XML | ✅ هست ولی ناقص/مشکل‌دار | محصول، بلاگ، استاتیک هست؛ **دسته محصول با `?category_id=`** داخل sitemap است |
+| Sitemap XML | ✅ به‌روز | محصول، دسته با اسلاگ، بلاگ، استاتیک؛ بدون `?category_id=` |
 | Title داینامیک | ⚠️ نیمه‌کاره | `{% block title %}` در صفحات عمومی هست؛ بعضی با mixin هم‌تراز نیستند |
-| Meta description / OG / Twitter | ⚠️ از django-meta | `{% include "meta/meta.html" %}` در base؛ محصول/خانه/بعضی صفحات mixin دارند |
-| Canonical | ❌ نیست | هیچ `rel=canonical` در پروژه نیست — حیاتی برای `?site=` و فیلترها |
-| `noindex` (meta robots) | ❌ نیست | فقط Disallow در robots.txt (Crawl ≠ Index) |
-| `{% block extra_head %}` | ❌ نیست | در `base-desktop` / `base-mobile` وجود ندارد |
+| Meta description / OG / Twitter | ✅ پایه | `normalize_meta_description` + mixin روی صفحات عمومی اصلی |
+| Canonical | ✅ هست | `build_canonical_url` — path بدون query (`?site=` و فیلترها حذف) |
+| `noindex` (meta robots) | ✅ هست | صفحات خصوصی/تراکنشی `noindex,follow`؛ عمومی `index,follow` |
+| `{% block extra_head %}` | ✅ هست | در `base-desktop` / `base-mobile` (+ داشبوردها) |
 | Product JSON-LD کامل | ❌ نیست | `schemaorg_type=Product` فقط props قدیمی؛ Offer/price/availability نیست |
 | Breadcrumb Schema | ❌ نیست | UI محدود؛ در PDP تقریباً نیست |
-| URL دسته محصول | ❌ لندینگ واقعی نیست | فقط `/shop/product/grid/?category_id=` |
-| اسلاگ بلاگ | ❌ | `/blog/<int:post_id>/` |
-| صفحه‌بندی قابل کراول | ❌ | دکمه JS (`changePage`) به‌جای `<a href>` |
-| H1 خانه | ❌ | در `index.html` `<h1>` نیست |
+| URL دسته محصول | ✅ لندینگ اسلاگ | `/shop/category/<slug>/` + ۳۰۱ از `?category_id=` |
+| اسلاگ بلاگ | ✅ | `/blog/<slug>/` + ۳۰۱ از `/blog/<id>/` |
+| صفحه‌بندی قابل کراول | ✅ | `<a href>` + تگ `pagination_url` |
+| H1 خانه | ✅ | `visually-hidden` در `index.html` — برند + موضوع |
+| H1 دسته | ✅ | نام دسته در لندینگ `/shop/category/<slug>/` |
 | Image SEO | ⚠️ | PDP نسبتاً خوب؛ thumbهای خالی `alt=""`؛ درباره = alt اشتباه برند |
 
 **قالب پایه (مهم):**  
@@ -32,6 +34,7 @@
 
 **Meta stack موجود:**  
 `django-meta` + `SiteMetadataMixin` / `ObjectMetadataMixin` در `core/views_meta.py`  
++ helpers در `core/core/seo.py` (canonical، robots، normalize description)  
 → Foundation را روی همین بساز؛ چرخ را از نو اختراع نکن.
 
 ---
@@ -39,7 +42,7 @@
 ## نقشهٔ کل SEO آروین (یادآوری ترتیب)
 
 ```text
-1. Technical SEO Foundation   ← الان اینجاییم
+1. Technical SEO Foundation   ← الان اینجاییم (P0 ✅؛ P1 عمدتاً ✅؛ باقی P2/P3)
 2. URL Architecture
 3. Keyword Map
 4. Pillar Page
@@ -61,84 +64,77 @@
 ## P0 — حیاتی (بدون این‌ها Foundation کامل نیست)
 
 ### SEO-F1 — Canonical خودارجاع برای همهٔ صفحات عمومی
-**وضعیت:** ❌ وجود ندارد  
-**کجا:** `base-desktop.html` / `base-mobile.html` + ساخت URL در backend (`views_meta` یا context processor)
+**وضعیت:** ✅ `build_canonical_url` + context processor / base templates  
+**کجا:** `core/core/seo.py`, context processors، `base-desktop.html` / `base-mobile.html`
 
-**باید بشود:**
-- `<link rel="canonical" href="https://arvinofficial.ir/...">` بدون queryهای نویزی
-- Queryهایی مثل `?site=mobile|desktop`، `sort`، `order_by`، پارامترهای فیلتر غیرضروری در canonical نیایند
-- برای PDP: URL تمیز محصول (`get_absolute_url`)
-- برای لیست دسته (تا قبل از SEO-F8): موقتاً همان URL فعلی grid، ولی canonical ثابت تعریف شود
+**انجام‌شده:**
+- `<link rel="canonical">` بدون queryهای نویزی (`?site=`, فیلتر، سورت)
+- PDP از path تمیز محصول
+- لندینگ دسته مسیر اسلاگ بدون query
 
-**چرا:** Google برای duplicate/`?site=` و فیلترها به canonical نیاز دارد؛ robots.txt جایگزین canonical نیست.
-
-- [ ] SEO-F1
+- [x] SEO-F1
 
 ---
 
 ### SEO-F2 — Meta description یکدست و پر برای صفحات عمومی
-**وضعیت:** ⚠️ mixin روی خانه/فروشگاه/محصول/بلاگ/قانونی؛ پوشش و کیفیت یکدست نیست  
-**کجا:** viewهای `SiteMetadataMixin` + تمپلیت‌هایی که `meta` در context ندارند
+**وضعیت:** ✅ نرمال‌سازی + پوشش صفحات عمومی اصلی  
+**کجا:** `normalize_meta_description`، viewهای `SiteMetadataMixin` / ObjectMeta
 
-**باید بشود:**
-- هر صفحهٔ قابل ایندکس `meta.description` داشته باشد (۱۵۰–۱۶۰ کاراکتر هدف)
-- Title تمپلیت (`{% block title %}`) با `meta.title` / OG هم‌خوان باشد یا یکی منبع حقیقت شود
-- پیش‌فرض محصول: `brief_description` (الان در مدل هست) — خالی‌ها را در ادمین پر کن
+**انجام‌شده:**
+- description صفحات ایندکس‌شونده نرمال و پر می‌شود
+- پیش‌فرض محصول از `brief_description` / description مدل
 
-**نکته:** `META_USE_TITLE_TAG = False` → title از block می‌آید؛ description از django-meta. این دو را آگاهانه هماهنگ نگه دار.
+**باقی (اختیاری کیفیت):** هم‌ترازی کامل `{% block title %}` با `meta.title` / OG در همهٔ صفحات.
 
-- [ ] SEO-F2
+- [x] SEO-F2
 
 ---
 
 ### SEO-F3 — کنترل Indexing با meta robots (`noindex` جایی که لازم است)
-**وضعیت:** ❌ فقط `Disallow` در `robots.txt`  
-**کجا:** base + صفحات cart / checkout / dashboard / accounts / searchهای بی‌ارزش / شاید wishlist
+**وضعیت:** ✅ `should_noindex` / `robots_meta_content` روی baseهای عمومی و داشبورد  
+**کجا:** `core/core/seo.py` + base templates
 
-**باید بشود:**
+**انجام‌شده:**
 ```html
 <meta name="robots" content="index,follow">   <!-- پیش‌فرض صفحات عمومی -->
 <meta name="robots" content="noindex,follow"> <!-- صفحات خصوصی/تراکنشی -->
 ```
 
-**چرا:** `robots.txt` جلوی crawl را می‌گیرد، ولی اگر URL از جای دیگر لینک شود یا قبلاً ایندکس شده باشد، `noindex` ابزار درست Indexing است.
-
-- [ ] SEO-F3
+- [x] SEO-F3
 
 ---
 
 ### SEO-F4 — بلاک `extra_head` در هر دو base
-**وضعیت:** ❌ نیست  
-**کجا:** `base-desktop.html`, `base-mobile.html` بعد از include متا
+**وضعیت:** ✅ هست  
+**کجا:** `base-desktop.html`, `base-mobile.html` (+ داشبوردها) بعد از include متا
 
-**باید بشود:**
 ```django
 {% block extra_head %}{% endblock %}
 ```
 برای JSON-LD صفحه، robots خاص، یا متاهای استثنا بدون دست زدن به base در هر PR.
 
-- [ ] SEO-F4
+- [x] SEO-F4
 
 ---
 
 ### SEO-F5 — بازبینی Sitemap (تغییر نده تا ممیزی نشود؛ بعد اصلاح هدفمند)
-**وضعیت:** ✅ فایل هست — کیفیت مشکوک  
+**وضعیت:** ✅ ممیزی + اصلاح (F5b) انجام شد؛ بعد از F8 دوباره دسته با اسلاگ برگشت  
 **کجا:** `core/core/sitemaps.py` + `urls.py`
 
-**الان شامل است:** محصولات publish، پست‌های فعال، صفحات استاتیک، دسته‌های محصول با `?category_id=`، دسته بلاگ با `cat_name`.
+**الان شامل است:** محصولات publish، پست‌های فعال، صفحات استاتیک، **دسته‌های محصول با `/shop/category/<slug>/`**, دسته بلاگ با `cat_name`.
 
-**چک‌لیست ممیزی (اول بخوان، بعد عوض کن):**
-- [ ] فقط URLهایی که می‌خواهی در Search باشند
-- [ ] URLهای canonical (نه فیلتر/سورت)
-- [ ] بدون 404 / پیش‌نویس / حذف‌شده
-- [ ] **حذف یا جایگزینی** `ProductCategorySitemap` که `?category_id=` می‌دهد (تا وقتی لندینگ اسلاگ‌دار ساخته نشده، یا بعد از SEO-F8)
-- [ ] `lastmod` درست است؟ (برای محصول/پست بله)
-- [ ] بعد از اصلاح: در GSC دوباره Submit
+**چک‌لیست:**
+- [x] فقط URLهایی که می‌خواهی در Search باشند (هدف فعلی)
+- [x] URLهای canonical (نه فیلتر/سورت)
+- [x] بدون 404 / پیش‌نویس / حذف‌شده (محصول/پست فیلترشده)
+- [x] `ProductCategorySitemap` → اسلاگ لندینگ (نه `?category_id=`)
+- [x] `lastmod` برای محصول/پست
+- [ ] بعد از دیپلوی: در GSC دوباره Submit / پاک‌کردن URLهای قدیمی دسته
 
-**تسک اجرایی بعد از ممیزی:** SEO-F5b — اصلاح لیست items/location
+**تسک اجرایی:** SEO-F5b — ✅ انجام شد (حذف query دسته، سپس ثبت مجدد با اسلاگ در F8)
 
-- [ ] SEO-F5 ممیزی
-- [ ] SEO-F5b اصلاح
+- [x] SEO-F5 ممیزی
+- [x] SEO-F5b اصلاح
 
 ---
 
@@ -147,28 +143,25 @@
 > این بخش هم Foundation و هم شروع مرحله ۲ است. بدون URL تمیز، Pillar و Internal Link ضعیف می‌ماند.
 
 ### SEO-F6 — اسلاگ برای پست بلاگ
-**وضعیت:** ❌ `/blog/<id>/`  
-**کجا:** `blog/urls.py`, `blog/models.Post`, تمپلیت‌ها، `BlogPostSitemap`
+**وضعیت:** ✅ `/blog/<slug>/` + ۳۰۱ از `/blog/<id>/`  
+**کجا:** `blog/urls.py`, `blog/models.Post`, تمپلیت‌ها، `BlogPostSitemap`, migration `0004_post_slug`
 
-**باید:** `/blog/<slug>/` + redirect ۳۰۱ از URL قدیمی id (اگر ایندکس شده).
-
-- [ ] SEO-F6
+- [x] SEO-F6
 
 ---
 
 ### SEO-F7 — صفحه‌بندی قابل کراول
 **وضعیت:** ✅ `<a href>` + تگ `pagination_url` (حفظ فیلترها) در `product-grid-cards.html`  
-**باید:** `<a href="?page=N&...">` (پارامترهای فیلتر لازم حفظ شوند) + در صورت نیاز `rel=prev/next` یا حداقل لینک واقعی در HTML.
+**کجا:** `shop/templatetags/shop_tags.py`, partial گرید
 
 - [x] SEO-F7
 
 ---
 
 ### SEO-F8 — لندینگ واقعی دسته محصول با اسلاگ
-**وضعیت:** ✅ `/shop/category/<slug>/` + ۳۰۱ از `?category_id=` + sitemap اسلاگ‌دار  
-**کجا:** `shop/urls.py`, `ProductCategorySitemap`, لینک‌های دسته در PDP (الان بعضی `#`)
+**وضعیت:** ✅ `/shop/category/<slug>/` + ۳۰۱ از `?category_id=` + sitemap اسلاگ‌دار + لینک‌های داخلی  
+**کجا:** `shop/urls.py`, `ShopProductCategoryView`, `ProductCategoryModel.get_absolute_url`, منو/PDP/فیلتر، `ProductCategorySitemap`
 
-**باید (پیشنهاد):**
 ```text
 /shop/category/<slug>/
 ```
@@ -176,7 +169,7 @@
 - Title/Description مخصوص دسته  
 - Canonical همان اسلاگ  
 - Sitemap → همین URL  
-- ۳۰۱ از `?category_id=` قدیمی (اختیاری ولی توصیه‌شده)
+- ۳۰۱ از `?category_id=` قدیمی  
 
 **این مهم‌ترین آجر معماری Pillar → Category → Product است.**
 
@@ -185,14 +178,14 @@
 ---
 
 ### SEO-F9 — کوتاه‌کردن URL محصول (اختیاری ولی تمیز)
-**وضعیت:** `/shop/product/<slug>/detail/`  
+**وضعیت:** هنوز `/shop/product/<slug>/detail/`  
 **پیشنهاد:** `/shop/product/<slug>/` + ۳۰۱ از مسیر قدیمی
 
-- [ ] SEO-F9 (بعد از F6/F8 اگر ظرفیت بود)
+- [ ] SEO-F9 (اختیاری؛ F6/F8 تمام شد)
 
 ---
 
-## P2 — Schema و On-page (غنی‌سازی SERP)
+## P2 — Schema و On-page (غنی‌سازی SERP) ← اولویت بعدی کد
 
 ### SEO-F10 — JSON-LD محصول (Product + Offer)
 **وضعیت:** ❌ schema واقعی قیمت/موجودی نیست  
@@ -233,12 +226,10 @@
 |------|--------|
 | PDP | ✅ `{{ object.title }}` |
 | About / بعضی داخلی | ✅ |
-| خانه | ❌ ندارد |
-| Grid وقتی دسته فعال است | ✅ H1 = نام دسته در لندینگ `/shop/category/<slug>/` |
+| خانه | ✅ `فروشگاه آروین \| صندلی راننده…` (visually-hidden، بنر به‌هم نمی‌خورد) |
+| لندینگ دسته | ✅ H1 = نام دسته |
 
-**باید:** یک H1 معنادار در خانه؛ در grid وقتی دسته انتخاب شده H1 = نام دسته.
-
-- [ ] SEO-F14
+- [x] SEO-F14
 
 ---
 
@@ -278,8 +269,9 @@
 
 ### SEO-F19 — Google Search Console + Bing
 - تأیید مالکیت دامنه  
-- Submit کردن `sitemap.xml`  
+- Submit کردن `sitemap.xml` (به‌خصوص بعد از F5b/F6/F8)  
 - مانیتور Coverage / Soft 404 / Duplicate  
+- درخواست حذف/به‌روزرسانی URLهای قدیمی بلاگ id و `?category_id=` در صورت نیاز  
 
 - [ ] SEO-F19
 
@@ -294,7 +286,7 @@
 
 ## خارج از Foundation (عمداً بعداً)
 
-این‌ها را **الان** شروع نکن؛ بعد از P0–P1:
+این‌ها را **الان** شروع نکن؛ بعد از بستن P2 پایه و GSC:
 
 - Keyword Map  
 - Pillar Page («صندلی کامیون» و …)  
@@ -306,31 +298,28 @@
 
 ---
 
-# ترتیب اجرای پیشنهادی (همین اسپرینت Foundation)
+# ترتیب اجرا (وضعیت اسپرینت)
 
 ```text
-هفته ۱
+✅ انجام‌شده (P0 + بخش P1)
   SEO-F4  extra_head
   SEO-F1  canonical
   SEO-F3  noindex صفحات خصوصی
   SEO-F2  تکمیل meta description
-  SEO-F5  ممیزی sitemap → SEO-F5b اصلاح (حذف ?category_id از sitemap اگر لازم)
-
-هفته ۲
+  SEO-F5 / F5b  ممیزی + اصلاح sitemap
+  SEO-F6  اسلاگ بلاگ + ۳۰۱
   SEO-F7  pagination با <a>
-  SEO-F14 H1 خانه + دسته
+  SEO-F8  لندینگ دسته با اسلاگ + sitemap + لینک‌های داخلی
+
+⏭️ بعدی پیشنهادی (P2 on-page / schema)
   SEO-F15 image altها
   SEO-F10 Product JSON-LD
   SEO-F12 Breadcrumb + schema
-
-هفته ۳ (شروع URL Architecture)
-  SEO-F8  لندینگ دسته با اسلاگ + آپدیت sitemap + لینک‌های داخلی
-  SEO-F6  اسلاگ بلاگ + ۳۰۱
   SEO-F11 Article JSON-LD
   SEO-F13 FAQ schema
 
 بعداً
-  SEO-F9, F16, F17, F18, F19, F20
+  SEO-F9 (کوتاه‌کردن URL محصول), F16, F17, F18, F19, F20
   سپس مرحله ۳ به بعد (Keyword → Pillar → …)
 ```
 
@@ -342,15 +331,17 @@
 |------|-----|
 | `core/templates/base-desktop.html` | head، canonical، robots، extra_head |
 | `core/templates/base-mobile.html` | همان |
-| `core/core/views_meta.py` | canonical URL تمیز، meta مشترک |
-| `core/core/sitemaps.py` | ممیزی/اصلاح |
-| `core/core/urls.py` | مسیر sitemap/robots (فعلاً OK) |
+| `core/core/seo.py` | canonical، robots meta، normalize description |
+| `core/core/views_meta.py` | meta مشترک mixin |
+| `core/core/sitemaps.py` | محصول / دسته اسلاگ / بلاگ / استاتیک |
+| `core/core/urls.py` | مسیر sitemap/robots + ثبت `product-categories` |
 | `core/templates/robots.txt` | فعلاً نگه دار؛ در صورت نیاز Disallow ریزتر |
-| `core/shop/models.py` / `views.py` | meta محصول، JSON-LD، دسته |
+| `core/shop/models.py` / `views.py` | دسته لندینگ، meta محصول، JSON-LD بعدی |
+| `core/shop/templatetags/shop_tags.py` | `pagination_url` |
 | `core/templates/shop/product-detail.html` | H1/breadcrumb/schema/alt |
-| `core/templates/shop/product-grid.html` + partials | pagination، H1 دسته |
-| `core/blog/models.py` / `urls.py` | اسلاگ |
-| `core/website/views.py` + `index.html` | meta خانه، H1 |
+| `core/templates/shop/product-grid.html` + partials | pagination، H1 دسته، فیلتر |
+| `core/blog/models.py` / `urls.py` | اسلاگ + ۳۰۱ |
+| `core/website/views.py` + `index.html` | meta خانه، H1 (F14 باقی) |
 | `core/core/middleware.py` | کش HTML (F17) |
 | `core/core/settings.py` | تنظیمات django-meta / دامنه |
 
@@ -360,16 +351,16 @@
 
 وقتی همهٔ این‌ها سبز شدند، می‌توانی بگویی Technical SEO Foundation آماده است:
 
-- [ ] Canonical روی صفحات عمومی  
-- [ ] Description یکتا روی صفحات ایندکس‌شونده  
-- [ ] noindex روی صفحات تراکنشی/پنل  
-- [ ] Sitemap فقط URLهای canonical باارزش  
-- [ ] Product JSON-LD معتبر (تست Rich Results)  
-- [ ] Pagination و حداقل یک سطح URL دستهٔ تمیز (یا برنامهٔ قطعی F8 در جریان)  
-- [ ] GSC سایت را می‌بیند و sitemap بدون خطای بحرانی است  
+- [x] Canonical روی صفحات عمومی  
+- [x] Description یکتا روی صفحات ایندکس‌شونده (پایه)  
+- [x] noindex روی صفحات تراکنشی/پنل  
+- [x] Sitemap فقط URLهای canonical باارزش (محصول + دسته اسلاگ + بلاگ + استاتیک)  
+- [ ] Product JSON-LD معتبر (تست Rich Results) — **F10**  
+- [x] Pagination و URL دستهٔ تمیز (`/shop/category/<slug>/`)  
+- [ ] GSC سایت را می‌بیند و sitemap بدون خطای بحرانی است — **F19**  
 
-**بعد از این → مرحله ۲/۳ (URL نهایی + Keyword Map) و بعد Pillar.**
+**بعد از این → تکمیل P2 (schema/H1 خانه/image) سپس Keyword Map و Pillar.**
 
 ---
 
-*آخرین هم‌ترازسازی با کد: ۱۴۰۴/۰۶/۰۲ — جایگزین نسخهٔ قدیمی‌تر همین فایل که بعضی آیتم‌های انجام‌شده (robots/sitemap پایه) را هنوز «نبود» فرض می‌کرد.*
+*آخرین هم‌ترازسازی با کد: ۱۴۰۵/۰۶/۰۵ — P0 کامل؛ P1 تا F8؛ بعدی پیشنهادی F14 (خانه) / F15 / F10.*
