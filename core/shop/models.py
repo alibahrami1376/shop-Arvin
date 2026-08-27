@@ -41,6 +41,11 @@ class ProductCategoryModel(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        from django.urls import reverse
+
+        return reverse("shop:product-category", kwargs={"slug": self.slug})
+
     def get_self_and_descendant_ids(self):
         if not self.pk:
             return []

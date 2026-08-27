@@ -43,13 +43,6 @@ class ProductSitemap(HttpsSitemap):
 
 
 class ProductCategorySitemap(HttpsSitemap):
-    """
-    Not registered in urls.sitemaps until SEO-F8.
-
-    Current location uses ?category_id= which duplicates the product-grid
-    canonical. Re-enable with /shop/category/<slug>/ locations after F8.
-    """
-
     changefreq = "weekly"
     priority = 0.7
 
@@ -58,9 +51,6 @@ class ProductCategorySitemap(HttpsSitemap):
 
     def lastmod(self, obj):
         return obj.updated_date
-
-    def location(self, obj):
-        return f"{reverse('shop:product-grid')}?category_id={obj.pk}"
 
 
 class BlogPostSitemap(HttpsSitemap):

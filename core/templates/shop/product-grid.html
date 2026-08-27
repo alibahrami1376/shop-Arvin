@@ -7,16 +7,22 @@
 {% if is_mobile_site %}
 <section class="shop-mobile-page" aria-label="فروشگاه">
     <header class="shop-mobile-page__header container">
-        <h1 class="shop-mobile-page__title">فروشگاه</h1>
+        <h1 class="shop-mobile-page__title">{% if active_category %}{{ active_category.title }}{% else %}فروشگاه{% endif %}</h1>
         <nav class="shop-mobile-page__crumbs" aria-label="مسیر">
             <a href="{% url 'website:index' %}">خانه</a>
             <span aria-hidden="true">/</span>
+            {% if active_category %}
+            <a href="{% url 'shop:product-grid' %}">محصولات</a>
+            <span aria-hidden="true">/</span>
+            <span>{{ active_category.title }}</span>
+            {% else %}
             <span>محصولات</span>
+            {% endif %}
         </nav>
     </header>
 
     <div class="shop-mobile-toolbar container" role="toolbar" aria-label="ابزارهای فروشگاه">
-        <button type="button" class="shop-mobile-toolbar__filter btn btn-outline-primary{% if request.GET.q or request.GET.min_price or request.GET.max_price or request.GET.category_id %} shop-mobile-toolbar__filter--active{% endif %}"
+        <button type="button" class="shop-mobile-toolbar__filter btn btn-outline-primary{% if active_category or request.GET.q or request.GET.min_price or request.GET.max_price %} shop-mobile-toolbar__filter--active{% endif %}"
             data-bs-toggle="offcanvas" data-bs-target="#shopFilterOffcanvas" aria-controls="shopFilterOffcanvas">
             <i class="bi-sliders" aria-hidden="true"></i>
             <span>فیلتر</span>
@@ -54,14 +60,18 @@
     <div class="container content-space-t-2 content-space-t-lg-3">
         <div class="row align-items-center">
             <div class="col-sm">
-                <h4 class="mb-0">شبکه محصولات</h4>
+                <h1 class="h4 mb-0">{% if active_category %}{{ active_category.title }}{% else %}شبکه محصولات{% endif %}</h1>
             </div>
             <div class="col-sm-auto">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item"><a href="{% url 'website:index' %}">خانه</a></li>
                         <li class="breadcrumb-item"><a href="{% url 'shop:product-grid' %}">فروشگاه</a></li>
+                        {% if active_category %}
+                        <li class="breadcrumb-item active" aria-current="page">{{ active_category.title }}</li>
+                        {% else %}
                         <li class="breadcrumb-item active" aria-current="page">محصولات</li>
+                        {% endif %}
                     </ol>
                 </nav>
             </div>
@@ -143,7 +153,6 @@ $(document).ready(function () {
     $("#search-query-filter").val(current_url_params.get("q") || "");
     $("#min-price-filter").val(current_url_params.get("min_price") || "");
     $("#max-price-filter").val(current_url_params.get("max_price") || "");
-    $("#category-id-filter").val(current_url_params.get("category_id") || "");
 });
 $('#page-size-filter').change(function () {
     var current_url_params = new URLSearchParams(window.location.search);
@@ -154,6 +163,24 @@ $('#order-by-filter').change(function () {
     var current_url_params = new URLSearchParams(window.location.search);
     current_url_params.set("order_by", $(this).val());
     window.location.href = window.location.pathname + "?" + current_url_params.toString();
+});
+$('#shopFilterForm').on('submit', function (e) {
+    e.preventDefault();
+    var $option = $('#category-id-filter').find('option:selected');
+    var target = $option.data('url') || $('#category-id-filter').data('grid-url') || '.';
+    var params = new URLSearchParams();
+    var q = $('#search-query-filter').val();
+    var minPrice = $('#min-price-filter').val();
+    var maxPrice = $('#max-price-filter').val();
+    var orderBy = new URLSearchParams(window.location.search).get('order_by');
+    var pageSize = new URLSearchParams(window.location.search).get('page_size');
+    if (q) params.set('q', q);
+    if (minPrice) params.set('min_price', minPrice);
+    if (maxPrice) params.set('max_price', maxPrice);
+    if (orderBy) params.set('order_by', orderBy);
+    if (pageSize) params.set('page_size', pageSize);
+    var query = params.toString();
+    window.location.href = query ? (target + '?' + query) : target;
 });
 </script>
 {% endblock extra_js %}

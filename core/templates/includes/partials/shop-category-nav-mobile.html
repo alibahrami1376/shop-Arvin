@@ -12,18 +12,18 @@
     </button>
     <ul class="header__mobile-subcats list-unstyled mb-0" id="header-mobile-sub-{{ category.id }}" hidden>
         <li>
-            <a href="{% url 'shop:product-grid' %}?category_id={{ category.id }}"
+            <a href="{{ category.get_absolute_url }}"
                 class="header__mobile-category-link header__mobile-subcat-link">همه {{ category.title }}</a>
         </li>
         {% for child in children %}
         <li>
-            <a href="{% url 'shop:product-grid' %}?category_id={{ child.id }}"
+            <a href="{{ child.get_absolute_url }}"
                 class="header__mobile-category-link header__mobile-subcat-link">{{ child.title }}</a>
         </li>
         {% endfor %}
     </ul>
     {% else %}
-    <a href="{% url 'shop:product-grid' %}?category_id={{ category.id }}"
+    <a href="{{ category.get_absolute_url }}"
         class="header__mobile-category-link fw-semibold">{{ category.title }}</a>
     {% endif %}
 </li>

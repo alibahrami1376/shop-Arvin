@@ -29,10 +29,10 @@
             <i class="bi-grid" aria-hidden="true"></i>
             <span>دسته‌بندی</span>
         </label>
-        <select class="form-select shop-filter-form__control" name="category_id" id="category-id-filter">
-            <option value="">همه دسته‌ها</option>
+        <select class="form-select shop-filter-form__control" id="category-id-filter" data-grid-url="{% url 'shop:product-grid' %}">
+            <option value="" data-url="{% url 'shop:product-grid' %}">همه دسته‌ها</option>
             {% for category in categories %}
-            <option value="{{ category.id }}"{% if request.GET.category_id == category.id|stringformat:"s" %} selected{% endif %}>{{ category.get_indented_title }}</option>
+            <option value="{{ category.id }}" data-url="{{ category.get_absolute_url }}"{% if active_category.id == category.id %} selected{% endif %}>{{ category.get_indented_title }}</option>
             {% endfor %}
         </select>
     </div>

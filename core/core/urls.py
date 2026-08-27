@@ -11,6 +11,7 @@ from core.error_views import page_not_found, permission_denied, server_error
 from core.sitemaps import (
     BlogCategorySitemap,
     BlogPostSitemap,
+    ProductCategorySitemap,
     ProductSitemap,
     StaticViewSitemap,
 )
@@ -23,6 +24,7 @@ handler500 = server_error
 sitemaps = {
     "static": StaticViewSitemap,
     "products": ProductSitemap,
+    "product-categories": ProductCategorySitemap,
     "blog": BlogPostSitemap,
     "blog-categories": BlogCategorySitemap,
 }

@@ -70,7 +70,7 @@
         {% if object.category.all %}
         <p class="pdp-mobile__cats">
             {% for category in object.category.all %}
-            <span>{{ category.title }}</span>{% if not forloop.last %}، {% endif %}
+            <a href="{{ category.get_absolute_url }}">{{ category.title }}</a>{% if not forloop.last %}، {% endif %}
             {% endfor %}
         </p>
         {% endif %}
@@ -277,7 +277,7 @@
                 <h1 class="h2">{{object.title}}</h1>
                 <p>
                     {% for category in object.category.all %}
-                    <a href="#">{{category.title}} </a>
+                    <a href="{{ category.get_absolute_url }}">{{ category.title }}</a>
                     {% if not forloop.last %} ,{% endif %}
                     {% endfor %}
                 </p>

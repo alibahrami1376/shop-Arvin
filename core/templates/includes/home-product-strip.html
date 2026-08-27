@@ -42,7 +42,7 @@
                     <div class="card-body">
                         <div class="mb-2 home-product-strip__above-stretch">
                             {% for category in product.category.all %}
-                            <a class="link-sm link-secondary" href="{% url 'shop:product-grid' %}?category_id={{ category.id }}">{{ category.title }}</a>{% if not forloop.last %}، {% endif %}
+                            <a class="link-sm link-secondary" href="{{ category.get_absolute_url }}">{{ category.title }}</a>{% if not forloop.last %}، {% endif %}
                             {% endfor %}
                         </div>
 
