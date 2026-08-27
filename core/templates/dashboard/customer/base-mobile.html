@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5, user-scalable=yes">
     <title>{% block title %}حساب کاربری{% endblock title %}</title>
+    <meta name="robots" content="{{ meta_robots|default:'noindex,follow' }}">
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'favicon/arvinofficial_favicon.ico' %}">
 {% compress css %}

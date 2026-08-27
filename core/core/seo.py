@@ -1,4 +1,4 @@
-"""Helpers for technical SEO (canonical URLs, etc.)."""
+"""Helpers for technical SEO (canonical URLs, robots meta, etc.)."""
 
 from django.conf import settings
 
@@ -9,6 +9,18 @@ STRIP_QUERY_KEYS = frozenset(
         "sort",
         "order_by",
     }
+)
+
+# Align with robots.txt Disallow — private / transactional URLs.
+NOINDEX_PATH_PREFIXES = (
+    "/admin/",
+    "/dashboard/",
+    "/accounts/",
+    "/cart/",
+    "/order/",
+    "/payment/",
+    "/api/",
+    "/ckeditor5/",
 )
 
 
@@ -23,3 +35,17 @@ def build_canonical_url(request) -> str:
     domain = settings.SITE_DOMAIN
     path = request.path or "/"
     return f"{protocol}://{domain}{path}"
+
+
+def should_noindex(path: str) -> bool:
+    path = path or "/"
+    if not path.endswith("/"):
+        path = f"{path}/"
+    return any(path.startswith(prefix) for prefix in NOINDEX_PATH_PREFIXES)
+
+
+def get_meta_robots(request) -> str:
+    """Default indexable; noindex for private/transactional paths."""
+    if should_noindex(request.path):
+        return "noindex,follow"
+    return "index,follow"

@@ -10,6 +10,7 @@
 
     <!-- Title -->
     <title>{% block title %}پنل ادمین{% endblock title %}</title>
+    <meta name="robots" content="{{ meta_robots|default:'noindex,follow' }}">
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'favicon/arvinofficial_favicon.ico' %}">
