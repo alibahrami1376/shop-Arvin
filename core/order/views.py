@@ -4,7 +4,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.utils import timezone
 from django.views.generic import DetailView, FormView, TemplateView, View
 from payment.models import (
     CardToCardSettings,
@@ -15,11 +14,11 @@ from payment.models import (
 from payment.zarinpal_client import ZarinPalRequestFailed
 
 from order.forms import CheckOutForm, OrderTrackingForm
-from order.models import CouponModel, OrderModel
+from order.models import OrderModel
 from order.permissions import HasCustomerAccessPermission
 from order.pricing import get_checkout_pricing_context
 from order.repositories import order_repo
-from order.services import checkout_service
+from order.services import CouponValidationError, checkout_service, coupon_service
 
 
 class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormView):
@@ -187,57 +186,29 @@ class CardPaymentInstructionsView(
 class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):
     def post(self, request, *args, **kwargs):
         code = request.POST.get("code")
-        user = self.request.user
-
-        status_code = 200
-        message = "کد تخفیف با موفقیت ثبت شد"
-        total_price = 0
-        total_tax = 0
-        pricing_ctx = {}
+        user = request.user
 
         try:
-            coupon = CouponModel.objects.get(code=code)
-        except CouponModel.DoesNotExist:
-            return JsonResponse({"message": "کد تخفیف یافت نشد"}, status=404)
-        else:
-            if coupon.used_by.count() >= coupon.max_limit_usage:
-                status_code, message = (
-                    403,
-                    "ظرفیت استفاده از این کد تخفیف تکمیل شده است.",
-                )
+            coupon = coupon_service.get_valid_coupon(code=code, user=user)
+        except CouponValidationError as exc:
+            return JsonResponse({"message": exc.message}, status=exc.status_code)
 
-            elif coupon.expiration_date and coupon.expiration_date < timezone.now():
-                status_code, message = 403, "کد تخفیف منقضی شده است"
-
-            elif user in coupon.used_by.all():
-                status_code, message = 403, "این کد تخفیف قبلا توسط شما استفاده شده است"
-
-            else:
-                cart = CartModel.objects.get(user=self.request.user)
-                items_subtotal = cart.calculate_total_price()
-                city = (request.POST.get("city") or "").strip()
-                state = (request.POST.get("state") or "").strip()
-                pricing_ctx = get_checkout_pricing_context(
-                    items_subtotal,
-                    city=city,
-                    state=state,
-                    coupon_percent=coupon.discount_percent,
-                )
-                total_tax = pricing_ctx["total_tax"]
-                total_price = pricing_ctx["grand_total"]
+        cart = CartModel.objects.get(user=user)
+        pricing_ctx = get_checkout_pricing_context(
+            cart.calculate_total_price(),
+            city=(request.POST.get("city") or "").strip(),
+            state=(request.POST.get("state") or "").strip(),
+            coupon_percent=coupon.discount_percent,
+        )
         return JsonResponse(
             {
-                "message": message,
-                "subtotal": pricing_ctx.get("subtotal", 0) if status_code == 200 else 0,
-                "discount_amount": pricing_ctx.get("discount_amount", 0)
-                if status_code == 200
-                else 0,
-                "shipping_amount": pricing_ctx.get("shipping_amount", 0)
-                if status_code == 200
-                else 0,
-                "total_tax": total_tax,
-                "total_price": total_price,
-                "coupon_percent": coupon.discount_percent if status_code == 200 else 0,
+                "message": "کد تخفیف با موفقیت ثبت شد",
+                "subtotal": pricing_ctx["subtotal"],
+                "discount_amount": pricing_ctx["discount_amount"],
+                "shipping_amount": pricing_ctx["shipping_amount"],
+                "total_tax": pricing_ctx["total_tax"],
+                "total_price": pricing_ctx["grand_total"],
+                "coupon_percent": coupon.discount_percent,
             },
-            status=status_code,
+            status=200,
         )

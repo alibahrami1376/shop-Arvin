@@ -1,8 +1,8 @@
 from django import forms
-from django.utils import timezone
 from payment.models import PaymentMethodSettings
 
-from order.models import City, CouponModel, Province
+from order.models import City, Province
+from order.services import CouponValidationError, coupon_service
 from order.shipping import (
     DELIVERY_FREIGHT,
     DELIVERY_TYPE_CHOICES,
@@ -121,27 +121,10 @@ class CheckOutForm(forms.Form):
         code = self.cleaned_data.get("coupon")
         if code == "":
             return None
-        user = self.request.user
-        coupon = None
         try:
-            coupon = CouponModel.objects.get(code=code)
-        except CouponModel.DoesNotExist:
-            raise forms.ValidationError("کد تخفیف اشتباه است")
-        if coupon:
-            if coupon.used_by.count() >= coupon.max_limit_usage:
-                raise forms.ValidationError(
-                    "ظرفیت استفاده از این کد تخفیف تکمیل شده است."
-                )
-
-            if coupon.expiration_date and coupon.expiration_date < timezone.now():
-                raise forms.ValidationError("کد تخفیف منقضی شده است")
-
-            if user in coupon.used_by.all():
-                raise forms.ValidationError(
-                    "این کد تخفیف قبلا توسط شما استفاده شده است"
-                )
-
-        return coupon
+            return coupon_service.get_valid_coupon(code=code, user=self.request.user)
+        except CouponValidationError as exc:
+            raise forms.ValidationError(exc.message) from exc
 
     def clean_payment_method(self):
         method = self.cleaned_data.get("payment_method")
