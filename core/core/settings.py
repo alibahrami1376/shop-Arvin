@@ -113,6 +113,7 @@ TEMPLATES = [
                 "shop.context_processors.shop_categories",
                 "cart.context_processors.cart_processor",
                 "core.context_processors.device.device",
+                "core.context_processors.seo.seo",
                 "website.context_processors.site_branding",
             ],
         },

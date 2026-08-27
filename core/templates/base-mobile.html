@@ -20,6 +20,8 @@
 
     <title>{% block title %}فروشگاه آروین{% endblock title %}</title>
     {% include "meta/meta.html" %}
+    <link rel="canonical" href="{{ canonical_url }}">
+    {% block extra_head %}{% endblock %}
 
     {% compress css %}
     <link rel="stylesheet" href="{% static 'css/vendor.min.css' %}">
