@@ -27,7 +27,7 @@
 | صفحه‌بندی قابل کراول | ✅ | `<a href>` + تگ `pagination_url` |
 | H1 خانه | ✅ | `visually-hidden` در `index.html` — برند + موضوع |
 | H1 دسته | ✅ | نام دسته در لندینگ `/shop/category/<slug>/` |
-| Image SEO | ⚠️ | PDP نسبتاً خوب؛ thumbهای خالی `alt=""`؛ درباره = alt اشتباه برند |
+| Image SEO | ✅ پایه | تامب PDP با نام محصول؛ about بدون برند اشتباه |
 
 **قالب پایه (مهم):**  
 `core/templates/base-desktop.html` و `base-mobile.html` — نه یک `base.html` واحد.
@@ -234,10 +234,15 @@
 ---
 
 ### SEO-F15 — Image SEO
-- [ ] `alt` خالی تامب‌های PDP → نام محصول
-- [ ] alt اشتباه «Noorbanoo Life» در `about.html` → متن آروین
-- [ ] `width`/`height` جایی که هنوز نیست (جلوگیری CLS)
-- [ ] تصویر LCP محصول: `loading="eager"` (الان نسبتاً رعایت شده) — گالری ثانویه lazy بماند
+**وضعیت:** ✅ موارد اصلی انجام شد  
+- [x] `alt` خالی تامب‌های PDP → نام محصول  
+- [x] alt اشتباه «Noorbanoo Life» در `about.html` → متن آروین  
+- [x] `width`/`height` روی تصاویر about (۹۰۰×۹۰۰)  
+- [x] تصویر LCP محصول: `loading="eager"` (از قبل رعایت شده) — گالری ثانویه lazy  
+
+**باقی اختیاری:** alt کارت‌های بلاگ خانه / گالری پست در صورت نیاز.
+
+- [x] SEO-F15
 
 ---
 
@@ -312,7 +317,6 @@
   SEO-F8  لندینگ دسته با اسلاگ + sitemap + لینک‌های داخلی
 
 ⏭️ بعدی پیشنهادی (P2 on-page / schema)
-  SEO-F15 image altها
   SEO-F10 Product JSON-LD
   SEO-F12 Breadcrumb + schema
   SEO-F11 Article JSON-LD
