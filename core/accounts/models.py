@@ -1,13 +1,14 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import IntegrityError, models
 from django.db.models import Q
-from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from accounts.db_utils import reset_pg_id_sequences
 from accounts.validators import validate_iranian_cellphone_number
 
 
@@ -163,9 +164,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             if not self.email:
                 raise ValidationError({"email": _("برای ادمین، ایمیل الزامی است.")})
         elif not self.phone_number and not self.email:
-            raise ValidationError(
-                _("حداقل یکی از ایمیل یا شماره موبایل الزامی است.")
-            )
+            raise ValidationError(_("حداقل یکی از ایمیل یا شماره موبایل الزامی است."))
 
     def __str__(self):
         if self.email:
@@ -173,6 +172,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.phone_number:
             return self.phone_number
         return f"User({self.pk})"
+
+    def get_full_name(self):
+        """Display name for templates and structured data (Profile → email/phone)."""
+        profile = getattr(self, "user_profile", None)
+        if profile is not None:
+            return profile.get_fullname()
+        return self.email or self.phone_number or ""
 
 
 class Profile(models.Model):
@@ -205,11 +211,6 @@ class Profile(models.Model):
 
 
 def ensure_user_profile(user):
-    """پروفایل یک‌به‌یک کاربر را می‌سازد؛ در صورت sequence خراب PostgreSQL یک‌بار sequence را اصلاح می‌کند."""
-    from django.db import IntegrityError
-
-    from accounts.db_utils import reset_pg_id_sequences
-
     if Profile.objects.filter(user_id=user.pk).exists():
         return Profile.objects.get(user=user)
     try:
@@ -243,7 +244,8 @@ class OTPCode(models.Model):
         blank=True,
         verbose_name=_("کاربر"),
         help_text=_(
-            "در ثبت‌نام اولیه هنوز کاربر ساخته نشده؛ بعد از تأیید موفق به کاربر وصل می‌شود."
+            "در ثبت‌نام اولیه هنوز کاربر ساخته نشده"
+            " ؛ بعد از تأیید موفق به کاربر وصل می‌شود."
         ),
     )
     mobile = models.CharField(_("موبایل"), max_length=11)

@@ -141,7 +141,7 @@ class Post(ModelMeta, models.Model):
             },
         }
         if self.author is not None:
-            author_name = self.author.get_full_name() or self.author.email
+            author_name = self.author.get_full_name()
             if author_name:
                 data["author"] = {"@type": "Person", "name": author_name}
         return {key: value for key, value in data.items() if value is not None}
