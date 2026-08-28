@@ -2,7 +2,8 @@ from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import FieldError
 from django.http import HttpResponsePermanentRedirect, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.views.generic import DetailView, ListView, View
 from review.models import ReviewModel, ReviewStatusType
 
@@ -180,6 +181,12 @@ class ShopProductDetailView(ObjectMetadataMixin, DetailView):
         obj = super().get_object(queryset)
         obj.product_images.prefetch_related()
         return obj
+
+
+def product_detail_legacy_redirect(request, slug):
+    """301 from legacy /shop/product/<slug>/detail/ to canonical product URL."""
+    url = reverse("shop:product-detail", kwargs={"slug": slug})
+    return redirect(url, permanent=True)
 
 
 class AddOrRemoveWishlistView(LoginRequiredMixin, View):

@@ -12,9 +12,14 @@ urlpatterns = [
         name="product-category",
     ),
     re_path(
-        r"product/(?P<slug>[-\w]+)/detail/",
+        r"product/(?P<slug>[-\w]+)/$",
         views.ShopProductDetailView.as_view(),
         name="product-detail",
+    ),
+    re_path(
+        r"product/(?P<slug>[-\w]+)/detail/",
+        views.product_detail_legacy_redirect,
+        name="product-detail-legacy",
     ),
     path(
         "add-or-remove-wishlist/",

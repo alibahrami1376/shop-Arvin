@@ -178,10 +178,10 @@
 ---
 
 ### SEO-F9 — کوتاه‌کردن URL محصول (اختیاری ولی تمیز)
-**وضعیت:** هنوز `/shop/product/<slug>/detail/`  
-**پیشنهاد:** `/shop/product/<slug>/` + ۳۰۱ از مسیر قدیمی
+**وضعیت:** ✅ `/shop/product/<slug>/` + ۳۰۱ از `/detail/`  
+**کجا:** `shop/urls.py`, `product_detail_legacy_redirect` — لینک‌های داخلی از `get_absolute_url` / `{% url 'shop:product-detail' %}` خودکار به URL جدید می‌روند.
 
-- [ ] SEO-F9 (اختیاری؛ F6/F8 تمام شد)
+- [x] SEO-F9
 
 ---
 
@@ -321,8 +321,8 @@
   SEO-F8  لندینگ دسته با اسلاگ + sitemap + لینک‌های داخلی
 
 ⏭️ بعدی پیشنهادی
-  SEO-F9 (کوتاه‌کردن URL محصول)
-  SEO-F16–F20 (ادمین SEO، کش، GSC، سرعت)
+  SEO-F19 (GSC: submit sitemap + Coverage)
+  SEO-F16–F18, F20 (ادمین SEO، کش، سرعت)
 
   سپس مرحله ۳ به بعد (Keyword → Pillar → …)
 ```
