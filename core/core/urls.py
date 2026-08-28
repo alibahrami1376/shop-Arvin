@@ -3,11 +3,15 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import index as sitemap_index
 from django.contrib.sitemaps.views import sitemap
-from django.urls import include, path, reverse
+from django.urls import include, path, re_path, reverse
 from django.views.generic import TemplateView
 from website.pwa_views import ServiceWorkerView, WebAppManifestView
 
 from core.error_views import page_not_found, permission_denied, server_error
+from core.legacy_redirects import (
+    legacy_cart_html_redirect,
+    legacy_product_overview_redirect,
+)
 from core.sitemaps import (
     BlogCategorySitemap,
     BlogPostSitemap,
@@ -57,6 +61,13 @@ urlpatterns = [
         name="django.contrib.sitemaps.views.sitemap",
     ),
     path("robots.txt", RobotsTxtView.as_view(), name="robots-txt"),
+    # Legacy demo-theme URLs (relative ./product-overview.html on every page)
+    path("cart.html", legacy_cart_html_redirect),
+    path("product-overview.html", legacy_product_overview_redirect),
+    re_path(
+        r"^.+/product-overview\.html$",
+        legacy_product_overview_redirect,
+    ),
     path("manifest.webmanifest", WebAppManifestView.as_view(), name="pwa-manifest"),
     path("sw.js", ServiceWorkerView.as_view(), name="pwa-service-worker"),
     path("", include("website.urls")),

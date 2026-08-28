@@ -1,19 +1,34 @@
 # SEO Technical Foundation — تسک‌لیست اولویت‌دار آروین
 
-**مرحله فعلی:** ۱ — Technical SEO Foundation (**کد تقریباً تمام** ✅)  
+**مرحله فعلی:** ۱ — Technical SEO Foundation (**کد ✅ · دیپلوی production ✅ · GSC sitemap ✅**)  
 **شاخه کار:** `seo/foundation-p0` → merge به `dev` → `production` → سرور  
 **قبل از:** Pillar / Keyword Map / Topic Clusters / Backlinks
 
 > داشتن `sitemap` و `robots.txt` ≠ Technical SEO تمام‌شده.  
-> این فایل بر اساس وضعیت **واقعی کد** پروژه (Django Templates + django-meta) نوشته شده، نه پیشنهاد عمومی.
+> این فایل بر اساس وضعیت **واقعی کد و production** پروژه (Django Templates + django-meta) نوشته شده.
 
 ---
 
-## وضعیت الان (خلاصه ممیزی)
+## دیپلوی production — انجام‌شده (۱۴۰۵/۰۶/۰۷)
+
+| مورد | وضعیت | یادداشت |
+|------|--------|---------|
+| Merge → production → سرور | ✅ | Foundation روی `arvinofficial.ir` زنده است |
+| `migrate` (اسلاگ بلاگ) | ✅ | URLهای `/blog/<slug>/` کار می‌کنند |
+| `SITE_DOMAIN=arvinofficial.ir` در `.env` | ✅ | canonical و JSON-LD دیگر `localhost:8000` نیست |
+| `robots.txt` روی nginx | ✅ | duplicate `location` حذف شد؛ پروکسی به Django → **200** |
+| Fix 500 بلاگ (`get_full_name`) | ✅ | `User.get_full_name()` → Profile |
+| GSC: Submit sitemap | ✅ | `https://arvinofficial.ir/sitemap.xml` — منتظر Success در GSC |
+
+**هنوز در production چک/انجام نشده:** Rich Results Test · PageSpeed · HSTS · legacy `.html` redirects · title لیست بلاگ (`بلاگ - …`).
+
+**مرجع بهبود Performance / A11y / ops:** [`docs/SITE-IMPROVEMENT-TODO.md`](SITE-IMPROVEMENT-TODO.md)
+
+---
 
 | مورد | وضعیت | توضیح کوتاه |
 |------|--------|-------------|
-| `robots.txt` | ✅ هست | Disallow برای admin/cart/order/…؛ Sitemap لینک دارد |
+| `robots.txt` | ✅ production | Django + nginx پروکسی؛ Sitemap لینک دارد؛ [تست زنده](https://arvinofficial.ir/robots.txt) |
 | Sitemap XML | ✅ به‌روز | محصول، دسته با اسلاگ، بلاگ، استاتیک؛ بدون `?category_id=` |
 | Title داینامیک | ✅ | `<title>` از `meta.title` (mixin/view/مدل) — یک منبع با OG |
 | Meta description / OG / Twitter | ✅ پایه | `normalize_meta_description` + mixin روی صفحات عمومی اصلی |
@@ -41,32 +56,37 @@
 
 # کارهایی که **تو** باید انجام بدهی (به ترتیب)
 
-> کد Foundation (F1–F15 + F9–F13) روی `seo/foundation-p0` آماده است.  
-> موارد زیر **عملیاتی** هستند — بدون دیپلوی و GSC، Foundation روی سایت زنده کامل نمی‌شود.
+> Foundation روی production دیپلوی شده. موارد زیر **باقی‌ماندهٔ عملیاتی** هستند.
 
-## فاز ۱ — دیپلوی و صحت‌سنجی (همین هفته)
+## فاز ۱ — دیپلوی و صحت‌سنجی
 
-- [ ] **۱. Merge و دیپلوی**  
-  `seo/foundation-p0` → `dev` → `production` → سرور (طبق جریان git خودت).
+- [x] **۱. Merge و دیپلوی**  
+  `seo/foundation-p0` → `dev` → `production` → سرور — **انجام شد.**
 
-- [ ] **۲. Migration روی سرور**  
-  ```bash
-  python manage.py migrate
-  ```  
-  حداقل: `blog` migration اسلاگ (`0004_post_slug`) اگر هنوز اجرا نشده.
+- [x] **۲. Migration روی سرور**  
+  `blog/0004_post_slug` — اسلاگ بلاگ روی production فعال است.
 
-- [ ] **۳. تست دستی چند URL مهم** (مرورگر + incognito)  
-  | URL | انتظار |
-  |-----|--------|
-  | `/shop/product/<slug>/` | PDP باز شود (نه `/detail/`) |
-  | `/shop/product/<slug>/detail/` | ۳۰۱ به URL کوتاه |
-  | `/shop/category/<slug>/` | لندینگ دسته |
-  | `/shop/product/grid/?category_id=1` | ۳۰۱ به `/shop/category/...` |
-  | `/blog/<slug>/` | پست |
-  | `/blog/<id>/` | ۳۰۱ به اسلاگ |
-  | `/faq/` | صفحه FAQ |
-  | View Source → `<link rel="canonical">` | بدون `?site=` و فیلتر |
-  | View Source → `<title>` و `og:title` | یکسان (مثلاً دسته = نام دسته) |
+- [x] **۲b. env production**  
+  `SITE_DOMAIN=arvinofficial.ir` — canonical/JSON-LD درست شد.
+
+- [x] **۲c. nginx `robots.txt`**  
+  فقط **یک** `location = /robots.txt` (پروکسی به Django)؛ duplicate location حذف شد.
+
+- [ ] **۳. تست دستی چند URL مهم** (مرورگر + incognito) — **بخشی انجام شد؛ بقیه را خودت تأیید کن**  
+  | URL | انتظار | تست production |
+  |-----|--------|----------------|
+  | `/robots.txt` | 200 + Sitemap | ✅ |
+  | `/sitemap.xml` | 200 + index | ✅ |
+  | `/blog/<slug>/` | 200 (نه 500) | ✅ |
+  | `/shop/product/<slug>/` | PDP | ✅ (نمونه تست شد) |
+  | `/shop/product/<slug>/` | PDP باز شود (نه `/detail/`) | [ ] |
+  | `/shop/product/<slug>/detail/` | ۳۰۱ به URL کوتاه | [ ] |
+  | `/shop/category/<slug>/` | لندینگ دسته | [ ] |
+  | `/shop/product/grid/?category_id=1` | ۳۰۱ به `/shop/category/...` | [ ] |
+  | `/blog/<id>/` | ۳۰۱ به اسلاگ | [ ] |
+  | `/faq/` | صفحه FAQ | ✅ |
+  | View Source → canonical | `https://arvinofficial.ir/...` | ✅ |
+  | View Source → `<title>` لیست بلاگ | `بلاگ - فروشگاه آروین` | [ ] (الان فقط نام سایت) |
 
 - [ ] **۴. Rich Results Test** (بعد از دیپلوی)  
   [search.google.com/test/rich-results](https://search.google.com/test/rich-results)  
@@ -74,15 +94,17 @@
   - یک **پست بلاگ** → BlogPosting  
   - **FAQ** → FAQPage  
 
-## فاز ۲ — Google Search Console (بعد از دیپلوی زنده)
+## فاز ۲ — Google Search Console
 
-- [ ] **۵. تأیید مالکیت** دامنه `arvinofficial.ir` (اگر قبلاً نیست).
+- [x] **۵. تأیید مالکیت** دامنه `arvinofficial.ir` (برای Submit sitemap لازم بود — انجام شد).
 
-- [ ] **۶. Submit sitemap**  
+- [x] **۶. Submit sitemap**  
   ```
   https://arvinofficial.ir/sitemap.xml
   ```  
-  چند روز صبر کن تا وضعیت «Success» / تعداد URL به‌روز شود.
+  **فقط همین یک URL** — sub-sitemapها (`sitemap-products.xml`, …) خودکار از index خوانده می‌شوند.  
+  `robots.txt` را جدا Submit **نکن** (گوگل خودش می‌خواند).  
+  → چند روز صبر کن تا وضعیت «Success» / تعداد URL به‌روز شود.
 
 - [ ] **۷. Pages → Why pages aren’t indexed** — هر ردیف را باز کن و URLها را ببین:
 
@@ -101,10 +123,11 @@
 ## فاز ۳ — کیفیت و سرور (هفتهٔ بعد یا موازی)
 
 - [ ] **۱۰. PageSpeed Insights (F20)**  
-  موبایل + دسکتاپ؛ هر دو layout (`?site=mobile` و بدون آن).
+  موبایل + دسکتاپ؛ هر دو layout (`?site=mobile` و بدون آن).  
+  → تسک‌های جزئی: [`docs/SITE-IMPROVEMENT-TODO.md`](SITE-IMPROVEMENT-TODO.md) (baseline: Perf 76 desktop / 60 mobile)
 
 - [ ] **۱۱. HTTPS / HSTS (F18)**  
-  روی nginx/هاستینگ: redirect HTTP→HTTPS، HSTS اگر CDN اجازه می‌دهد.
+  روی nginx/هاستینگ: `X-Forwarded-Proto` از `$thescheme` (نه `$scheme` خام)؛ redirect HTTP→HTTPS؛ HSTS اگر CDN اجازه می‌دهد.
 
 - [ ] **۱۲. محتوا در ادمین**  
   - `brief_description` محصولات مهم (برای meta و JSON-LD)  
@@ -113,8 +136,7 @@
 
 ## فاز ۴ — هنوز در کد نیست (با توسعه‌دهنده / بعداً)
 
-- [ ] **۱۳. URLهای قدیمی `.html`** (`cart.html`, `blog/product-overview.html`)  
-  → ۳۰۱ به مسیر جدید + حذف لینک دمو در `base-desktop.html` (**هنوز پیاده نشده**).
+- [x] **۱۳. URLهای قدیمی `.html`** — 301 + حذف لینک دمو (`legacy_redirects.py`, `base-desktop.html`)
 
 - [ ] **۱۴. F16** — فیلدهای override متا در ادمین (اختیاری).
 
@@ -128,7 +150,7 @@
 
 ---
 
-**خلاصه یک خطی:** دیپلوی → migrate → تست URL → Rich Results → GSC sitemap → مانیتور Coverage → بعد Keyword/Pillar.
+**خلاصه یک خطی:** ~~دیپلوی → migrate →~~ تست URL باقی → Rich Results → ~~GSC sitemap~~ → مانیتور Coverage → بعد Keyword/Pillar.
 
 ---
 
@@ -222,7 +244,7 @@
 - [x] بدون 404 / پیش‌نویس / حذف‌شده (محصول/پست فیلترشده)
 - [x] `ProductCategorySitemap` → اسلاگ لندینگ (نه `?category_id=`)
 - [x] `lastmod` برای محصول/پست
-- [ ] بعد از دیپلوی: در GSC دوباره Submit / پاک‌کردن URLهای قدیمی دسته
+- [x] بعد از دیپلوی: در GSC Submit — **انجام شد** (`sitemap.xml`); منتظر Success
 
 **تسک اجرایی:** SEO-F5b — ✅ انجام شد (حذف query دسته، سپس ثبت مجدد با اسلاگ در F8)
 
@@ -370,12 +392,12 @@
 ---
 
 ### SEO-F19 — Google Search Console + Bing
-- تأیید مالکیت دامنه  
-- Submit کردن `sitemap.xml` (به‌خصوص بعد از F5b/F6/F8)  
-- مانیتور Coverage / Soft 404 / Duplicate  
-- درخواست حذف/به‌روزرسانی URLهای قدیمی بلاگ id و `?category_id=` در صورت نیاز  
+- [x] تأیید مالکیت دامنه  
+- [x] Submit کردن `sitemap.xml` (index — sub-sitemapها خودکار)  
+- [ ] مانیتور Coverage تا «Success» و تعداد URL  
+- [ ] درخواست حذف/به‌روزرسانی URLهای قدیمی بلاگ id و `?category_id=` در صورت نیاز  
 
-- [ ] SEO-F19
+- [ ] SEO-F19 (کامل — مانیتور مداوم)
 
 ---
 
@@ -411,7 +433,9 @@
 ⏳ باقی در کد (اختیاری / بعداً)
   F16 ادمین meta override · F17 کش HTML · legacy .html redirects
 
-👤 کارهای تو → بخش «کارهایی که تو باید انجام بدهی» بالا
+👤 کارهای تو → بخش «کارهایی که تو باید انجام بدهی» بالا  
+   ✅ دیپلوی · env · robots.txt · GSC sitemap Submit  
+   ⏳ Rich Results · Coverage مانیتور · PageSpeed · legacy URL
 ```
 
 ---
@@ -448,11 +472,11 @@
 - [x] Sitemap فقط URLهای canonical باارزش (محصول + دسته اسلاگ + بلاگ + استاتیک)  
 - [x] Product JSON-LD معتبر (تست Rich Results) — **F10** (بعد از دیپلوی در Rich Results Test تأیید کن)  
 - [x] Pagination و URL دستهٔ تمیز (`/shop/category/<slug>/`)  
-- [ ] GSC سایت را می‌بیند و sitemap بدون خطای بحرانی است — **F19** (کار تو بعد از دیپلوی)  
-- [ ] Rich Results Test روی محصول/بلاگ/FAQ بدون خطای بحرانی (کار تو بعد از دیپلوی)
+- [x] GSC: sitemap Submit شد — **منتظر Success / Coverage** (F19)  
+- [ ] Rich Results Test روی محصول/بلاگ/FAQ بدون خطای بحرانی (کار تو)
 
 **بعد از GSC سبز → Keyword Map و Pillar (مرحله ۲/۳).**
 
 ---
 
-*آخرین هم‌ترازسازی با کد: ۱۴۰۵/۰۶/۰۶ — Foundation کد کامل (F1–F15, F9–F13); کارهای عملیاتی در بخش «کارهایی که تو باید انجام بدهی».*
+*آخرین هم‌ترازسازی: ۱۴۰۵/۰۶/۰۷ — production دیپلوی + robots.txt/nginx + GSC sitemap Submit؛ Rich Results و Coverage مانیتور باقی.*
