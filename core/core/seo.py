@@ -189,3 +189,34 @@ def breadcrumb_for_blog_list(*, cat_name: str | None = None) -> list[dict]:
             }
         )
     return items
+
+
+def faq_page_json_ld(faq_items) -> str:
+    """Build FAQPage JSON-LD from published FAQItem queryset or list."""
+    import json
+
+    entities = []
+    for item in faq_items:
+        question = (item.question or "").strip()
+        answer = strip_tags(str(item.answer or ""))
+        answer = re.sub(r"\s+", " ", answer).strip()
+        if not question or not answer:
+            continue
+        entities.append(
+            {
+                "@type": "Question",
+                "name": question,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": answer,
+                },
+            }
+        )
+    if not entities:
+        return ""
+    data = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": entities,
+    }
+    return json.dumps(data, ensure_ascii=False, separators=(",", ":"))

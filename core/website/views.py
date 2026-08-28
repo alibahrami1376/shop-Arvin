@@ -11,6 +11,7 @@ from order.models import OrderStatusType
 from shop.models import ProductModel, ProductStatusType
 
 from core.device import filter_queryset_for_device
+from core.seo import faq_page_json_ld
 from core.views_meta import SiteMetadataMixin
 
 from .forms import ContactForm, NewsLetterForm
@@ -125,7 +126,9 @@ class FAQView(SiteMetadataMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["faq_items"] = FAQItem.objects.filter(is_published=True)
+        faq_items = FAQItem.objects.filter(is_published=True)
+        context["faq_items"] = faq_items
+        context["faq_json_ld"] = faq_page_json_ld(faq_items)
         return context
 
 

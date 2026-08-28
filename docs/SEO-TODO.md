@@ -218,10 +218,10 @@
 ---
 
 ### SEO-F13 — FAQPage Schema
-**وضعیت:** صفحه FAQ هست؛ Schema نیست  
-**کجا:** `website/faq` + مدل سوالات
+**وضعیت:** ✅ `faq_page_json_ld` از سوالات منتشرشده → `faq.html` (`extra_head`)  
+**کجا:** `core/seo.py`, `website/views.py`, `website/faq.html`
 
-- [ ] SEO-F13
+- [x] SEO-F13
 
 ---
 
@@ -320,11 +320,10 @@
   SEO-F7  pagination با <a>
   SEO-F8  لندینگ دسته با اسلاگ + sitemap + لینک‌های داخلی
 
-⏭️ بعدی پیشنهادی (P2 on-page / schema)
-  SEO-F13 FAQ schema
+⏭️ بعدی پیشنهادی
+  SEO-F9 (کوتاه‌کردن URL محصول)
+  SEO-F16–F20 (ادمین SEO، کش، GSC، سرعت)
 
-بعداً
-  SEO-F9 (کوتاه‌کردن URL محصول), F16, F17, F18, F19, F20
   سپس مرحله ۳ به بعد (Keyword → Pillar → …)
 ```
 

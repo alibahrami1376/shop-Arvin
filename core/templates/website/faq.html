@@ -3,6 +3,12 @@
 
 {% block title %}سوالات متداول - فروشگاه آروین{% endblock %}
 
+{% block extra_head %}
+{% if faq_json_ld %}
+<script type="application/ld+json">{{ faq_json_ld|safe }}</script>
+{% endif %}
+{% endblock extra_head %}
+
 {% block content %}
 <section class="faq-hero section">
     <div class="container">
