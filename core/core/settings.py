@@ -45,9 +45,8 @@ META_USE_SITES = True
 META_USE_OG_PROPERTIES = True
 META_USE_TWITTER_PROPERTIES = True
 META_USE_SCHEMAORG_PROPERTIES = True
-META_USE_TITLE_TAG = False  # title از {% block title %} می‌آید
-META_DEFAULT_KEYWORDS = ["فروشگاه آروین", "لوازم صندلی کامیون", "آروین"]
-META_INCLUDE_KEYWORDS = ["آروین"]
+META_USE_TITLE_TAG = False
+META_INCLUDE_KEYWORDS = ["فروشگاه آروین", "صندلی کامیون", "آروین"]
 META_DEFAULT_IMAGE = "/static/img/900x900/img1.jpg"
 META_DEFAULT_DESCRIPTION = (
     "فروشگاه آروین؛ خرید آنلاین صندلی راننده ماشین سنگین، نیمه‌سنگین و راهسازی "
