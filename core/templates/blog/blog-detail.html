@@ -1,8 +1,6 @@
 {% extends base_template %}
 {% load static %}
 
-{% block title %}{{ post.title }} - بلاگ فروشگاه آروین{% endblock title %}
-
 {% block extra_head %}
 <script type="application/ld+json">{{ post.as_json_ld_json|safe }}</script>
 {% if breadcrumb_json_ld %}

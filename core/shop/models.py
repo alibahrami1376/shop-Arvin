@@ -128,7 +128,7 @@ class ProductModel(ModelMeta, models.Model):
     updated_date = models.DateTimeField(auto_now=True)
 
     _metadata = {
-        "title": "title",
+        "title": "get_meta_title",
         "description": "get_meta_description",
         "image": "get_meta_image",
         "url": "get_absolute_url",
@@ -164,6 +164,9 @@ class ProductModel(ModelMeta, models.Model):
 
         text = self.brief_description or self.description or self.title or ""
         return normalize_meta_description(text) or self.title
+
+    def get_meta_title(self):
+        return f"{self.title} - {settings.SITE_NAME}"
 
     def get_meta_image(self):
         return self.image_card_url or ""

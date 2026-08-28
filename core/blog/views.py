@@ -31,6 +31,8 @@ class BlogPostListView(SiteMetadataMixin, ListView):
         return self.request.GET.get("page_size", self.paginate_by)
 
     def get_meta_title(self, context=None):
+        if q := self.request.GET.get("q"):
+            return f"جستجو: {q} - بلاگ {settings.SITE_NAME}"
         cat_name = self.kwargs.get("cat_name")
         if cat_name:
             return f"{cat_name} - بلاگ {settings.SITE_NAME}"

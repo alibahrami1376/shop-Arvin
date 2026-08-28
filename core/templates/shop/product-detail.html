@@ -2,8 +2,6 @@
 {% load static %}
 {% load shop_tags %}
 
-{% block title %}{{ object.title }} - فروشگاه آروین{% endblock title %}
-
 {% block extra_head %}
 <script type="application/ld+json">{{ object.as_json_ld_json|safe }}</script>
 {% if breadcrumb_json_ld %}

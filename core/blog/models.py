@@ -73,7 +73,7 @@ class Post(ModelMeta, models.Model):
     updated_date = models.DateTimeField(auto_now=True, verbose_name="تاریخ بروزرسانی")
 
     _metadata = {
-        "title": "title",
+        "title": "get_meta_title",
         "description": "get_meta_description",
         "image": "get_meta_image",
         "url": "get_absolute_url",
@@ -106,6 +106,9 @@ class Post(ModelMeta, models.Model):
         from core.seo import normalize_meta_description
 
         return normalize_meta_description(self.content) or self.title
+
+    def get_meta_title(self):
+        return f"{self.title} - بلاگ {settings.SITE_NAME}"
 
     def get_meta_image(self):
         return self.image_card_url or ""

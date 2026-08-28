@@ -15,7 +15,7 @@
 |------|--------|-------------|
 | `robots.txt` | ✅ هست | Disallow برای admin/cart/order/…؛ Sitemap لینک دارد |
 | Sitemap XML | ✅ به‌روز | محصول، دسته با اسلاگ، بلاگ، استاتیک؛ بدون `?category_id=` |
-| Title داینامیک | ⚠️ نیمه‌کاره | `{% block title %}` در صفحات عمومی هست؛ بعضی با mixin هم‌تراز نیستند |
+| Title داینامیک | ✅ | `<title>` از `meta.title` (mixin/view/مدل) — یک منبع با OG |
 | Meta description / OG / Twitter | ✅ پایه | `normalize_meta_description` + mixin روی صفحات عمومی اصلی |
 | Canonical | ✅ هست | `build_canonical_url` — path بدون query (`?site=` و فیلترها حذف) |
 | `noindex` (meta robots) | ✅ هست | صفحات خصوصی/تراکنشی `noindex,follow`؛ عمومی `index,follow` |
@@ -84,7 +84,7 @@
 - description صفحات ایندکس‌شونده نرمال و پر می‌شود
 - پیش‌فرض محصول از `brief_description` / description مدل
 
-**باقی (اختیاری کیفیت):** هم‌ترازی کامل `{% block title %}` با `meta.title` / OG در همهٔ صفحات.
+**انجام‌شده:** description + title از یک منبع (`meta.title` در base + `get_meta_title` در view/مدل).
 
 - [x] SEO-F2
 
