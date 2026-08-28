@@ -4,6 +4,7 @@
 {% block title %}{{ post.title }} - بلاگ فروشگاه آروین{% endblock title %}
 
 {% block extra_head %}
+<script type="application/ld+json">{{ post.as_json_ld_json|safe }}</script>
 {% if breadcrumb_json_ld %}
 <script type="application/ld+json">{{ breadcrumb_json_ld|safe }}</script>
 {% endif %}

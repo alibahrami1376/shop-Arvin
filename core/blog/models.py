@@ -1,3 +1,6 @@
+import json
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
@@ -106,6 +109,42 @@ class Post(ModelMeta, models.Model):
 
     def get_meta_image(self):
         return self.image_card_url or ""
+
+    def as_json_ld(self) -> dict:
+        """BlogPosting JSON-LD for rich results (one source from the model)."""
+        from core.seo import absolute_site_url
+
+        post_url = absolute_site_url(self.get_absolute_url())
+        images = []
+        for src in (self.image_hero_url, self.image_card_url):
+            abs_src = absolute_site_url(src) if src else ""
+            if abs_src and abs_src not in images:
+                images.append(abs_src)
+
+        published = self.published_date or self.created_date
+        data = {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": self.title,
+            "description": self.get_meta_description(),
+            "url": post_url,
+            "mainEntityOfPage": {"@type": "WebPage", "@id": post_url},
+            "image": images or None,
+            "datePublished": published.isoformat() if published else None,
+            "dateModified": self.updated_date.isoformat(),
+            "publisher": {
+                "@type": "Organization",
+                "name": settings.SITE_NAME,
+            },
+        }
+        if self.author is not None:
+            author_name = self.author.get_full_name() or self.author.email
+            if author_name:
+                data["author"] = {"@type": "Person", "name": author_name}
+        return {key: value for key, value in data.items() if value is not None}
+
+    def as_json_ld_json(self) -> str:
+        return json.dumps(self.as_json_ld(), ensure_ascii=False, separators=(",", ":"))
 
     @property
     def image_card_url(self):

@@ -198,10 +198,12 @@
 ---
 
 ### SEO-F11 — JSON-LD مقاله (BlogPosting / Article)
-**وضعیت:** ❌  
-**کجا:** `blog-detail.html` + مدل Post
+**وضعیت:** ✅ `Post.as_json_ld` → `<script type="application/ld+json">` در `blog-detail.html`  
+**کجا:** `blog/models.py`, `blog-detail.html` (`extra_head`)
 
-- [ ] SEO-F11
+شامل: headline، description، image، تاریخ انتشار/ویرایش، نویسنده، publisher آروین.
+
+- [x] SEO-F11
 
 ---
 
@@ -319,7 +321,6 @@
   SEO-F8  لندینگ دسته با اسلاگ + sitemap + لینک‌های داخلی
 
 ⏭️ بعدی پیشنهادی (P2 on-page / schema)
-  SEO-F11 Article JSON-LD
   SEO-F13 FAQ schema
 
 بعداً
