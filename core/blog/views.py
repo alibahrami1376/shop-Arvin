@@ -21,6 +21,7 @@ class BlogPostListView(SiteMetadataMixin, ListView):
     template_name = "blog/blog-home.html"
     context_object_name = "posts"
     paginate_by = 9
+    title = f"بلاگ - {settings.SITE_NAME}"
     description = (
         "مقالات و راهنماهای فروشگاه آروین درباره صندلی کامیون، "
         "سبک زندگی در جاده و خرید هوشمند؛ "

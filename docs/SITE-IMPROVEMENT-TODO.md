@@ -194,11 +194,7 @@
 
 ## SEO-P4-3 — Title لیست بلاگ
 
-**مشکل:** `/blog/` → `<title>` فقط «فروشگاه آروین»
-
-- [ ] `BlogPostListView`: `title = f"بلاگ - {settings.SITE_NAME}"` یا `get_meta_title` پیش‌فرض
-
-**کجا:** `core/blog/views.py`
+- [x] `BlogPostListView.title = f"بلاگ - {settings.SITE_NAME}"` — `/blog/` دیگر مثل خانه نیست
 
 ## SEO-P4-4 — تست دستی 301 (هنوز تأیید نشده)
 

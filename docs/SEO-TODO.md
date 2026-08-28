@@ -86,7 +86,7 @@
   | `/blog/<id>/` | ۳۰۱ به اسلاگ | [ ] |
   | `/faq/` | صفحه FAQ | ✅ |
   | View Source → canonical | `https://arvinofficial.ir/...` | ✅ |
-  | View Source → `<title>` لیست بلاگ | `بلاگ - فروشگاه آروین` | [ ] (الان فقط نام سایت) |
+  | View Source → `<title>` لیست بلاگ | `بلاگ - فروشگاه آروین` | ✅ (بعد از deploy) |
 
 - [ ] **۴. Rich Results Test** (بعد از دیپلوی)  
   [search.google.com/test/rich-results](https://search.google.com/test/rich-results)  
