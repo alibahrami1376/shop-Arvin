@@ -1,7 +1,7 @@
 # SEO Technical Foundation — تسک‌لیست اولویت‌دار آروین
 
-**مرحله فعلی:** ۱ — Technical SEO Foundation (P0 و بخش زیادی از P1 تمام)  
-**شاخه کار:** `seo/foundation-p0`  
+**مرحله فعلی:** ۱ — Technical SEO Foundation (**کد تقریباً تمام** ✅)  
+**شاخه کار:** `seo/foundation-p0` → merge به `dev` → `production` → سرور  
 **قبل از:** Pillar / Keyword Map / Topic Clusters / Backlinks
 
 > داشتن `sitemap` و `robots.txt` ≠ Technical SEO تمام‌شده.  
@@ -36,6 +36,99 @@
 `django-meta` + `SiteMetadataMixin` / `ObjectMetadataMixin` در `core/views_meta.py`  
 + helpers در `core/core/seo.py` (canonical، robots، normalize description)  
 → Foundation را روی همین بساز؛ چرخ را از نو اختراع نکن.
+
+---
+
+# کارهایی که **تو** باید انجام بدهی (به ترتیب)
+
+> کد Foundation (F1–F15 + F9–F13) روی `seo/foundation-p0` آماده است.  
+> موارد زیر **عملیاتی** هستند — بدون دیپلوی و GSC، Foundation روی سایت زنده کامل نمی‌شود.
+
+## فاز ۱ — دیپلوی و صحت‌سنجی (همین هفته)
+
+- [ ] **۱. Merge و دیپلوی**  
+  `seo/foundation-p0` → `dev` → `production` → سرور (طبق جریان git خودت).
+
+- [ ] **۲. Migration روی سرور**  
+  ```bash
+  python manage.py migrate
+  ```  
+  حداقل: `blog` migration اسلاگ (`0004_post_slug`) اگر هنوز اجرا نشده.
+
+- [ ] **۳. تست دستی چند URL مهم** (مرورگر + incognito)  
+  | URL | انتظار |
+  |-----|--------|
+  | `/shop/product/<slug>/` | PDP باز شود (نه `/detail/`) |
+  | `/shop/product/<slug>/detail/` | ۳۰۱ به URL کوتاه |
+  | `/shop/category/<slug>/` | لندینگ دسته |
+  | `/shop/product/grid/?category_id=1` | ۳۰۱ به `/shop/category/...` |
+  | `/blog/<slug>/` | پست |
+  | `/blog/<id>/` | ۳۰۱ به اسلاگ |
+  | `/faq/` | صفحه FAQ |
+  | View Source → `<link rel="canonical">` | بدون `?site=` و فیلتر |
+  | View Source → `<title>` و `og:title` | یکسان (مثلاً دسته = نام دسته) |
+
+- [ ] **۴. Rich Results Test** (بعد از دیپلوی)  
+  [search.google.com/test/rich-results](https://search.google.com/test/rich-results)  
+  - یک **محصول** → Product + Offer  
+  - یک **پست بلاگ** → BlogPosting  
+  - **FAQ** → FAQPage  
+
+## فاز ۲ — Google Search Console (بعد از دیپلوی زنده)
+
+- [ ] **۵. تأیید مالکیت** دامنه `arvinofficial.ir` (اگر قبلاً نیست).
+
+- [ ] **۶. Submit sitemap**  
+  ```
+  https://arvinofficial.ir/sitemap.xml
+  ```  
+  چند روز صبر کن تا وضعیت «Success» / تعداد URL به‌روز شود.
+
+- [ ] **۷. Pages → Why pages aren’t indexed** — هر ردیف را باز کن و URLها را ببین:
+
+  | وضعیت GSC | معمولاً یعنی | کار تو |
+  |-----------|--------------|--------|
+  | **Not found (404)** | URL قدیمی مرده (`cart.html`, `product-overview.html`, …) | اگر عمدی ۴۰۴ است → **Validate fix**؛ اگر هنوز لینک داخلی دارد → در کد ۳۰۱ بگیر (هنوز انجام نشده) |
+  | **Page with redirect** | ۳۰۱ عمدی (دسته، بلاگ id، `/detail/`) | درست است؛ Validate زده باشی کافی است |
+  | **Duplicate without canonical** | نسخه با query / URL قدیمی | بعد از دیپلوی canonical باید کم شود؛ ۱–۲ هفته صبر + دوباره چک |
+  | **Blocked 4xx** | خطای دسترسی غیر ۴۰۴ | URL را دستی باز کن و علت را پیدا کن |
+  | **Crawled – not indexed** | گوگل فعلاً ایندکس نکرده | برای cart/صفحات کم‌اهمیت OK؛ برای محصول/دسته مهم → محتوا و لینک داخلی |
+
+- [ ] **۸. URL Inspection** برای ۲–۳ صفحه مهم (خانه، یک محصول، یک دسته) → **Request indexing** (اختیاری، شتاب اولیه).
+
+- [ ] **۹. (اختیاری) Bing Webmaster Tools** — همان sitemap را Submit کن.
+
+## فاز ۳ — کیفیت و سرور (هفتهٔ بعد یا موازی)
+
+- [ ] **۱۰. PageSpeed Insights (F20)**  
+  موبایل + دسکتاپ؛ هر دو layout (`?site=mobile` و بدون آن).
+
+- [ ] **۱۱. HTTPS / HSTS (F18)**  
+  روی nginx/هاستینگ: redirect HTTP→HTTPS، HSTS اگر CDN اجازه می‌دهد.
+
+- [ ] **۱۲. محتوا در ادمین**  
+  - `brief_description` محصولات مهم (برای meta و JSON-LD)  
+  - پست‌های بلاگ با `slug` و `published_date`  
+  - FAQ منتشرشده در پنل
+
+## فاز ۴ — هنوز در کد نیست (با توسعه‌دهنده / بعداً)
+
+- [ ] **۱۳. URLهای قدیمی `.html`** (`cart.html`, `blog/product-overview.html`)  
+  → ۳۰۱ به مسیر جدید + حذف لینک دمو در `base-desktop.html` (**هنوز پیاده نشده**).
+
+- [ ] **۱۴. F16** — فیلدهای override متا در ادمین (اختیاری).
+
+- [ ] **۱۵. F17** — بازنگری کش HTML (`NoCacheHtmlMiddleware`) برای CWV.
+
+## فاز ۵ — بعد از سبز شدن GSC (شروع مرحله ۲/۳ SEO)
+
+- [ ] **۱۶. Keyword Map** — کلمات هدف هر دسته/محصول  
+- [ ] **۱۷. Pillar Page** — مثلاً «صندلی راننده کامیون»  
+- [ ] **۱۸. Topic Clusters / لینک‌سازی داخلی / بک‌لینک**
+
+---
+
+**خلاصه یک خطی:** دیپلوی → migrate → تست URL → Rich Results → GSC sitemap → مانیتور Coverage → بعد Keyword/Pillar.
 
 ---
 
@@ -307,24 +400,18 @@
 
 ---
 
-# ترتیب اجرا (وضعیت اسپرینت)
+# ترتیب اجرا — وضعیت کد (توسعه‌دهنده)
 
 ```text
-✅ انجام‌شده (P0 + بخش P1)
-  SEO-F4  extra_head
-  SEO-F1  canonical
-  SEO-F3  noindex صفحات خصوصی
-  SEO-F2  تکمیل meta description
-  SEO-F5 / F5b  ممیزی + اصلاح sitemap
-  SEO-F6  اسلاگ بلاگ + ۳۰۱
-  SEO-F7  pagination با <a>
-  SEO-F8  لندینگ دسته با اسلاگ + sitemap + لینک‌های داخلی
+✅ انجام‌شده در کد (F1–F15, F9, F10–F13)
+  F1 canonical · F2 title+description · F3 noindex · F4 extra_head
+  F5/F5b sitemap · F6 blog slug · F7 pagination · F8 category landing
+  F9 product URL کوتاه · F10–F13 JSON-LD + breadcrumb · F14 H1 · F15 image alt
 
-⏭️ بعدی پیشنهادی
-  SEO-F19 (GSC: submit sitemap + Coverage)
-  SEO-F16–F18, F20 (ادمین SEO، کش، سرعت)
+⏳ باقی در کد (اختیاری / بعداً)
+  F16 ادمین meta override · F17 کش HTML · legacy .html redirects
 
-  سپس مرحله ۳ به بعد (Keyword → Pillar → …)
+👤 کارهای تو → بخش «کارهایی که تو باید انجام بدهی» بالا
 ```
 
 ---
@@ -361,10 +448,11 @@
 - [x] Sitemap فقط URLهای canonical باارزش (محصول + دسته اسلاگ + بلاگ + استاتیک)  
 - [x] Product JSON-LD معتبر (تست Rich Results) — **F10** (بعد از دیپلوی در Rich Results Test تأیید کن)  
 - [x] Pagination و URL دستهٔ تمیز (`/shop/category/<slug>/`)  
-- [ ] GSC سایت را می‌بیند و sitemap بدون خطای بحرانی است — **F19**
+- [ ] GSC سایت را می‌بیند و sitemap بدون خطای بحرانی است — **F19** (کار تو بعد از دیپلوی)  
+- [ ] Rich Results Test روی محصول/بلاگ/FAQ بدون خطای بحرانی (کار تو بعد از دیپلوی)
 
-**بعد از این → تکمیل P2 (schema/H1 خانه/image) سپس Keyword Map و Pillar.**
+**بعد از GSC سبز → Keyword Map و Pillar (مرحله ۲/۳).**
 
 ---
 
-*آخرین هم‌ترازسازی با کد: ۱۴۰۵/۰۶/۰۵ — P0 کامل؛ P1 تا F8؛ بعدی پیشنهادی F14 (خانه) / F15 / F10.*
+*آخرین هم‌ترازسازی با کد: ۱۴۰۵/۰۶/۰۶ — Foundation کد کامل (F1–F15, F9–F13); کارهای عملیاتی در بخش «کارهایی که تو باید انجام بدهی».*
