@@ -1,23 +1,26 @@
-from blog.models import Post
 from django.conf import settings
 from django.contrib import messages
-from django.db.models import IntegerField, Q, Sum, Value
-from django.db.models.functions import Coalesce
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView
-from order.models import OrderStatusType
-from shop.models import ProductModel, ProductStatusType
 
-from core.device import filter_queryset_for_device
+from core.caching import (
+    get_contact_settings,
+    get_faq_published,
+    get_home_banners,
+    get_home_bestseller_products,
+    get_home_latest_posts,
+    get_home_newest_products,
+    get_home_top_products,
+    get_legal_page,
+)
+from core.device import get_device_type
 from core.seo import faq_page_json_ld
 from core.views_meta import SiteMetadataMixin
 
 from .forms import ContactForm, NewsLetterForm
-from .models import ContactPageSettings, FAQItem, HomeBanner, LegalPage
-
-# Create your views here.
+from .models import LegalPage
 
 
 class IndexView(SiteMetadataMixin, TemplateView):
@@ -30,35 +33,13 @@ class IndexView(SiteMetadataMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        published = ProductStatusType.publish.value
-        order_success = OrderStatusType.success.value
+        device = get_device_type(self.request)
 
-        base = ProductModel.objects.filter(status=published).prefetch_related(
-            "category"
-        )
-
-        context["top_products"] = base.order_by("-avg_rate", "-created_date")[:8]
-        context["newest_products"] = base.order_by("-created_date")[:4]
-        context["bestseller_products"] = base.annotate(
-            sold_qty=Coalesce(
-                Sum(
-                    "orderitemmodel__quantity",
-                    filter=Q(orderitemmodel__order__status=order_success),
-                ),
-                Value(0),
-                output_field=IntegerField(),
-            )
-        ).order_by("-sold_qty", "-avg_rate")[:4]
-
-        context["latest_posts"] = (
-            Post.objects.filter(status=True)
-            .select_related("author")
-            .prefetch_related("category")
-            .order_by("-published_date", "-created_date")[:3]
-        )
-
-        banners = HomeBanner.objects.filter(is_active=True)
-        context["home_banners"] = filter_queryset_for_device(banners, self.request)
+        context["top_products"] = get_home_top_products()
+        context["newest_products"] = get_home_newest_products()
+        context["bestseller_products"] = get_home_bestseller_products()
+        context["latest_posts"] = get_home_latest_posts()
+        context["home_banners"] = get_home_banners(device)
 
         return context
 
@@ -74,7 +55,7 @@ class ContactView(SiteMetadataMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        settings_obj = ContactPageSettings.get_solo()
+        settings_obj = get_contact_settings()
         context["contact_settings"] = settings_obj
         context["contact_social_links"] = settings_obj.get_social_links()
         return context
@@ -101,7 +82,7 @@ class LegalPageView(SiteMetadataMixin, TemplateView):
         page_type = self.kwargs["page_type"]
         if page_type not in LegalPage.PageType.values:
             raise Http404()
-        self._legal_page = LegalPage.get_by_type(page_type)
+        self._legal_page = get_legal_page(page_type)
         context = super().get_context_data(**kwargs)
         context["page"] = self._legal_page
         context["meta"] = self.get_meta(context=context)
@@ -129,7 +110,7 @@ class FAQView(SiteMetadataMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        faq_items = FAQItem.objects.filter(is_published=True)
+        faq_items = get_faq_published()
         context["faq_items"] = faq_items
         context["faq_json_ld"] = faq_page_json_ld(faq_items)
         return context

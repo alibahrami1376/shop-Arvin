@@ -13,3 +13,7 @@ class CoreConfig(AppConfig):
         from core.forms_persian import patch_django_forms
 
         patch_django_forms()
+
+        from core.cache_signals import _connect_cache_signals
+
+        _connect_cache_signals()

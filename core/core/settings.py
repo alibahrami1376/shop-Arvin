@@ -433,6 +433,16 @@ CSRF_TRUSTED_ORIGINS = config(
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+# In-process LocMem: shared per gunicorn worker only (TTL + signals are safety nets).
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "arvin-default",
+        "TIMEOUT": 300,
+        "OPTIONS": {"MAX_ENTRIES": 500},
+    }
+}
+USER_AGENTS_CACHE = "default"
 
 SESSION_COOKIE_AGE = 60 * 60 * 10  # 10 hours
 SESSION_SAVE_EVERY_REQUEST = True
