@@ -451,3 +451,44 @@ MEDIANA_API_KEY = config("MEDIANA_API_KEY", default="")
 BASE_URL_MEDIANA = config("BASE_URL_MEDIANA", default="https://api.mediana.ir")
 MEDIANA_ORDER_PATTERN_CODE = config("MEDIANA_ORDER_PATTERN_CODE", default="")
 MEDIANA_OTP_PATTERN_CODE = config("MEDIANA_OTP_PATTERN_CODE", default="")
+
+# Logging: file only (host panel shows nginx, not Django stdout).
+_log_dir = config("LOG_DIR", default=str(BASE_DIR / "logs"))
+LOGS_DIR = Path(_log_dir)
+if not LOGS_DIR.is_absolute():
+    LOGS_DIR = BASE_DIR / LOGS_DIR
+LOGS_DIR.mkdir(exist_ok=True)
+LOG_LEVEL = config("LOG_LEVEL", default="DEBUG" if DEBUG else "INFO")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {
+            "format": "[{asctime}] {levelname} {name}: {message}",
+            "style": "{",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    "handlers": {
+        "file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": str(LOGS_DIR / "django.log"),
+            "maxBytes": 5 * 1024 * 1024,
+            "backupCount": 5,
+            "formatter": "simple",
+            "encoding": "utf-8",
+        },
+    },
+    "root": {
+        "handlers": ["file"],
+        "level": LOG_LEVEL,
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
