@@ -108,7 +108,7 @@ class Post(ModelMeta, models.Model):
         return normalize_meta_description(self.content) or self.title
 
     def get_meta_title(self):
-        return f"{self.title} - بلاگ {settings.SITE_NAME}"
+        return self.title
 
     def get_meta_image(self):
         return self.image_card_url or ""

@@ -5,7 +5,7 @@
                 src="{{ banner.image_display_url }}"
                 alt="{{ banner.image_alt|default:banner.title }}"
                 class="home-banner-slide__img"
-                {% if forloop.first %}data-eager loading="eager" fetchpriority="high"{% else %}loading="lazy" fetchpriority="low"{% endif %}
+                {% if is_first %}data-eager loading="eager" fetchpriority="high"{% else %}loading="lazy" fetchpriority="low"{% endif %}
                 decoding="async"
             >
         </div>

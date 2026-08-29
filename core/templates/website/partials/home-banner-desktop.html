@@ -3,7 +3,7 @@
     <div class="js-swiper-banner swiper banner-swiper">
         <div class="swiper-wrapper">
             {% for banner in home_banners %}
-            {% include "website/partials/home-banner-slide.html" %}
+            {% include "website/partials/home-banner-slide.html" with banner=banner is_first=forloop.first %}
             {% endfor %}
         </div>
         <div class="swiper-button-prev banner-nav-prev"></div>

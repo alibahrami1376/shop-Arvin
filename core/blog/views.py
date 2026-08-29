@@ -21,11 +21,11 @@ class BlogPostListView(SiteMetadataMixin, ListView):
     template_name = "blog/blog-home.html"
     context_object_name = "posts"
     paginate_by = 9
-    title = f"بلاگ - {settings.SITE_NAME}"
+    title = "بلاگ"
     description = (
         "مقالات و راهنماهای فروشگاه آروین درباره صندلی کامیون، "
         "سبک زندگی در جاده و خرید هوشمند؛ "
-        "تازه‌ترین مطالب تخصصی را در بلاگ آروین بخوانید."
+        "تازه‌ترین مطالب تخصصی را در بلاگ بخوانید."
     )
 
     def get_paginate_by(self, queryset):
@@ -33,17 +33,17 @@ class BlogPostListView(SiteMetadataMixin, ListView):
 
     def get_meta_title(self, context=None):
         if q := self.request.GET.get("q"):
-            return f"جستجو: {q} - بلاگ {settings.SITE_NAME}"
+            return f"جستجو: {q}"
         cat_name = self.kwargs.get("cat_name")
         if cat_name:
-            return f"{cat_name} - بلاگ {settings.SITE_NAME}"
+            return cat_name
         return super().get_meta_title(context)
 
     def get_meta_description(self, context=None):
         cat_name = self.kwargs.get("cat_name")
         if cat_name:
             return normalize_meta_description(
-                f"مقالات دسته «{cat_name}» در بلاگ فروشگاه آروین؛ "
+                f"مقالات دسته «{cat_name}» در بلاگ؛ "
                 f"راهنما و نکات کاربردی درباره لوازم کامیون و خرید هوشمند."
             )
         return super().get_meta_description(context)
@@ -131,9 +131,9 @@ def blog_search(request):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
-    title = f"جستجو در بلاگ - {settings.SITE_NAME}"
+    title = "جستجو در بلاگ"
     if query:
-        title = f"جستجو: {query} - بلاگ {settings.SITE_NAME}"
+        title = f"جستجو: {query}"
 
     context = {
         "posts": page_obj,
@@ -141,11 +141,11 @@ def blog_search(request):
         "meta": Meta(
             title=title,
             description=normalize_meta_description(
-                f"نتایج جستجو برای «{query}» در بلاگ فروشگاه آروین؛ "
+                f"نتایج جستجو برای «{query}» در بلاگ؛ "
                 f"مقالات مرتبط با لوازم کامیون و راهنمای خرید را پیدا کنید."
                 if query
                 else (
-                    "جستجو در مقالات بلاگ فروشگاه آروین؛ "
+                    "جستجو در مقالات بلاگ؛ "
                     "راهنما و مطالب تخصصی درباره لوازم کامیون را سریع پیدا کنید."
                 )
             ),

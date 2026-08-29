@@ -54,15 +54,31 @@
         <div class="home-lookfor-grid">
             <a href="{% url 'shop:product-grid' %}?q={{ 'لوازم آروین'|urlencode }}" class="home-lookfor-item">
                 <div class="home-lookfor-item__box">
-                    <span class="home-lookfor-item__icon-wrap" aria-hidden="true"><i class="bi bi-grid-3x3-gap"></i></span>
-                    <span class="home-lookfor-item__label-in">لوازم آروین</span>
+                    <img
+                        src="{% static 'img/home/lookfor-lavazem.webp' %}"
+                        alt=""
+                        class="home-lookfor-item__img"
+                        width="300"
+                        height="300"
+                        loading="lazy"
+                        decoding="async"
+                        fetchpriority="low"
+                    >
                 </div>
                 <span class="home-lookfor-item__caption">لوازم</span>
             </a>
             <a href="{% url 'shop:product-grid' %}?q={{ 'صندلی'|urlencode }}" class="home-lookfor-item">
                 <div class="home-lookfor-item__box">
-                    <span class="home-lookfor-item__icon-wrap" aria-hidden="true"><i class="bi bi-person-workspace"></i></span>
-                    <span class="home-lookfor-item__label-in">صندلی آروین</span>
+                    <img
+                        src="{% static 'img/home/lookfor-sandali.webp' %}"
+                        alt=""
+                        class="home-lookfor-item__img"
+                        width="300"
+                        height="300"
+                        loading="lazy"
+                        decoding="async"
+                        fetchpriority="low"
+                    >
                 </div>
                 <span class="home-lookfor-item__caption">صندلی</span>
             </a>
@@ -76,10 +92,10 @@
     <div class="container">
         <div class="home-dual-banner__grid"{% if not is_mobile_site %} dir="ltr"{% endif %}>
             <a href="{% url 'shop:product-grid' %}" class="home-dual-banner__link">
-                <img src="{% static 'img/900x900/img2.png' %}" alt="{% if is_mobile_site %}پیشنهاد ویژه{% else %}پیشنهاد ویژه فروشگاه آروین{% endif %}" class="home-dual-banner__img" width="1200" height="600" loading="lazy">
+                <img src="{% static 'img/900x900/img2.webp' %}" alt="{% if is_mobile_site %}پیشنهاد ویژه{% else %}پیشنهاد ویژه فروشگاه آروین{% endif %}" class="home-dual-banner__img" width="1200" height="600" loading="lazy">
             </a>
             <a href="{% url 'shop:product-grid' %}" class="home-dual-banner__link">
-                <img src="{% static 'img/900x900/img3.png' %}" alt="{% if is_mobile_site %}پرفروش‌ها{% else %}محصولات پرطرفدار آروین{% endif %}" class="home-dual-banner__img" width="1200" height="600" loading="lazy">
+                <img src="{% static 'img/900x900/img3.webp' %}" alt="{% if is_mobile_site %}پرفروش‌ها{% else %}محصولات پرطرفدار آروین{% endif %}" class="home-dual-banner__img" width="1200" height="600" loading="lazy">
             </a>
         </div>
     </div>
@@ -93,9 +109,46 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var bannerEl = document.querySelector('.js-swiper-banner');
-        if (!bannerEl) return;
+        if (!bannerEl || typeof Swiper === 'undefined') return;
         var slideCount = bannerEl.querySelectorAll('.swiper-slide').length;
-{% if is_mobile_site %}        if (typeof Swiper === 'undefined') return;
+
+        function prioritizeActiveBannerImage(root) {
+            root.querySelectorAll('.home-banner-slide__img').forEach(function (img) {
+                var slide = img.closest('.swiper-slide');
+                var isActive = slide && slide.classList.contains('swiper-slide-active');
+                if (isActive) {
+                    img.setAttribute('data-eager', '');
+                    img.loading = 'eager';
+                    try { img.fetchPriority = 'high'; } catch (e) {}
+                    if (img.dataset.src && !img.getAttribute('src')) {
+                        img.setAttribute('src', img.dataset.src);
+                        delete img.dataset.src;
+                    }
+                } else {
+                    img.removeAttribute('data-eager');
+                    img.loading = 'lazy';
+                    try { img.fetchPriority = 'low'; } catch (e) {}
+                }
+            });
+        }
+
+        function bindBannerImageRefresh(swiper) {
+            swiper.el.querySelectorAll('.home-banner-slide__img').forEach(function (img) {
+                function refresh() {
+                    swiper.update();
+                    if (typeof swiper.updateAutoHeight === 'function') {
+                        swiper.updateAutoHeight(0);
+                    }
+                }
+                if (img.complete) {
+                    refresh();
+                } else {
+                    img.addEventListener('load', refresh);
+                }
+            });
+        }
+
+{% if is_mobile_site %}
         new Swiper(bannerEl, {
             rtl: true,
             direction: 'horizontal',
@@ -116,22 +169,13 @@
             on: {
                 init: function (swiper) {
                     swiper.update();
-                    swiper.el.querySelectorAll('.home-banner-slide__img').forEach(function (img) {
-                        function refresh() {
-                            swiper.update();
-                            if (typeof swiper.updateAutoHeight === 'function') {
-                                swiper.updateAutoHeight(0);
-                            }
-                        }
-                        if (img.complete) {
-                            refresh();
-                        } else {
-                            img.addEventListener('load', refresh);
-                        }
-                    });
+                    prioritizeActiveBannerImage(swiper.el);
+                    bindBannerImageRefresh(swiper);
                 },
             },
-        });{% else %}        var desktopBannerSwiper = new Swiper(bannerEl, {
+        });
+{% else %}
+        new Swiper(bannerEl, {
             rtl: true,
             autoHeight: true,
             autoplay: slideCount > 1 ? {
@@ -157,22 +201,12 @@
             },
             on: {
                 init: function (swiper) {
-                    swiper.el.querySelectorAll('.home-banner-slide__img').forEach(function (img) {
-                        function refresh() {
-                            swiper.update();
-                            if (typeof swiper.updateAutoHeight === 'function') {
-                                swiper.updateAutoHeight(0);
-                            }
-                        }
-                        if (img.complete) {
-                            refresh();
-                        } else {
-                            img.addEventListener('load', refresh);
-                        }
-                    });
+                    prioritizeActiveBannerImage(swiper.el);
+                    bindBannerImageRefresh(swiper);
                 },
             },
-        });{% endif %}
+        });
+{% endif %}
     });
 </script>
 {% endif %}
