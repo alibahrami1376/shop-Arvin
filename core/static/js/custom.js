@@ -39,6 +39,52 @@ function formatPriceInToman(element) {
     element.dataset.priceFormatted = "1";
 }
 
+function initPriceThousandInputs() {
+    var digitMap = {
+        "۰": "0", "۱": "1", "۲": "2", "۳": "3", "۴": "4",
+        "۵": "5", "۶": "6", "۷": "7", "۸": "8", "۹": "9",
+        "٠": "0", "١": "1", "٢": "2", "٣": "3", "٤": "4",
+        "٥": "5", "٦": "6", "٧": "7", "٨": "8", "٩": "9",
+    };
+
+    function toDigits(value) {
+        return String(value || "").replace(/[۰-۹٠-٩]/g, function (ch) {
+            return digitMap[ch] || ch;
+        }).replace(/\D/g, "");
+    }
+
+    function withCommas(digits) {
+        if (!digits) {
+            return "";
+        }
+        return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    document.querySelectorAll(".js-price-thousands").forEach(function (input) {
+        if (input.dataset.thousandsBound === "1") {
+            return;
+        }
+        input.dataset.thousandsBound = "1";
+        input.value = withCommas(toDigits(input.value));
+
+        input.addEventListener("input", function () {
+            var digits = toDigits(input.value);
+            var formatted = withCommas(digits);
+            input.value = formatted;
+        });
+
+        var form = input.closest("form");
+        if (form && !form.dataset.priceThousandsSubmit) {
+            form.dataset.priceThousandsSubmit = "1";
+            form.addEventListener("submit", function () {
+                form.querySelectorAll(".js-price-thousands").forEach(function (field) {
+                    field.value = toDigits(field.value);
+                });
+            });
+        }
+    });
+}
+
 function initQuantityCounters() {
     document.querySelectorAll('.js-quantity-counter').forEach(function (wrap) {
         if (wrap.dataset.qtyBound) {
@@ -147,6 +193,7 @@ function initBootstrapTooltips() {
 document.addEventListener("DOMContentLoaded", function() {
     let priceElements = document.querySelectorAll('.formatted-price');
     priceElements.forEach(element => formatPriceInToman(element));
+    initPriceThousandInputs();
     initQuantityCounters();
     initProductGallerySwipers();
     initPasswordToggle();
