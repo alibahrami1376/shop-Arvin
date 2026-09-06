@@ -15,6 +15,4 @@ DELIVERY_TYPE_CHOICES = [
     (DELIVERY_FREIGHT, "ارسال با باربری"),
 ]
 
-FREIGHT_NOTES_PLACEHOLDER = (
-    "مثلاً: نام باربری، شماره تماس گیرنده در مقصد، زمان تحویل یا سایر توضیحات"
-)
+FREIGHT_NOTES_PLACEHOLDER = "شماره تماس و نام خانوادگی تحویل گیرنده را وارد نمایید."
