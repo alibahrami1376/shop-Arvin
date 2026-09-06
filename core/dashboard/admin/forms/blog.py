@@ -49,6 +49,7 @@ class BlogPostForm(forms.ModelForm):
             "slug",
             "content",
             "image",
+            "image_alt",
             "url",
             "category",
             "tags",
@@ -59,8 +60,11 @@ class BlogPostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["content"].widget = CKEditor5Widget(config_name="extends")
-        for fname in ("title", "slug", "image", "url"):
+        for fname in ("title", "slug", "image", "image_alt", "url"):
             self.fields[fname].widget.attrs.setdefault("class", "form-control")
+        self.fields["image_alt"].widget.attrs.setdefault(
+            "placeholder", "اگر خالی باشد، عنوان پست استفاده می‌شود"
+        )
         self.fields["slug"].required = False
         self.fields["slug"].widget.attrs.setdefault(
             "placeholder", "در صورت خالی بودن، از عنوان ساخته می‌شود"
@@ -114,11 +118,16 @@ class BlogPostForm(forms.ModelForm):
 class PostImageForm(forms.ModelForm):
     class Meta:
         model = PostImageModel
-        fields = ["file"]
+        fields = ["file", "image_alt"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["file"].widget.attrs.setdefault("class", "form-control")
+        self.fields["image_alt"].required = False
+        self.fields["image_alt"].widget.attrs.setdefault("class", "form-control")
+        self.fields["image_alt"].widget.attrs.setdefault(
+            "placeholder", "متن alt (اختیاری)"
+        )
 
 
 PostImageFormSet = inlineformset_factory(

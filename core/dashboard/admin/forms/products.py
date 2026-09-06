@@ -70,6 +70,7 @@ class ProductForm(forms.ModelForm):
             "brief_description",
             "description",
             "image",
+            "image_alt",
         ]
 
     def __init__(self, *args, **kwargs):
@@ -78,12 +79,16 @@ class ProductForm(forms.ModelForm):
         self.fields["title"].widget.attrs["class"] = "form-control"
         self.fields["slug"].widget.attrs["class"] = "form-control"
         self.fields["category"].widget.attrs["class"] = "form-control"
-        self.fields["category"].label_from_instance = (
-            lambda obj: obj.get_indented_title()
+        self.fields["category"].label_from_instance = lambda obj: (
+            obj.get_indented_title()
         )
         self.fields["tags"].widget.attrs["class"] = "form-control"
         self.fields["tags"].required = False
         self.fields["image"].widget.attrs["class"] = "form-control"
+        self.fields["image_alt"].widget.attrs["class"] = "form-control"
+        self.fields["image_alt"].widget.attrs["placeholder"] = (
+            "اگر خالی باشد، عنوان محصول استفاده می‌شود"
+        )
         self.fields["brief_description"].widget.attrs["class"] = "form-control"
         self.fields["stock"].widget.attrs["class"] = "form-control"
         self.fields["stock"].widget.attrs["type"] = "number"
@@ -94,7 +99,14 @@ class ProductForm(forms.ModelForm):
 class ProductImageForm(forms.ModelForm):
     class Meta:
         model = ProductImageModel
-        fields = ["file"]
+        fields = ["file", "image_alt"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["file"].widget.attrs["class"] = "form-control"
+        self.fields["image_alt"].widget.attrs["class"] = "form-control"
+        self.fields["image_alt"].required = False
+        self.fields["image_alt"].widget.attrs["placeholder"] = "متن alt (اختیاری)"
 
 
 # Formset برای آپلود چند عکس

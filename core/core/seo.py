@@ -3,7 +3,7 @@
 import re
 
 from django.conf import settings
-from django.utils.html import strip_tags
+from django.utils.html import escape, strip_tags
 
 # Reserved for later: if we keep selected query params on canonical, strip these.
 STRIP_QUERY_KEYS = frozenset(
@@ -28,6 +28,37 @@ NOINDEX_PATH_PREFIXES = (
 
 # Target length for meta description (Google snippet guidance).
 META_DESCRIPTION_MAX_LENGTH = 160
+
+_IMG_TAG_RE = re.compile(r"<img\b([^>]*?)(/?)>", re.IGNORECASE | re.DOTALL)
+_ALT_ATTR_RE = re.compile(
+    r"\balt\s*=\s*(\"[^\"]*\"|'[^']*'|[^\s>]+)",
+    re.IGNORECASE,
+)
+
+
+def ensure_img_alts(html: str | None, fallback_alt: str) -> str:
+    """Fill missing or empty <img alt> with fallback_alt (CKEditor HTML)."""
+    if not html:
+        return html or ""
+    fallback = (fallback_alt or "").strip()
+    if not fallback:
+        return str(html)
+    escaped = escape(fallback)
+
+    def repl(match: re.Match) -> str:
+        attrs, slash = match.group(1), match.group(2)
+        alt_match = _ALT_ATTR_RE.search(attrs)
+        if alt_match:
+            raw = alt_match.group(1)
+            value = raw[1:-1] if raw[:1] in "\"'" else raw
+            if value.strip():
+                return match.group(0)
+            start, end = alt_match.span()
+            new_attrs = f'{attrs[:start]}alt="{escaped}"{attrs[end:]}'
+            return f"<img{new_attrs}{slash}>"
+        return f'<img alt="{escaped}"{attrs}{slash}>'
+
+    return _IMG_TAG_RE.sub(repl, str(html))
 
 
 def normalize_meta_description(

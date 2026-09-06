@@ -4923,6 +4923,48 @@ body.device-mobile .cart-empty-state {
     padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
 }
 
+/* PDP gallery — portrait 3:4 */
+.js-swiper-shop-product .card-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    object-position: center;
+    background: #fff;
+}
+
+/* صفحه درباره ما */
+.about-page__audience {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 32rem;
+    text-align: right;
+}
+
+.about-page__audience li {
+    position: relative;
+    padding: 0.45rem 1.75rem 0.45rem 0;
+    color: var(--text-secondary);
+}
+
+.about-page__audience li::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0.85em;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--color-accent-yellow);
+}
+
+.about-page__tagline {
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
 /* فاکتور سفارش */
 .invoice-brand__img {
     max-height: 5rem;

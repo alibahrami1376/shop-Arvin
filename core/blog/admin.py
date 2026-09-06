@@ -17,6 +17,7 @@ class PostAdminForm(forms.ModelForm):
 class PostImageInline(admin.TabularInline):
     model = PostImageModel
     extra = 1
+    fields = ("file", "image_alt")
 
 
 @admin.register(Post)
@@ -44,7 +45,7 @@ class PostAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             "اطلاعات اصلی",
-            {"fields": ("title", "slug", "author", "image", "url")},
+            {"fields": ("title", "slug", "author", "image", "image_alt", "url")},
         ),
         ("محتوا", {"fields": ("content",)}),
         (
@@ -75,7 +76,7 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(PostImageModel)
 class PostImageModelAdmin(admin.ModelAdmin):
-    list_display = ("post", "file", "created_date")
+    list_display = ("post", "file", "image_alt", "created_date")
     list_filter = ("created_date",)
     search_fields = ("post__title",)
     autocomplete_fields = ("post",)

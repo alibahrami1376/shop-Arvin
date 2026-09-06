@@ -5,7 +5,7 @@
         <span class="home-product-card__badge card-pinned-top-start" aria-label="تخفیف {{ product.discount_percent }} درصد">{{ product.discount_percent }}٪</span>
         {% endif %}
         <a href="{% url 'shop:product-detail' slug=product.slug %}" class="home-product-card__img-wrap d-block">
-            <img class="card-img-top" src="{{ product.image_card_url }}" alt="{{ product.title }}" width="400" height="400" loading="lazy" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='{% static 'img/900x900/img1.jpg' %}';">
+            <img class="card-img-top" src="{{ product.image_card_url }}" alt="{{ product.get_image_alt }}" width="400" height="400" loading="lazy" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='{% static 'img/900x900/img1.jpg' %}';">
         </a>
         {% if request.user.is_authenticated %}
         <div class="card-pinned-top-end">

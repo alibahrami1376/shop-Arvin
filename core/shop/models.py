@@ -107,6 +107,13 @@ class ProductModel(ModelMeta, models.Model):
     image = models.ImageField(
         default="/default/product-image.png", upload_to="product/img/"
     )
+    image_alt = models.CharField(
+        max_length=200,
+        blank=True,
+        default="",
+        verbose_name="متن alt تصویر",
+        help_text="اگر خالی باشد، عنوان محصول استفاده می‌شود.",
+    )
     image_card = product_card_image("image")
     image_detail = product_detail_image("image")
     image_thumb = product_thumb_image("image")
@@ -240,12 +247,29 @@ class ProductModel(ModelMeta, models.Model):
     def image_thumb_url(self):
         return safe_imagekit_url(self, "image_thumb", "image")
 
+    def get_image_alt(self):
+        return (self.image_alt or "").strip() or self.title
+
+    def get_description_html(self):
+        from django.utils.safestring import mark_safe
+
+        from core.seo import ensure_img_alts
+
+        return mark_safe(ensure_img_alts(self.description, self.get_image_alt()))
+
 
 class ProductImageModel(models.Model):
     product = models.ForeignKey(
         ProductModel, on_delete=models.CASCADE, related_name="product_images"
     )
     file = models.ImageField(upload_to="product/extra-img/")
+    image_alt = models.CharField(
+        max_length=200,
+        blank=True,
+        default="",
+        verbose_name="متن alt تصویر",
+        help_text="اگر خالی باشد، alt تصویر اصلی یا عنوان محصول استفاده می‌شود.",
+    )
     file_detail = product_detail_image("file")
     file_thumb = product_gallery_thumb_image("file")
 
@@ -262,6 +286,12 @@ class ProductImageModel(models.Model):
     @property
     def file_thumb_url(self):
         return safe_imagekit_url(self, "file_thumb", "file")
+
+    def get_image_alt(self):
+        custom = (self.image_alt or "").strip()
+        if custom:
+            return custom
+        return self.product.get_image_alt()
 
 
 class WishlistProductModel(models.Model):

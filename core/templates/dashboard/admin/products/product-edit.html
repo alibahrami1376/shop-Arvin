@@ -104,6 +104,11 @@
                             <label for="validationValidFileInput1">تصویر محصول</label>
                             {{form.image}}
                         </div>
+                        <div class="col-md-12 mb-3">
+                            <label>متن alt تصویر اصلی</label>
+                            {{form.image_alt}}
+                            <p class="small text-muted mb-0">اگر خالی باشد، عنوان محصول استفاده می‌شود.</p>
+                        </div>
 
 
                     </div>
@@ -133,9 +138,13 @@
                 {% csrf_token %}
                 <div class="card-body">
                     <div class="row d-flex align-items-center">
-                        <div class="col-md-9 mb-3 d-flex align-items-center">
+                        <div class="col-md-5 mb-3">
                             <label>تصویر محصول</label>
                             {{image_form.file}}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>متن alt</label>
+                            {{image_form.image_alt}}
                         </div>
                         <div class="col-md-3 mb-3">
                             <button class="btn btn-primary ms-3" type="submit">ثبت تصویر</button>
@@ -151,7 +160,7 @@
                     {% for product_image in object.product_images.all %}
                     <div class="col-md-2">
                         <img class="img-fluid" style="width:100px; height:100px" src="{{product_image.file.url}}"
-                            alt="Image Description">
+                            alt="{{ product_image.get_image_alt }}">
                         <form action="{% url 'dashboard:admin:product-remove-image' pk=object.pk image_id=product_image.pk %}" method="post">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm">حذف تصویر</button>

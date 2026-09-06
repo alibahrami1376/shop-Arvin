@@ -61,12 +61,12 @@
 
                 <!-- Featured Image -->
                 <div class="mb-5 blog-detail-article__hero-wrap">
-                    <img class="img-fluid rounded-2 blog-detail-article__hero" src="{{ post.image_hero_url }}" alt="{{ post.title }}" data-eager loading="eager" fetchpriority="high" decoding="async">
+                    <img class="img-fluid rounded-2 blog-detail-article__hero" src="{{ post.image_hero_url }}" alt="{{ post.get_image_alt }}" data-eager loading="eager" fetchpriority="high" decoding="async">
                 </div>
 
                 <!-- Content -->
                 <div class="blog-content mb-5 blog-detail-article__content">
-                    {{ post.content|safe }}
+                    {{ post.get_content_html }}
                 </div>
 
                 {% if post.post_images.all %}
@@ -76,7 +76,7 @@
                         {% for img in post.post_images.all %}
                         <div class="col-md-6">
                             <a href="{{ img.file.url }}" target="_blank" rel="noopener noreferrer">
-                                <img class="img-fluid rounded-2 blog-detail-gallery__img" src="{{ img.file_detail_url }}" alt="" loading="lazy" fetchpriority="low" decoding="async">
+                                <img class="img-fluid rounded-2 blog-detail-gallery__img" src="{{ img.file_detail_url }}" alt="{{ img.get_image_alt }}" loading="lazy" fetchpriority="low" decoding="async">
                             </a>
                         </div>
                         {% endfor %}
@@ -151,7 +151,7 @@
                     <div class="col-md-4 mb-4">
                         <article class="card card-bordered h-100 blog-post-card">
                             <a href="{{ related.get_absolute_url }}" class="blog-post-card__overlay-link" aria-label="مشاهده جزئیات {{ related.title }}"></a>
-                            <img class="card-img-top blog-post-card__img blog-post-card__img--related" src="{{ related.image_card_url }}" alt="{{ related.title }}" loading="lazy" fetchpriority="low" decoding="async">
+                            <img class="card-img-top blog-post-card__img blog-post-card__img--related" src="{{ related.image_card_url }}" alt="{{ related.get_image_alt }}" loading="lazy" fetchpriority="low" decoding="async">
                             <div class="card-body blog-post-card__body">
                                 <h6 class="card-title blog-post-card__title">
                                     <a class="text-dark text-decoration-none" href="{{ related.get_absolute_url }}">

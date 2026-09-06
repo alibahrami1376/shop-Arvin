@@ -1882,8 +1882,9 @@ body.device-mobile .pdp-mobile__swiper {
 body.device-mobile .pdp-mobile__img {
     display: block;
     width: 100%;
-    height: min(72vw, 22rem);
-    object-fit: contain;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
     object-position: center;
     background: #fff;
 }
@@ -1906,7 +1907,8 @@ body.device-mobile .pdp-mobile__thumb {
 body.device-mobile .pdp-mobile__thumb img {
     display: block;
     width: 100%;
-    height: 3.4rem;
+    height: auto;
+    aspect-ratio: 3 / 4;
     object-fit: cover;
 }
 
@@ -2327,8 +2329,8 @@ body.device-mobile .js-swiper-shop-product {
 body.device-mobile .js-swiper-shop-product .card-img {
     width: 100%;
     height: auto;
-    max-height: min(70vw, 22rem);
-    object-fit: contain;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
     object-position: center;
 }
 
@@ -3276,6 +3278,16 @@ body.device-mobile .auth-form .btn-outline-primary.btn-lg {
 body.device-mobile .hero-section {
     min-height: auto !important;
     padding: 2rem 0;
+}
+
+body.device-mobile .about-page__audience {
+    max-width: none;
+    padding-inline: 0.25rem;
+}
+
+body.device-mobile .about-page__tagline {
+    font-size: 1rem;
+    line-height: 1.7;
 }
 
 body.device-mobile .hero-section .hero-title {

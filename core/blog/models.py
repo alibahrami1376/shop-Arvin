@@ -49,6 +49,13 @@ class Post(ModelMeta, models.Model):
     image = models.ImageField(
         upload_to="blog/", default="blog/default.png", verbose_name="تصویر"
     )
+    image_alt = models.CharField(
+        max_length=200,
+        blank=True,
+        default="",
+        verbose_name="متن alt تصویر",
+        help_text="اگر خالی باشد، عنوان پست استفاده می‌شود.",
+    )
     image_card = blog_card_image("image")
     image_hero = blog_hero_image("image")
     title = models.CharField(max_length=255, verbose_name="عنوان")
@@ -157,6 +164,16 @@ class Post(ModelMeta, models.Model):
     def image_hero_url(self):
         return safe_imagekit_url(self, "image_hero", "image")
 
+    def get_image_alt(self):
+        return (self.image_alt or "").strip() or self.title
+
+    def get_content_html(self):
+        from django.utils.safestring import mark_safe
+
+        from core.seo import ensure_img_alts
+
+        return mark_safe(ensure_img_alts(self.content, self.get_image_alt()))
+
 
 class PostImageModel(models.Model):
     """تصاویر اضافی پست (گالری)، جدا از تصویر شاخص و تصاویر داخل متن ادیتور."""
@@ -168,6 +185,13 @@ class PostImageModel(models.Model):
         verbose_name="پست",
     )
     file = models.ImageField(upload_to="blog/extra-img/", verbose_name="فایل تصویر")
+    image_alt = models.CharField(
+        max_length=200,
+        blank=True,
+        default="",
+        verbose_name="متن alt تصویر",
+        help_text="اگر خالی باشد، alt تصویر شاخص یا عنوان پست استفاده می‌شود.",
+    )
     file_detail = blog_gallery_image("file")
     file_thumb = product_gallery_thumb_image("file")
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
@@ -188,3 +212,9 @@ class PostImageModel(models.Model):
     @property
     def file_thumb_url(self):
         return safe_imagekit_url(self, "file_thumb", "file")
+
+    def get_image_alt(self):
+        custom = (self.image_alt or "").strip()
+        if custom:
+            return custom
+        return self.post.get_image_alt()

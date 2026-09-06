@@ -61,6 +61,9 @@
                     {% if object.image %}
                     <div class="mt-2 small text-muted">فایل فعلی: {{ object.image.name }}</div>
                     {% endif %}
+                    <label class="form-label mt-3">متن alt تصویر</label>
+                    {{ form.image_alt }}
+                    <p class="small text-muted mb-0">اگر خالی باشد، عنوان پست استفاده می‌شود.</p>
                 </div>
                 <div class="col-md-12 mb-3">
                     <label>محتوا</label>

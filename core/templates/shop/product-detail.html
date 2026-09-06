@@ -16,11 +16,11 @@
         <div class="js-swiper-shop-product swiper pdp-mobile__swiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
-                    <img class="pdp-mobile__img" src="{{ object.image_detail_url }}" alt="{{ object.title }}" width="768" height="1024" data-eager loading="eager" fetchpriority="high" decoding="async">
+                    <img class="pdp-mobile__img" src="{{ object.image_detail_url }}" alt="{{ object.get_image_alt }}" width="768" height="1024" data-eager loading="eager" fetchpriority="high" decoding="async">
                 </div>
                 {% for product_image in object.product_images.all %}
                 <div class="swiper-slide">
-                    <img class="pdp-mobile__img" src="{{ product_image.file_detail_url }}" alt="{{ object.title }}" width="768" height="1024" loading="lazy" fetchpriority="low" decoding="async">
+                    <img class="pdp-mobile__img" src="{{ product_image.file_detail_url }}" alt="{{ product_image.get_image_alt }}" width="768" height="1024" loading="lazy" fetchpriority="low" decoding="async">
                 </div>
                 {% endfor %}
             </div>
@@ -33,13 +33,13 @@
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
                     <button type="button" class="pdp-mobile__thumb">
-                        <img src="{{ object.image_thumb_url }}" alt="{{ object.title }}" loading="lazy" fetchpriority="low" decoding="async">
+                        <img src="{{ object.image_thumb_url }}" alt="{{ object.get_image_alt }}" loading="lazy" fetchpriority="low" decoding="async">
                     </button>
                 </div>
                 {% for product_image in object.product_images.all %}
                 <div class="swiper-slide">
                     <button type="button" class="pdp-mobile__thumb">
-                        <img src="{{ product_image.file_thumb_url }}" alt="{{ object.title }}" loading="lazy" fetchpriority="low" decoding="async">
+                        <img src="{{ product_image.file_thumb_url }}" alt="{{ product_image.get_image_alt }}" loading="lazy" fetchpriority="low" decoding="async">
                     </button>
                 </div>
                 {% endfor %}
@@ -127,7 +127,7 @@
     <div class="pdp-mobile__desc container">
         <h2 class="pdp-mobile__section-title">توضیحات محصول</h2>
         <div class="pdp-mobile__desc-body">
-            {{ object.description|safe }}
+            {{ object.get_description_html }}
         </div>
     </div>
     {% endif %}
@@ -222,13 +222,13 @@
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
                                 <div class="card card-bordered shadow-none">
-                                    <img class="card-img" src="{{ object.image_detail_url }}" alt="{{ object.title }}" width="768" height="1024" data-eager loading="eager" fetchpriority="high" decoding="async">
+                                    <img class="card-img" src="{{ object.image_detail_url }}" alt="{{ object.get_image_alt }}" width="768" height="1024" data-eager loading="eager" fetchpriority="high" decoding="async">
                                 </div>
                             </div>
                             {% for product_image in object.product_images.all %}
                             <div class="swiper-slide">
                                 <div class="card card-bordered shadow-none">
-                                    <img class="card-img" src="{{ product_image.file_detail_url }}" alt="{{ object.title }}" width="768" height="1024" loading="lazy" fetchpriority="low" decoding="async">
+                                    <img class="card-img" src="{{ product_image.file_detail_url }}" alt="{{ product_image.get_image_alt }}" width="768" height="1024" loading="lazy" fetchpriority="low" decoding="async">
                                 </div>
                             </div>
                             {% endfor %}
@@ -242,13 +242,13 @@
                             <div class="swiper-wrapper">
                                 <div class="swiper-slide">
                                     <a class="avatar avatar-circle" href="javascript:;">
-                                        <img class="avatar-img" src="{{ object.image_thumb_url }}" alt="{{ object.title }}" loading="lazy" fetchpriority="low" decoding="async">
+                                        <img class="avatar-img" src="{{ object.image_thumb_url }}" alt="{{ object.get_image_alt }}" loading="lazy" fetchpriority="low" decoding="async">
                                     </a>
                                 </div>
                                 {% for product_image in object.product_images.all %}
                                 <div class="swiper-slide">
                                     <a class="avatar avatar-circle" href="javascript:;">
-                                        <img class="avatar-img" src="{{ product_image.file_thumb_url }}" alt="{{ object.title }}" loading="lazy" fetchpriority="low" decoding="async">
+                                        <img class="avatar-img" src="{{ product_image.file_thumb_url }}" alt="{{ product_image.get_image_alt }}" loading="lazy" fetchpriority="low" decoding="async">
                                     </a>
                                 </div>
                                 {% endfor %}
@@ -341,7 +341,7 @@
 
 <div class="container content-space-t-2 content-space-md-3">
     <div class="row">
-        {{object.description|safe}}
+        {{ object.get_description_html }}
     </div>
 </div>
 
@@ -431,7 +431,7 @@
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <div class="flex-shrink-0">
-                                <img class="avatar avatar-sm avatar-circle" src="{{review.user.user_profile.image.url}}" alt="">
+                                <img class="avatar avatar-sm avatar-circle" src="{{review.user.user_profile.image.url}}" alt="{{ review.user.user_profile.get_fullname }}">
                             </div>
                             <div class="flex-grow-1 me-3">
                                 <div class="d-flex justify-content-between align-items-center">

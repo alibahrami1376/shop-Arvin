@@ -58,7 +58,7 @@
                 <th scope="row">{{forloop.counter}}</th>
                 <td>
                   <span class="avatar ">
-                    <img class="avatar-img" src="{{order_item.product.image_thumb_url}}" alt="Image Description">
+                    <img class="avatar-img" src="{{order_item.product.image_thumb_url}}" alt="{{ order_item.product.get_image_alt }}">
                   </span>
                 </td>
                 <td>{{order_item.product.pk}}</td>

@@ -10,7 +10,7 @@
         <li class="cart-item">
             <div class="cart-item__main">
                 <a href="{% url 'shop:product-detail' slug=item.product_obj.slug %}" class="cart-item__img-wrap">
-                    <img src="{{ item.product_obj.image_thumb_url }}" alt="{{ item.product_obj.title }}" width="96" height="96" loading="lazy"
+                    <img src="{{ item.product_obj.image_thumb_url }}" alt="{{ item.product_obj.get_image_alt }}" width="96" height="96" loading="lazy"
                         onerror="this.onerror=null;this.src='{% static 'img/900x900/img1.jpg' %}';">
                 </a>
                 <div class="cart-item__info">
