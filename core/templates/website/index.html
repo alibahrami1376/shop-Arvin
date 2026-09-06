@@ -52,7 +52,7 @@
     <div class="container">
         <h2 id="home-lookfor-heading" class="home-lookfor-title">دنبال چی می‌گردی؟</h2>
         <div class="home-lookfor-grid">
-            <a href="{% url 'shop:product-grid' %}?q={{ 'لوازم آروین'|urlencode }}" class="home-lookfor-item">
+            <a href="{% url 'shop:product-grid' %}" class="home-lookfor-item">
                 <div class="home-lookfor-item__box">
                     <img
                         src="{% static 'img/home/lookfor-lavazem.webp' %}"
@@ -65,9 +65,9 @@
                         fetchpriority="low"
                     >
                 </div>
-                <span class="home-lookfor-item__caption">لوازم</span>
+                <span class="home-lookfor-item__caption">  صندلی راننده </span>
             </a>
-            <a href="{% url 'shop:product-grid' %}?q={{ 'صندلی'|urlencode }}" class="home-lookfor-item">
+            <a href="{% url 'shop:product-category' slug='لوازم-جانبی' %}" class="home-lookfor-item">
                 <div class="home-lookfor-item__box">
                     <img
                         src="{% static 'img/home/lookfor-sandali.webp' %}"
@@ -80,7 +80,7 @@
                         fetchpriority="low"
                     >
                 </div>
-                <span class="home-lookfor-item__caption">صندلی</span>
+                <span class="home-lookfor-item__caption">لوازم جانبی</span>
             </a>
         </div>
     </div>
