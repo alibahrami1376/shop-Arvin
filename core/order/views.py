@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views.generic import DetailView, FormView, TemplateView, View
 from payment.models import (
     CardToCardSettings,
@@ -12,7 +13,7 @@ from payment.models import (
 )
 from payment.zarinpal_client import ZarinPalRequestFailed
 
-from order.forms import CheckOutForm, OrderTrackingForm
+from order.forms import CardToCardReceiptForm, CheckOutForm, OrderTrackingForm
 from order.models import OrderModel
 from order.permissions import HasCustomerAccessPermission
 from order.pricing import get_checkout_pricing_context
@@ -128,7 +129,7 @@ class CardPaymentInstructionsView(
 
     def get_queryset(self):
         return OrderModel.objects.filter(user=self.request.user).select_related(
-            "payment"
+            "payment", "card_receipt"
         )
 
     def get_object(self, queryset=None):
@@ -140,6 +141,16 @@ class CardPaymentInstructionsView(
             raise Http404()
         return order
 
+    def get_receipt(self):
+        return getattr(self.object, "card_receipt", None)
+
+    def get_form(self):
+        kwargs = {"instance": self.get_receipt()}
+        if self.request.method == "POST":
+            kwargs["data"] = self.request.POST
+            kwargs["files"] = self.request.FILES
+        return CardToCardReceiptForm(**kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cfg = CardToCardSettings.get_solo()
@@ -149,6 +160,55 @@ class CardPaymentInstructionsView(
         context["card_iban"] = cfg.iban
         context["card_note"] = cfg.note
         context["receipt_social_links"] = cfg.get_receipt_social_links()
+        context["receipt"] = self.get_receipt()
+        if "form" not in context:
+            context["form"] = self.get_form()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if not form.is_valid():
+            return self.render_to_response(self.get_context_data(form=form))
+
+        receipt = form.save(commit=False)
+        is_new = receipt.pk is None
+        receipt.order = self.object
+        receipt.amount = self.object.get_price()
+        if is_new or not receipt.transfer_datetime:
+            receipt.transfer_datetime = timezone.now()
+        receipt.save()
+        return redirect(
+            reverse("order:card-receipt-confirmation", kwargs={"pk": self.object.pk})
+        )
+
+
+class CardReceiptConfirmationView(
+    LoginRequiredMixin, HasCustomerAccessPermission, DetailView
+):
+    """صفحه تأیید پس از ارسال رسید کارت به کارت."""
+
+    model = OrderModel
+    template_name = "order/card-receipt-confirmation.html"
+    context_object_name = "order"
+
+    def get_queryset(self):
+        return OrderModel.objects.filter(user=self.request.user).select_related(
+            "payment", "card_receipt"
+        )
+
+    def get_object(self, queryset=None):
+        order = super().get_object(queryset)
+        pay = order.payment
+        if pay is None or pay.method != PaymentMethodType.card_to_card.value:
+            raise Http404()
+        if not getattr(order, "card_receipt", None):
+            raise Http404()
+        return order
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["receipt"] = self.object.card_receipt
         return context
 
 

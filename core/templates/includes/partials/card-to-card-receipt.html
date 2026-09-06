@@ -1,0 +1,28 @@
+<div class="row g-3">
+    <div class="col-md-6">
+        <p class="small text-muted mb-2">رسید</p>
+        {% if receipt.image %}
+        <a href="{{ receipt.image.url }}" target="_blank" rel="noopener noreferrer">
+            <img src="{{ receipt.image.url }}" alt="رسید واریز" class="img-fluid rounded border" style="max-height: {{ image_max_height|default:'220px' }}; object-fit: contain;">
+        </a>
+        {% else %}
+        <p class="mb-0 text-muted">عکسی ثبت نشده است.</p>
+        {% endif %}
+        {% if show_meta %}
+        <p class="small text-muted mt-2 mb-0">
+            مبلغ: <span class="formatted-price">{{ receipt.amount }}</span>
+            {% if receipt.created_date %}
+            <span class="d-block">زمان ارسال: {{ receipt.created_date|date:"Y-m-d H:i" }}</span>
+            {% endif %}
+        </p>
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <p class="small text-muted mb-1">توضیحات</p>
+        {% if receipt.note %}
+        <p class="mb-0">{{ receipt.note }}</p>
+        {% else %}
+        <p class="mb-0 text-muted">توضیحی ثبت نشده است.</p>
+        {% endif %}
+    </div>
+</div>

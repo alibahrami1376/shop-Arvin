@@ -1,7 +1,7 @@
 from django import forms
 from payment.models import PaymentMethodSettings
 
-from order.models import City, Province
+from order.models import CardToCardReceipt, City, Province
 from order.services import CouponValidationError, coupon_service
 from order.shipping import (
     DELIVERY_FREIGHT,
@@ -160,3 +160,60 @@ class OrderTrackingForm(forms.Form):
         if not code.isdigit() or not (5 <= len(code) <= 7):
             raise forms.ValidationError("کد سفارش باید عددی ۵ تا ۷ رقمی باشد.")
         return code
+
+
+_RECEIPT_IMAGE_MAX_BYTES = 5 * 1024 * 1024
+
+
+class CardToCardReceiptForm(forms.ModelForm):
+    class Meta:
+        model = CardToCardReceipt
+        fields = ("image", "note")
+        widgets = {
+            "image": forms.FileInput(
+                attrs={
+                    "class": "form-control",
+                    "accept": "image/jpeg,image/png,image/webp",
+                }
+            ),
+            "note": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 3,
+                    "placeholder": "در صورت نیاز توضیح کوتاه بنویسید",
+                }
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["image"].required = not bool(self.instance and self.instance.pk)
+        self.fields["note"].required = False
+        for field in self.fields.values():
+            if not field.required:
+                continue
+            empty_msg = f"فیلد «{field.label}» نباید خالی باشد."
+            field.error_messages["required"] = empty_msg
+            field.error_messages["blank"] = empty_msg
+            if isinstance(field, forms.FileField):
+                field.error_messages["missing"] = empty_msg
+                field.error_messages["empty"] = empty_msg
+        if self.is_bound:
+            for name, field in self.fields.items():
+                if self[name].errors:
+                    css = field.widget.attrs.get("class", "")
+                    if "is-invalid" not in css.split():
+                        field.widget.attrs["class"] = f"{css} is-invalid".strip()
+
+    def clean_image(self):
+        image = self.cleaned_data.get("image")
+        if image:
+            size = getattr(image, "size", None)
+            if size and size > _RECEIPT_IMAGE_MAX_BYTES:
+                raise forms.ValidationError("حجم عکس رسید باید حداکثر ۵ مگابایت باشد.")
+            return image
+        if self.instance and self.instance.pk and self.instance.image:
+            return self.instance.image
+        if self.fields["image"].required:
+            raise forms.ValidationError("فیلد «عکس رسید» نباید خالی باشد.")
+        return image

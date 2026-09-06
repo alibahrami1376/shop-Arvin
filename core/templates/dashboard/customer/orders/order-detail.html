@@ -124,7 +124,27 @@
           <dl class="col-md-3">{{ object.zip_code }}</dl>
         </div>
         {% endif %}
+        {% if object.card_receipt %}
+        <div class="row mb-4">
+          <div class="col-12">
+            <h6 class="text-muted border-bottom pb-2 mb-3">رسید کارت به کارت</h6>
+            {% include "includes/partials/card-to-card-receipt.html" with receipt=object.card_receipt show_meta=True image_max_height="280px" %}
+          </div>
+        </div>
+        {% elif object.is_card_to_card_payment %}
+        <div class="row mb-4">
+          <div class="col-12">
+            <h6 class="text-muted border-bottom pb-2 mb-3">رسید کارت به کارت</h6>
+            <p class="text-warning mb-0">هنوز رسیدی برای این سفارش ارسال نشده است.</p>
+          </div>
+        </div>
+        {% endif %}
         <div class="d-flex flex-wrap gap-2 pt-5 justify-content-end">
+          {% if object.can_submit_card_receipt and not object.card_receipt %}
+          <a class="btn btn-outline-primary" href="{% url 'order:card-payment-instructions' pk=object.pk %}#card-receipt">ارسال رسید کارت به کارت</a>
+          {% elif object.card_receipt %}
+          <a class="btn btn-outline-primary" href="{% url 'order:card-receipt-confirmation' pk=object.pk %}">مشاهده رسید</a>
+          {% endif %}
           {% if object.can_customer_view_invoice %}
           <a class="btn btn-primary" href="{% url 'dashboard:customer:order-invoice' pk=object.pk %}" target="_blank">
             <i class="bi-receipt me-1" aria-hidden="true"></i>مشاهده فاکتور

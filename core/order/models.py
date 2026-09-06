@@ -1,6 +1,10 @@
 import secrets
 
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import (
+    FileExtensionValidator,
+    MaxValueValidator,
+    MinValueValidator,
+)
 from django.db import models
 
 from order.shipping import ShippingMethodType
@@ -270,6 +274,27 @@ class OrderModel(models.Model):
         """فاکتور وقتی وضعیت پرداخت برای مشتری «موفق» است (تأیید ادمین یا درگاه)."""
         return self.get_customer_payment_status()["variant"] == "success"
 
+    @property
+    def can_submit_card_receipt(self):
+        """ارسال/ویرایش رسید فقط برای کارت‌به‌کارتِ در انتظار تأیید."""
+        from payment.models import PaymentMethodType, PaymentStatusType
+
+        pay = self.payment
+        return (
+            pay is not None
+            and pay.method == PaymentMethodType.card_to_card.value
+            and pay.status == PaymentStatusType.awaiting_payment.value
+        )
+
+    @property
+    def is_card_to_card_payment(self):
+        from payment.models import PaymentMethodType
+
+        return (
+            self.payment is not None
+            and self.payment.method == PaymentMethodType.card_to_card.value
+        )
+
     def get_items_subtotal(self) -> int:
         """جمع قیمت کالاها (ذخیره‌شده یا محاسبه از اقلام)."""
         if self.pk and self.order_items.exists():
@@ -383,3 +408,44 @@ class CheckoutPricingSettings(models.Model):
         if not self.tax_enabled or self.tax_percent <= 0:
             return 0
         return round(subtotal * self.tax_percent / 100)
+
+
+class CardToCardReceipt(models.Model):
+    order = models.OneToOneField(
+        "order.OrderModel",
+        on_delete=models.CASCADE,
+        related_name="card_receipt",
+        verbose_name="سفارش",
+    )
+    payer_name = models.CharField(
+        max_length=150, blank=True, default="", verbose_name="نام حساب واریزکننده"
+    )
+    payer_card_last4 = models.CharField(
+        max_length=4, blank=True, default="", verbose_name="چهار رقم آخر کارت"
+    )
+    image = models.ImageField(
+        upload_to="receipts/card-to-card/",
+        verbose_name="عکس رسید",
+        validators=[
+            FileExtensionValidator(allowed_extensions=["jpg", "jpeg", "png", "webp"]),
+        ],
+    )
+    note = models.TextField(blank=True, verbose_name="توضیحات")
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=0, verbose_name="مبلغ واریزی"
+    )
+    transfer_datetime = models.DateTimeField(
+        null=True, blank=True, verbose_name="زمان ثبت رسید"
+    )
+    tracking_ref = models.CharField(
+        max_length=64, blank=True, default="", verbose_name="شماره پیگیری بانکی"
+    )
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "رسید کارت به کارت"
+        verbose_name_plural = "رسیدهای کارت به کارت"
+
+    def __str__(self):
+        return f"رسید {self.order.tracking_code}"

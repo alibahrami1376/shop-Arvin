@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import (
+    CardToCardReceipt,
     CheckoutPricingSettings,
     City,
     CouponModel,
@@ -30,6 +31,22 @@ class CityAdmin(admin.ModelAdmin):
     ordering = ("province__name", "sort_order", "name")
 
 
+class CardToCardReceiptInline(admin.StackedInline):
+    model = CardToCardReceipt
+    extra = 0
+    max_num = 1
+    fields = (
+        "image",
+        "note",
+        "amount",
+        "transfer_datetime",
+        "tracking_ref",
+        "created_date",
+        "updated_date",
+    )
+    readonly_fields = ("created_date", "updated_date")
+
+
 @admin.register(OrderModel)
 class OrderModelAdmin(admin.ModelAdmin):
     list_display = (
@@ -48,6 +65,7 @@ class OrderModelAdmin(admin.ModelAdmin):
     )
     search_fields = ("tracking_code", "user__email")
     readonly_fields = ("tracking_code",)
+    inlines = (CardToCardReceiptInline,)
 
 
 @admin.register(OrderItemModel)

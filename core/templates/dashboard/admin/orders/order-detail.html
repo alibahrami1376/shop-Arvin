@@ -113,6 +113,20 @@
             </div>
           </div>
         </div>
+        {% if object.card_receipt %}
+        <div class="row mb-4">
+          <div class="col-12">
+            <h6 class="text-muted border-bottom pb-2 mb-3">رسید کارت به کارت</h6>
+            {% include "includes/partials/card-to-card-receipt.html" with receipt=object.card_receipt show_meta=True image_max_height="320px" %}
+          </div>
+        </div>
+        {% elif object.can_submit_card_receipt %}
+        <div class="row mb-4">
+          <div class="col-12">
+            <p class="small text-warning mb-0">هنوز رسیدی برای این سفارش کارت به کارت ثبت نشده است.</p>
+          </div>
+        </div>
+        {% endif %}
         <div class="row mb-3">
           <dt class="col-md-3"> تاریخ سفارش:</dt>
           <dl class="col-md-3">{{object.created_date|date:"Y-m-d h:i"}}</dl>

@@ -15,6 +15,11 @@ urlpatterns = [
         views.CardPaymentInstructionsView.as_view(),
         name="card-payment-instructions",
     ),
+    path(
+        "card-payment/<int:pk>/receipt-sent/",
+        views.CardReceiptConfirmationView.as_view(),
+        name="card-receipt-confirmation",
+    ),
     path("completed/", views.OrderCompletedView.as_view(), name="completed"),
     path("failed/", views.OrderFailedView.as_view(), name="failed"),
 ]

@@ -126,14 +126,34 @@
                                 <div class="col-6 col-md">
                                     <small class="card-subtitle mb-0">زمان سفارش:</small>
                                     <small class="text-dark fw-semibold">
-                                        {{object.created_date|date:"Y-m-d h:i"}}
+                                        {{object.created_date|date:"Y-m-d H:i"}}
                                     </small>
                                 </div>
                                 <!-- End Col -->
+
+                                {% if object.is_card_to_card_payment %}
+                                <div class="col-6 col-md">
+                                    <small class="card-subtitle mb-0">رسید کارت به کارت</small>
+                                    {% if object.card_receipt %}
+                                    <small class="badge bg-soft-success text-success d-inline-block mt-1">ارسال شد</small>
+                                    <small class="text-dark d-block mt-1">
+                                        {{ object.card_receipt.created_date|date:"Y-m-d H:i" }}
+                                    </small>
+                                    {% else %}
+                                    <small class="badge bg-soft-warning text-warning d-inline-block mt-1">ارسال نشده</small>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
                             </div>
                             <!-- End Row -->
 
                             <hr>
+
+                            {% if object.card_receipt %}
+                            <div class="mb-3">
+                                {% include "includes/partials/card-to-card-receipt.html" with receipt=object.card_receipt show_meta=False image_max_height="140px" %}
+                            </div>
+                            {% endif %}
 
                             <div class="row">
                                 <div class="col-md-8">
@@ -151,6 +171,13 @@
 
                                 <div class="col-md-4">
                                     <div class="d-grid gap-2">
+                                        {% if object.can_submit_card_receipt and not object.card_receipt %}
+                                        <a class="btn btn-outline-primary btn-sm"
+                                            href="{% url 'order:card-payment-instructions' pk=object.pk %}#card-receipt">ارسال رسید</a>
+                                        {% elif object.card_receipt %}
+                                        <a class="btn btn-outline-primary btn-sm"
+                                            href="{% url 'order:card-receipt-confirmation' pk=object.pk %}">مشاهده رسید</a>
+                                        {% endif %}
                                         {% if object.can_customer_view_invoice %}
                                         <a class="btn btn-white btn-sm"
                                             href="{% url 'dashboard:customer:order-invoice' pk=object.pk %}"

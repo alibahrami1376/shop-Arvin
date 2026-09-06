@@ -63,6 +63,22 @@
                     <span>وضعیت</span>
                     <span class="badge bg-soft-{% if order.status == 2 %}success{% elif order.status == 3 %}danger{% else %}warning{% endif %}">{{ order.get_status.label }}</span>
                 </div>
+                {% if order.is_card_to_card_payment %}
+                <div class="customer-order-card__row">
+                    <span>رسید</span>
+                    {% if order.card_receipt %}
+                    <span>
+                        <span class="badge bg-soft-success text-success">ارسال شد</span>
+                        <small class="d-block text-muted">{{ order.card_receipt.created_date|date:"Y/m/d H:i" }}</small>
+                    </span>
+                    {% else %}
+                    <span class="badge bg-soft-warning text-warning">ارسال نشده</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% if order.card_receipt %}
+                <a href="{% url 'order:card-receipt-confirmation' pk=order.pk %}" class="btn btn-outline-primary btn-sm w-100 mt-2">مشاهده رسید</a>
+                {% endif %}
                 <a href="{% url 'dashboard:customer:order-detail' pk=order.pk %}" class="btn btn-primary btn-sm w-100 mt-2">جزئیات</a>
             </article>
             {% endfor %}

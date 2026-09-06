@@ -1,23 +1,23 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import FieldError
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, View
-
-from django.contrib.auth.mixins import LoginRequiredMixin
-from dashboard.admin.forms import AdminOrderStatusForm, AdminPaymentStatusForm
-from dashboard.permissions import HasAdminAccessPermission
 from order.models import OrderModel, OrderStatusType
 from payment.models import PaymentStatusType
+
+from dashboard.admin.forms import AdminOrderStatusForm, AdminPaymentStatusForm
+from dashboard.permissions import HasAdminAccessPermission
 
 
 class AdminOrderListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
     template_name = "dashboard/admin/orders/order-list.html"
     paginate_by = 10
-    
+
     def get_paginate_by(self, queryset):
-        return self.request.GET.get('page_size',self.paginate_by)
+        return self.request.GET.get("page_size", self.paginate_by)
 
     def get_queryset(self):
         queryset = OrderModel.objects.all()
@@ -33,19 +33,20 @@ class AdminOrderListView(LoginRequiredMixin, HasAdminAccessPermission, ListView)
             except FieldError:
                 pass
         return queryset
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["total_items"] = self.get_queryset().count()  
+        context["total_items"] = self.get_queryset().count()
         context["status_types"] = OrderStatusType.choices
         return context
-    
+
+
 class AdminOrderDetailView(LoginRequiredMixin, HasAdminAccessPermission, DetailView):
     template_name = "dashboard/admin/orders/order-detail.html"
 
     def get_queryset(self):
         return OrderModel.objects.select_related(
-            "user", "user__user_profile", "payment"
+            "user", "user__user_profile", "payment", "card_receipt"
         ).all()
 
     def get_context_data(self, **kwargs):

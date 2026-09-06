@@ -1,0 +1,53 @@
+{% extends base_template %}
+{% load static %}
+
+{% block title %}تأیید رسید واریز - فروشگاه آروین{% endblock title %}
+
+{% block content %}
+<div class="container content-space-3 content-space-lg-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-4 text-center">
+                <div class="mb-4">
+                <h1 class="h2">رسید شما ثبت شد</h1>
+                <p class="text-muted fs-5 mb-0">رسید واریز دریافت شد و پس از بررسی فروشگاه تأیید می‌شود.</p>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h5 card-title border-bottom pb-2 mb-3">جزئیات سفارش</h2>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">کد سفارش</dt>
+                        <dd class="col-sm-8"><code class="user-select-all fs-4">{{ order.tracking_code }}</code></dd>
+                        <dt class="col-sm-4">مبلغ سفارش</dt>
+                        <dd class="col-sm-8"><strong class="formatted-price fs-5" data-price="{{ order.get_price }}">{{ order.get_price }}</strong></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h5 card-title border-bottom pb-2 mb-3">اطلاعات رسید ارسال‌شده</h2>
+                    {% include "includes/partials/card-to-card-receipt.html" with receipt=receipt show_meta=True image_max_height="320px" %}
+                </div>
+            </div>
+
+            <div class="alert alert-soft-primary text-center mb-4" role="note">
+                در صورت هرگونه نیاز به پشتیبانی، از صفحهٔ
+                <a href="{% url 'website:contact' %}" class="fw-semibold">تماس با ما</a>
+                اقدام کنید.
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                {% if order.can_submit_card_receipt %}
+                <a class="btn btn-outline-secondary" href="{% url 'order:card-payment-instructions' pk=order.pk %}#card-receipt">ویرایش رسید</a>
+                {% endif %}
+                <a class="btn btn-outline-primary" href="{% url 'order:track' %}?code={{ order.tracking_code }}">پیگیری سفارش</a>
+                <a class="btn btn-primary" href="{% url 'dashboard:customer:order-list' %}">سفارش‌های من</a>
+                <a class="btn btn-outline-secondary" href="{% url 'website:contact' %}">تماس با ما</a>
+                <a class="btn btn-outline-secondary" href="{% url 'shop:product-grid' %}">ادامه خرید</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -9,7 +9,7 @@
         <div class="col-lg-8">
             <div class="mb-4 text-center">
                 <h1 class="h2">واریز کارت به کارت</h1>
-                <p class="text-muted">سفارش شما ثبت شد. لطفاً مبلغ را به شمارهٔ زیر واریز کنید و کد سفارش را نزد خود نگه دارید.</p>
+                <p class="text-muted fs-5 mb-0">سفارش شما ثبت شد. <strong>مبلغ را به شماره کارت فروشگاه واریز کنید</strong>، سپس <strong>رسید را در همین صفحه ارسال کنید</strong> و <strong>کد سفارش را نزد خود نگه دارید</strong>.</p>
             </div>
 
             <div class="card shadow-sm mb-4">
@@ -45,6 +45,54 @@
                 </div>
             </div>
 
+            <div class="card shadow-sm mb-4" id="card-receipt">
+                <div class="card-body">
+                    <h2 class="h5 card-title border-bottom pb-2 mb-3">ارسال رسید کارت به کارت</h2>
+                    {% if receipt %}
+                    <div class="alert alert-soft-success mb-4" role="status">
+                        رسید شما ثبت شده است و پس از بررسی فروشگاه تأیید می‌شود. در صورت نیاز می‌توانید اطلاعات را به‌روز کنید.
+                    </div>
+                    <div class="mb-4">
+                    {% include "includes/partials/card-to-card-receipt.html" with receipt=receipt show_meta=False image_max_height="220px" %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted small mb-4">پس از واریز، عکس رسید و در صورت نیاز توضیحات را ارسال کنید تا سفارش بررسی شود.</p>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        {% if form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <ul class="mb-0">
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.image.id_for_label }}">{{ form.image.label }}</label>
+                            {{ form.image }}
+                            <div class="form-text">{% if receipt %}برای جایگزینی، عکس جدید انتخاب کنید. {% endif %}فرمت‌های JPG، PNG یا WEBP تا ۵ مگابایت.</div>
+                            {% if form.image.errors %}<div class="invalid-feedback d-block">{{ form.image.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.note.id_for_label }}">{{ form.note.label }} <span class="text-muted">(اختیاری)</span></label>
+                            {{ form.note }}
+                            {% if form.note.errors %}<div class="invalid-feedback d-block">{{ form.note.errors.0 }}</div>{% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            {% if receipt %}به‌روزرسانی رسید{% else %}ارسال رسید{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
             {% if card_note %}
             <div class="alert alert-soft-primary" role="alert">
                 {{ card_note }}
@@ -54,8 +102,8 @@
             {% if receipt_social_links %}
             <div class="card shadow-sm mb-4">
                 <div class="card-body text-center">
-                    <h2 class="h5 card-title border-bottom pb-2 mb-3">ارسال رسید واریز</h2>
-                    <p class="text-muted small mb-3">پس از واریز، فیش یا تصویر رسید را از طریق یکی از راه‌های زیر ارسال کنید.</p>
+                    <h2 class="h5 card-title border-bottom pb-2 mb-3">ارسال از شبکه‌های اجتماعی</h2>
+                    <p class="text-muted small mb-3">در صورت تمایل می‌توانید رسید را از این راه‌ها هم برای فروشگاه بفرستید.</p>
                     <div class="d-flex flex-wrap gap-2 justify-content-center">
                         {% for item in receipt_social_links %}
                         <a class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1"
