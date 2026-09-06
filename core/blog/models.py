@@ -10,8 +10,8 @@ from shop.image_urls import safe_imagekit_url
 
 from core.imagekit_specs import (
     blog_card_image,
+    blog_gallery_image,
     blog_hero_image,
-    product_detail_image,
     product_gallery_thumb_image,
 )
 
@@ -168,7 +168,7 @@ class PostImageModel(models.Model):
         verbose_name="پست",
     )
     file = models.ImageField(upload_to="blog/extra-img/", verbose_name="فایل تصویر")
-    file_detail = product_detail_image("file")
+    file_detail = blog_gallery_image("file")
     file_thumb = product_gallery_thumb_image("file")
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
     updated_date = models.DateTimeField(auto_now=True, verbose_name="تاریخ بروزرسانی")

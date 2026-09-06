@@ -16,11 +16,11 @@
         <div class="js-swiper-shop-product swiper pdp-mobile__swiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
-                    <img class="pdp-mobile__img" src="{{ object.image_detail_url }}" alt="{{ object.title }}" data-eager loading="eager" fetchpriority="high" decoding="async">
+                    <img class="pdp-mobile__img" src="{{ object.image_detail_url }}" alt="{{ object.title }}" width="768" height="1024" data-eager loading="eager" fetchpriority="high" decoding="async">
                 </div>
                 {% for product_image in object.product_images.all %}
                 <div class="swiper-slide">
-                    <img class="pdp-mobile__img" src="{{ product_image.file_detail_url }}" alt="{{ object.title }}" loading="lazy" fetchpriority="low" decoding="async">
+                    <img class="pdp-mobile__img" src="{{ product_image.file_detail_url }}" alt="{{ object.title }}" width="768" height="1024" loading="lazy" fetchpriority="low" decoding="async">
                 </div>
                 {% endfor %}
             </div>
@@ -222,13 +222,13 @@
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
                                 <div class="card card-bordered shadow-none">
-                                    <img class="card-img" src="{{ object.image_detail_url }}" alt="{{ object.title }}" data-eager loading="eager" fetchpriority="high" decoding="async">
+                                    <img class="card-img" src="{{ object.image_detail_url }}" alt="{{ object.title }}" width="768" height="1024" data-eager loading="eager" fetchpriority="high" decoding="async">
                                 </div>
                             </div>
                             {% for product_image in object.product_images.all %}
                             <div class="swiper-slide">
                                 <div class="card card-bordered shadow-none">
-                                    <img class="card-img" src="{{ product_image.file_detail_url }}" alt="{{ object.title }}" loading="lazy" fetchpriority="low" decoding="async">
+                                    <img class="card-img" src="{{ product_image.file_detail_url }}" alt="{{ object.title }}" width="768" height="1024" loading="lazy" fetchpriority="low" decoding="async">
                                 </div>
                             </div>
                             {% endfor %}

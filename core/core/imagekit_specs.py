@@ -15,7 +15,17 @@ def product_card_image(source="image"):
 
 
 def product_detail_image(source="image"):
-    """PDP main gallery (~800×800, keep aspect)."""
+    """PDP main gallery — portrait 3:4 at 768×1024."""
+    return ImageSpecField(
+        source=source,
+        processors=[ResizeToFill(768, 1024)],
+        format="WEBP",
+        options={"quality": 85},
+    )
+
+
+def blog_gallery_image(source="file"):
+    """Blog extra images (keep aspect, max 800)."""
     return ImageSpecField(
         source=source,
         processors=[ResizeToFit(800, 800)],
