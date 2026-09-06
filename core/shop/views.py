@@ -64,7 +64,7 @@ class ShopProductListMixin:
 
 
 class ShopProductGridView(ShopProductListMixin, SiteMetadataMixin, ListView):
-    title = f"محصولات - {settings.SITE_NAME}"
+    title = "فروشگاه صندلی ماشین سنگین آروین"
     description = (
         "لیست محصولات فروشگاه آروین؛ صندلی راننده ماشین سنگین،نیمه سنگین و راهسازی،"
         "مقایسه کنید و آنلاین سفارش دهید با ارسال سریع به سراسر کشور."

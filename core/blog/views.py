@@ -21,7 +21,7 @@ class BlogPostListView(SiteMetadataMixin, ListView):
     template_name = "blog/blog-home.html"
     context_object_name = "posts"
     paginate_by = 9
-    title = "بلاگ"
+    title = "وبلاگ | جدیدترین مقالات"
     description = (
         "مقالات و راهنماهای فروشگاه آروین درباره صندلی کامیون، "
         "سبک زندگی در جاده و خرید هوشمند؛ "
@@ -36,7 +36,7 @@ class BlogPostListView(SiteMetadataMixin, ListView):
             return f"جستجو: {q}"
         cat_name = self.kwargs.get("cat_name")
         if cat_name:
-            return cat_name
+            return f"مقالات {cat_name}"
         return super().get_meta_title(context)
 
     def get_meta_description(self, context=None):
