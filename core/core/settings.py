@@ -12,7 +12,13 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
+import sentry_sdk
 from decouple import config
+
+sentry_sdk.init(
+    dsn="https://dc8d5b38bc550e2cd0115c37a4eae4c1@sentry.hamravesh.com/10507",
+    send_default_pii=True,
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
