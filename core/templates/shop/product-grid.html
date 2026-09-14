@@ -33,6 +33,11 @@
 
     <div class="container shop-mobile-page__products">
         {% include "shop/partials/product-grid-cards.html" %}
+        {% if active_category and active_category.description and page_obj.number == 1 %}
+        <section class="category-seo-content mt-4 mb-3" aria-label="درباره {{ active_category.title }}">
+            {{ active_category.description|safe }}
+        </section>
+        {% endif %}
     </div>
 
     <div class="offcanvas offcanvas-bottom shop-filter-offcanvas" tabindex="-1" id="shopFilterOffcanvas" aria-labelledby="shopFilterOffcanvasLabel">
@@ -100,6 +105,11 @@
                 </div>
             </div>
             {% include "shop/partials/product-grid-cards.html" %}
+            {% if active_category and active_category.description and page_obj.number == 1 %}
+            <section class="category-seo-content mt-4 mt-lg-5" aria-label="درباره {{ active_category.title }}">
+                {{ active_category.description|safe }}
+            </section>
+            {% endif %}
         </div>
     </div>
 </div>

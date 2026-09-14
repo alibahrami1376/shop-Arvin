@@ -3,6 +3,10 @@
 
 {% block title %}ویرایش دسته بندی - پنل ادمین{% endblock title %}
 
+{% block extra_js_no_compress %}
+{{ form.media }}
+{% endblock %}
+
 {% block breadcrumb %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb breadcrumb-light mb-0">
@@ -30,17 +34,22 @@
         <div class="card-body">
             <div class="row d-flex ">
                 <div class="col-md-6 mb-3">
-                    <label>عنوان</label>
-                    {{form.title}}
+                    <label for="{{ form.title.id_for_label }}">عنوان</label>
+                    {{ form.title }}
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label>اسلاگ</label>
-                    {{form.slug}}
+                    <label for="{{ form.slug.id_for_label }}">اسلاگ</label>
+                    {{ form.slug }}
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label>دسته والد</label>
-                    {{form.parent}}
+                    <label for="{{ form.parent.id_for_label }}">دسته والد</label>
+                    {{ form.parent }}
                     <div class="form-text">برای زیرگروه، دسته اصلی را انتخاب کنید.</div>
+                </div>
+                <div class="col-12 mb-3">
+                    <label for="{{ form.description.id_for_label }}">توضیحات دسته</label>
+                    {{ form.description }}
+                    <div class="form-text">این متن پایین لیست محصولات صفحهٔ دسته نمایش داده می‌شود.</div>
                 </div>
             </div>
         </div>

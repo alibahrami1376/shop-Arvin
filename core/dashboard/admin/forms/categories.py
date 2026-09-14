@@ -1,20 +1,32 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
+from django_ckeditor_5.widgets import CKEditor5Widget
 from shop.models import ProductCategoryModel
 
 
 class CategoryForm(forms.ModelForm):
+    """فیلد description صریح است تا حتماً CKEditor5Widget اعمال شود."""
+
+    description = forms.CharField(
+        label="توضیحات دسته",
+        required=False,
+        widget=CKEditor5Widget(config_name="extends"),
+    )
+
     class Meta:
         model = ProductCategoryModel
-        fields = ["title", "slug", "parent"]
+        fields = ["title", "slug", "parent", "description"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["description"].widget = CKEditor5Widget(config_name="extends")
         self.fields["title"].widget.attrs["class"] = "form-control"
         self.fields["slug"].widget.attrs["class"] = "form-control"
         self.fields["slug"].required = False
-        self.fields["slug"].widget.attrs.setdefault("placeholder", "در صورت خالی بودن، خودکار ساخته می‌شود")
+        self.fields["slug"].widget.attrs.setdefault(
+            "placeholder", "در صورت خالی بودن، خودکار ساخته می‌شود"
+        )
         self.fields["parent"].widget.attrs["class"] = "form-select"
         self.fields["parent"].required = False
         self.fields["parent"].empty_label = "بدون والد (دسته اصلی)"
@@ -27,7 +39,9 @@ class CategoryForm(forms.ModelForm):
             for cat in ProductCategoryModel.get_tree_ordered()
             if cat.pk not in invalid_ids
         ]
-        self.fields["parent"].queryset = ProductCategoryModel.objects.filter(pk__in=valid_pks)
+        self.fields["parent"].queryset = ProductCategoryModel.objects.filter(
+            pk__in=valid_pks
+        )
         self.fields["parent"].label_from_instance = lambda obj: obj.get_indented_title()
 
     def clean_parent(self):
@@ -59,4 +73,3 @@ class CategoryForm(forms.ModelForm):
             slug = f"{base_slug}-{i}"
             i += 1
         return slug
-

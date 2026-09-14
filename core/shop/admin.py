@@ -29,6 +29,8 @@ class ProductModelAdmin(admin.ModelAdmin):
 class ProductCategoryModelAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "parent", "created_date")
     list_filter = ("parent",)
+    search_fields = ("title", "slug")
+    fields = ("title", "slug", "parent", "description")
 
 
 @admin.register(ProductTagModel)

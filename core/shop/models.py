@@ -31,6 +31,11 @@ class ProductCategoryModel(models.Model):
     )
     title = models.CharField(max_length=255)
     slug = models.SlugField(allow_unicode=True, unique=True)
+    description = models.TextField(
+        blank=True,
+        default="",
+        verbose_name="توضیحات دسته",
+    )
 
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
