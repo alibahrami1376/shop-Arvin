@@ -2346,6 +2346,9 @@ a:hover {
     display: block;
     width: 100%;
     height: 100%;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .home-banner-slide__img {
@@ -4946,8 +4949,6 @@ body.device-mobile .cart-empty-state {
     object-position: center;
     background: #f7f3ee;
 }
-
-
 
 /* صفحه درباره ما */
 .about-page__audience {

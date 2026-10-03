@@ -1,4 +1,11 @@
 <div class="swiper-slide">
+    {% if banner.link %}
+    <a
+        href="{{ banner.link }}"
+        class="home-banner-slide__link"
+        {% if banner.link|slice:":4" == "http" %}target="_blank" rel="noopener noreferrer"{% endif %}
+    >
+    {% endif %}
     <article class="home-banner-slide{% if not banner.subtitle and not banner.button_text %} home-banner-slide--full{% endif %}" style="background: {{ banner.background_gradient }};">
         <div class="home-banner-slide__media">
             <img
@@ -18,9 +25,12 @@
             <p class="home-banner-slide__text">{{ banner.subtitle }}</p>
             {% endif %}
             {% if banner.link and banner.button_text %}
-            <a href="{{ banner.link }}" class="btn btn-primary btn-lg mt-2 home-banner-slide__btn"{% if banner.link|slice:":4" == "http" %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ banner.button_text }}</a>
+            <span class="btn btn-primary btn-lg mt-2 home-banner-slide__btn">{{ banner.button_text }}</span>
             {% endif %}
         </div>
         {% endif %}
     </article>
+    {% if banner.link %}
+    </a>
+    {% endif %}
 </div>

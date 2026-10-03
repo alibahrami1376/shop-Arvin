@@ -34,10 +34,16 @@
                     <p class="mb-1"><span class="text-muted">به نام:</span> {{ card_holder }}</p>
                     {% endif %}
                     {% if card_number %}
-                    <p class="mb-1"><span class="text-muted">شماره کارت:</span> <code class="user-select-all">{{ card_number }}</code></p>
+                    <div class="account-copy-row mb-2">
+                        <p class="mb-0"><span class="text-muted">شماره کارت:</span> <code class="user-select-all" dir="ltr">{{ card_number }}</code></p>
+                        <button type="button" class="btn btn-sm btn-outline-primary account-copy-btn js-copy-account" data-copy="{{ card_number }}">کپی</button>
+                    </div>
                     {% endif %}
                     {% if card_iban %}
-                    <p class="mb-0"><span class="text-muted">شبا:</span> <code class="user-select-all">{{ card_iban }}</code></p>
+                    <div class="account-copy-row mb-0">
+                        <p class="mb-0"><span class="text-muted">شبا:</span> <code class="user-select-all" dir="ltr">{{ card_iban }}</code></p>
+                        <button type="button" class="btn btn-sm btn-outline-primary account-copy-btn js-copy-account" data-copy="{{ card_iban }}">کپی</button>
+                    </div>
                     {% endif %}
                     {% if not card_number and not card_iban %}
                     <p class="text-warning mb-0">شماره کارت یا شبا در تنظیمات فروشگاه (متغیرهای محیط) ثبت نشده است. از پنل ادمین یا فایل <code>.env</code> مقداردهی کنید.</p>
@@ -128,3 +134,62 @@
     </div>
 </div>
 {% endblock content %}
+
+{% block extra_css_no_compress %}
+<style>
+.account-copy-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+.account-copy-row code {
+    font-size: 1rem;
+}
+.account-copy-btn {
+    flex-shrink: 0;
+    min-width: 4.5rem;
+}
+</style>
+{% endblock extra_css_no_compress %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.js-copy-account').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        var value = (btn.getAttribute('data-copy') || '').replace(/\s+/g, '');
+        if (!value) {
+            return;
+        }
+        var done = function () {
+            var label = btn.textContent;
+            btn.textContent = 'کپی شد';
+            btn.disabled = true;
+            window.setTimeout(function () {
+                btn.textContent = label;
+                btn.disabled = false;
+            }, 1600);
+        };
+        var fallback = function () {
+            var field = document.createElement('textarea');
+            field.value = value;
+            field.setAttribute('readonly', '');
+            field.style.position = 'fixed';
+            field.style.opacity = '0';
+            document.body.appendChild(field);
+            field.select();
+            var ok = document.execCommand('copy');
+            document.body.removeChild(field);
+            if (ok) {
+                done();
+            }
+        };
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(value).then(done).catch(fallback);
+        } else {
+            fallback();
+        }
+    });
+});
+</script>
+{% endblock extra_js %}
