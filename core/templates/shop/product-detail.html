@@ -16,29 +16,27 @@
         <div class="js-swiper-shop-product swiper pdp-mobile__swiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
-                    <img class="pdp-mobile__img" src="{{ object.image_detail_url }}" alt="{{ object.get_image_alt }}" width="768" height="1024" data-eager loading="eager" fetchpriority="high" decoding="async">
+                    <img class="pdp-mobile__img" src="{{ object.image_detail_url }}" alt="{{ object.get_image_alt }}" width="600" height="800" data-eager loading="eager" fetchpriority="high" decoding="async">
                 </div>
                 {% for product_image in object.product_images.all %}
                 <div class="swiper-slide">
-                    <img class="pdp-mobile__img" src="{{ product_image.file_detail_url }}" alt="{{ product_image.get_image_alt }}" width="768" height="1024" loading="lazy" fetchpriority="low" decoding="async">
+                    <img class="pdp-mobile__img" src="{{ product_image.file_detail_url }}" alt="{{ product_image.get_image_alt }}" width="600" height="800" loading="lazy" fetchpriority="low" decoding="async">
                 </div>
                 {% endfor %}
             </div>
-            <div class="js-swiper-shop-product-button-next swiper-button-next"></div>
-            <div class="js-swiper-shop-product-button-prev swiper-button-prev"></div>
         </div>
 
         {% if object.product_images.all %}
-        <div class="js-swiper-shop-product-thumb swiper pdp-mobile__thumbs">
+        <div class="js-swiper-shop-product-thumb swiper pdp-mobile__thumbs" aria-label="گالری تصاویر محصول">
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
-                    <button type="button" class="pdp-mobile__thumb">
+                    <button type="button" class="pdp-mobile__thumb" aria-label="تصویر اصلی">
                         <img src="{{ object.image_thumb_url }}" alt="{{ object.get_image_alt }}" loading="lazy" fetchpriority="low" decoding="async">
                     </button>
                 </div>
                 {% for product_image in object.product_images.all %}
                 <div class="swiper-slide">
-                    <button type="button" class="pdp-mobile__thumb">
+                    <button type="button" class="pdp-mobile__thumb" aria-label="تصویر {{ forloop.counter|add:1 }}">
                         <img src="{{ product_image.file_thumb_url }}" alt="{{ product_image.get_image_alt }}" loading="lazy" fetchpriority="low" decoding="async">
                     </button>
                 </div>
@@ -49,7 +47,6 @@
     </div>
 
     <div class="pdp-mobile__panel container">
-        {% include "includes/breadcrumb.html" with breadcrumb_nav_class="pdp-mobile__crumbs mb-3" %}
         <div class="pdp-mobile__top">
             <a class="pdp-mobile__rating" href="#reviewSection">
                 {% for i in "12345" %}
@@ -90,7 +87,7 @@
         {% endif %}
 
         {% if object.brief_description %}
-        <p class="pdp-mobile__brief">{{ object.brief_description }}</p>
+        <div class="pdp-mobile__brief">{{ object.brief_description|linebreaksbr }}</div>
         {% endif %}
 
         <div class="pdp-mobile__price">
@@ -212,7 +209,7 @@
 
 {% else %}
 <!-- Hero -->
-<div class="container content-space-t-2 content-space-t-sm-3">
+<div class="container pdp-desktop">
     {% include "includes/breadcrumb.html" with breadcrumb_nav_class="mb-4" %}
     <div class="row">
         <div class="col-md-7 mb-7 mb-md-0">
@@ -222,13 +219,13 @@
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
                                 <div class="card card-bordered shadow-none">
-                                    <img class="card-img" src="{{ object.image_detail_url }}" alt="{{ object.get_image_alt }}" width="768" height="1024" data-eager loading="eager" fetchpriority="high" decoding="async">
+                                    <img class="card-img" src="{{ object.image_detail_url }}" alt="{{ object.get_image_alt }}" width="600" height="800" data-eager loading="eager" fetchpriority="high" decoding="async">
                                 </div>
                             </div>
                             {% for product_image in object.product_images.all %}
                             <div class="swiper-slide">
                                 <div class="card card-bordered shadow-none">
-                                    <img class="card-img" src="{{ product_image.file_detail_url }}" alt="{{ product_image.get_image_alt }}" width="768" height="1024" loading="lazy" fetchpriority="low" decoding="async">
+                                    <img class="card-img" src="{{ product_image.file_detail_url }}" alt="{{ product_image.get_image_alt }}" width="600" height="800" loading="lazy" fetchpriority="low" decoding="async">
                                 </div>
                             </div>
                             {% endfor %}

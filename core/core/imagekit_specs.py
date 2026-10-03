@@ -15,10 +15,10 @@ def product_card_image(source="image"):
 
 
 def product_detail_image(source="image"):
-    """PDP main gallery — portrait 3:4 at 768×1024."""
+    """PDP main gallery — portrait 3:4 at 600×800."""
     return ImageSpecField(
         source=source,
-        processors=[ResizeToFill(768, 1024)],
+        processors=[ResizeToFill(600, 800)],
         format="WEBP",
         options={"quality": 85},
     )

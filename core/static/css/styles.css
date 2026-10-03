@@ -4923,15 +4923,31 @@ body.device-mobile .cart-empty-state {
     padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
 }
 
-/* PDP gallery — portrait 3:4 */
-.js-swiper-shop-product .card-img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    object-position: center;
-    background: #fff;
+.pdp-desktop {
+    padding-top: 1.25rem;
 }
+
+/* PDP gallery — portrait 3:4, scaled to fit below the header */
+.js-swiper-shop-product .swiper-slide .card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f7f3ee;
+}
+
+.js-swiper-shop-product .card-img {
+    display: block;
+    width: min(100%, calc((100dvh - 11rem) * 0.75));
+    height: auto;
+    max-height: calc(100dvh - 11rem);
+    margin-inline: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: contain;
+    object-position: center;
+    background: #f7f3ee;
+}
+
+
 
 /* صفحه درباره ما */
 .about-page__audience {

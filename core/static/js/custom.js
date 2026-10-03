@@ -119,32 +119,39 @@ function initProductGallerySwipers() {
     if (typeof Swiper === 'undefined') {
         return;
     }
+    var isMobilePdp = !!document.querySelector('.pdp-mobile__gallery');
     var thumbEl = document.querySelector('.js-swiper-shop-product-thumb');
     var thumbSwiper = null;
     if (thumbEl && !thumbEl.swiper) {
         thumbSwiper = new Swiper(thumbEl, {
-            slidesPerView: 4,
-            spaceBetween: 8,
+            slidesPerView: isMobilePdp ? 'auto' : 4,
+            spaceBetween: isMobilePdp ? 10 : 8,
             watchSlidesProgress: true,
             watchSlidesVisibility: true,
-            breakpoints: { 360: { slidesPerView: 5 } },
+            centerInsufficientSlides: true,
+            breakpoints: isMobilePdp ? undefined : { 360: { slidesPerView: 5 } },
         });
     } else if (thumbEl && thumbEl.swiper) {
         thumbSwiper = thumbEl.swiper;
     }
     var productEl = document.querySelector('.js-swiper-shop-product');
     if (productEl && !productEl.swiper) {
-        new Swiper(productEl, {
+        var slideCount = productEl.querySelectorAll('.swiper-slide').length;
+        var options = {
             rtl: true,
             effect: 'fade',
             fadeEffect: { crossFade: true },
-            loop: productEl.querySelectorAll('.swiper-slide').length > 1,
-            navigation: {
+            // Loop can duplicate slides and break thumb sync on mobile PDP.
+            loop: !isMobilePdp && slideCount > 1,
+            thumbs: thumbSwiper ? { swiper: thumbSwiper } : undefined,
+        };
+        if (!isMobilePdp) {
+            options.navigation = {
                 nextEl: '.js-swiper-shop-product-button-next',
                 prevEl: '.js-swiper-shop-product-button-prev',
-            },
-            thumbs: thumbSwiper ? { swiper: thumbSwiper } : undefined,
-        });
+            };
+        }
+        new Swiper(productEl, options);
     }
 }
 

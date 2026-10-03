@@ -1868,48 +1868,75 @@ body.device-mobile .pdp-mobile {
 
 body.device-mobile .pdp-mobile__gallery {
     background: #fff;
-    padding: 0.65rem 0.75rem 0.85rem;
+    padding: 0.65rem 1rem 0.85rem;
     border-bottom: 1px solid rgba(74, 55, 44, 0.08);
 }
 
 body.device-mobile .pdp-mobile__swiper {
     width: 100%;
+    max-height: 100vh;
+    margin-inline: auto;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    background: #fff;
+    background: #f7f3ee;
+}
+
+/* Before Swiper boots, never stack all product photos */
+body.device-mobile .pdp-mobile__swiper:not(.swiper-initialized) .swiper-slide:not(:first-child) {
+    display: none;
+}
+
+body.device-mobile .pdp-mobile__swiper .swiper-wrapper {
+    align-items: stretch;
+}
+
+body.device-mobile .pdp-mobile__swiper .swiper-slide {
+    height: auto;
+    overflow: hidden;
 }
 
 body.device-mobile .pdp-mobile__img {
     display: block;
-    width: 100%;
+    width: min(100%, calc((100dvh - 14rem) * 0.75));
     height: auto;
+    max-height: calc(100dvh - 14rem);
+    margin-inline: auto;
     aspect-ratio: 3 / 4;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center;
-    background: #fff;
+    background: #f7f3ee;
 }
 
 body.device-mobile .pdp-mobile__thumbs {
-    margin-top: 0.65rem;
-    padding-inline: 0.1rem;
+    margin-top: 0.85rem;
+    padding-inline: 0.25rem;
+}
+
+body.device-mobile .pdp-mobile__thumbs .swiper-slide {
+    width: auto;
+    display: flex;
+    justify-content: center;
 }
 
 body.device-mobile .pdp-mobile__thumb {
     display: block;
-    width: 100%;
+    width: 3.35rem;
+    height: 3.35rem;
     padding: 0;
-    border: 1px solid rgba(74, 55, 44, 0.12);
-    border-radius: 0.7rem;
+    border: 2px solid rgba(74, 55, 44, 0.12);
+    border-radius: 50%;
     overflow: hidden;
     background: #fff;
+    flex-shrink: 0;
 }
 
 body.device-mobile .pdp-mobile__thumb img {
     display: block;
     width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 4;
+    height: 100%;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
+    border-radius: 50%;
 }
 
 body.device-mobile .swiper-slide-thumb-active .pdp-mobile__thumb {
@@ -1917,23 +1944,10 @@ body.device-mobile .swiper-slide-thumb-active .pdp-mobile__thumb {
     box-shadow: 0 0 0 2px rgba(253, 185, 78, 0.35);
 }
 
+/* Navigation is via circular thumbs on mobile PDP */
 body.device-mobile .pdp-mobile__swiper .swiper-button-next,
 body.device-mobile .pdp-mobile__swiper .swiper-button-prev {
-    width: 2.1rem;
-    height: 2.1rem;
-    margin-top: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.92);
-    border-radius: 999px;
-    color: #6b4e3d;
-    box-shadow: 0 2px 10px rgba(74, 55, 44, 0.12);
-}
-
-body.device-mobile .pdp-mobile__swiper .swiper-button-next::after,
-body.device-mobile .pdp-mobile__swiper .swiper-button-prev::after {
-    font-size: 0.8rem;
-    font-weight: 700;
+    display: none;
 }
 
 body.device-mobile .pdp-mobile__panel {
@@ -1980,15 +1994,32 @@ body.device-mobile .pdp-mobile__cats {
 body.device-mobile .pdp-mobile__tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-bottom: 0.65rem;
+    gap: 0.4rem;
+    margin-bottom: 0.85rem;
+}
+
+body.device-mobile .pdp-mobile__tags .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    background: #f7f3ee;
+    color: #6b4e3d;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
 body.device-mobile .pdp-mobile__brief {
-    margin: 0 0 0.9rem;
-    color: rgba(74, 55, 44, 0.78);
-    font-size: 0.92rem;
-    line-height: 1.9;
+    margin: 0 0 1rem;
+    padding: 0.75rem 0.85rem;
+    border-radius: 0.85rem;
+    background: #f7f3ee;
+    color: rgba(74, 55, 44, 0.86);
+    font-size: 0.9rem;
+    line-height: 1.85;
+    white-space: pre-line;
+    unicode-bidi: plaintext;
 }
 
 body.device-mobile .pdp-mobile__price {
@@ -2045,6 +2076,7 @@ body.device-mobile .pdp-mobile__qty-label {
 body.device-mobile .pdp-mobile__qty-controls {
     display: inline-flex;
     align-items: center;
+    direction: ltr;
     gap: 0.35rem;
     padding: 0.25rem;
     border-radius: var(--radius-full);
@@ -2125,6 +2157,24 @@ body.device-mobile .pdp-mobile__desc-body {
     font-size: 0.92rem;
     line-height: 1.95;
     color: rgba(74, 55, 44, 0.86);
+}
+
+body.device-mobile .pdp-mobile__desc-body p {
+    margin: 0 0 0.75rem;
+}
+
+body.device-mobile .pdp-mobile__desc-body p:last-child {
+    margin-bottom: 0;
+}
+
+body.device-mobile .pdp-mobile__desc-body ul,
+body.device-mobile .pdp-mobile__desc-body ol {
+    margin: 0 0 0.75rem;
+    padding-inline-start: 1.25rem;
+}
+
+body.device-mobile .pdp-mobile__desc-body li + li {
+    margin-top: 0.35rem;
 }
 
 body.device-mobile .pdp-mobile__desc-body img {
@@ -2224,6 +2274,137 @@ body.device-mobile .pdp-mobile__comment p {
 body.device-mobile .pdp-mobile__comment-empty {
     padding: 0.75rem 0;
     font-size: 0.9rem;
+}
+
+/* Modal — theme CSS is not loaded on mobile */
+body.device-mobile .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
+}
+
+body.device-mobile .modal.show {
+    display: flex;
+    align-items: flex-end;
+}
+
+body.device-mobile .modal-dialog {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    pointer-events: none;
+}
+
+body.device-mobile .modal.show .modal-dialog {
+    pointer-events: auto;
+}
+
+body.device-mobile .modal-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: min(88dvh, 40rem);
+    background: #fff;
+    border: 0;
+    border-radius: 1.25rem 1.25rem 0 0;
+    box-shadow: 0 -12px 36px rgba(61, 41, 20, 0.18);
+    outline: 0;
+}
+
+body.device-mobile .modal-header,
+body.device-mobile .modal-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1rem 0.85rem;
+}
+
+body.device-mobile .modal-header {
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(74, 55, 44, 0.08);
+}
+
+body.device-mobile .modal-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #3d2914;
+}
+
+body.device-mobile .modal-body {
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+body.device-mobile .modal-footer {
+    justify-content: stretch;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid rgba(74, 55, 44, 0.08);
+}
+
+body.device-mobile .modal-footer .btn {
+    flex: 1 1 0;
+    min-height: 2.75rem;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+body.device-mobile .btn-close {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #f7f3ee;
+    opacity: 1;
+}
+
+body.device-mobile #submitReviewModal .form-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #4a372c;
+}
+
+body.device-mobile #submitReviewModal .form-select,
+body.device-mobile #submitReviewModal textarea.form-control {
+    display: block;
+    width: 100%;
+    border: 1px solid rgba(74, 55, 44, 0.16);
+    border-radius: 0.9rem;
+    background: #fff;
+    color: #3d2914;
+    font-size: 0.95rem;
+}
+
+body.device-mobile #submitReviewModal .form-select {
+    min-height: 2.75rem;
+    padding: 0.55rem 0.85rem;
+}
+
+body.device-mobile #submitReviewModal textarea.form-control {
+    min-height: 8rem;
+    padding: 0.75rem 0.85rem;
+    resize: vertical;
+}
+
+body.device-mobile .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1190;
+    background: rgba(61, 41, 20, 0.45);
+}
+
+body.device-mobile .modal-backdrop.show {
+    opacity: 1;
 }
 
 /* محصولات مشابه در صفحه جزئیات موبایل */
@@ -2327,11 +2508,14 @@ body.device-mobile .js-swiper-shop-product {
 }
 
 body.device-mobile .js-swiper-shop-product .card-img {
-    width: 100%;
+    width: min(100%, calc((100dvh - 11rem) * 0.75));
     height: auto;
+    max-height: calc(100dvh - 11rem);
+    margin-inline: auto;
     aspect-ratio: 3 / 4;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center;
+    background: #f7f3ee;
 }
 
 body.device-mobile .card-pinned > .position-absolute {
