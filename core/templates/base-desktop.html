@@ -128,6 +128,7 @@
     {% compress js %}
     <!-- JS Jquery-->
     <script src="{% static 'js/jquery.min.js' %}"></script>
+    {% include 'includes/layout/htmx-scripts.html' %}
     {% include 'includes/layout/scripts-vendor.html' %}
     <script src="{% static 'js/theme.min.js' %}"></script>
     <script src="{% static 'js/shop-category-nav.js' %}"></script>
@@ -137,6 +138,9 @@
     <!-- JS Custom-->
     <script src="{% static 'js/custom.js' %}"></script>
     {% endcompress %}
+    {# Ensure csrftoken cookie exists for HTMX POST requests #}
+    {% csrf_token %}
+
 
     <!-- JS Plugins Init. -->
     <script>

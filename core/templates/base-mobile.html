@@ -47,12 +47,16 @@
 
     {% compress js %}
     <script src="{% static 'js/jquery.min.js' %}"></script>
+    {% include 'includes/layout/htmx-scripts.html' %}
     {% include 'includes/layout/scripts-vendor.html' %}
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="{% static 'js/shop-category-nav.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
     {% endcompress %}
+    {# Ensure csrftoken cookie exists for HTMX POST requests #}
+    {% csrf_token %}
+
     <script>
         function addToCart(product_id, quantity) {
             $.ajax({
