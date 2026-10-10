@@ -75,16 +75,18 @@
                         </div>
 
                         <!-- Breadcrumb -->
+                        <div id="admin-dashboard-breadcrumb">
                         {% block breadcrumb %}
 
                         {% endblock %}
+                        </div>
                         <!-- End Breadcrumb -->
                     </div>
                     <!-- End Col -->
 
                     <div class="col-auto">
                         <div class="d-none d-lg-block">
-                            <a class="btn btn-soft-light btn-sm" href="{% url 'accounts:logout' %}">خروج</a>
+                            <a class="btn btn-soft-light btn-sm" href="{% url 'accounts:logout' %}" hx-boost="false">خروج</a>
                         </div>
                         <!-- Responsive Toggle Button -->
                         <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
@@ -114,9 +116,16 @@
                 <!-- End Col -->
 
                 <div class="col-lg-9">
-                    {% block content %}
-                    {% endblock %}
-
+                    <div id="admin-dashboard-content"
+                        hx-boost="true"
+                        hx-target="#admin-dashboard-content"
+                        hx-select="#admin-dashboard-content"
+                        hx-select-oob="#admin-dashboard-breadcrumb,#django-htmx-messages"
+                        hx-swap="outerHTML"
+                        hx-push-url="true">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
                 </div>
                 <!-- End Col -->
             </div>
@@ -336,7 +345,9 @@
 
     {% block extra_js_no_compress %} {% endblock extra_js_no_compress %}
 
-    {% include 'messages.html' %}
+    <div id="django-htmx-messages">
+        {% include 'messages.html' %}
+    </div>
 </body>
 
 </html>

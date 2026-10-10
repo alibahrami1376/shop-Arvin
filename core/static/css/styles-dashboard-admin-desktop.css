@@ -24,6 +24,11 @@ body.device-desktop.dashboard-layout--admin .admin-dashboard-layout__content {
     min-width: 0;
 }
 
+body.device-desktop.dashboard-layout--admin #admin-dashboard-content {
+    width: 100%;
+    min-width: 0;
+}
+
 body.device-desktop.dashboard-layout--admin .admin-dashboard-layout__sidebar .navbar-vertical {
     position: sticky;
     top: 1rem;

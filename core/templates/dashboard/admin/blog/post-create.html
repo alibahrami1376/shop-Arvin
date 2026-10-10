@@ -22,10 +22,6 @@
 </style>
 {% endblock %}
 
-{% block extra_js_no_compress %}
-{{ form.media }}
-{% endblock %}
-
 {% block breadcrumb %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb breadcrumb-light mb-0">
@@ -38,6 +34,7 @@
 {% endblock %}
 
 {% block content %}
+{{ form.media }}
 <div class="card">
     <div class="card-header border-bottom">
         <h5 class="card-header-title">ایجاد پست</h5>

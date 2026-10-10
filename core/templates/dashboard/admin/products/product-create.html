@@ -46,18 +46,17 @@
 {% endblock %}
 
 {% block content %}
+{# media داخل content تا با ناوبری HTMX هم CKEditor لود شود #}
+{{ form.media }}
 <div class="card">
-    <!-- Header -->
     <div class="card-header border-bottom">
         <h5 class="card-header-title">ایجاد محصول</h5>
     </div>
-    <!-- End Header -->
 
-    <!-- Body -->
     <form action="." method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="card-body">
-            <div class="row d-flex ">
+            <div class="row">
                 <div class="col-md-6 mb-3">
                     <label>نام محصول</label>
                     {{form.title}}
@@ -113,7 +112,6 @@
                     <p class="small text-muted mb-0">اگر خالی باشد، عنوان محصول استفاده می‌شود.</p>
                 </div>
 
-                <!-- Formset برای عکس‌های اضافی -->
                 <div class="col-md-12 mb-3">
                     <label>تصاویر اضافی محصول</label>
                     {{ image_formset.management_form }}
@@ -125,43 +123,31 @@
                         {% endfor %}
                     </div>
                 </div>
-
             </div>
-            <div class="card-footer">
-                <div class=" d-flex pt-5 justify-content-end">
-                    <a class="btn btn-secondary ms-3" href="{% url 'dashboard:admin:product-list' %}">بازگشت</a>
-                    <button class="btn btn-primary ms-3" type="submit">ایجاد محصول</button>
-                </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex pt-5 justify-content-end">
+                <a class="btn btn-secondary ms-3" href="{% url 'dashboard:admin:product-list' %}">بازگشت</a>
+                <button class="btn btn-primary ms-3" type="submit">ایجاد محصول</button>
             </div>
+        </div>
     </form>
 </div>
-
-{% endblock %}
-
-{% block extra_js %}
 <script>
-
     function generateSlug() {
         const title = $("#id_title").val();
         const slug = slugify(title);
-        $("#id_slug").val(slug)
+        $("#id_slug").val(slug);
     }
 
     function slugify(titleStr) {
-        titleStr = titleStr.replace(/^\s+|\s+$/g, '');
+        titleStr = titleStr.replace(/^\s+|\s+$/g, "");
         titleStr = titleStr.toLowerCase();
-        //persian support
-        titleStr = titleStr.replace(/[^a-z0-9_\s-ءاأإآؤئبتثجحخدذرزسشصضطظعغفقكلمنهويةى]#u/, '')
-            // Collapse whitespace and replace by -
-            .replace(/\s+/g, '-')
-            // Collapse dashes
-            .replace(/-+/g, '-');
-        slugStr = titleStr;
-        return slugStr;
+        titleStr = titleStr
+            .replace(/[^a-z0-9_\s-ءاأإآؤئبتثجحخدذرزسشصضطظعغفقكلمنهويةى]#u/, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-");
+        return titleStr;
     }
 </script>
-{% endblock %}
-
-{% block extra_js_no_compress %}
-{{ form.media }}
 {% endblock %}
