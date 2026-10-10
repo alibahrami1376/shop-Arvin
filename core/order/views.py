@@ -1,8 +1,10 @@
+import json
+
 from cart.models import CartModel
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404, JsonResponse
-from django.shortcuts import redirect
+from django.http import Http404, HttpResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import DetailView, FormView, TemplateView, View
@@ -220,7 +222,18 @@ class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):
         try:
             coupon = coupon_service.get_valid_coupon(code=code, user=user)
         except CouponValidationError as exc:
-            return JsonResponse({"message": exc.message}, status=exc.status_code)
+            response = HttpResponse(status=exc.status_code)
+            response["HX-Trigger"] = json.dumps(
+                {
+                    "showToast": {
+                        "text": exc.message,
+                        "className": "error",
+                        "background": "red",
+                        "duration": 3000,
+                    }
+                }
+            )
+            return response
 
         cart = CartModel.objects.get(user=user)
         pricing_ctx = get_checkout_pricing_context(
@@ -229,15 +242,22 @@ class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):
             state=(request.POST.get("state") or "").strip(),
             coupon_percent=coupon.discount_percent,
         )
-        return JsonResponse(
+        response = render(
+            request,
+            "order/partials/checkout-pricing-fragment.html",
             {
-                "message": "کد تخفیف با موفقیت ثبت شد",
-                "subtotal": pricing_ctx["subtotal"],
-                "discount_amount": pricing_ctx["discount_amount"],
-                "shipping_amount": pricing_ctx["shipping_amount"],
-                "total_tax": pricing_ctx["total_tax"],
-                "total_price": pricing_ctx["grand_total"],
+                **pricing_ctx,
                 "coupon_percent": coupon.discount_percent,
             },
-            status=200,
         )
+        response["HX-Trigger"] = json.dumps(
+            {
+                "showToast": {
+                    "text": "کد تخفیف با موفقیت ثبت شد",
+                    "className": "info",
+                    "background": "blue",
+                    "duration": 2500,
+                }
+            }
+        )
+        return response

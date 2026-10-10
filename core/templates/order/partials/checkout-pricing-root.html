@@ -1,0 +1,46 @@
+{% with coupon_percent=coupon_percent|default:0 %}
+<div class="checkout-summary__rows" id="checkout-pricing-root"
+    data-subtotal="{{ subtotal }}"
+    data-coupon-percent="{{ coupon_percent }}">
+    <div class="checkout-summary__row">
+        <span class="checkout-summary__label">جمع کالاها</span>
+        <span class="checkout-summary__value formatted-price" id="checkout-subtotal"
+            data-price="{{ subtotal }}">{{ subtotal }}</span>
+    </div>
+    <div class="checkout-summary__row{% if not discount_amount %} d-none{% endif %}" id="checkout-discount-row">
+        <span class="checkout-summary__label">تخفیف{% if coupon_percent %} ({{ coupon_percent }}٪){% endif %}</span>
+        <span class="checkout-summary__value formatted-price text-success" id="checkout-discount"
+            data-price="{{ discount_amount|default:0 }}">{{ discount_amount|default:0 }}</span>
+    </div>
+    {% if checkout_pricing.shipping_enabled %}
+    <div class="checkout-summary__row{% if not shipping_amount %} d-none{% endif %}" id="checkout-shipping-row">
+        <span class="checkout-summary__label">هزینه ارسال</span>
+        <span class="checkout-summary__value formatted-price" id="checkout-shipping"
+            data-price="{{ shipping_amount|default:0 }}">{{ shipping_amount|default:0 }}</span>
+    </div>
+    <div class="checkout-summary__group d-none d-lg-block">
+        <span class="checkout-summary__label small text-muted">تعرفه ارسال</span>
+        <ul class="checkout-summary__list">
+            <li>{{ checkout_pricing.shipping_tehran_label }}: <span class="formatted-price">{{ checkout_pricing.shipping_tehran_amount }}</span></li>
+            <li>{{ checkout_pricing.shipping_province_label }}: <span class="formatted-price">{{ checkout_pricing.shipping_province_amount }}</span></li>
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if checkout_pricing.tax_enabled %}
+    <div class="checkout-summary__row">
+        <span class="checkout-summary__label">مالیات ({{ checkout_pricing.tax_percent }}٪)</span>
+        <span class="checkout-summary__value formatted-price" id="total-tax"
+            data-price="{{ total_tax }}">{{ total_tax }}</span>
+    </div>
+    {% else %}
+    <span id="total-tax" class="d-none" data-price="0">0</span>
+    {% endif %}
+
+    <div class="checkout-summary__row checkout-summary__row--total">
+        <span class="checkout-summary__label">مبلغ قابل پرداخت</span>
+        <span class="checkout-summary__value formatted-price" id="total-price"
+            data-price="{{ total_price }}">{{ total_price }}</span>
+    </div>
+</div>
+{% endwith %}

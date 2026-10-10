@@ -569,48 +569,17 @@
                                 <input type="text" class="form-control" name="coupon" placeholder="کد را وارد کنید"
                                     aria-label="کد تخفیف" form="checkout-form" id="coupon-input">
                                 <button class="btn btn-primary checkout-summary__coupon-btn" type="button"
-                                    onclick="validateCoupon()">بررسی</button>
+                                    hx-post="{% url 'order:validate-coupon' %}"
+                                    hx-target="#checkout-pricing-root"
+                                    hx-swap="outerHTML"
+                                    hx-vals='js:{code: (document.getElementById("coupon-input") || {}).value || "", city: getCheckoutCityState().city, state: getCheckoutCityState().state}'>
+                                    بررسی
+                                </button>
                             </div>
                         </div>
 
                         {{ checkout_pricing_json|json_script:"checkout-pricing-config" }}
-                        <div class="checkout-summary__rows" id="checkout-pricing-root" data-subtotal="{{ subtotal }}">
-                            <div class="checkout-summary__row">
-                                <span class="checkout-summary__label">جمع کالاها</span>
-                                <span class="checkout-summary__value formatted-price" id="checkout-subtotal">{{ subtotal }}</span>
-                            </div>
-                            <div class="checkout-summary__row d-none" id="checkout-discount-row">
-                                <span class="checkout-summary__label">تخفیف</span>
-                                <span class="checkout-summary__value formatted-price text-success" id="checkout-discount">0</span>
-                            </div>
-                            {% if checkout_pricing.shipping_enabled %}
-                            <div class="checkout-summary__row d-none" id="checkout-shipping-row">
-                                <span class="checkout-summary__label">هزینه ارسال</span>
-                                <span class="checkout-summary__value formatted-price" id="checkout-shipping">0</span>
-                            </div>
-                            <div class="checkout-summary__group d-none d-lg-block">
-                                <span class="checkout-summary__label small text-muted">تعرفه ارسال</span>
-                                <ul class="checkout-summary__list">
-                                    <li>{{ checkout_pricing.shipping_tehran_label }}: <span class="formatted-price">{{ checkout_pricing.shipping_tehran_amount }}</span></li>
-                                    <li>{{ checkout_pricing.shipping_province_label }}: <span class="formatted-price">{{ checkout_pricing.shipping_province_amount }}</span></li>
-                                </ul>
-                            </div>
-                            {% endif %}
-
-                            {% if checkout_pricing.tax_enabled %}
-                            <div class="checkout-summary__row">
-                                <span class="checkout-summary__label">مالیات ({{ checkout_pricing.tax_percent }}٪)</span>
-                                <span class="checkout-summary__value formatted-price" id="total-tax">{{ total_tax }}</span>
-                            </div>
-                            {% else %}
-                            <span id="total-tax" class="d-none">0</span>
-                            {% endif %}
-
-                            <div class="checkout-summary__row checkout-summary__row--total">
-                                <span class="checkout-summary__label">مبلغ قابل پرداخت</span>
-                                <span class="checkout-summary__value formatted-price" id="total-price">{{ total_price }}</span>
-                            </div>
-                        </div>
+                        {% include "order/partials/checkout-pricing-root.html" with coupon_percent=0 %}
 
                         <button class="btn btn-primary btn-lg w-100 checkout-summary__submit"
                             type="submit"
@@ -812,36 +781,17 @@
 
     populateFreightCities(true);
 
-    function validateCoupon() {
-        var loc = getCheckoutCityState();
-        $.ajax({
-            url: "{% url 'order:validate-coupon' %}",
-            method: 'POST',
-            data: {
-                code: $('#coupon-input').val(),
-                city: loc.city,
-                state: loc.state,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            },
-            success: function (response) {
-                checkoutCouponPercent = response.coupon_percent || 0;
-                Toastify({
-                    text: response.message,
-                    className: 'info',
-                    style: { background: 'blue' }
-                }).showToast();
-                recalcCheckoutTotals();
-            },
-            error: function (jqXHR) {
-                Toastify({
-                    text: jqXHR.responseJSON && jqXHR.responseJSON.message
-                        ? jqXHR.responseJSON.message : 'خطا در بررسی کد',
-                    className: 'error',
-                    style: { background: 'red' }
-                }).showToast();
-            }
-        });
-    }
+    document.body.addEventListener('htmx:afterSettle', function () {
+        var root = document.getElementById('checkout-pricing-root');
+        if (!root) {
+            return;
+        }
+        var pct = parseInt(root.getAttribute('data-coupon-percent'), 10);
+        if (!Number.isNaN(pct)) {
+            checkoutCouponPercent = pct;
+        }
+        formatCheckoutPrices();
+    });
 
     document.addEventListener('DOMContentLoaded', formatCheckoutPrices);
 
