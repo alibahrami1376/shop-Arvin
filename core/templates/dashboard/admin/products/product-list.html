@@ -17,7 +17,7 @@
 
 {% block content %}
 <!-- Card -->
-<div class="card" id="admin-list-root">
+<div class="card" id="admin-list-root" hx-select="unset" hx-select-oob="unset">
     <!-- Header -->
     <div class="card-header border-bottom">
         <div class="d-flex justify-content-between align-items-center">
@@ -113,6 +113,7 @@
 
                                 {% if object.is_published %}
                                 <a class="btn btn-sm btn-icon btn-ghost-primary" target="_blank"
+                                    hx-boost="false"
                                     href="{% url 'shop:product-detail' slug=object.slug %}"><i class="bi-eye"></i></a>
                                 {% endif %}
                             </td>

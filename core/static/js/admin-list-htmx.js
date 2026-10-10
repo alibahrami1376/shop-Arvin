@@ -30,6 +30,8 @@
         });
     }
 
+    window.syncAdminListFiltersFromUrl = syncFiltersFromUrl;
+
     function loadList(url, push) {
         if (typeof htmx === "undefined" || !getRoot()) {
             window.location.href = url;
