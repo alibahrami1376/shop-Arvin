@@ -1,7 +1,9 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth import views as auth_views
-from django.http import JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -125,32 +127,51 @@ class RegisterView(FormView):
 
 @method_decorator(csrf_protect, name="dispatch")
 class WebRegisterSendOTPView(View):
-    """ارسال کد OTP هنگام ثبت‌نام با موبایل (JSON برای AJAX یا ریدایرکت)."""
+    """ارسال کد OTP هنگام ثبت‌نام با موبایل (HTMX یا ریدایرکت)."""
 
-    def _wants_json(self, request):
-        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-            return True
-        accept = request.headers.get("Accept", "")
-        return "application/json" in accept
+    def _is_htmx(self, request):
+        return request.headers.get("HX-Request") == "true"
 
     def _error(self, request, message, status=400):
-        if self._wants_json(request):
-            return JsonResponse({"ok": False, "detail": message}, status=status)
+        if self._is_htmx(request):
+            response = HttpResponse(status=status)
+            response["HX-Trigger"] = json.dumps(
+                {
+                    "showToast": {
+                        "text": message,
+                        "className": "error",
+                        "background": "#c62828",
+                        "duration": 3000,
+                    },
+                    "otpSendFailed": True,
+                }
+            )
+            return response
         messages.error(request, message)
         return redirect("accounts:register")
 
     def _success(self, request, phone, expires):
-        if self._wants_json(request):
-            return JsonResponse(
+        detail = "کد تأیید به شماره شما ارسال شد."
+        if self._is_htmx(request):
+            response = HttpResponse(status=200)
+            response["HX-Trigger"] = json.dumps(
                 {
-                    "ok": True,
-                    "detail": "کد تأیید به شماره شما ارسال شد.",
-                    "phone_number": phone,
-                    "otp_expires_at": expires,
-                    "otp_validity_seconds": OTPCode.validity_seconds(),
+                    "showToast": {
+                        "text": detail,
+                        "className": "success",
+                        "background": "#2e7d32",
+                        "duration": 2500,
+                    },
+                    "otpSent": {
+                        "phone_number": phone,
+                        "otp_expires_at": expires,
+                        "otp_validity_seconds": OTPCode.validity_seconds(),
+                        "detail": detail,
+                    },
                 }
             )
-        messages.success(request, "کد تأیید به شماره شما ارسال شد.")
+            return response
+        messages.success(request, detail)
         return redirect("accounts:register")
 
     def post(self, request, *args, **kwargs):
@@ -233,32 +254,51 @@ class PasswordResetView(FormView):
 
 @method_decorator(csrf_protect, name="dispatch")
 class PasswordResetSendOTPView(View):
-    """ارسال OTP برای بازیابی رمز عبور."""
+    """ارسال OTP برای بازیابی رمز عبور (HTMX یا ریدایرکت)."""
 
-    def _wants_json(self, request):
-        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-            return True
-        accept = request.headers.get("Accept", "")
-        return "application/json" in accept
+    def _is_htmx(self, request):
+        return request.headers.get("HX-Request") == "true"
 
     def _error(self, request, message, status=400):
-        if self._wants_json(request):
-            return JsonResponse({"ok": False, "detail": message}, status=status)
+        if self._is_htmx(request):
+            response = HttpResponse(status=status)
+            response["HX-Trigger"] = json.dumps(
+                {
+                    "showToast": {
+                        "text": message,
+                        "className": "error",
+                        "background": "#c62828",
+                        "duration": 3000,
+                    },
+                    "otpSendFailed": True,
+                }
+            )
+            return response
         messages.error(request, message)
         return redirect("accounts:password-reset")
 
     def _success(self, request, phone, expires):
-        if self._wants_json(request):
-            return JsonResponse(
+        detail = "کد تأیید به شماره شما ارسال شد."
+        if self._is_htmx(request):
+            response = HttpResponse(status=200)
+            response["HX-Trigger"] = json.dumps(
                 {
-                    "ok": True,
-                    "detail": "کد تأیید به شماره شما ارسال شد.",
-                    "phone_number": phone,
-                    "otp_expires_at": expires,
-                    "otp_validity_seconds": OTPCode.validity_seconds(),
+                    "showToast": {
+                        "text": detail,
+                        "className": "success",
+                        "background": "#2e7d32",
+                        "duration": 2500,
+                    },
+                    "otpSent": {
+                        "phone_number": phone,
+                        "otp_expires_at": expires,
+                        "otp_validity_seconds": OTPCode.validity_seconds(),
+                        "detail": detail,
+                    },
                 }
             )
-        messages.success(request, "کد تأیید به شماره شما ارسال شد.")
+            return response
+        messages.success(request, detail)
         return redirect("accounts:password-reset")
 
     def post(self, request, *args, **kwargs):

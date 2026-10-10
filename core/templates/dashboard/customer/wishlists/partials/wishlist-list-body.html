@@ -1,0 +1,111 @@
+{% load static %}
+<div class="card-header d-sm-flex justify-content-sm-between align-items-sm-center border-bottom ">
+  <h5 class="card-header-title">لیست علاقه مندی ها</h5>
+  <span id="wishlist-total-count">{{ total_items }} مورد</span>
+</div>
+
+<div class="card-body">
+  <ul class="list-group list-group-flush list-group-no-gutters">
+    {% for object in object_list %}
+    <li class="list-group-item">
+      <div class="d-flex">
+        <div class="flex-shrink-0">
+          <img class="avatar avatar-xl avatar-4x3" src="{{ object.product.image_thumb_url }}" alt="{{ object.product.get_image_alt }}">
+        </div>
+
+        <div class="flex-grow-1 ms-3">
+          <div class="row">
+            <div class="col-sm-7 mb-3 mb-sm-0">
+              <h5><a class="text-dark"
+                  href="{% url 'shop:product-detail' slug=object.product.slug %}">{{ object.product.title }}</a></h5>
+
+              <div class="d-grid gap-1">
+                <div class="text-body">
+                  <span class="small">دسته بندی:</span>
+                  <span class="fw-semibold small">
+                    {% for category in object.product.category.all %}
+                    <a class="link-sm link-secondary" href="#"> {{ category.title }} </a>
+                    {% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="col-auto">
+                <div class="d-grid gap-2">
+                  <form action="{% url 'dashboard:customer:wishlist-delete' pk=object.pk %}"
+                    method="post"
+                    hx-post="{% url 'dashboard:customer:wishlist-delete' pk=object.pk %}"
+                    hx-target="#wishlist-list-root"
+                    hx-swap="outerHTML"
+                    hx-confirm="این محصول از علاقه‌مندی‌ها حذف شود؟">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger btn-sm" type="submit">
+                      <i class="bi-trash me-1"></i> حذف
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+    {% empty %}
+    <li class="list-group-item text-center text-secondary py-5">
+      موردی در لیست علاقه‌مندی‌ها نیست.
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="row">
+  {% if page_obj.has_other_pages %}
+  <nav aria-label="صفحه‌بندی علاقه‌مندی‌ها">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link"
+          href="?page={{ page_obj.previous_page_number }}"
+          hx-get="?page={{ page_obj.previous_page_number }}"
+          hx-target="#wishlist-list-root"
+          hx-swap="outerHTML"
+          hx-push-url="true"
+          aria-label="صفحه قبل">
+          <span aria-hidden="true"><i class="bi-chevron-double-right small"></i></span>
+        </a>
+      </li>
+      {% endif %}
+      {% for i in page_obj.paginator.page_range %}
+      {% if page_obj.number == i %}
+      <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+      {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+      <li class="page-item">
+        <a class="page-link"
+          href="?page={{ i }}"
+          hx-get="?page={{ i }}"
+          hx-target="#wishlist-list-root"
+          hx-swap="outerHTML"
+          hx-push-url="true">{{ i }}</a>
+      </li>
+      {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link"
+          href="?page={{ page_obj.next_page_number }}"
+          hx-get="?page={{ page_obj.next_page_number }}"
+          hx-target="#wishlist-list-root"
+          hx-swap="outerHTML"
+          hx-push-url="true"
+          aria-label="صفحه بعد">
+          <span aria-hidden="true"><i class="bi-chevron-double-left small"></i></span>
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+</div>
+<a class="card-footer card-link text-center border-top" href="{% url 'shop:product-grid' %}">به خرید ادامه دهید</a>
