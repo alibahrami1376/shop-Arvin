@@ -31,7 +31,13 @@ class ShopProductListMixin:
     """Shared list/filter/pagination for product grid and category landings."""
 
     template_name = "shop/product-grid.html"
+    htmx_template_name = "shop/partials/product-grid-fragment.html"
     paginate_by = 9
+
+    def get_template_names(self):
+        if self.request.headers.get("HX-Request") == "true":
+            return [self.htmx_template_name]
+        return [self.template_name]
 
     def get_paginate_by(self, queryset):
         return self.request.GET.get("page_size", self.paginate_by)

@@ -67,7 +67,13 @@
     <ul class="pagination justify-content-center flex-wrap gap-1 mb-0">
         {% if page_obj.has_previous %}
         <li class="page-item">
-            <a class="page-link" href="{% pagination_url page_obj.previous_page_number %}" aria-label="صفحه قبل">
+            <a class="page-link"
+                href="{% pagination_url page_obj.previous_page_number %}"
+                hx-get="{% pagination_url page_obj.previous_page_number %}"
+                hx-target="#shop-product-results"
+                hx-swap="outerHTML"
+                hx-push-url="true"
+                aria-label="صفحه قبل">
                 <i class="bi-chevron-right" aria-hidden="true"></i>
             </a>
         </li>
@@ -77,13 +83,24 @@
         <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
         {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
         <li class="page-item">
-            <a class="page-link" href="{% pagination_url i %}">{{ i }}</a>
+            <a class="page-link"
+                href="{% pagination_url i %}"
+                hx-get="{% pagination_url i %}"
+                hx-target="#shop-product-results"
+                hx-swap="outerHTML"
+                hx-push-url="true">{{ i }}</a>
         </li>
         {% endif %}
         {% endfor %}
         {% if page_obj.has_next %}
         <li class="page-item">
-            <a class="page-link" href="{% pagination_url page_obj.next_page_number %}" aria-label="صفحه بعد">
+            <a class="page-link"
+                href="{% pagination_url page_obj.next_page_number %}"
+                hx-get="{% pagination_url page_obj.next_page_number %}"
+                hx-target="#shop-product-results"
+                hx-swap="outerHTML"
+                hx-push-url="true"
+                aria-label="صفحه بعد">
                 <i class="bi-chevron-left" aria-hidden="true"></i>
             </a>
         </li>

@@ -1,4 +1,12 @@
-<form action="." class="shop-filter-form w-100" id="shopFilterForm">
+<form action="{{ request.path }}"
+    method="get"
+    class="shop-filter-form w-100 js-shop-grid-htmx"
+    id="shopFilterForm"
+    hx-get="{{ request.path }}"
+    hx-target="#shop-product-results"
+    hx-swap="outerHTML"
+    hx-push-url="true"
+    hx-include="#order-by-filter, #page-size-filter">
     <div class="shop-filter-form__section mb-3">
         <label class="form-label shop-filter-form__label" for="search-query-filter">
             <i class="bi-search" aria-hidden="true"></i>
@@ -42,6 +50,11 @@
             <i class="bi-funnel" aria-hidden="true"></i>
             <span>اعمال فیلتر</span>
         </button>
-        <a href="{% url 'shop:product-grid' %}" class="btn btn-outline-secondary shop-filter-form__clear">پاک کردن فیلترها</a>
+        <a href="{% url 'shop:product-grid' %}"
+            class="btn btn-outline-secondary shop-filter-form__clear"
+            hx-get="{% url 'shop:product-grid' %}"
+            hx-target="#shop-product-results"
+            hx-swap="outerHTML"
+            hx-push-url="true">پاک کردن فیلترها</a>
     </div>
 </form>

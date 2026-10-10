@@ -1,0 +1,9 @@
+<div id="shop-product-results">
+    {% include "shop/partials/product-grid-cards.html" %}
+    {% if active_category and active_category.description and page_obj.number == 1 %}
+    <section class="category-seo-content mt-4 {% if is_mobile_site %}mb-3{% else %}mt-lg-5{% endif %}"
+        aria-label="درباره {{ active_category.title }}">
+        {{ active_category.description|safe }}
+    </section>
+    {% endif %}
+</div>
