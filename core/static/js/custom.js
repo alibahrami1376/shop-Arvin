@@ -197,9 +197,19 @@ function initBootstrapTooltips() {
     });
 }
 
+function formatVisiblePrices(root) {
+    var scope = root && root.querySelectorAll ? root : document;
+    scope.querySelectorAll(".formatted-price").forEach(function (element) {
+        formatPriceInToman(element);
+    });
+}
+
+document.body.addEventListener("htmx:afterSettle", function (event) {
+    formatVisiblePrices(event.detail && event.detail.elt ? event.detail.elt : document);
+});
+
 document.addEventListener("DOMContentLoaded", function() {
-    let priceElements = document.querySelectorAll('.formatted-price');
-    priceElements.forEach(element => formatPriceInToman(element));
+    formatVisiblePrices(document);
     initPriceThousandInputs();
     initQuantityCounters();
     initProductGallerySwipers();

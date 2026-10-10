@@ -59,41 +59,29 @@
 
     <script>
         function addToCart(product_id, quantity) {
-            $.ajax({
-                url: "{% url 'cart:session-add-product' %}",
-                method: 'POST',
-                data: {
+            if (typeof htmx === 'undefined') {
+                return;
+            }
+            htmx.ajax('POST', "{% url 'cart:session-add-product' %}", {
+                values: {
                     product_id: product_id,
-                    quantity: quantity || 1,
-                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                    quantity: quantity || 1
                 },
-                success: function (response) {
-                    if (typeof updateCartBadges === 'function') {
-                        updateCartBadges(response.total_quantity);
-                    }
-                    Toastify({
-                        text: 'محصول به سبد خرید اضافه شد',
-                        className: 'success',
-                        duration: 2500,
-                        gravity: 'top',
-                        position: 'left',
-                        style: {
-                            background: '#2e7d32',
-                        }
-                    }).showToast();
-                },
-                error: function () {
-                    Toastify({
-                        text: 'خطا در افزودن محصول به سبد خرید',
-                        className: 'error',
-                        duration: 3000,
-                        gravity: 'top',
-                        position: 'left',
-                        style: {
-                            background: '#c62828',
-                        }
-                    }).showToast();
+                swap: 'none'
+            }).catch(function () {
+                if (typeof Toastify === 'undefined') {
+                    return;
                 }
+                Toastify({
+                    text: 'خطا در افزودن محصول به سبد خرید',
+                    className: 'error',
+                    duration: 3000,
+                    gravity: 'top',
+                    position: 'left',
+                    style: {
+                        background: '#c62828',
+                    }
+                }).showToast();
             });
         }
 

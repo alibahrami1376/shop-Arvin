@@ -1,0 +1,4 @@
+<span class="header__badge" id="total-cart-item-count" hx-swap-oob="true">{{ total_quantity|default:"۰" }}</span>
+<span class="mobile-bottom-nav__badge{% if not total_quantity %} d-none{% endif %}"
+    id="mobile-bottom-cart-count"
+    hx-swap-oob="true">{% if total_quantity %}{{ total_quantity }}{% endif %}</span>

@@ -38,7 +38,12 @@
                     <label class="cart-item__qty-label" for="cart-qty-{{ item.product_id }}">تعداد</label>
                     {% if item.product_obj.stock > 0 %}
                     <select id="cart-qty-{{ item.product_id }}" class="form-select form-select-sm cart-item__qty-select"
-                        onchange="changeProductQuantity('{{ item.product_id }}', this.value)">
+                        name="quantity"
+                        hx-post="{% url 'cart:session-update-product-quantity' %}"
+                        hx-trigger="change"
+                        hx-target="#cart-summary-root"
+                        hx-swap="outerHTML"
+                        hx-vals='{"product_id": "{{ item.product_id }}"}'>
                         {% with ''|center:item.product_obj.stock as range %}
                         {% for _ in range %}
                         <option value="{{ forloop.counter }}"{% if forloop.counter == item.quantity %} selected{% endif %}>{{ forloop.counter }}</option>
@@ -49,7 +54,11 @@
                     <span class="cart-item__qty-value">{{ item.quantity }}</span>
                     {% endif %}
                 </div>
-                <button type="button" class="cart-item__remove" onclick="removeProduct('{{ item.product_id }}')">
+                <button type="button" class="cart-item__remove"
+                    hx-post="{% url 'cart:session-remove-product' %}"
+                    hx-target="#cart-summary-root"
+                    hx-swap="outerHTML"
+                    hx-vals='{"product_id": "{{ item.product_id }}"}'>
                     <i class="bi-trash" aria-hidden="true"></i>
                     <span>حذف</span>
                 </button>
