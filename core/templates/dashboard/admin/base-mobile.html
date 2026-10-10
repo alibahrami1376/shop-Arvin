@@ -50,7 +50,7 @@
                 hx-boost="true"
                 hx-target="#admin-dashboard-content"
                 hx-select="#admin-dashboard-content"
-                hx-select-oob="#admin-dashboard-breadcrumb,#django-htmx-messages"
+                hx-select-oob="#admin-dashboard-breadcrumb,#django-htmx-messages,#django-htmx-form-media"
                 hx-swap="outerHTML"
                 hx-push-url="true">
                 {% block content %}{% endblock %}
@@ -74,10 +74,10 @@
     {% include 'includes/layout/scripts-vendor.html' %}
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
     <script src="{% static 'js/custom.js' %}"></script>
-    <script src="{% static 'js/admin-list-htmx.js' %}"></script>
-    <script src="{% static 'js/admin-dashboard-nav.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
     {% endcompress %}
+    <script src="{% static 'js/admin-list-htmx.js' %}"></script>
+    <script src="{% static 'js/admin-dashboard-nav.js' %}"></script>
     {% csrf_token %}
     <script>
         document.querySelectorAll(".admin-mobile-page table").forEach(function (table) {
@@ -95,6 +95,9 @@
     </script>
     {% block extra_js %}{% endblock extra_js %}
     {% block extra_js_no_compress %}{% endblock extra_js_no_compress %}
+    <div id="django-htmx-form-media">
+        {% block form_media %}{% endblock %}
+    </div>
     <div id="django-htmx-messages">
         {% include 'messages.html' %}
     </div>

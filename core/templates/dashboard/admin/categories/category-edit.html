@@ -16,8 +16,9 @@
 </nav>
 {% endblock %}
 
+{% block form_media %}{{ form.media }}{% endblock %}
+
 {% block content %}
-{{ form.media }}
 <div class="card">
     <div class="card-header border-bottom">
         <div class="d-flex justify-content-between align-items-center">

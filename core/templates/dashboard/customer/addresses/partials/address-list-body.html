@@ -19,6 +19,7 @@
             class="d-inline"
             hx-post="{% url 'dashboard:customer:address-delete' pk=object.pk %}"
             hx-target="#customer-address-list-root"
+            hx-select="#customer-address-list-root"
             hx-swap="outerHTML"
             hx-confirm="این آدرس حذف شود؟">
             {% csrf_token %}

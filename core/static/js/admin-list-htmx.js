@@ -145,10 +145,11 @@
     );
 
     window.addEventListener("popstate", function () {
+        // تاریخچه شل ادمین را HTMX مدیریت می‌کند؛ اینجا فقط فیلتر لیست را همگام کن
         if (!getRoot()) {
             return;
         }
-        loadList(window.location.href, false);
+        syncFiltersFromUrl();
     });
 
     document.body.addEventListener("htmx:afterSettle", function () {

@@ -39,6 +39,7 @@
                     method="post"
                     hx-post="{% url 'dashboard:customer:wishlist-delete' pk=object.pk %}"
                     hx-target="#wishlist-list-root"
+                    hx-select="#wishlist-list-root"
                     hx-swap="outerHTML"
                     hx-confirm="این محصول از علاقه‌مندی‌ها حذف شود؟">
                     {% csrf_token %}
@@ -71,6 +72,7 @@
           href="?page={{ page_obj.previous_page_number }}"
           hx-get="?page={{ page_obj.previous_page_number }}"
           hx-target="#wishlist-list-root"
+          hx-select="#wishlist-list-root"
           hx-swap="outerHTML"
           hx-push-url="true"
           aria-label="صفحه قبل">
@@ -87,6 +89,7 @@
           href="?page={{ i }}"
           hx-get="?page={{ i }}"
           hx-target="#wishlist-list-root"
+          hx-select="#wishlist-list-root"
           hx-swap="outerHTML"
           hx-push-url="true">{{ i }}</a>
       </li>
@@ -98,6 +101,7 @@
           href="?page={{ page_obj.next_page_number }}"
           hx-get="?page={{ page_obj.next_page_number }}"
           hx-target="#wishlist-list-root"
+          hx-select="#wishlist-list-root"
           hx-swap="outerHTML"
           hx-push-url="true"
           aria-label="صفحه بعد">

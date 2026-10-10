@@ -8,6 +8,7 @@
         hx-get="{% url 'dashboard:customer:order-list' %}"
         hx-trigger="submit, change from:select"
         hx-target="#customer-order-list-root"
+        hx-select="#customer-order-list-root"
         hx-swap="outerHTML"
         hx-push-url="true">
 
@@ -65,6 +66,7 @@
             href="{% url 'dashboard:customer:order-list' %}"
             hx-get="{% url 'dashboard:customer:order-list' %}"
             hx-target="#customer-order-list-root"
+            hx-select="#customer-order-list-root"
             hx-swap="outerHTML"
             hx-push-url="true">
             <i class="bi-arrow-counterclockwise" aria-hidden="true"></i>
@@ -189,6 +191,7 @@
                                 href="{% pagination_url page_obj.previous_page_number %}"
                                 hx-get="{% pagination_url page_obj.previous_page_number %}"
                                 hx-target="#customer-order-list-root"
+                                hx-select="#customer-order-list-root"
                                 hx-swap="outerHTML"
                                 hx-push-url="true"
                                 aria-label="صفحه قبل">
@@ -205,6 +208,7 @@
                                 href="{% pagination_url i %}"
                                 hx-get="{% pagination_url i %}"
                                 hx-target="#customer-order-list-root"
+                                hx-select="#customer-order-list-root"
                                 hx-swap="outerHTML"
                                 hx-push-url="true">{{ i }}</a>
                         </li>
@@ -216,6 +220,7 @@
                                 href="{% pagination_url page_obj.next_page_number %}"
                                 hx-get="{% pagination_url page_obj.next_page_number %}"
                                 hx-target="#customer-order-list-root"
+                                hx-select="#customer-order-list-root"
                                 hx-swap="outerHTML"
                                 hx-push-url="true"
                                 aria-label="صفحه بعد">

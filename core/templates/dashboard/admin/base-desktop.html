@@ -122,7 +122,7 @@
                         hx-boost="true"
                         hx-target="#admin-dashboard-content"
                         hx-select="#admin-dashboard-content"
-                        hx-select-oob="#admin-dashboard-breadcrumb,#django-htmx-messages"
+                        hx-select-oob="#admin-dashboard-breadcrumb,#django-htmx-messages,#django-htmx-form-media"
                         hx-swap="outerHTML"
                         hx-push-url="true">
                         {% block content %}
@@ -212,9 +212,10 @@
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
 <!-- JS Custom-->
     <script src="{% static 'js/custom.js' %}"></script>
+    {% endcompress %}
+    {# خارج از compress تا کش باندل جلوی آپدیت ناوبری HTMX را نگیرد #}
     <script src="{% static 'js/admin-list-htmx.js' %}"></script>
     <script src="{% static 'js/admin-dashboard-nav.js' %}"></script>
-    {% endcompress %}
     {% csrf_token %}
 
 
@@ -351,6 +352,10 @@
 
     {% block extra_js_no_compress %} {% endblock extra_js_no_compress %}
 
+    {# خارج از content تا link/scriptهای form.media پارس HTMX را نشکنند #}
+    <div id="django-htmx-form-media">
+        {% block form_media %}{% endblock %}
+    </div>
     <div id="django-htmx-messages">
         {% include 'messages.html' %}
     </div>

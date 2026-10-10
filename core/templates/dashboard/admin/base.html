@@ -120,7 +120,7 @@
                         hx-boost="true"
                         hx-target="#admin-dashboard-content"
                         hx-select="#admin-dashboard-content"
-                        hx-select-oob="#admin-dashboard-breadcrumb,#django-htmx-messages"
+                        hx-select-oob="#admin-dashboard-breadcrumb,#django-htmx-messages,#django-htmx-form-media"
                         hx-swap="outerHTML"
                         hx-push-url="true">
                         {% block content %}
@@ -345,6 +345,9 @@
 
     {% block extra_js_no_compress %} {% endblock extra_js_no_compress %}
 
+    <div id="django-htmx-form-media">
+        {% block form_media %}{% endblock %}
+    </div>
     <div id="django-htmx-messages">
         {% include 'messages.html' %}
     </div>

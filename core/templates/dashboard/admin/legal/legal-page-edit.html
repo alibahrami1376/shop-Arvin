@@ -12,8 +12,9 @@
 </nav>
 {% endblock %}
 
+{% block form_media %}{{ form.media }}{% endblock %}
+
 {% block content %}
-{{ form.media }}
 <div class="card mb-3">
     <div class="card-header border-bottom">
         <h4 class="card-header-title mb-0">ویرایش {{ page_type_label }}</h4>

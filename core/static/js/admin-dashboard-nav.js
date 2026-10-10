@@ -1,5 +1,6 @@
 (function () {
     var ADMIN_PREFIX = "/dashboard/admin";
+    var CONTENT_ID = "admin-dashboard-content";
 
     function normalizePath(path) {
         if (!path) {
@@ -43,16 +44,14 @@
         document.querySelectorAll(".js-admin-sidebar-collapse").forEach(function (el) {
             var hasActive = !!el.querySelector(".js-admin-dash-nav.active");
             var btn = document.querySelector('[data-bs-target="#' + el.id + '"]');
-            if (hasActive) {
-                el.classList.add("show");
-                if (btn) {
-                    btn.classList.remove("collapsed");
-                    btn.setAttribute("aria-expanded", "true");
-                }
+            if (!hasActive) {
                 return;
             }
-            // Leave manually opened groups alone; only collapse ones that lost active
-            // when another section became active.
+            el.classList.add("show");
+            if (btn) {
+                btn.classList.remove("collapsed");
+                btn.setAttribute("aria-expanded", "true");
+            }
         });
     }
 
@@ -83,7 +82,7 @@
         }
         return (
             (elt.classList && elt.classList.contains("js-admin-dash-nav")) ||
-            !!elt.closest("#admin-dashboard-content") ||
+            !!elt.closest("#" + CONTENT_ID) ||
             !!elt.closest("#sidebarNav") ||
             !!elt.closest("#adminSidebarMobileNav")
         );
@@ -95,9 +94,43 @@
         }
     }
 
+    function extractShellPieces(html) {
+        var doc = new DOMParser().parseFromString(html, "text/html");
+        var content = doc.getElementById(CONTENT_ID);
+        if (!content) {
+            return null;
+        }
+        return {
+            contentHtml: content.outerHTML,
+            breadcrumb: doc.getElementById("admin-dashboard-breadcrumb"),
+            messages: doc.getElementById("django-htmx-messages"),
+            formMedia: doc.getElementById("django-htmx-form-media"),
+            title: doc.title || "",
+        };
+    }
+
+    function applyOob(fromEl, id) {
+        if (!fromEl) {
+            return;
+        }
+        var live = document.getElementById(id);
+        if (live) {
+            live.outerHTML = fromEl.outerHTML;
+        }
+    }
+
+    document.body.addEventListener("htmx:configRequest", function (event) {
+        var elt = event.detail && event.detail.elt;
+        if (!isDashboardNavRequest(elt)) {
+            return;
+        }
+        event.detail.headers["Cache-Control"] = "no-cache";
+        event.detail.headers["Pragma"] = "no-cache";
+    });
+
     document.body.addEventListener("htmx:beforeRequest", function (event) {
         var elt = event.detail && event.detail.elt;
-        if (!elt || !elt.closest("#admin-dashboard-content")) {
+        if (!elt || !elt.closest("#" + CONTENT_ID)) {
             return;
         }
         if (elt.tagName !== "A") {
@@ -118,6 +151,40 @@
         if (url.origin !== window.location.origin || !isAdminDashboardPath(url.pathname)) {
             event.preventDefault();
             window.location.href = url.href;
+        }
+    });
+
+    // اگر پاسخ صفحه کامل بود (مثلاً به‌خاطر unset شدن hx-select)، فقط شل محتوا را بردار
+    document.body.addEventListener("htmx:beforeSwap", function (event) {
+        var target = event.detail && event.detail.target;
+        if (!target || target.id !== CONTENT_ID) {
+            return;
+        }
+        if (!isDashboardNavRequest(event.detail.elt)) {
+            return;
+        }
+
+        var response = event.detail.serverResponse || "";
+        if (!/<html[\s>]/i.test(response) && !/<body[\s>]/i.test(response)) {
+            return;
+        }
+
+        var pieces = extractShellPieces(response);
+        if (!pieces) {
+            event.detail.shouldSwap = false;
+            var path =
+                (event.detail.requestConfig && event.detail.requestConfig.path) ||
+                window.location.href;
+            window.location.assign(path);
+            return;
+        }
+
+        event.detail.serverResponse = pieces.contentHtml;
+        applyOob(pieces.breadcrumb, "admin-dashboard-breadcrumb");
+        applyOob(pieces.messages, "django-htmx-messages");
+        applyOob(pieces.formMedia, "django-htmx-form-media");
+        if (pieces.title) {
+            document.title = pieces.title;
         }
     });
 
@@ -142,11 +209,15 @@
         if (!target) {
             return;
         }
-        if (target.id === "admin-dashboard-content" || target.id === "admin-list-root") {
+        if (
+            target.id === CONTENT_ID ||
+            target.id === "admin-list-root" ||
+            target.id === "django-htmx-form-media"
+        ) {
             syncActiveNav();
             syncAdminListFilters();
         }
-        if (typeof formatVisiblePrices === "function" && target.id === "admin-dashboard-content") {
+        if (typeof formatVisiblePrices === "function" && target.id === CONTENT_ID) {
             formatVisiblePrices(target);
         }
     });

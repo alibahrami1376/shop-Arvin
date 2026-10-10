@@ -91,6 +91,41 @@
         }
     });
 
+    document.body.addEventListener("htmx:beforeSwap", function (event) {
+        var target = event.detail && event.detail.target;
+        if (!target || target.id !== "customer-dashboard-content") {
+            return;
+        }
+        if (!isDashboardNavRequest(event.detail.elt)) {
+            return;
+        }
+        var response = event.detail.serverResponse || "";
+        if (!/<html[\s>]/i.test(response) && !/<body[\s>]/i.test(response)) {
+            return;
+        }
+        var doc = new DOMParser().parseFromString(response, "text/html");
+        var content = doc.getElementById("customer-dashboard-content");
+        if (!content) {
+            event.detail.shouldSwap = false;
+            var path =
+                (event.detail.requestConfig && event.detail.requestConfig.path) ||
+                window.location.href;
+            window.location.assign(path);
+            return;
+        }
+        event.detail.serverResponse = content.outerHTML;
+        ["customer-dashboard-breadcrumb", "django-htmx-messages"].forEach(function (id) {
+            var fromEl = doc.getElementById(id);
+            var live = document.getElementById(id);
+            if (fromEl && live) {
+                live.outerHTML = fromEl.outerHTML;
+            }
+        });
+        if (doc.title) {
+            document.title = doc.title;
+        }
+    });
+
     document.body.addEventListener("htmx:afterOnLoad", function (event) {
         var elt = event.detail && event.detail.elt;
         if (!isDashboardNavRequest(elt)) {
