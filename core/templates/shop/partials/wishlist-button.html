@@ -1,0 +1,11 @@
+<button type="button"
+    class="btn btn-outline-secondary btn-xs btn-icon rounded-circle{% if extra_class %} {{ extra_class }}{% endif %}{% if is_wished %} active{% endif %}"
+    data-bs-toggle="tooltip"
+    data-bs-placement="top"
+    title="{% if is_wished %}حذف از علاقه‌مندی‌ها{% else %}افزودن به علاقه‌مندی‌ها{% endif %}"
+    aria-label="{% if is_wished %}حذف از علاقه‌مندی‌ها{% else %}افزودن به علاقه‌مندی‌ها{% endif %}"
+    hx-post="{% url 'shop:add-or-remove-wishlist' %}"
+    hx-swap="outerHTML"
+    hx-vals='{"product_id": "{{ product_id }}", "extra_class": "{{ extra_class }}"}'>
+    <i class="bi-heart" aria-hidden="true"></i>
+</button>

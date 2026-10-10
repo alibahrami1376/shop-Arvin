@@ -17,12 +17,11 @@
                     <img class="card-img-top" src="{{latest_product.image_card_url}}" alt="{{ latest_product.get_image_alt }}">
                     {% if request.user.is_authenticated %}
                     <div class="card-pinned-top-end">
-                        <button type="button"
-                            class="btn btn-outline-secondary btn-xs btn-icon rounded-circle {% if latest_product.id in wishlist_items %} active {% endif %}"
-                            data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به علایق"
-                            onclick="addToWishlist(this,`{{latest_product.id}}`)">
-                            <i class="bi-heart"></i>
-                        </button>
+                        {% if latest_product.id in wishlist_items %}
+                        {% include "shop/partials/wishlist-button.html" with product_id=latest_product.id is_wished=True extra_class="" %}
+                        {% else %}
+                        {% include "shop/partials/wishlist-button.html" with product_id=latest_product.id is_wished=False extra_class="" %}
+                        {% endif %}
                     </div>
                     {% endif %}
                 </div>

@@ -206,6 +206,7 @@ function formatVisiblePrices(root) {
 
 document.body.addEventListener("htmx:afterSettle", function (event) {
     formatVisiblePrices(event.detail && event.detail.elt ? event.detail.elt : document);
+    initBootstrapTooltips();
 });
 
 document.addEventListener("DOMContentLoaded", function() {

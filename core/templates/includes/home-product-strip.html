@@ -29,12 +29,11 @@
                         <img class="card-img-top" src="{{ product.image_card_url }}" alt="{{ product.get_image_alt }}" width="400" height="400" loading="lazy" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='{% static 'img/900x900/img1.jpg' %}';">
                         {% if request.user.is_authenticated %}
                         <div class="card-pinned-top-end home-product-strip__above-stretch">
-                            <button type="button"
-                                class="btn btn-outline-secondary btn-xs btn-icon rounded-circle {% if product.id in wishlist_items %} active {% endif %}"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به علایق"
-                                onclick="event.stopPropagation(); addToWishlist(this,`{{ product.id }}`)">
-                                <i class="bi-heart"></i>
-                            </button>
+                            {% if product.id in wishlist_items %}
+                            {% include "shop/partials/wishlist-button.html" with product_id=product.id is_wished=True extra_class="" %}
+                            {% else %}
+                            {% include "shop/partials/wishlist-button.html" with product_id=product.id is_wished=False extra_class="" %}
+                            {% endif %}
                         </div>
                         {% endif %}
                     </div>

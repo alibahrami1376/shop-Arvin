@@ -59,12 +59,7 @@
                 <span>{{ object.avg_rate }}/5</span>
             </a>
             {% if request.user.is_authenticated %}
-            <button type="button"
-                class="pdp-mobile__wish btn btn-outline-secondary btn-xs btn-icon rounded-circle{% if is_wished %} active{% endif %}"
-                aria-label="افزودن به علاقه‌مندی‌ها"
-                onclick="addToWishlist(this,'{{ object.id }}')">
-                <i class="bi-heart" aria-hidden="true"></i>
-            </button>
+            {% include "shop/partials/wishlist-button.html" with product_id=object.id is_wished=is_wished extra_class="pdp-mobile__wish" %}
             {% endif %}
         </div>
 
@@ -268,12 +263,7 @@
                         <span class="ms-1">{{object.avg_rate}}/5</span>
                 </a>
                 {% if request.user.is_authenticated %}
-                <button type="button"
-                    class="btn btn-outline-secondary btn-xs btn-icon rounded-circle {% if is_wished %} active {% endif %}"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به علایق"
-                    onclick="addToWishlist(this,`{{object.id}}`)">
-                    <i class="bi-heart"></i>
-                </button>
+                {% include "shop/partials/wishlist-button.html" with product_id=object.id is_wished=is_wished extra_class="" %}
                 {% endif %}
             </div>
 

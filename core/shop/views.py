@@ -1,8 +1,11 @@
+import json
+import re
+
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import FieldError
-from django.http import HttpResponsePermanentRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponsePermanentRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import DetailView, ListView, View
 from review.models import ReviewModel, ReviewStatusType
@@ -189,9 +192,16 @@ def product_detail_legacy_redirect(request, slug):
     return redirect(url, permanent=True)
 
 
+_WISHLIST_EXTRA_CLASS_RE = re.compile(r"[^a-zA-Z0-9_\-\s]")
+
+
 class AddOrRemoveWishlistView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         product_id = request.POST.get("product_id")
+        extra_class = _WISHLIST_EXTRA_CLASS_RE.sub(
+            "", request.POST.get("extra_class", "")
+        ).strip()
+        is_wished = False
         message = ""
         if product_id:
             try:
@@ -199,11 +209,33 @@ class AddOrRemoveWishlistView(LoginRequiredMixin, View):
                     user=request.user, product__id=product_id
                 )
                 wishlist_item.delete()
+                is_wished = False
                 message = "محصول از لیست علایق حذف شد"
             except WishlistProductModel.DoesNotExist:
                 WishlistProductModel.objects.create(
                     user=request.user, product_id=product_id
                 )
+                is_wished = True
                 message = "محصول به لیست علایق اضافه شد"
 
-        return JsonResponse({"message": message})
+        response = render(
+            request,
+            "shop/partials/wishlist-button.html",
+            {
+                "product_id": product_id,
+                "is_wished": is_wished,
+                "extra_class": extra_class,
+            },
+        )
+        if message:
+            response["HX-Trigger"] = json.dumps(
+                {
+                    "showToast": {
+                        "text": message,
+                        "className": "info",
+                        "background": "blue",
+                        "duration": 2500,
+                    }
+                }
+            )
+        return response
