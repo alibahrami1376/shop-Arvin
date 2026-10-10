@@ -55,7 +55,11 @@ class CustomerWishlistListView(
     paginate_by = DEFAULT_WISHLIST_PAGE_SIZE
 
     def get_template_names(self):
-        if self.request.headers.get("HX-Request") == "true":
+        # Fragment فقط برای فیلتر/صفحه‌بندی؛ ناوبری داشبورد صفحه کامل می‌خواهد
+        if (
+            self.request.headers.get("HX-Request") == "true"
+            and self.request.headers.get("HX-Target") == "wishlist-list-root"
+        ):
             return [self.htmx_template_name]
         return [self.template_name]
 

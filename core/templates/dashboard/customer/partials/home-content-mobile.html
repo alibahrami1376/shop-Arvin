@@ -77,14 +77,14 @@
                 </div>
                 {% endif %}
                 {% if order.card_receipt %}
-                <a href="{% url 'order:card-receipt-confirmation' pk=order.pk %}" class="btn btn-outline-primary btn-sm w-100 mt-2">مشاهده رسید</a>
+                <a href="{% url 'order:card-receipt-confirmation' pk=order.pk %}" class="btn btn-outline-primary btn-sm w-100 mt-2" hx-boost="false">مشاهده رسید</a>
                 {% endif %}
                 <a href="{% url 'dashboard:customer:order-detail' pk=order.pk %}" class="btn btn-primary btn-sm w-100 mt-2">جزئیات</a>
             </article>
             {% endfor %}
         </div>
         {% else %}
-        <p class="text-muted mb-0 px-3 py-3">هنوز سفارشی ثبت نشده است. <a href="{% url 'shop:product-grid' %}">از فروشگاه خرید کنید</a>.</p>
+        <p class="text-muted mb-0 px-3 py-3">هنوز سفارشی ثبت نشده است. <a href="{% url 'shop:product-grid' %}" hx-boost="false">از فروشگاه خرید کنید</a>.</p>
         {% endif %}
     </div>
 </div>

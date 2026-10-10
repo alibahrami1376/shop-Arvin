@@ -190,6 +190,7 @@
 {% compress js %}
 <!-- JS Jquery-->
     <script src="{% static 'js/jquery.min.js' %}"></script>
+    {% include 'includes/layout/htmx-scripts.html' %}
 
     <!-- JS Implementing Plugins -->
     {% include 'includes/layout/scripts-vendor.html' %}
@@ -202,7 +203,9 @@
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
 <!-- JS Custom-->
     <script src="{% static 'js/custom.js' %}"></script>
+    <script src="{% static 'js/admin-list-htmx.js' %}"></script>
     {% endcompress %}
+    {% csrf_token %}
 
 
     <!-- JS Plugins Init. -->

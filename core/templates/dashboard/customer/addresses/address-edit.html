@@ -64,7 +64,13 @@
         <!-- Footer -->
         <div class="card-footer pt-0">
             <div class="d-flex justify-content-end gap-3">
-                <a class="btn btn-danger" href="{% url 'dashboard:customer:address-delete' pk=object.pk %}">حذف</a>
+                <button type="button"
+                    class="btn btn-danger"
+                    hx-post="{% url 'dashboard:customer:address-delete' pk=object.pk %}"
+                    hx-confirm="این آدرس حذف شود؟"
+                    hx-swap="none">
+                    حذف
+                </button>
                 <a class="btn btn-secondary" href="{% url 'dashboard:customer:address-list' %}">بازگشت</a>
                 <button class="btn btn-primary" type="submit">ذخیره تغییرات</button>
             </div>

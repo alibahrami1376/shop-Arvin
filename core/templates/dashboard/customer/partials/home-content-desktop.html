@@ -93,7 +93,7 @@
                         </td>
                         <td>
                             {% if order.card_receipt %}
-                            <a href="{% url 'order:card-receipt-confirmation' pk=order.pk %}" class="btn btn-ghost-primary btn-sm">رسید</a>
+                            <a href="{% url 'order:card-receipt-confirmation' pk=order.pk %}" class="btn btn-ghost-primary btn-sm" hx-boost="false">رسید</a>
                             {% endif %}
                             <a href="{% url 'dashboard:customer:order-detail' pk=order.pk %}" class="btn btn-ghost-primary btn-sm">جزئیات</a>
                         </td>
@@ -103,7 +103,7 @@
             </table>
         </div>
         {% else %}
-        <p class="text-muted mb-0">هنوز سفارشی ثبت نشده است. <a href="{% url 'shop:product-grid' %}">از فروشگاه خرید کنید</a>.</p>
+        <p class="text-muted mb-0">هنوز سفارشی ثبت نشده است. <a href="{% url 'shop:product-grid' %}" hx-boost="false">از فروشگاه خرید کنید</a>.</p>
         {% endif %}
     </div>
 </div>

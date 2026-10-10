@@ -17,7 +17,8 @@
           <div class="row">
             <div class="col-sm-7 mb-3 mb-sm-0">
               <h5><a class="text-dark"
-                  href="{% url 'shop:product-detail' slug=object.product.slug %}">{{ object.product.title }}</a></h5>
+                  href="{% url 'shop:product-detail' slug=object.product.slug %}"
+                  hx-boost="false">{{ object.product.title }}</a></h5>
 
               <div class="d-grid gap-1">
                 <div class="text-body">
@@ -108,4 +109,4 @@
   </nav>
   {% endif %}
 </div>
-<a class="card-footer card-link text-center border-top" href="{% url 'shop:product-grid' %}">به خرید ادامه دهید</a>
+<a class="card-footer card-link text-center border-top" href="{% url 'shop:product-grid' %}" hx-boost="false">به خرید ادامه دهید</a>

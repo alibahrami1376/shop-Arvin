@@ -42,9 +42,19 @@
     </header>
 
     <main id="content" role="main" class="customer-mobile-main">
-        {% block breadcrumb %}{% endblock %}
+        <div id="customer-dashboard-breadcrumb">
+            {% block breadcrumb %}{% endblock %}
+        </div>
         <div class="customer-mobile-page">
-            {% block content %}{% endblock %}
+            <div id="customer-dashboard-content"
+                hx-boost="true"
+                hx-target="#customer-dashboard-content"
+                hx-select="#customer-dashboard-content"
+                hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+                hx-swap="outerHTML"
+                hx-push-url="true">
+                {% block content %}{% endblock %}
+            </div>
         </div>
     </main>
 
@@ -65,6 +75,7 @@
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
+    <script src="{% static 'js/customer-dashboard-nav.js' %}"></script>
     {% endcompress %}
     {% csrf_token %}
     <script>
@@ -83,6 +94,8 @@
     </script>
     {% block extra_js %}{% endblock extra_js %}
     {% block extra_js_no_compress %}{% endblock extra_js_no_compress %}
-    {% include 'messages.html' %}
+    <div id="django-htmx-messages">
+        {% include 'messages.html' %}
+    </div>
 </body>
 </html>

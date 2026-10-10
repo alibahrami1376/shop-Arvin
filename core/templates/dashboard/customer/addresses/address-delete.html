@@ -25,7 +25,10 @@
     <!-- End Header -->
 
     <!-- Body -->
-    <form action="." method="post">
+    <form action="." method="post"
+        hx-post="."
+        hx-confirm="این آدرس حذف شود؟"
+        hx-swap="none">
         {% csrf_token %}
         <div class="card-body">
             <div class="row d-flex ">

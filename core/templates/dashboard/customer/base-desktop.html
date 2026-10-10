@@ -75,9 +75,11 @@
                         </div>
 
                         <!-- Breadcrumb -->
+                        <div id="customer-dashboard-breadcrumb">
                         {% block breadcrumb %}
 
                         {% endblock %}
+                        </div>
                         <!-- End Breadcrumb -->
                     </div>
                     <!-- End Col -->
@@ -114,9 +116,16 @@
                 <!-- End Col -->
 
                 <div class="col-lg-9">
-                    {% block content %}
-                    {% endblock %}
-
+                    <div id="customer-dashboard-content"
+                        hx-boost="true"
+                        hx-target="#customer-dashboard-content"
+                        hx-select="#customer-dashboard-content"
+                        hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+                        hx-swap="outerHTML"
+                        hx-push-url="true">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
                 </div>
                 <!-- End Col -->
             </div>
@@ -201,6 +210,7 @@
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
 <!-- JS Custom-->
     <script src="{% static 'js/custom.js' %}"></script>
+    <script src="{% static 'js/customer-dashboard-nav.js' %}"></script>
     {% endcompress %}
     {% csrf_token %}
 
@@ -341,7 +351,9 @@
 
     {% block extra_js_no_compress %} {% endblock extra_js_no_compress %}
 
-    {% include 'messages.html' %}
+    <div id="django-htmx-messages">
+        {% include 'messages.html' %}
+    </div>
 </body>
 
 </html>

@@ -23,18 +23,39 @@
           <!-- List -->
           <ul class="nav nav-sm nav-tabs nav-vertical mb-4">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'dashboard:customer:home' %}">
+              <a class="nav-link js-customer-dash-nav"
+                 href="{% url 'dashboard:customer:home' %}"
+                 hx-get="{% url 'dashboard:customer:home' %}"
+                 hx-target="#customer-dashboard-content"
+                 hx-select="#customer-dashboard-content"
+                 hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+                 hx-swap="outerHTML"
+                 hx-push-url="true">
                 <i class="bi-person-badge nav-icon"></i>داشبورد
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'dashboard:customer:security-edit' %}">
+              <a class="nav-link js-customer-dash-nav"
+                 href="{% url 'dashboard:customer:security-edit' %}"
+                 hx-get="{% url 'dashboard:customer:security-edit' %}"
+                 hx-target="#customer-dashboard-content"
+                 hx-select="#customer-dashboard-content"
+                 hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+                 hx-swap="outerHTML"
+                 hx-push-url="true">
                 <i class="bi-shield-shaded nav-icon"></i> امنیت
               </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'dashboard:customer:profile-edit' %}">
+              <a class="nav-link js-customer-dash-nav"
+                 href="{% url 'dashboard:customer:profile-edit' %}"
+                 hx-get="{% url 'dashboard:customer:profile-edit' %}"
+                 hx-target="#customer-dashboard-content"
+                 hx-select="#customer-dashboard-content"
+                 hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+                 hx-swap="outerHTML"
+                 hx-push-url="true">
                 <i class="bi-sliders nav-icon"></i> تنظیمات پروفایل
               </a>
             </li>
@@ -46,18 +67,39 @@
           <!-- List -->
           <ul class="nav nav-sm nav-tabs nav-vertical mb-4">
             <li class="nav-item">
-              <a class="nav-link " href="{% url 'dashboard:customer:order-list' %}">
+              <a class="nav-link js-customer-dash-nav"
+                 href="{% url 'dashboard:customer:order-list' %}"
+                 hx-get="{% url 'dashboard:customer:order-list' %}"
+                 hx-target="#customer-dashboard-content"
+                 hx-select="#customer-dashboard-content"
+                 hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+                 hx-swap="outerHTML"
+                 hx-push-url="true">
                 <i class="bi-basket nav-icon"></i> سفارشات شما
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link " href="{% url 'dashboard:customer:wishlist-list' %}">
+              <a class="nav-link js-customer-dash-nav"
+                 href="{% url 'dashboard:customer:wishlist-list' %}"
+                 hx-get="{% url 'dashboard:customer:wishlist-list' %}"
+                 hx-target="#customer-dashboard-content"
+                 hx-select="#customer-dashboard-content"
+                 hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+                 hx-swap="outerHTML"
+                 hx-push-url="true">
                 <i class="bi-heart nav-icon"></i>لیست علایق
               </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link " href="{% url 'dashboard:customer:address-list' %}">
+              <a class="nav-link js-customer-dash-nav"
+                 href="{% url 'dashboard:customer:address-list' %}"
+                 hx-get="{% url 'dashboard:customer:address-list' %}"
+                 hx-target="#customer-dashboard-content"
+                 hx-select="#customer-dashboard-content"
+                 hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+                 hx-swap="outerHTML"
+                 hx-push-url="true">
                 <i class="bi-geo-alt nav-icon"></i> نشانی
               </a>
             </li>
@@ -73,7 +115,7 @@
             <!-- List -->
             <ul class="nav nav-sm nav-tabs nav-vertical">
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'accounts:logout' %}">
+                <a class="nav-link" href="{% url 'accounts:logout' %}" hx-boost="false">
                   <i class="bi-box-arrow-right nav-icon"></i> خروج
                 </a>
               </li>

@@ -10,21 +10,87 @@
 
     <p class="customer-sidebar-mobile__section">حساب</p>
     <ul class="customer-sidebar-mobile__nav">
-        <li><a href="{% url 'dashboard:customer:home' %}"><i class="bi-speedometer2"></i> داشبورد</a></li>
-        <li><a href="{% url 'dashboard:customer:security-edit' %}"><i class="bi-shield-shaded"></i> امنیت</a></li>
-        <li><a href="{% url 'dashboard:customer:profile-edit' %}"><i class="bi-sliders"></i> تنظیمات پروفایل</a></li>
+        <li>
+            <a class="js-customer-dash-nav"
+               href="{% url 'dashboard:customer:home' %}"
+               hx-get="{% url 'dashboard:customer:home' %}"
+               hx-target="#customer-dashboard-content"
+               hx-select="#customer-dashboard-content"
+               hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+               hx-swap="outerHTML"
+               hx-push-url="true">
+                <i class="bi-speedometer2"></i> داشبورد
+            </a>
+        </li>
+        <li>
+            <a class="js-customer-dash-nav"
+               href="{% url 'dashboard:customer:security-edit' %}"
+               hx-get="{% url 'dashboard:customer:security-edit' %}"
+               hx-target="#customer-dashboard-content"
+               hx-select="#customer-dashboard-content"
+               hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+               hx-swap="outerHTML"
+               hx-push-url="true">
+                <i class="bi-shield-shaded"></i> امنیت
+            </a>
+        </li>
+        <li>
+            <a class="js-customer-dash-nav"
+               href="{% url 'dashboard:customer:profile-edit' %}"
+               hx-get="{% url 'dashboard:customer:profile-edit' %}"
+               hx-target="#customer-dashboard-content"
+               hx-select="#customer-dashboard-content"
+               hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+               hx-swap="outerHTML"
+               hx-push-url="true">
+                <i class="bi-sliders"></i> تنظیمات پروفایل
+            </a>
+        </li>
     </ul>
 
     <p class="customer-sidebar-mobile__section">خرید</p>
     <ul class="customer-sidebar-mobile__nav">
-        <li><a href="{% url 'dashboard:customer:order-list' %}"><i class="bi-basket"></i> سفارشات</a></li>
-        <li><a href="{% url 'dashboard:customer:wishlist-list' %}"><i class="bi-heart"></i> لیست علاقه‌مندی</a></li>
-        <li><a href="{% url 'dashboard:customer:address-list' %}"><i class="bi-geo-alt"></i> نشانی‌ها</a></li>
+        <li>
+            <a class="js-customer-dash-nav"
+               href="{% url 'dashboard:customer:order-list' %}"
+               hx-get="{% url 'dashboard:customer:order-list' %}"
+               hx-target="#customer-dashboard-content"
+               hx-select="#customer-dashboard-content"
+               hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+               hx-swap="outerHTML"
+               hx-push-url="true">
+                <i class="bi-basket"></i> سفارشات
+            </a>
+        </li>
+        <li>
+            <a class="js-customer-dash-nav"
+               href="{% url 'dashboard:customer:wishlist-list' %}"
+               hx-get="{% url 'dashboard:customer:wishlist-list' %}"
+               hx-target="#customer-dashboard-content"
+               hx-select="#customer-dashboard-content"
+               hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+               hx-swap="outerHTML"
+               hx-push-url="true">
+                <i class="bi-heart"></i> لیست علاقه‌مندی
+            </a>
+        </li>
+        <li>
+            <a class="js-customer-dash-nav"
+               href="{% url 'dashboard:customer:address-list' %}"
+               hx-get="{% url 'dashboard:customer:address-list' %}"
+               hx-target="#customer-dashboard-content"
+               hx-select="#customer-dashboard-content"
+               hx-select-oob="#customer-dashboard-breadcrumb,#django-htmx-messages"
+               hx-swap="outerHTML"
+               hx-push-url="true">
+                <i class="bi-geo-alt"></i> نشانی‌ها
+            </a>
+        </li>
     </ul>
 
     <ul class="customer-sidebar-mobile__nav customer-sidebar-mobile__nav--footer border-top mt-3 pt-3">
-        <li><a href="{% url 'shop:product-grid' %}"><i class="bi-shop"></i> فروشگاه</a></li>
-        <li><a href="{% url 'website:index' %}"><i class="bi-house"></i> صفحه اصلی</a></li>
-        <li><a href="{% url 'accounts:logout' %}"><i class="bi-box-arrow-right"></i> خروج</a></li>
+        <li><a href="{% url 'shop:product-grid' %}" hx-boost="false"><i class="bi-shop"></i> فروشگاه</a></li>
+        <li><a href="{% url 'website:index' %}" hx-boost="false"><i class="bi-house"></i> صفحه اصلی</a></li>
+        <li><a href="{% url 'accounts:logout' %}" hx-boost="false"><i class="bi-box-arrow-right"></i> خروج</a></li>
     </ul>
 </nav>

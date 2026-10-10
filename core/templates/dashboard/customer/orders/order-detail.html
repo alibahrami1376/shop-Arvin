@@ -141,9 +141,9 @@
         {% endif %}
         <div class="d-flex flex-wrap gap-2 pt-5 justify-content-end">
           {% if object.can_submit_card_receipt and not object.card_receipt %}
-          <a class="btn btn-outline-primary" href="{% url 'order:card-payment-instructions' pk=object.pk %}#card-receipt">ارسال رسید کارت به کارت</a>
+          <a class="btn btn-outline-primary" href="{% url 'order:card-payment-instructions' pk=object.pk %}#card-receipt" hx-boost="false">ارسال رسید کارت به کارت</a>
           {% elif object.card_receipt %}
-          <a class="btn btn-outline-primary" href="{% url 'order:card-receipt-confirmation' pk=object.pk %}">مشاهده رسید</a>
+          <a class="btn btn-outline-primary" href="{% url 'order:card-receipt-confirmation' pk=object.pk %}" hx-boost="false">مشاهده رسید</a>
           {% endif %}
           {% if object.can_customer_view_invoice %}
           <a class="btn btn-primary" href="{% url 'dashboard:customer:order-invoice' pk=object.pk %}" target="_blank">

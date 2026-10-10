@@ -1,0 +1,232 @@
+{% load static %}
+{% load shop_tags %}
+<div class="card-header border-bottom customer-order-filters-header">
+    <form action="{% url 'dashboard:customer:order-list' %}"
+        method="get"
+        class="customer-order-filters"
+        id="customerOrderFilterForm"
+        hx-get="{% url 'dashboard:customer:order-list' %}"
+        hx-trigger="submit, change from:select"
+        hx-target="#customer-order-list-root"
+        hx-swap="outerHTML"
+        hx-push-url="true">
+
+        <div class="customer-order-filters__search">
+            <label class="visually-hidden" for="search-query-filter">جستجوی سفارش</label>
+            <div class="customer-order-filters__search-group">
+                <span class="customer-order-filters__hint-wrap">
+                    <button type="button"
+                        class="customer-order-filters__hint"
+                        aria-describedby="order-search-hint"
+                        aria-label="راهنمای جستجو: بر اساس شناسه سفارش یا کد پیگیری"
+                        title="جستجو بر اساس شناسه سفارش یا کد پیگیری">
+                        <i class="bi-info-circle" aria-hidden="true"></i>
+                    </button>
+                    <span id="order-search-hint" class="customer-order-filters__tooltip" role="tooltip">
+                        جستجو بر اساس شناسه سفارش یا کد پیگیری
+                    </span>
+                </span>
+                <input type="text"
+                    class="form-control"
+                    placeholder="جستجوی سفارش…"
+                    name="q"
+                    id="search-query-filter"
+                    value="{{ request.GET.q|default:'' }}"
+                    autocomplete="off">
+                <button type="submit" class="customer-order-filters__submit" aria-label="جستجو">
+                    <i class="bi-search" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+        <select class="form-select customer-order-filters__select" id="status-type-filter" name="status" aria-label="وضعیت">
+            <option value="" {% if not request.GET.status %}selected{% endif %}>وضعیت</option>
+            {% for status_type in status_types %}
+            <option value="{{ status_type.0 }}" {% if request.GET.status|stringformat:"s" == status_type.0|stringformat:"s" %}selected{% endif %}>{{ status_type.1 }}</option>
+            {% endfor %}
+        </select>
+
+        <select class="form-select customer-order-filters__select" id="order-by-filter" name="order_by" aria-label="مرتب‌سازی">
+            <option value="" {% if not request.GET.order_by %}selected{% endif %}>مرتب‌سازی</option>
+            <option value="-created_date" {% if request.GET.order_by == "-created_date" %}selected{% endif %}>جدیدترین</option>
+            <option value="created_date" {% if request.GET.order_by == "created_date" %}selected{% endif %}>قدیمی‌ترین</option>
+        </select>
+
+        <select class="form-select customer-order-filters__select customer-order-filters__select--sm" id="page-size-filter" name="page_size" aria-label="تعداد در صفحه">
+            <option value="" {% if not request.GET.page_size %}selected{% endif %}>تعداد</option>
+            <option value="5" {% if request.GET.page_size == "5" %}selected{% endif %}>5</option>
+            <option value="10" {% if request.GET.page_size == "10" %}selected{% endif %}>10</option>
+            <option value="20" {% if request.GET.page_size == "20" %}selected{% endif %}>20</option>
+            <option value="30" {% if request.GET.page_size == "30" %}selected{% endif %}>30</option>
+            <option value="50" {% if request.GET.page_size == "50" %}selected{% endif %}>50</option>
+        </select>
+
+        <a class="customer-order-filters__reset"
+            href="{% url 'dashboard:customer:order-list' %}"
+            hx-get="{% url 'dashboard:customer:order-list' %}"
+            hx-target="#customer-order-list-root"
+            hx-swap="outerHTML"
+            hx-push-url="true">
+            <i class="bi-arrow-counterclockwise" aria-hidden="true"></i>
+            <span>ریست</span>
+        </a>
+    </form>
+</div>
+
+<div class="card-body">
+    <div class="tab-content" id="accountOrdersTabContent">
+        <div class="tab-pane fade show active" id="accountOrdersOne" role="tabpanel"
+            aria-labelledby="accountOrdersOne-tab">
+            <div class="d-sm-flex align-items-sm-center mb-5">
+                <div class="mb-2 mb-sm-0 me-3">
+                    <span><strong class="text-dark">{{ total_items }} سفارش</strong></span>
+                </div>
+            </div>
+
+            <ul class="list-unstyled mb-5">
+                {% for object in object_list %}
+                <li class="card card-bordered shadow-none mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6 col-md mb-3 mb-md-0">
+                                <small class="card-subtitle mb-0">مبلغ سفارش</small>
+                                <small class="text-dark fw-semibold formatted-price">{{ object.get_price }}</small>
+                            </div>
+                            <div class="col-6 col-md mb-3 mb-md-0">
+                                <small class="card-subtitle mb-0">وضعیت پرداخت</small>
+                                {% with ps=object.get_customer_payment_status %}
+                                <small class="badge bg-soft-{{ ps.variant }} text-{{ ps.variant }} d-inline-block mt-1">{{ ps.label }}</small>
+                                {% endwith %}
+                            </div>
+                            <div class="col-6 col-md mb-3 mb-md-0">
+                                <small class="card-subtitle mb-0">وضعیت سفارش</small>
+                                {% with os=object.get_customer_order_status %}
+                                <small class="badge bg-soft-{{ os.variant }} text-{{ os.variant }} d-inline-block mt-1">{{ os.label }}</small>
+                                {% endwith %}
+                            </div>
+                            <div class="col-6 col-md">
+                                <small class="card-subtitle mb-0">کد سفارش</small>
+                                <small class="text-dark fw-semibold d-block" dir="ltr">{{ object.tracking_code }}</small>
+                            </div>
+                            <div class="col-6 col-md">
+                                <small class="card-subtitle mb-0">زمان سفارش:</small>
+                                <small class="text-dark fw-semibold">
+                                    {{ object.created_date|date:"Y-m-d H:i" }}
+                                </small>
+                            </div>
+                            {% if object.is_card_to_card_payment %}
+                            <div class="col-6 col-md">
+                                <small class="card-subtitle mb-0">رسید کارت به کارت</small>
+                                {% if object.card_receipt %}
+                                <small class="badge bg-soft-success text-success d-inline-block mt-1">ارسال شد</small>
+                                <small class="text-dark d-block mt-1">
+                                    {{ object.card_receipt.created_date|date:"Y-m-d H:i" }}
+                                </small>
+                                {% else %}
+                                <small class="badge bg-soft-warning text-warning d-inline-block mt-1">ارسال نشده</small>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <hr>
+
+                        {% if object.card_receipt %}
+                        <div class="mb-3">
+                            {% include "includes/partials/card-to-card-receipt.html" with receipt=object.card_receipt show_meta=False image_max_height="140px" %}
+                        </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="row gx-2">
+                                    {% for order_item in object.order_items.all|slice:":4" %}
+                                    <div class="col">
+                                        <img class="img-fluid rounded"
+                                            style="width:150px; height:150px; object-fit:cover"
+                                            src="{{ order_item.product.image_thumb_url }}" alt="{{ order_item.product.get_image_alt }}">
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-grid gap-2">
+                                    {% if object.can_submit_card_receipt and not object.card_receipt %}
+                                    <a class="btn btn-outline-primary btn-sm"
+                                        href="{% url 'order:card-payment-instructions' pk=object.pk %}#card-receipt"
+                                        hx-boost="false">ارسال رسید</a>
+                                    {% elif object.card_receipt %}
+                                    <a class="btn btn-outline-primary btn-sm"
+                                        href="{% url 'order:card-receipt-confirmation' pk=object.pk %}"
+                                        hx-boost="false">مشاهده رسید</a>
+                                    {% endif %}
+                                    {% if object.can_customer_view_invoice %}
+                                    <a class="btn btn-white btn-sm"
+                                        href="{% url 'dashboard:customer:order-invoice' pk=object.pk %}"
+                                        target="_blank">
+                                        <i class="bi-receipt small me-2"></i> مشاهده فاکتور
+                                    </a>
+                                    {% endif %}
+                                    <a class="btn btn-primary btn-sm"
+                                        href="{% url 'dashboard:customer:order-detail' pk=object.pk %}">مشاهده سفارش</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="text-center text-secondary py-5">سفارشی یافت نشد.</li>
+                {% endfor %}
+            </ul>
+
+            <div class="row pt-5 mt-3">
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="صفحه‌بندی سفارشات">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{% pagination_url page_obj.previous_page_number %}"
+                                hx-get="{% pagination_url page_obj.previous_page_number %}"
+                                hx-target="#customer-order-list-root"
+                                hx-swap="outerHTML"
+                                hx-push-url="true"
+                                aria-label="صفحه قبل">
+                                <span aria-hidden="true"><i class="bi-chevron-double-right small"></i></span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% for i in page_obj.paginator.page_range %}
+                        {% if page_obj.number == i %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                        {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{% pagination_url i %}"
+                                hx-get="{% pagination_url i %}"
+                                hx-target="#customer-order-list-root"
+                                hx-swap="outerHTML"
+                                hx-push-url="true">{{ i }}</a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{% pagination_url page_obj.next_page_number %}"
+                                hx-get="{% pagination_url page_obj.next_page_number %}"
+                                hx-target="#customer-order-list-root"
+                                hx-swap="outerHTML"
+                                hx-push-url="true"
+                                aria-label="صفحه بعد">
+                                <span aria-hidden="true"><i class="bi-chevron-double-left small"></i></span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

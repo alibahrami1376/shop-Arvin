@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="card">
+<div class="card" id="admin-list-root">
     <div class="card-header border-bottom">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="">تگ‌های بلاگ</h5>
@@ -123,28 +123,3 @@
 </div>
 {% endblock %}
 
-{% block extra_js %}
-<script>
-    $(document).ready(function () {
-        let current_url_params = new URLSearchParams(window.location.search)
-        $("#page-size-filter").val(current_url_params.get("page_size") || "10")
-        $("#order-by-filter").val(current_url_params.get("order_by") || "")
-        $("#search-query-filter").val(current_url_params.get("q") || "")
-    });
-    $('#page-size-filter').change(function () {
-        let current_url_params = new URLSearchParams(window.location.search)
-        current_url_params.set("page_size", $(this).val())
-        window.location.href = window.location.pathname + "?" + current_url_params.toString()
-    });
-    $('#order-by-filter').change(function () {
-        let current_url_params = new URLSearchParams(window.location.search)
-        current_url_params.set("order_by", $(this).val())
-        window.location.href = window.location.pathname + "?" + current_url_params.toString()
-    });
-    function changePage(page_number) {
-        let current_url_params = new URLSearchParams(window.location.search)
-        current_url_params.set("page", page_number)
-        window.location.href = window.location.pathname + "?" + current_url_params.toString()
-    }
-</script>
-{% endblock %}

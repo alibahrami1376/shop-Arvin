@@ -60,11 +60,14 @@
 
 {% compress js %}
     <script src="{% static 'js/jquery.min.js' %}"></script>
+    {% include 'includes/layout/htmx-scripts.html' %}
     {% include 'includes/layout/scripts-vendor.html' %}
     <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
     <script src="{% static 'js/custom.js' %}"></script>
+    <script src="{% static 'js/admin-list-htmx.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
     {% endcompress %}
+    {% csrf_token %}
     <script>
         document.querySelectorAll(".admin-mobile-page table").forEach(function (table) {
             var headers = Array.from(table.querySelectorAll("thead th")).map(function (th) {
