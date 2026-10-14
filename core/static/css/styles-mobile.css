@@ -345,8 +345,8 @@ body.device-mobile .home-product-strip__title {
 
 body.device-mobile .home-product-strip:not(.home-product-strip--mobile-carousel) .card-img-top {
     width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
+    aspect-ratio: 540 / 720;
+    object-fit: contain;
 }
 
 body.device-mobile .home-product-strip:not(.home-product-strip--mobile-carousel) .card-title {
@@ -405,7 +405,7 @@ body.device-mobile .home-product-card {
 
 body.device-mobile .home-product-card__img-wrap {
     display: block;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 540 / 720;
     overflow: hidden;
     background: #f8f5f2;
 }
@@ -413,7 +413,7 @@ body.device-mobile .home-product-card__img-wrap {
 body.device-mobile .home-product-card .card-img-top {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 body.device-mobile .home-product-card__badge {
@@ -1665,7 +1665,7 @@ body.device-mobile .shop-product-card {
 
 body.device-mobile .shop-product-card__img-wrap {
     display: block;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 540 / 720;
     overflow: hidden;
     background: #f8f5f2;
 }
@@ -1673,7 +1673,7 @@ body.device-mobile .shop-product-card__img-wrap {
 body.device-mobile .shop-product-card .card-img-top {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 body.device-mobile .shop-product-card__cats {
@@ -1868,17 +1868,19 @@ body.device-mobile .pdp-mobile {
 
 body.device-mobile .pdp-mobile__gallery {
     background: #fff;
-    padding: 0.65rem 1rem 0.85rem;
+    padding: 1rem 1.15rem 1rem;
     border-bottom: 1px solid rgba(74, 55, 44, 0.08);
 }
 
 body.device-mobile .pdp-mobile__swiper {
     width: 100%;
-    max-height: 100vh;
+    max-width: 16.875rem; /* 540px display cap */
+    aspect-ratio: 540 / 720;
     margin-inline: auto;
     border-radius: var(--radius-lg);
     overflow: hidden;
     background: #f7f3ee;
+    box-sizing: border-box;
 }
 
 /* Before Swiper boots, never stack all product photos */
@@ -1887,24 +1889,30 @@ body.device-mobile .pdp-mobile__swiper:not(.swiper-initialized) .swiper-slide:no
 }
 
 body.device-mobile .pdp-mobile__swiper .swiper-wrapper {
+    height: 100%;
     align-items: stretch;
 }
 
 body.device-mobile .pdp-mobile__swiper .swiper-slide {
-    height: auto;
+    height: 100% !important;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
     overflow: hidden;
+    background: #f7f3ee;
 }
 
 body.device-mobile .pdp-mobile__img {
     display: block;
-    width: min(100%, calc((100dvh - 14rem) * 0.75));
-    height: auto;
-    max-height: calc(100dvh - 14rem);
-    margin-inline: auto;
-    aspect-ratio: 3 / 4;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    object-fit: cover; /* fill the fixed 540×720 frame */
     object-position: center;
-    background: #f7f3ee;
+    border-radius: 0;
+    background: transparent;
 }
 
 body.device-mobile .pdp-mobile__thumbs {
@@ -1920,11 +1928,12 @@ body.device-mobile .pdp-mobile__thumbs .swiper-slide {
 
 body.device-mobile .pdp-mobile__thumb {
     display: block;
-    width: 3.35rem;
-    height: 3.35rem;
+    width: 2.65rem;
+    height: auto;
+    aspect-ratio: 540 / 720;
     padding: 0;
     border: 2px solid rgba(74, 55, 44, 0.12);
-    border-radius: 50%;
+    border-radius: 0.45rem;
     overflow: hidden;
     background: #fff;
     flex-shrink: 0;
@@ -1934,9 +1943,8 @@ body.device-mobile .pdp-mobile__thumb img {
     display: block;
     width: 100%;
     height: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 50%;
+    object-fit: contain;
+    border-radius: 0;
 }
 
 body.device-mobile .swiper-slide-thumb-active .pdp-mobile__thumb {
@@ -2444,11 +2452,18 @@ body.device-mobile .similar-products__media {
     display: block;
 }
 
+body.device-mobile .similar-products__media {
+    display: block;
+    aspect-ratio: 540 / 720;
+    overflow: hidden;
+    background: #f8f5f2;
+}
+
 body.device-mobile .similar-products__media img {
     display: block;
     width: 100%;
-    height: 8.5rem;
-    object-fit: cover;
+    height: 100%;
+    object-fit: contain;
 }
 
 body.device-mobile .similar-products__body {

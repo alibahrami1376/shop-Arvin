@@ -2966,8 +2966,8 @@ section.home-product-strip.section + section.home-product-strip.section {
 }
 
 .home-product-strip .card-img-top {
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
+    aspect-ratio: 540 / 720;
+    object-fit: contain;
     background-color: #f0eeeb;
     transition: transform 0.35s ease;
 }
@@ -3261,11 +3261,18 @@ section.home-product-strip.section + section.home-product-strip.section {
     text-align: center;
 }
 
+.similar-products__media {
+    display: block;
+    aspect-ratio: 540 / 720;
+    overflow: hidden;
+    background: #f0eeeb;
+}
+
 .similar-products__media img {
     display: block;
     width: 100%;
-    height: 12rem;
-    object-fit: cover;
+    height: 100%;
+    object-fit: contain;
 }
 
 .similar-products__body {
@@ -4930,24 +4937,32 @@ body.device-mobile .cart-empty-state {
     padding-top: 1.25rem;
 }
 
-/* PDP gallery — portrait 3:4, scaled to fit below the header */
+/* PDP gallery (web) — frame hugs image top/bottom; full photo, no crop */
 .js-swiper-shop-product .swiper-slide .card {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: fit-content;
+    max-width: min(100%, 28rem);
+    max-height: min(70vh, 32rem);
+    margin-inline: auto;
     background: #f7f3ee;
+    padding: 0;
+    overflow: hidden;
+    border: none;
+    box-shadow: none;
 }
 
 .js-swiper-shop-product .card-img {
     display: block;
-    width: min(100%, calc((100dvh - 11rem) * 0.75));
+    width: auto;
+    max-width: 100%;
     height: auto;
-    max-height: calc(100dvh - 11rem);
+    max-height: min(70vh, 32rem);
     margin-inline: auto;
-    aspect-ratio: 3 / 4;
     object-fit: contain;
     object-position: center;
-    background: #f7f3ee;
+    background: transparent;
 }
 
 /* صفحه درباره ما */
