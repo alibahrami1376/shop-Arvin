@@ -221,3 +221,21 @@ docs/.$*
 *.jpg
 
 docs/report-lighthous
+
+# User uploads / ImageKit cache (from server or local runtime)
+core/media/
+
+# collectstatic copies of third-party packages (install via pip + collectstatic)
+core/static/admin/
+core/static/django_ckeditor_5/
+core/static/rest_framework/
+
+# Django STATIC_ROOT (collected assets)
+staticfiles/
+core/staticfiles/
+core/public/static/
+
+# DB / backup dumps
+*.dump
+*.sql.gz
+arvinbackup.dump
