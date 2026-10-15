@@ -1100,8 +1100,10 @@ body.device-mobile .mobile-bottom-nav__center-btn {
     width: clamp(2.75rem, 11vw, 3.25rem);
     height: clamp(2.75rem, 11vw, 3.25rem);
     border-radius: 50%;
-    background: var(--color-accent-brown);
-    color: var(--color-primary-white);
+    /* هم‌رنگ هدر موبایل تا در دارک‌مود گوشی مثل هدر قرمز شود، نه قهوه‌ای نزدیک به سیاه */
+    background:
+        linear-gradient(135deg, #ffc65c 0%, var(--header-bg, #fdb94e) 48%, #f0a62e 100%);
+    color: #4a372c;
     box-shadow: 0 4px 14px rgba(74, 55, 44, 0.28);
     font-size: clamp(1.25rem, 5vw, 1.45rem);
     transition: var(--transition-smooth);
@@ -1117,7 +1119,10 @@ body.device-mobile .mobile-bottom-nav__cart-icon {
     height: clamp(1.2rem, 5vw, 1.45rem);
     object-fit: contain;
     display: block;
-    filter: brightness(0) invert(1);
+    /* تیره روی طلایی/قرمز هدر — در دارک‌مود گوشی هم خوانا می‌ماند */
+    filter: brightness(0);
+    forced-color-adjust: none;
+    -webkit-forced-color-adjust: none;
 }
 
 body.device-mobile .mobile-bottom-nav__item--center:focus-visible .mobile-bottom-nav__center-btn {
@@ -1126,7 +1131,8 @@ body.device-mobile .mobile-bottom-nav__item--center:focus-visible .mobile-bottom
 }
 
 body.device-mobile .mobile-bottom-nav__item--center.mobile-bottom-nav__item--active .mobile-bottom-nav__center-btn {
-    background: var(--color-accent-brown-dark);
+    background:
+        linear-gradient(135deg, #f0a62e 0%, #e09420 48%, #c97d12 100%);
 }
 
 body.device-mobile .mobile-bottom-nav__badge {
