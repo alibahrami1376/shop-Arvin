@@ -2,7 +2,6 @@ import json
 import logging
 
 from cart.models import CartModel
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpResponse, JsonResponse
@@ -265,8 +264,10 @@ class BalePaymentInstructionsView(
         pay = self.object.payment
         client = BaleClient()
         deep_link = client.build_deep_link(pay.link_token) if pay.link_token else ""
+        from payment.bale_config import get_bale_config
+
         context["deep_link"] = deep_link
-        context["bot_username"] = settings.BALE_BOT_USERNAME
+        context["bot_username"] = get_bale_config().bot_username
         context["link_expired"] = not pay.is_link_token_valid()
         context["status_url"] = reverse(
             "order:bale-payment-status", kwargs={"pk": self.object.pk}

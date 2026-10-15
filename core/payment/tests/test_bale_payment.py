@@ -2,7 +2,7 @@ from datetime import timedelta
 from unittest.mock import MagicMock, patch
 
 from accounts.models import User
-from django.test import Client, TestCase, override_settings
+from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
 from order.models import OrderModel, OrderStatusType
@@ -14,19 +14,24 @@ from payment.bale_webhook import (
     handle_start,
     handle_successful_payment,
 )
-from payment.models import PaymentMethodType, PaymentModel, PaymentStatusType
+from payment.models import (
+    BaleBotSettings,
+    PaymentMethodType,
+    PaymentModel,
+    PaymentStatusType,
+)
 from payment.services import inquire_transaction_matches_payment, mark_payment_success
 
 
-@override_settings(
-    BALE_BOT_TOKEN="test-bot-token",
-    BALE_PROVIDER_TOKEN="WALLET-TEST-1111111111111111",
-    BALE_BOT_USERNAME="arvin_bot",
-    BALE_WEBHOOK_SECRET="whsec",
-    BALE_LINK_TOKEN_TTL_MINUTES=60,
-)
 class BalePaymentTests(TestCase):
     def setUp(self):
+        row = BaleBotSettings.get_solo()
+        row.bot_token = "test-bot-token"
+        row.provider_token = "WALLET-TEST-1111111111111111"
+        row.bot_username = "arvin_bot"
+        row.webhook_secret = "whsec"
+        row.link_token_ttl_minutes = 60
+        row.save()
         self.user = User.objects.create_customer(
             email="bale-buyer@example.com",
             password="pass12345",
@@ -238,12 +243,14 @@ class BalePaymentTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_webhook_rejects_when_secret_empty(self):
-        with override_settings(BALE_WEBHOOK_SECRET=""):
-            resp = Client().post(
-                reverse("payment:bale-bot-webhook"),
-                data=b"{}",
-                content_type="application/json",
-            )
+        row = BaleBotSettings.get_solo()
+        row.webhook_secret = ""
+        row.save(update_fields=["webhook_secret"])
+        resp = Client().post(
+            reverse("payment:bale-bot-webhook"),
+            data=b"{}",
+            content_type="application/json",
+        )
         self.assertEqual(resp.status_code, 403)
 
     def test_inquire_match_helper(self):

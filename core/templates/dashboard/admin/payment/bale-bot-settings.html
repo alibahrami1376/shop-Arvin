@@ -1,0 +1,129 @@
+{% extends dashboard_admin_base_template %}
+{% load static %}
+
+{% block title %}تنظیمات بله - پنل ادمین{% endblock title %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-light mb-0">
+        <li class="breadcrumb-item">فروشگاه</li>
+        <li class="breadcrumb-item active" aria-current="page">تنظیمات بله</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="card-header border-bottom">
+        <h4 class="card-header-title mb-0">تنظیمات ربات و کیف‌پول بله</h4>
+        <p class="card-text small text-muted mb-0 mt-1">
+            روش پرداخت بله را از
+            <a href="{% url 'dashboard:admin:payment-method-settings' %}">روش‌های پرداخت</a>
+            فعال کنید.
+        </p>
+    </div>
+    <form action="." method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="save">
+        <div class="card-body">
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.bot_token.id_for_label }}">توکن ربات</label>
+                <div class="col-sm-9">
+                    {{ form.bot_token }}
+                    <div class="form-text">
+                        از BotFather بله کپی کنید و اینجا بزنید (در دیتابیس ذخیره می‌شود).
+                        {% if has_bot_token %} — توکن قبلی ذخیره شده؛ برای تغییر مقدار جدید وارد کنید.{% else %} — هنوز خالی است.{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.provider_token.id_for_label }}">توکن کیف‌پول</label>
+                <div class="col-sm-9">
+                    {{ form.provider_token }}
+                    <div class="form-text">
+                        توکن پرداخت کیف‌پول از BotFather؛ برای تست:
+                        <code dir="ltr">WALLET-TEST-1111111111111111</code>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.bot_username.id_for_label }}">یوزرنیم ربات</label>
+                <div class="col-sm-9">
+                    {{ form.bot_username }}
+                    <div class="form-text">بدون @ — برای دکمهٔ «باز کردن ربات بله» در سایت.</div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.webhook_secret.id_for_label }}">رمز وب‌هوک</label>
+                <div class="col-sm-9">
+                    {{ form.webhook_secret }}
+                    <div class="form-text">
+                        یک رمز تصادفی قوی که خودتان می‌سازید؛ در URL وب‌هوک می‌آید.
+                        {% if has_webhook_secret %} — رمز قبلی ذخیره شده.{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.link_token_ttl_minutes.id_for_label }}">اعتبار لینک (دقیقه)</label>
+                <div class="col-sm-9">
+                    {{ form.link_token_ttl_minutes }}
+                    <div class="form-text">مهلت لینک پرداخت سفارش از صفحهٔ سایت تا باز کردن ربات.</div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.api_base.id_for_label }}">آدرس API</label>
+                <div class="col-sm-9">
+                    {{ form.api_base }}
+                    <div class="form-text">پیش‌فرض بله: <code dir="ltr">https://tapi.bale.ai</code> — فقط اگر بله آدرس دیگری اعلام کرد عوض کنید.</div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <label class="col-sm-3 col-form-label form-label" for="{{ form.deep_link_base.id_for_label }}">پایه دیپ‌لینک</label>
+                <div class="col-sm-9">
+                    {{ form.deep_link_base }}
+                    <div class="form-text">پیش‌فرض: <code dir="ltr">https://ble.ir</code> — برای لینک باز شدن ربات.</div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+            <h5 class="mb-2">آدرس وب‌هوک</h5>
+            <p class="small text-muted mb-2">
+                این آدرس را دستی نمی‌نویسید؛ از دامنهٔ سایت و رمز وب‌هوک ساخته می‌شود.
+                قبل از «ست وب‌هوک» تنظیمات را ذخیره کنید.
+            </p>
+            <div class="alert alert-soft-secondary" dir="ltr">
+                <code class="user-select-all">{{ webhook_url }}</code>
+            </div>
+        </div>
+        <div class="card-footer pt-0">
+            <div class="d-flex flex-wrap justify-content-end gap-2">
+                <a class="btn btn-white" href="{% url 'dashboard:admin:home' %}">بازگشت</a>
+                <button type="submit" class="btn btn-primary" name="action" value="save">ذخیره تنظیمات</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header border-bottom">
+        <h4 class="card-header-title mb-0">عملیات وب‌هوک بله</h4>
+    </div>
+    <div class="card-body">
+        <p class="text-muted small">
+            بعد از ذخیره توکن و رمز، «ست کردن وب‌هوک» را بزنید تا بله آپدیت‌ها را به همین سایت بفرستد.
+        </p>
+        <form action="." method="post" class="d-flex flex-wrap gap-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success" name="action" value="set_webhook">ست کردن وب‌هوک</button>
+            <button type="submit" class="btn btn-outline-primary" name="action" value="get_webhook_info">مشاهده وضعیت وب‌هوک</button>
+            <button type="submit" class="btn btn-outline-danger" name="action" value="delete_webhook"
+                onclick="return confirm('وب‌هوک فعلی حذف شود؟');">حذف وب‌هوک</button>
+        </form>
+        {% if webhook_info_json %}
+        <hr class="my-4">
+        <h6 class="mb-2">آخرین پاسخ بله</h6>
+        <pre class="bg-light border rounded p-3 small mb-0" dir="ltr" style="white-space: pre-wrap;">{{ webhook_info_json }}</pre>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

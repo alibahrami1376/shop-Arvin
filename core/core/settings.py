@@ -264,18 +264,8 @@ AUTHENTICATION_BACKENDS = [
 
 MERCHANT_ID = config("MERCHANT_ID")
 
-# Bale wallet bot payment (https://tapi.bale.ai)
-BALE_BOT_TOKEN = config("BALE_BOT_TOKEN", default="")
-BALE_PROVIDER_TOKEN = config(
-    "BALE_PROVIDER_TOKEN", default="WALLET-TEST-1111111111111111"
-)
-BALE_BOT_USERNAME = config("BALE_BOT_USERNAME", default="")
-BALE_WEBHOOK_SECRET = config("BALE_WEBHOOK_SECRET", default="")
-BALE_API_BASE = config("BALE_API_BASE", default="https://tapi.bale.ai")
-BALE_DEEP_LINK_BASE = config("BALE_DEEP_LINK_BASE", default="https://ble.ir")
-BALE_LINK_TOKEN_TTL_MINUTES = config(
-    "BALE_LINK_TOKEN_TTL_MINUTES", default=60, cast=int
-)
+# Bale bot/wallet tokens, username, webhook secret: set in admin dashboard
+# (BaleBotSettings). Webhook public URL uses SITE_DOMAIN / Sites / SSL below.
 
 LOGOUT_REDIRECT_URL = "/"
 LOGIN_REDIRECT_URL = "/"

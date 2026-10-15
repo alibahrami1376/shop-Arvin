@@ -1,7 +1,6 @@
 import json
 import logging
 
-from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
@@ -72,9 +71,11 @@ class BaleBotWebhookView(View):
     def post(self, request, *args, **kwargs):
         import hmac
 
-        secret = (getattr(settings, "BALE_WEBHOOK_SECRET", "") or "").strip()
+        from payment.bale_config import get_bale_config
+
+        secret = (get_bale_config().webhook_secret or "").strip()
         if not secret:
-            logger.error("BALE_WEBHOOK_SECRET is not configured; rejecting webhook")
+            logger.error("Bale webhook secret is not configured; rejecting webhook")
             return HttpResponseForbidden("webhook secret not configured")
 
         provided = (

@@ -7,7 +7,8 @@ import logging
 from typing import Any
 
 import requests
-from django.conf import settings
+
+from payment.bale_config import get_bale_config
 
 logger = logging.getLogger(__name__)
 
@@ -29,13 +30,13 @@ class BaleClient:
         provider_token: str | None = None,
         api_base: str | None = None,
     ):
-        self.bot_token = bot_token if bot_token is not None else settings.BALE_BOT_TOKEN
+        cfg = get_bale_config()
+        self.bot_token = bot_token if bot_token is not None else cfg.bot_token
         self.provider_token = (
-            provider_token
-            if provider_token is not None
-            else settings.BALE_PROVIDER_TOKEN
+            provider_token if provider_token is not None else cfg.provider_token
         )
-        self.api_base = (api_base or settings.BALE_API_BASE).rstrip("/")
+        self.api_base = (api_base or cfg.api_base).rstrip("/")
+        self._cfg = cfg
 
     @property
     def is_configured(self) -> bool:
@@ -46,7 +47,7 @@ class BaleClient:
 
     def api(self, method: str, **params: Any) -> dict:
         if not self.bot_token:
-            raise BaleAPIError("BALE_BOT_TOKEN is not configured")
+            raise BaleAPIError("توکن ربات بله تنظیم نشده است")
         try:
             response = requests.post(self._url(method), json=params, timeout=15)
             response.raise_for_status()
@@ -89,7 +90,6 @@ class BaleClient:
         try:
             return self.api("sendInvoice", **params)
         except BaleAPIError:
-            # Some Bot API gateways expect a JSON-serialized string for prices.
             params["prices"] = json.dumps(prices, ensure_ascii=False)
             return self.api("sendInvoice", **params)
 
@@ -110,9 +110,19 @@ class BaleClient:
     def inquire_transaction(self, transaction_id: str) -> dict:
         return self.api("inquireTransaction", transaction_id=transaction_id)
 
+    def set_webhook(self, url: str) -> dict:
+        return self.api("setWebhook", url=url)
+
+    def get_webhook_info(self) -> dict:
+        return self.api("getWebhookInfo")
+
+    def delete_webhook(self) -> dict:
+        return self.api("deleteWebhook")
+
     def build_deep_link(self, start_token: str) -> str:
-        username = (settings.BALE_BOT_USERNAME or "").lstrip("@")
-        base = settings.BALE_DEEP_LINK_BASE.rstrip("/")
+        cfg = self._cfg
+        username = (cfg.bot_username or "").lstrip("@")
+        base = cfg.deep_link_base.rstrip("/")
         if not username:
             return ""
         return f"{base}/{username}?start={start_token}"

@@ -223,3 +223,65 @@ class CardToCardSettings(models.Model):
                 return f"https://wa.me/{digits}"
             return ""
         return raw
+
+
+class BaleBotSettings(models.Model):
+    """Singleton: Bale bot + wallet payment config (editable in admin dashboard)."""
+
+    bot_token = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name="توکن ربات",
+        help_text="توکن بازو از BotFather بله",
+    )
+    provider_token = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name="توکن کیف‌پول (provider)",
+        help_text="توکن پرداخت کیف‌پول؛ برای تست: WALLET-TEST-1111111111111111",
+    )
+    bot_username = models.CharField(
+        max_length=128,
+        blank=True,
+        default="",
+        verbose_name="یوزرنیم ربات",
+        help_text="بدون @ — برای دیپ‌لینک ble.ir",
+    )
+    webhook_secret = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name="رمز وب‌هوک",
+        help_text="در URL وب‌هوک به‌صورت ?secret=... استفاده می‌شود",
+    )
+    api_base = models.CharField(
+        max_length=255,
+        blank=True,
+        default="https://tapi.bale.ai",
+        verbose_name="آدرس پایه API",
+    )
+    deep_link_base = models.CharField(
+        max_length=255,
+        blank=True,
+        default="https://ble.ir",
+        verbose_name="پایه دیپ‌لینک",
+    )
+    link_token_ttl_minutes = models.PositiveIntegerField(
+        default=60,
+        verbose_name="اعتبار لینک پرداخت (دقیقه)",
+    )
+    updated_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "تنظیمات ربات بله"
+        verbose_name_plural = "تنظیمات ربات بله"
+
+    def __str__(self):
+        return "تنظیمات ربات بله"
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj

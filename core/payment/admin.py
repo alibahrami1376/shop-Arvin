@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from .models import CardToCardSettings, PaymentMethodSettings, PaymentModel
+from .models import (
+    BaleBotSettings,
+    CardToCardSettings,
+    PaymentMethodSettings,
+    PaymentModel,
+)
 
 
 @admin.register(CardToCardSettings)
@@ -35,6 +40,26 @@ class CardToCardSettingsAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return not CardToCardSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(BaleBotSettings)
+class BaleBotSettingsAdmin(admin.ModelAdmin):
+    list_display = ("id", "bot_username", "updated_date")
+    fields = (
+        "bot_token",
+        "provider_token",
+        "bot_username",
+        "webhook_secret",
+        "api_base",
+        "deep_link_base",
+        "link_token_ttl_minutes",
+    )
+
+    def has_add_permission(self, request):
+        return not BaleBotSettings.objects.exists()
 
     def has_delete_permission(self, request, obj=None):
         return False

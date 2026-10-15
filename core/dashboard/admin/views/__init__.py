@@ -1,22 +1,23 @@
-from .generals import *
-from .profiles import *
-from .products import *
-from .categories import *
-from .tags import *
-from .orders import *
-from .reviews import *
-from .contacts import *
-from .newsletters import *
-from .users import *
-from .coupons import *
-from .locations import *
-from .blog import *
-from .card_to_card_settings import *
-from .payment_method_settings import *
-from .checkout_pricing_settings import *
-from .faq import *
-from .banners import *
-from .legal_page import *
-from .contact_settings import *
-from .site_branding import *
-from .site_wide_social import *
+from .bale_bot_settings import *  # noqa: F403
+from .banners import *  # noqa: F403
+from .blog import *  # noqa: F403
+from .card_to_card_settings import *  # noqa: F403
+from .categories import *  # noqa: F403
+from .checkout_pricing_settings import *  # noqa: F403
+from .contact_settings import *  # noqa: F403
+from .contacts import *  # noqa: F403
+from .coupons import *  # noqa: F403
+from .faq import *  # noqa: F403
+from .generals import *  # noqa: F403
+from .legal_page import *  # noqa: F403
+from .locations import *  # noqa: F403
+from .newsletters import *  # noqa: F403
+from .orders import *  # noqa: F403
+from .payment_method_settings import *  # noqa: F403
+from .products import *  # noqa: F403
+from .profiles import *  # noqa: F403
+from .reviews import *  # noqa: F403
+from .site_branding import *  # noqa: F403
+from .site_wide_social import *  # noqa: F403
+from .tags import *  # noqa: F403
+from .users import *  # noqa: F403

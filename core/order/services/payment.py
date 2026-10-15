@@ -2,7 +2,6 @@ import secrets
 import uuid
 from datetime import timedelta
 
-from django.conf import settings
 from django.urls import reverse_lazy
 from django.utils import timezone
 from payment.models import PaymentMethodType, PaymentModel
@@ -48,7 +47,9 @@ class PaymentService:
         )
 
     def create_bale_payment_url(self, order) -> str:
-        ttl = getattr(settings, "BALE_LINK_TOKEN_TTL_MINUTES", 60)
+        from payment.bale_config import get_bale_config
+
+        ttl = get_bale_config().link_token_ttl_minutes
         authority = f"bale-{uuid.uuid4().hex}"
         link_token = secrets.token_urlsafe(16)
         payment_obj = PaymentModel.objects.create(

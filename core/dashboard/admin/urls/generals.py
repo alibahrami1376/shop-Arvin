@@ -1,9 +1,8 @@
-from django.urls import path, include
+from django.urls import path
+
 from .. import views
 
-
 urlpatterns = [
-
     path("home/", views.AdminDashboardHomeView.as_view(), name="home"),
     path(
         "settings/card-to-card/",
@@ -14,6 +13,11 @@ urlpatterns = [
         "settings/payment-methods/",
         views.AdminPaymentMethodSettingsView.as_view(),
         name="payment-method-settings",
+    ),
+    path(
+        "settings/bale-bot/",
+        views.AdminBaleBotSettingsView.as_view(),
+        name="bale-bot-settings",
     ),
     path(
         "settings/checkout-pricing/",
