@@ -32,7 +32,8 @@ class ShopProductListMixin:
 
     template_name = "shop/product-grid.html"
     htmx_template_name = "shop/partials/product-grid-fragment.html"
-    paginate_by = 9
+    paginate_by = 12
+    allowed_page_sizes = (12, 15, 18, 24, 30, 36)
 
     def get_template_names(self):
         if self.request.headers.get("HX-Request") == "true":
@@ -40,7 +41,14 @@ class ShopProductListMixin:
         return [self.template_name]
 
     def get_paginate_by(self, queryset):
-        return self.request.GET.get("page_size", self.paginate_by)
+        raw = self.request.GET.get("page_size")
+        try:
+            page_size = int(raw)
+        except (TypeError, ValueError):
+            return self.paginate_by
+        if page_size in self.allowed_page_sizes:
+            return page_size
+        return self.paginate_by
 
     def get_published_queryset(self):
         return ProductModel.objects.filter(status=ProductStatusType.publish.value)

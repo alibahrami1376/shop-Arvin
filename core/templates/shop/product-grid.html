@@ -108,11 +108,12 @@
                             hx-push-url="true"
                             hx-include="#shopFilterForm, #order-by-filter">
                             <option value="" {% if not request.GET.page_size %}selected{% endif %}>تعداد در صفحه</option>
-                            <option value="5" {% if request.GET.page_size == "5" %}selected{% endif %}>5</option>
-                            <option value="10" {% if request.GET.page_size == "10" %}selected{% endif %}>10</option>
-                            <option value="20" {% if request.GET.page_size == "20" %}selected{% endif %}>20</option>
+                            <option value="12" {% if request.GET.page_size == "12" %}selected{% endif %}>12</option>
+                            <option value="15" {% if request.GET.page_size == "15" %}selected{% endif %}>15</option>
+                            <option value="18" {% if request.GET.page_size == "18" %}selected{% endif %}>18</option>
+                            <option value="24" {% if request.GET.page_size == "24" %}selected{% endif %}>24</option>
                             <option value="30" {% if request.GET.page_size == "30" %}selected{% endif %}>30</option>
-                            <option value="50" {% if request.GET.page_size == "50" %}selected{% endif %}>50</option>
+                            <option value="36" {% if request.GET.page_size == "36" %}selected{% endif %}>36</option>
                         </select>
                     </div>
                 </div>
