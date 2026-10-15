@@ -1876,13 +1876,65 @@ body.device-mobile .shop-filter-form__clear:active {
     background: #f7f3ee;
 }
 
-body.device-mobile .shop-pagination .page-link {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.85rem;
+/* Bootstrap pagination — theme.min.css روی موبایل لود نمی‌شود */
+body.device-mobile .shop-pagination {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
-body.device-mobile .shop-pagination {
-    margin-top: 0.5rem;
+body.device-mobile .shop-pagination .pagination {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+body.device-mobile .shop-pagination .page-item {
+    display: inline-flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+body.device-mobile .shop-pagination .page-item::marker {
+    content: none;
+}
+
+body.device-mobile .shop-pagination .page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.35rem;
+    min-height: 2.35rem;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid rgba(74, 55, 44, 0.14);
+    border-radius: 0.65rem;
+    background: #fff;
+    color: #4a372c;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    box-shadow: 0 1px 4px rgba(74, 55, 44, 0.06);
+}
+
+body.device-mobile .shop-pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #ffc65c 0%, #fdb94e 48%, #f0a62e 100%);
+    border-color: transparent;
+    color: #4a372c;
+    box-shadow: 0 2px 8px rgba(240, 166, 46, 0.35);
+}
+
+body.device-mobile .shop-pagination .page-item:not(.active) .page-link:active {
+    background: #f7f3ee;
 }
 
 /* ==========================================================================
