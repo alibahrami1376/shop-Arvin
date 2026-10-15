@@ -1,5 +1,6 @@
 {% extends dashboard_admin_base_template %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block title %}سفارشات - پنل ادمین{% endblock title %}
 
@@ -114,7 +115,7 @@
                                     <td><a href="{% url 'dashboard:admin:order-detail' pk=object.pk %}" dir="ltr">{{ object.tracking_code }}</a></td>
                                     <td>{{object.user.user_profile.get_fullname}}</td>
                                     <td class="formatted-price" >{{object.get_price}}</td>
-                                    <td>{{object.created_date|date:"Y-m-d h:i"}}</td>
+                                    <td>{{object.created_date|jalali:"%Y/%m/%d - %H:%M"}}</td>
                                     <td><span class="badge bg-{{object.get_status.title}}">{{object.get_status.label}}</span></td>
 
                                 </tr>

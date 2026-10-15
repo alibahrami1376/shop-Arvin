@@ -1,4 +1,5 @@
 {% load static %}
+{% load jalali_tags %}
 <section class="home-blog-section section section-alt" aria-labelledby="home-blog-heading">
     <div class="container">
         <h2 id="home-blog-heading" class="section-title text-center mb-2">آخرین مطالب وبلاگ</h2>
@@ -15,9 +16,11 @@
                         <h3 class="home-blog-card__title">
                             <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                         </h3>
-                        {% if post.published_date %}
-                        <time class="home-blog-card__date" datetime="{{ post.published_date|date:'c' }}">{{ post.published_date|date:"Y/m/d" }}</time>
+                        {% with display_date=post.published_date|default:post.created_date %}
+                        {% if display_date %}
+                        <time class="home-blog-card__date" datetime="{{ display_date|date:'c' }}">{{ display_date|jalali:"%Y/%m/%d" }}</time>
                         {% endif %}
+                        {% endwith %}
                     </div>
                 </article>
             </div>

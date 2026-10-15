@@ -1,5 +1,6 @@
 {% extends dashboard_admin_base_template %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block title %}تیکت‌ها - پنل ادمین{% endblock title %}
 
@@ -110,7 +111,7 @@
                                     <td>{{object.email}}</td>
                                     <td>{{object.phone_number}}</td>
                                     <td>{{object.subject}}</td>
-                                    <td>{{object.created_date|date:"Y-m-d h:i"}}</td>
+                                    <td>{{object.created_date|jalali:"%Y/%m/%d - %H:%M"}}</td>
                                     <td>
                                         {% if object.is_seen %}
                                         <span class="badge bg-success">دیده شده</span>

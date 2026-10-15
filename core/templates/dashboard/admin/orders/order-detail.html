@@ -1,5 +1,6 @@
 {% extends dashboard_admin_base_template %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block title %}جزئیات سفارش - پنل ادمین{% endblock title %}
 
@@ -129,7 +130,7 @@
         {% endif %}
         <div class="row mb-3">
           <dt class="col-md-3"> تاریخ سفارش:</dt>
-          <dl class="col-md-3">{{object.created_date|date:"Y-m-d h:i"}}</dl>
+          <dl class="col-md-3">{{object.created_date|jalali:"%Y/%m/%d - %H:%M"}}</dl>
         </div>
         <div class="row mb-3">
           <div class="col-12 col-lg-8">

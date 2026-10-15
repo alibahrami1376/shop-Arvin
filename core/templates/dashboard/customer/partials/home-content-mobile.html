@@ -1,3 +1,4 @@
+{% load jalali_tags %}
 <!-- خوش‌آمدگویی -->
 <div class="card mb-3">
     <div class="card-body">
@@ -53,7 +54,7 @@
                 </div>
                 <div class="customer-order-card__row">
                     <span>تاریخ</span>
-                    <span>{{ order.created_date|date:"Y/m/d" }}</span>
+                    <span>{{ order.created_date|jalali:"%Y/%m/%d" }}</span>
                 </div>
                 <div class="customer-order-card__row">
                     <span>مبلغ</span>
@@ -69,7 +70,7 @@
                     {% if order.card_receipt %}
                     <span>
                         <span class="badge bg-soft-success text-success">ارسال شد</span>
-                        <small class="d-block text-muted">{{ order.card_receipt.created_date|date:"Y/m/d H:i" }}</small>
+                        <small class="d-block text-muted">{{ order.card_receipt.created_date|jalali:"%Y/%m/%d - %H:%M" }}</small>
                     </span>
                     {% else %}
                     <span class="badge bg-soft-warning text-warning">ارسال نشده</span>

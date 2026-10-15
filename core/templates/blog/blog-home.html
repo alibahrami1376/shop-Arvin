@@ -1,5 +1,6 @@
 {% extends base_template %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block extra_head %}
 {% if breadcrumb_json_ld %}
@@ -90,7 +91,7 @@
                             <div class="mb-3">
                                 <small class="text-muted blog-post-card__meta">
                                     <i class="bi-calendar3 me-1"></i>
-                                    {{ post.published_date|date:"Y/m/d" }}
+                                    {{ post.published_date|default:post.created_date|jalali:"%Y/%m/%d" }}
                                     <span class="mx-2">|</span>
                                     <i class="bi-eye me-1"></i>
                                     {{ post.counted_view }} بازدید

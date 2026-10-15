@@ -1,5 +1,6 @@
 {% extends dashboard_admin_base_template %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block title %}نظرات - پنل ادمین{% endblock title %}
 
@@ -115,7 +116,7 @@
                                     <td>{{object.product.title}}</td>
                                     <td>{{object.user.user_profile.get_fullname}}</td>
                                     <td>{{object.rate}}</td>
-                                    <td>{{object.created_date|date:"Y-m-d h:i"}}</td>
+                                    <td>{{object.created_date|jalali:"%Y/%m/%d - %H:%M"}}</td>
                                     <td><span class="badge bg-{{object.get_status.title}}">{{object.get_status.label}}</span></td>
                                     <td class="d-flex">
                                         <a class="btn btn-sm btn-icon btn-ghost-secondary"

@@ -1,5 +1,6 @@
 {% extends dashboard_customer_base_template %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block title %}جزئیات سفارش - حساب کاربری{% endblock title %}
 
@@ -99,7 +100,7 @@
         </div>
         <div class="row mb-3">
           <dt class="col-md-3"> تاریخ سفارش:</dt>
-          <dl class="col-md-3">{{object.created_date|date:"Y-m-d h:i"}}</dl>
+          <dl class="col-md-3">{{object.created_date|jalali:"%Y/%m/%d - %H:%M"}}</dl>
         </div>
         <div class="row mb-3">
           <div class="col-12 col-lg-8">

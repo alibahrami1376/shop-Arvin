@@ -1,3 +1,4 @@
+{% load jalali_tags %}
 <div class="row g-3">
     <div class="col-md-6">
         <p class="small text-muted mb-2">رسید</p>
@@ -12,7 +13,7 @@
         <p class="small text-muted mt-2 mb-0">
             مبلغ: <span class="formatted-price">{{ receipt.amount }}</span>
             {% if receipt.created_date %}
-            <span class="d-block">زمان ارسال: {{ receipt.created_date|date:"Y-m-d H:i" }}</span>
+            <span class="d-block">زمان ارسال: {{ receipt.created_date|jalali:"%Y/%m/%d - %H:%M" }}</span>
             {% endif %}
         </p>
         {% endif %}

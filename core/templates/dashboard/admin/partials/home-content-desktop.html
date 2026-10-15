@@ -1,3 +1,4 @@
+{% load jalali_tags %}
 <section class="admin-dashboard-welcome mb-4">
     <div class="admin-dashboard-welcome__content">
         <div class="admin-dashboard-welcome__avatar-wrap">
@@ -21,13 +22,13 @@
             <div class="admin-dashboard-welcome__meta">
                 <div class="admin-dashboard-welcome__meta-item">
                     <span class="admin-dashboard-welcome__meta-label">تاریخ و زمان فعلی</span>
-                    <strong id="adminDashboardCurrentTime">{{ dashboard_now|date:"Y/m/d - H:i" }}</strong>
+                    <strong id="adminDashboardCurrentTime">{{ dashboard_now|jalali:"%Y/%m/%d - %H:%M" }}</strong>
                 </div>
                 <div class="admin-dashboard-welcome__meta-item">
                     <span class="admin-dashboard-welcome__meta-label">آخرین ورود</span>
                     <strong>
                         {% if dashboard_user.last_login %}
-                        {{ dashboard_user.last_login|date:"Y/m/d - H:i" }}
+                        {{ dashboard_user.last_login|jalali:"%Y/%m/%d - %H:%M" }}
                         {% else %}
                         اولین ورود
                         {% endif %}
@@ -76,7 +77,7 @@
                     </div>
                     <div class="admin-info-grid__item">
                         <span class="admin-info-grid__label">تاریخ عضویت</span>
-                        <strong>{{ dashboard_user.created_date|date:"Y/m/d - H:i" }}</strong>
+                        <strong>{{ dashboard_user.created_date|jalali:"%Y/%m/%d - %H:%M" }}</strong>
                     </div>
                 </div>
             </div>
@@ -132,21 +133,21 @@
                         <i class="bi bi-box-arrow-in-right"></i>
                         <div>
                             <span class="admin-info-grid__label">آخرین ورود</span>
-                            <strong>{% if dashboard_user.last_login %}{{ dashboard_user.last_login|date:"Y/m/d - H:i" }}{% else %}اولین ورود{% endif %}</strong>
+                            <strong>{% if dashboard_user.last_login %}{{ dashboard_user.last_login|jalali:"%Y/%m/%d - %H:%M" }}{% else %}اولین ورود{% endif %}</strong>
                         </div>
                     </div>
                     <div class="admin-activity-list__item">
                         <i class="bi bi-pencil-square"></i>
                         <div>
                             <span class="admin-info-grid__label">آخرین بروزرسانی پروفایل</span>
-                            <strong>{{ dashboard_last_profile_update|date:"Y/m/d - H:i" }}</strong>
+                            <strong>{{ dashboard_last_profile_update|jalali:"%Y/%m/%d - %H:%M" }}</strong>
                         </div>
                     </div>
                     <div class="admin-activity-list__item">
                         <i class="bi bi-key"></i>
                         <div>
                             <span class="admin-info-grid__label">آخرین تغییر اطلاعات امنیتی</span>
-                            <strong>{{ dashboard_password_last_changed|date:"Y/m/d - H:i" }}</strong>
+                            <strong>{{ dashboard_password_last_changed|jalali:"%Y/%m/%d - %H:%M" }}</strong>
                         </div>
                     </div>
                     <div class="admin-activity-list__item">
@@ -300,7 +301,7 @@
                     <tr>
                         <td dir="ltr">{{ order.tracking_code }}</td>
                         <td>{{ order.user.email }}</td>
-                        <td>{{ order.created_date|date:"Y/m/d H:i" }}</td>
+                        <td>{{ order.created_date|jalali:"%Y/%m/%d - %H:%M" }}</td>
                         <td><span class="badge bg-soft-{% if order.status == 2 %}success{% elif order.status == 3 %}danger{% else %}warning{% endif %}">{{ order.get_status.label }}</span></td>
                         <td><a href="{% url 'dashboard:admin:order-detail' pk=order.pk %}" class="btn btn-ghost-primary btn-sm">جزئیات</a></td>
                     </tr>

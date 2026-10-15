@@ -1,5 +1,6 @@
 {% extends dashboard_admin_base_template %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block title %}تخفیف ها - پنل ادمین{% endblock title %}
 
@@ -92,7 +93,7 @@
                             <td>{{object.max_limit_usage}}</td>
                             <td>{{object.used_by.all.count}}</td>
                  
-                            <td>{{ object.expiration_date|date:"Y-m-d h:i"}}</td>
+                            <td>{{ object.expiration_date|jalali:"%Y/%m/%d - %H:%M"}}</td>
                             <td class="d-flex">
                                 <a class="btn btn-sm btn-icon btn-ghost-secondary"
                                     href="{% url 'dashboard:admin:coupon-edit' pk=object.pk %}"><i class="bi-pencil-square"></i></a>

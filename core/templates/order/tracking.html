@@ -1,5 +1,6 @@
 {% extends base_template %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block title %}پیگیری سفارش - فروشگاه آروین{% endblock %}
 
@@ -50,7 +51,7 @@
                             {% endwith %}
                         </dd>
                         <dt class="col-sm-4">تاریخ ثبت</dt>
-                        <dd class="col-sm-8">{{ order.created_date|date:"Y/m/d - H:i" }}</dd>
+                        <dd class="col-sm-8">{{ order.created_date|jalali:"%Y/%m/%d - %H:%M" }}</dd>
                         <dt class="col-sm-4">مبلغ</dt>
                         <dd class="col-sm-8"><span class="formatted-price" data-price="{{ order.get_price }}">{{ order.get_price }}</span></dd>
                         <dt class="col-sm-4">شهر / استان</dt>

@@ -1,5 +1,6 @@
 {% load static %}
 {% load compress %}
+{% load jalali_tags %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 
@@ -71,7 +72,7 @@
                             <div class="col-md text-md-end">
                                 <dl class="row">
                                     <dt class="col-sm-8">زمان سفارش:</dt>
-                                    <dd class="col-sm-4">{{object.created_date|date:"Y-m-d h:i"}}</dd>
+                                    <dd class="col-sm-4">{{object.created_date|jalali:"%Y/%m/%d - %H:%M"}}</dd>
                              
                                 </dl>
                             </div>

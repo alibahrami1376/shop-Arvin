@@ -1,5 +1,6 @@
 {% extends dashboard_admin_base_template %}
 {% load static %}
+{% load jalali_tags %}
 
 
 {% block title %}کاربران - پنل ادمین{% endblock title %}
@@ -103,7 +104,7 @@
                                         {% elif object.type == 6 %}پشتیبانی
                                         {% else %}-{% endif %}
                                     </td>
-                                    <td>{{object.created_date|date:"Y-m-d h:i"}}</td>
+                                    <td>{{object.created_date|jalali:"%Y/%m/%d - %H:%M"}}</td>
                                     <td>
                                         {% if object.is_active %}
                                         <span class="badge bg-success">فعال</span>

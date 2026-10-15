@@ -1,6 +1,7 @@
 {% extends base_template %}
 {% load static %}
 {% load shop_tags %}
+{% load jalali_tags %}
 
 {% block extra_head %}
 <script type="application/ld+json">{{ object.as_json_ld_json|safe }}</script>
@@ -194,7 +195,7 @@
                 </div>
                 <div class="pdp-mobile__comment-meta">
                     <strong>{{ review.user.user_profile.get_fullname }}</strong>
-                    <span>{{ review.created_date|date:"Y/m/d" }}</span>
+                    <span>{{ review.created_date|jalali:"%Y/%m/%d" }}</span>
                 </div>
                 <p>{{ review.description }}</p>
             </li>
@@ -426,7 +427,7 @@
                             <div class="flex-grow-1 me-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">{{review.user.user_profile.get_fullname}}</h5>
-                                    <span class="d-block small text-muted">{{review.created_date|date:"Y-m-d h:i"}}</span>
+                                    <span class="d-block small text-muted">{{review.created_date|jalali:"%Y/%m/%d - %H:%M"}}</span>
                                 </div>
                             </div>
                         </div>

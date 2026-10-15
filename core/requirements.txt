@@ -10,6 +10,7 @@ django-compressor>=4.5,<5
 django-imagekit>=5.0,<6
 django-meta>=2.5,<3
 idna==3.6
+jdatetime>=5.0,<6
 pillow==10.2.0
 psycopg==3.1.12
 psycopg-binary==3.1.12

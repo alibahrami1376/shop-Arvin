@@ -1,5 +1,6 @@
 {% extends base_template %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block extra_head %}
 <script type="application/ld+json">{{ post.as_json_ld_json|safe }}</script>
@@ -35,7 +36,7 @@
                         
                         <div class="text-muted me-4 blog-detail-article__meta-item">
                             <i class="bi-calendar3 me-1"></i>
-                            {{ post.published_date|date:"Y/m/d" }}
+                            {{ post.published_date|default:post.created_date|jalali:"%Y/%m/%d" }}
                         </div>
                         
                         <div class="text-muted blog-detail-article__meta-item">
@@ -160,7 +161,7 @@
                                 </h6>
                                 <small class="text-muted blog-post-card__meta">
                                     <i class="bi-calendar3 me-1"></i>
-                                    {{ related.published_date|date:"Y/m/d" }}
+                                    {{ related.published_date|default:related.created_date|jalali:"%Y/%m/%d" }}
                                 </small>
                             </div>
                         </article>
