@@ -5,10 +5,10 @@
     {% if similar_prodcuts %}
     <div class="similar-products__grid">
         {% for similar_prodcut in similar_prodcuts %}
-        <article class="similar-products__card">
-            <a href="{% url 'shop:product-detail' slug=similar_prodcut.slug %}" class="similar-products__media">
+        <article class="similar-products__card position-relative">
+            <div class="similar-products__media">
                 <img src="{{ similar_prodcut.image_card_url }}" alt="{{ similar_prodcut.get_image_alt }}" loading="lazy" fetchpriority="low" decoding="async">
-            </a>
+            </div>
             <div class="similar-products__body">
                 {% if similar_prodcut.category.all %}
                 <p class="similar-products__cats">
@@ -17,9 +17,7 @@
                     {% endfor %}
                 </p>
                 {% endif %}
-                <h3 class="similar-products__name">
-                    <a href="{% url 'shop:product-detail' slug=similar_prodcut.slug %}">{{ similar_prodcut.title }}</a>
-                </h3>
+                <h3 class="similar-products__name">{{ similar_prodcut.title }}</h3>
                 {% if similar_prodcut.is_discounted %}
                 <p class="similar-products__price">
                     <span class="formatted-price">{{ similar_prodcut.get_price }}</span>
@@ -28,9 +26,10 @@
                 {% else %}
                 <p class="similar-products__price formatted-price">{{ similar_prodcut.price }}</p>
                 {% endif %}
-                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill similar-products__cart"
-                    onclick="addToCart('{{ similar_prodcut.id }}')">افزودن به سبد</button>
+                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill similar-products__cart similar-products__above-stretch"
+                    onclick="event.preventDefault(); event.stopPropagation(); addToCart('{{ similar_prodcut.id }}')">افزودن به سبد</button>
             </div>
+            <a href="{% url 'shop:product-detail' slug=similar_prodcut.slug %}" class="stretched-link" aria-label="مشاهده {{ similar_prodcut.title }}"><span class="visually-hidden">{{ similar_prodcut.title }}</span></a>
         </article>
         {% endfor %}
     </div>

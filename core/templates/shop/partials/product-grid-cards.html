@@ -2,13 +2,13 @@
 <div class="row shop-product-grid row-cols-2{% if not is_mobile_site %} row-cols-sm-2 row-cols-md-3{% endif %} g-2 g-md-3 mb-4 mb-md-10">
     {% for object in object_list %}
     <div class="col">
-        <article class="card card-bordered shadow-none text-center h-100 shop-product-card">
+        <article class="card card-bordered shadow-none text-center h-100 shop-product-card position-relative">
             <div class="card-pinned">
-                <a href="{% url 'shop:product-detail' slug=object.slug %}" class="d-block shop-product-card__img-wrap">
+                <div class="shop-product-card__img-wrap">
                     <img class="card-img-top" src="{{ object.image_card_url }}" alt="{{ object.get_image_alt }}" loading="lazy" fetchpriority="low" decoding="async">
-                </a>
+                </div>
                 {% if request.user.is_authenticated %}
-                <div class="card-pinned-top-end">
+                <div class="card-pinned-top-end shop-product-card__above-stretch">
                     {% if object.id in wishlist_items %}
                     {% include "shop/partials/wishlist-button.html" with product_id=object.id is_wished=True extra_class="" %}
                     {% else %}
@@ -26,9 +26,7 @@
                     {% endfor %}
                 </p>
                 {% endif %}
-                <h2 class="card-title h6 shop-product-card__title">
-                    <a class="text-dark text-decoration-none" href="{% url 'shop:product-detail' slug=object.slug %}">{{ object.title }}</a>
-                </h2>
+                <h2 class="card-title h6 shop-product-card__title">{{ object.title }}</h2>
                 {% if object.is_discounted %}
                 <p class="card-text text-dark shop-product-card__price mb-0">
                     <span class="formatted-price fw-semibold">{{ object.get_price }}</span>
@@ -50,9 +48,10 @@
                     {% endfor %}
                     <span class="ms-1">{{ object.avg_rate }}/5</span>
                 </div>
-                <button type="button" class="btn btn-primary btn-sm w-100 rounded-pill"
-                    onclick="addToCart('{{ object.id }}')">افزودن به سبد</button>
+                <button type="button" class="btn btn-primary btn-sm w-100 rounded-pill shop-product-card__above-stretch"
+                    onclick="event.preventDefault(); event.stopPropagation(); addToCart('{{ object.id }}')">افزودن به سبد</button>
             </div>
+            <a href="{% url 'shop:product-detail' slug=object.slug %}" class="stretched-link" aria-label="مشاهده {{ object.title }}"><span class="visually-hidden">{{ object.title }}</span></a>
         </article>
     </div>
     {% empty %}

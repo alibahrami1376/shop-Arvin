@@ -3020,6 +3020,32 @@ section.home-product-strip.section + section.home-product-strip.section {
     z-index: 2;
 }
 
+/* کل کارت محصول کلیک‌پذیر (گرید فروشگاه، مشابه، کارت موبایل) */
+.shop-product-card .card-pinned-top-end.shop-product-card__above-stretch,
+.home-product-card .card-pinned-top-end.home-product-card__above-stretch {
+    z-index: 2;
+}
+
+.shop-product-card .shop-product-card__above-stretch:not(.card-pinned-top-end),
+.home-product-card .home-product-card__above-stretch:not(.card-pinned-top-end),
+.similar-products__above-stretch {
+    position: relative;
+    z-index: 2;
+}
+
+.shop-product-card__img-wrap {
+    display: block;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: #f8f5f2;
+}
+
+.shop-product-card__img-wrap .card-img-top {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
 .home-dual-banner__grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -3253,6 +3279,7 @@ section.home-product-strip.section + section.home-product-strip.section {
 .similar-products__card {
     display: flex;
     flex-direction: column;
+    position: relative;
     height: 100%;
     overflow: hidden;
     border: 1px solid rgba(74, 55, 44, 0.1);
@@ -3293,15 +3320,7 @@ section.home-product-strip.section + section.home-product-strip.section {
     margin: 0;
     font-size: 1rem;
     line-height: 1.5;
-}
-
-.similar-products__name a {
     color: var(--text-dark);
-    text-decoration: none;
-}
-
-.similar-products__name a:hover {
-    color: var(--color-accent-brown, #6b4e3d);
 }
 
 .similar-products__price {
@@ -4589,6 +4608,17 @@ body.device-desktop .container {
 
 .pt-0 {
     padding-top: 0 !important;
+}
+
+/* Bootstrap stretched-link — needed on mobile (theme.min.css not loaded) */
+.stretched-link::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    content: "";
 }
 
 /* Position Utilities */
