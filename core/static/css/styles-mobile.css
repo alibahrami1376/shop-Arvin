@@ -1017,7 +1017,8 @@ body.device-mobile .mobile-bottom-nav {
     background: var(--color-primary-white);
     border-top: 1px solid rgba(74, 55, 44, 0.12);
     box-shadow: 0 -4px 20px rgba(74, 55, 44, 0.08);
-    overflow: hidden;
+    /* visible تا دایرهٔ برجستهٔ سبد از بالا بریده نشود */
+    overflow: visible;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
 }
@@ -1082,11 +1083,12 @@ body.device-mobile .mobile-bottom-nav__item--active i {
 
 body.device-mobile .mobile-bottom-nav__item--center {
     position: relative;
-    top: clamp(-0.65rem, -2.5vw, -0.85rem);
+    top: clamp(-0.85rem, -3vw, -1.1rem);
     flex: 1 1 0;
     min-width: 0;
     gap: 0.15rem;
-    z-index: 1;
+    z-index: 2;
+    overflow: visible;
 }
 
 body.device-mobile .mobile-bottom-nav__center-btn {
@@ -1095,8 +1097,9 @@ body.device-mobile .mobile-bottom-nav__center-btn {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: clamp(2.75rem, 11vw, 3.25rem);
-    height: clamp(2.75rem, 11vw, 3.25rem);
+    width: clamp(2.85rem, 11vw, 3.35rem);
+    height: clamp(2.85rem, 11vw, 3.35rem);
+    aspect-ratio: 1;
     border-radius: 50%;
     /* هم‌رنگ هدر موبایل تا در دارک‌مود گوشی مثل هدر قرمز شود، نه قهوه‌ای نزدیک به سیاه */
     background:
@@ -1105,6 +1108,7 @@ body.device-mobile .mobile-bottom-nav__center-btn {
     box-shadow: 0 4px 14px rgba(74, 55, 44, 0.28);
     font-size: clamp(1.25rem, 5vw, 1.45rem);
     transition: var(--transition-smooth);
+    overflow: visible;
 }
 
 body.device-mobile .mobile-bottom-nav__center-btn i {
@@ -1940,27 +1944,56 @@ body.device-mobile .pdp-mobile__img {
 }
 
 body.device-mobile .pdp-mobile__thumbs {
-    margin-top: 0.85rem;
-    padding-inline: 0.25rem;
+    margin-top: 0.75rem;
+    padding-inline: 0.75rem;
+    /* override global .swiper-slide { width: 100% !important } */
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+body.device-mobile .pdp-mobile__thumbs::-webkit-scrollbar {
+    display: none;
+}
+
+body.device-mobile .pdp-mobile__thumbs .swiper-wrapper {
+    width: max-content !important;
+    max-width: none !important;
+    min-width: 100% !important;
+    margin-inline: 0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    box-sizing: border-box;
+    transform: none !important;
 }
 
 body.device-mobile .pdp-mobile__thumbs .swiper-slide {
-    width: auto;
+    width: 3.35rem !important;
+    max-width: 3.35rem !important;
+    min-width: 3.35rem !important;
+    height: auto !important;
+    margin: 0 !important;
+    flex-shrink: 0;
     display: flex;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 body.device-mobile .pdp-mobile__thumb {
     display: block;
-    width: 2.65rem;
+    width: 3.35rem;
     height: auto;
     aspect-ratio: 3 / 4;
     padding: 0;
     border: 2px solid rgba(74, 55, 44, 0.12);
-    border-radius: 0.45rem;
+    border-radius: 0.55rem;
     overflow: hidden;
-    background: #fff;
+    background: #f8f5f2;
     flex-shrink: 0;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
 body.device-mobile .pdp-mobile__thumb img {
@@ -1971,9 +2004,11 @@ body.device-mobile .pdp-mobile__thumb img {
     border-radius: 0;
 }
 
-body.device-mobile .swiper-slide-thumb-active .pdp-mobile__thumb {
+body.device-mobile .swiper-slide-thumb-active .pdp-mobile__thumb,
+body.device-mobile .pdp-mobile__thumbs .swiper-slide.is-active .pdp-mobile__thumb {
     border-color: #fdb94e;
     box-shadow: 0 0 0 2px rgba(253, 185, 78, 0.35);
+    transform: translateY(-1px);
 }
 
 /* Navigation is via circular thumbs on mobile PDP */
@@ -3546,7 +3581,7 @@ body.device-mobile .section .col-lg-10 {
     }
 
     body.device-mobile .mobile-bottom-nav__item--center {
-        top: -0.6rem;
+        top: -0.85rem;
     }
 }
 
