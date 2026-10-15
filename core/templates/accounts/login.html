@@ -12,6 +12,7 @@
 
         <form class="auth-form" action="{% url 'accounts:login' %}" method="post" novalidate>
             {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
 
             {% if form.non_field_errors %}
                 <div class="alert alert-danger mb-3">{{ form.non_field_errors }}</div>
@@ -48,7 +49,8 @@
             </div>
 
             <p class="auth-form__footer text-center mb-0">
-                حساب کاربری ندارید؟ <a class="link" href="{% url 'accounts:register' %}">اینجا ثبت‌نام کنید</a>
+                حساب کاربری ندارید؟
+                <a class="link" href="{% url 'accounts:register' %}{% if next %}?next={{ next|urlencode }}{% endif %}">اینجا ثبت‌نام کنید</a>
             </p>
         </form>
     </div>

@@ -18,7 +18,7 @@ from accounts.forms import (
 )
 from accounts.models import OTPCode, ensure_user_profile
 from accounts.services import OTPService
-from accounts.utils import consume_otp
+from accounts.utils import consume_otp, pop_auth_next, stash_auth_next
 
 User = get_user_model()
 
@@ -34,6 +34,21 @@ class LoginView(auth_views.LoginView):
     form_class = AuthenticationForm
     redirect_authenticated_user = True
 
+    def dispatch(self, request, *args, **kwargs):
+        stash_auth_next(request)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["next"] = stash_auth_next(self.request) or context.get("next", "")
+        return context
+
+    def get_success_url(self):
+        url = pop_auth_next(self.request, default=None)
+        if url:
+            return url
+        return super().get_success_url()
+
 
 class LogoutView(auth_views.LogoutView):
     pass
@@ -45,9 +60,13 @@ class RegisterView(FormView):
     success_url = reverse_lazy("dashboard:home")
 
     def dispatch(self, request, *args, **kwargs):
+        next_url = stash_auth_next(request)
         if request.user.is_authenticated:
-            return redirect("dashboard:home")
+            return redirect(next_url or "dashboard:home")
         return super().dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return pop_auth_next(self.request, default=str(self.success_url))
 
     def get_initial(self):
         initial = super().get_initial()
@@ -97,6 +116,7 @@ class RegisterView(FormView):
             REGISTER_OTP_SESSION_EXPIRES
         )
         context["otp_session_phone"] = session_phone or ""
+        context["next"] = stash_auth_next(self.request)
         return context
 
     def form_valid(self, form):
