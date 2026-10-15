@@ -146,6 +146,9 @@
           {% elif object.card_receipt %}
           <a class="btn btn-outline-primary" href="{% url 'order:card-receipt-confirmation' pk=object.pk %}" hx-boost="false">مشاهده رسید</a>
           {% endif %}
+          {% if object.can_continue_bale_payment %}
+          <a class="btn btn-outline-primary" href="{% url 'order:bale-payment-instructions' pk=object.pk %}" hx-boost="false">ادامه پرداخت بله</a>
+          {% endif %}
           {% if object.can_customer_view_invoice %}
           <a class="btn btn-primary" href="{% url 'dashboard:customer:order-invoice' pk=object.pk %}" target="_blank">
             <i class="bi-receipt me-1" aria-hidden="true"></i>مشاهده فاکتور

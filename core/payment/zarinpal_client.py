@@ -1,5 +1,6 @@
 import json
 import logging
+
 import requests
 from django.conf import settings
 
@@ -49,8 +50,12 @@ def _http_json_or_errors(response):
 
 
 class ZarinPalSandbox:
-    _payment_request_url = "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequest.json"
-    _payment_verify_url = "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerification.json"
+    _payment_request_url = (
+        "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequest.json"
+    )
+    _payment_verify_url = (
+        "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerification.json"
+    )
     _payment_page_url = "https://sandbox.zarinpal.com/pg/StartPay/"
 
     def __init__(self, merchant_id=settings.MERCHANT_ID):

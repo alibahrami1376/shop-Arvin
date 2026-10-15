@@ -295,6 +295,18 @@ class OrderModel(models.Model):
             and self.payment.method == PaymentMethodType.card_to_card.value
         )
 
+    @property
+    def can_continue_bale_payment(self):
+        """ادامهٔ پرداخت کیف‌پول بله وقتی هنوز در انتظار است."""
+        from payment.models import PaymentMethodType, PaymentStatusType
+
+        pay = self.payment
+        return (
+            pay is not None
+            and pay.method == PaymentMethodType.bale.value
+            and pay.status == PaymentStatusType.awaiting_payment.value
+        )
+
     def get_items_subtotal(self) -> int:
         """جمع قیمت کالاها (ذخیره‌شده یا محاسبه از اقلام)."""
         if self.pk and self.order_items.exists():

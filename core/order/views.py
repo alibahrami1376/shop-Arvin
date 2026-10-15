@@ -1,17 +1,25 @@
 import json
+import logging
 
 from cart.models import CartModel
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import DetailView, FormView, TemplateView, View
+from payment.bale_client import BaleAPIError, BaleClient
 from payment.models import (
     CardToCardSettings,
     PaymentMethodType,
     PaymentStatusType,
+)
+from payment.services import (
+    inquire_transaction_matches_payment,
+    mark_payment_success,
+    payment_status_payload,
 )
 from payment.zarinpal_client import ZarinPalRequestFailed
 
@@ -21,6 +29,8 @@ from order.permissions import HasCustomerAccessPermission
 from order.pricing import get_checkout_pricing_context
 from order.repositories import order_repo
 from order.services import CouponValidationError, checkout_service, coupon_service
+
+logger = logging.getLogger(__name__)
 
 
 class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormView):
@@ -212,6 +222,146 @@ class CardReceiptConfirmationView(
         context = super().get_context_data(**kwargs)
         context["receipt"] = self.object.card_receipt
         return context
+
+
+class BalePaymentInstructionsView(
+    LoginRequiredMixin, HasCustomerAccessPermission, DetailView
+):
+    """صفحهٔ دیپ‌لینک پرداخت با کیف‌پول بله."""
+
+    model = OrderModel
+    template_name = "order/bale-payment-instructions.html"
+    context_object_name = "order"
+
+    def get_queryset(self):
+        return OrderModel.objects.filter(user=self.request.user).select_related(
+            "payment"
+        )
+
+    def get_object(self, queryset=None):
+        order = super().get_object(queryset)
+        pay = order.payment
+        if pay is None or pay.method != PaymentMethodType.bale.value:
+            raise Http404()
+        return order
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        pay = self.object.payment
+        if pay.status in {
+            PaymentStatusType.preparing.value,
+            PaymentStatusType.shipped.value,
+        }:
+            return redirect(reverse("order:completed"))
+        if pay.status in {
+            PaymentStatusType.payment_failed.value,
+            PaymentStatusType.cancelled.value,
+        }:
+            return redirect(reverse("order:failed"))
+        return self.render_to_response(self.get_context_data(object=self.object))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pay = self.object.payment
+        client = BaleClient()
+        deep_link = client.build_deep_link(pay.link_token) if pay.link_token else ""
+        context["deep_link"] = deep_link
+        context["bot_username"] = settings.BALE_BOT_USERNAME
+        context["link_expired"] = not pay.is_link_token_valid()
+        context["status_url"] = reverse(
+            "order:bale-payment-status", kwargs={"pk": self.object.pk}
+        )
+        context["inquire_url"] = reverse(
+            "order:bale-payment-inquire", kwargs={"pk": self.object.pk}
+        )
+        return context
+
+
+class BalePaymentStatusView(LoginRequiredMixin, HasCustomerAccessPermission, View):
+    """JSON polling endpoint for Bale payment status."""
+
+    def get(self, request, *args, **kwargs):
+        order = (
+            OrderModel.objects.filter(pk=kwargs["pk"], user=request.user)
+            .select_related("payment")
+            .first()
+        )
+        if (
+            order is None
+            or order.payment is None
+            or order.payment.method != PaymentMethodType.bale.value
+        ):
+            raise Http404()
+        return JsonResponse(payment_status_payload(order.payment, order))
+
+
+class BalePaymentInquireView(LoginRequiredMixin, HasCustomerAccessPermission, View):
+    """Recovery: inquireTransaction then finalize if paid."""
+
+    def post(self, request, *args, **kwargs):
+        order = (
+            OrderModel.objects.filter(pk=kwargs["pk"], user=request.user)
+            .select_related("payment")
+            .first()
+        )
+        if (
+            order is None
+            or order.payment is None
+            or order.payment.method != PaymentMethodType.bale.value
+        ):
+            raise Http404()
+
+        payment = order.payment
+        if payment.status in {
+            PaymentStatusType.preparing.value,
+            PaymentStatusType.shipped.value,
+        }:
+            return JsonResponse(payment_status_payload(payment, order))
+
+        tx_id = payment.bale_telegram_payment_charge_id or payment.bale_pre_checkout_id
+        if not tx_id:
+            return JsonResponse(
+                {
+                    **payment_status_payload(payment, order),
+                    "inquire": "no_transaction_id",
+                }
+            )
+
+        client = BaleClient()
+        try:
+            tx = client.inquire_transaction(tx_id)
+        except BaleAPIError as exc:
+            # Network/API errors must not mark the payment failed.
+            logger.warning("Bale inquireTransaction failed: %s", exc)
+            return JsonResponse(
+                {
+                    **payment_status_payload(payment, order),
+                    "inquire": "error",
+                    "error": str(exc),
+                }
+            )
+
+        if inquire_transaction_matches_payment(tx or {}, payment):
+            charge = (
+                (tx or {}).get("id") or payment.bale_telegram_payment_charge_id or tx_id
+            )
+            mark_payment_success(
+                payment,
+                response_json={"inquireTransaction": tx},
+                bale_telegram_payment_charge_id=str(charge),
+            )
+            payment.refresh_from_db()
+            order.refresh_from_db()
+            request.session["last_order_tracking_code"] = order.tracking_code
+            inquire_status = "paid"
+        else:
+            inquire_status = (
+                (tx or {}).get("status") or (tx or {}).get("Status") or "mismatch"
+            )
+
+        payload = payment_status_payload(payment, order)
+        payload["inquire"] = inquire_status
+        return JsonResponse(payload)
 
 
 class ValidateCouponView(LoginRequiredMixin, HasCustomerAccessPermission, View):

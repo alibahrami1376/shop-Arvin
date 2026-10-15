@@ -1,12 +1,11 @@
 from django import forms
-
 from payment.models import PaymentMethodSettings
 
 
 class PaymentMethodSettingsForm(forms.ModelForm):
     class Meta:
         model = PaymentMethodSettings
-        fields = ("gateway_enabled", "card_to_card_enabled")
+        fields = ("gateway_enabled", "card_to_card_enabled", "bale_enabled")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

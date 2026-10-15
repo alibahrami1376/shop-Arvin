@@ -1,0 +1,137 @@
+{% extends base_template %}
+{% load static %}
+
+{% block title %}پرداخت با بله - فروشگاه آروین{% endblock title %}
+
+{% block content %}
+<div class="container content-space-3 content-space-lg-5"
+     data-bale-status-url="{{ status_url }}"
+     data-bale-inquire-url="{{ inquire_url }}"
+     id="bale-payment-page">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-4 text-center">
+                <h1 class="h2">پرداخت با کیف‌پول بله</h1>
+                <p class="text-muted fs-5 mb-0">
+                    سفارش ثبت شد. با دکمهٔ زیر وارد ربات بله شوید و صورتحساب را پرداخت کنید.
+                </p>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h5 card-title border-bottom pb-2 mb-3">جزئیات سفارش</h2>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">کد سفارش</dt>
+                        <dd class="col-sm-8"><code class="user-select-all fs-5">{{ order.tracking_code }}</code></dd>
+                        <dt class="col-sm-4">مبلغ قابل پرداخت</dt>
+                        <dd class="col-sm-8"><strong class="formatted-price" data-price="{{ order.get_price }}">{{ order.get_price }}</strong> تومان</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-primary mb-4">
+                <div class="card-body text-center">
+                    {% if link_expired %}
+                    <div class="alert alert-warning" role="alert">
+                        مهلت لینک پرداخت تمام شده است. لطفاً سفارش را دوباره از سبد خرید ثبت کنید.
+                    </div>
+                    {% elif deep_link %}
+                    <p class="mb-3">۱. روی دکمه بزنید و ربات بله را باز کنید.<br>۲. دکمهٔ Start / شروع را بزنید تا صورتحساب بیاید.<br>۳. پس از پرداخت، این صفحه به‌صورت خودکار به‌روز می‌شود.</p>
+                    <a class="btn btn-primary btn-lg" href="{{ deep_link }}" target="_blank" rel="noopener noreferrer" hx-boost="false">
+                        باز کردن ربات بله
+                    </a>
+                    {% if bot_username %}
+                    <p class="small text-muted mt-3 mb-0" dir="ltr">@{{ bot_username }}</p>
+                    {% endif %}
+                    {% else %}
+                    <div class="alert alert-danger mb-0" role="alert">
+                        نام کاربری ربات بله در تنظیمات سرور تعریف نشده است. با پشتیبانی تماس بگیرید.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+                    <div>
+                        <p class="mb-1 fw-semibold" id="bale-status-label">در انتظار پرداخت…</p>
+                        <p class="small text-muted mb-0">اگر پرداخت کرده‌اید ولی صفحه عوض نشد، «بررسی مجدد» را بزنید.</p>
+                    </div>
+                    <button type="button" class="btn btn-outline-secondary" id="bale-inquire-btn"{% if link_expired %} disabled{% endif %}>
+                        بررسی مجدد
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a class="link" href="{% url 'dashboard:customer:order-list' %}">مشاهده سفارش‌ها</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var page = document.getElementById("bale-payment-page");
+    if (!page) return;
+    var statusUrl = page.getAttribute("data-bale-status-url");
+    var inquireUrl = page.getAttribute("data-bale-inquire-url");
+    var label = document.getElementById("bale-status-label");
+    var inquireBtn = document.getElementById("bale-inquire-btn");
+    var stopped = false;
+
+    function applyPayload(data) {
+        if (!data) return;
+        if (data.status === "success" && data.redirect_url) {
+            stopped = true;
+            if (label) label.textContent = "پرداخت موفق — در حال انتقال…";
+            window.location.href = data.redirect_url;
+            return;
+        }
+        if ((data.status === "failed" || data.status === "cancelled") && data.redirect_url) {
+            stopped = true;
+            if (label) label.textContent = "پرداخت ناموفق — در حال انتقال…";
+            window.location.href = data.redirect_url;
+            return;
+        }
+        if (data.expired && label) {
+            label.textContent = "مهلت لینک پرداخت تمام شده است.";
+        }
+    }
+
+    function poll() {
+        if (stopped || !statusUrl) return;
+        fetch(statusUrl, { credentials: "same-origin", headers: { "Accept": "application/json" } })
+            .then(function (r) { return r.json(); })
+            .then(applyPayload)
+            .catch(function () {});
+    }
+
+    function inquire() {
+        if (stopped || !inquireUrl) return;
+        if (label) label.textContent = "در حال استعلام تراکنش…";
+        var csrf = document.cookie.split("; ").find(function (c) { return c.indexOf("csrftoken=") === 0; });
+        var token = csrf ? decodeURIComponent(csrf.split("=")[1]) : "";
+        fetch(inquireUrl, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Accept": "application/json",
+                "X-CSRFToken": token
+            }
+        })
+            .then(function (r) { return r.json(); })
+            .then(applyPayload)
+            .catch(function () {
+                if (label) label.textContent = "استعلام ناموفق بود. دوباره تلاش کنید.";
+            });
+    }
+
+    if (inquireBtn) inquireBtn.addEventListener("click", inquire);
+    poll();
+    window.setInterval(poll, 5000);
+})();
+</script>
+{% endblock %}

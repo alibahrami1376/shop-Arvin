@@ -13,6 +13,7 @@ class PaymentStatusType(models.IntegerChoices):
 class PaymentMethodType(models.IntegerChoices):
     gateway = 1, "درگاه آنلاین"
     card_to_card = 2, "کارت به کارت"
+    bale = 3, "پرداخت با بله"
 
 
 class PaymentMethodSettings(models.Model):
@@ -25,6 +26,10 @@ class PaymentMethodSettings(models.Model):
     card_to_card_enabled = models.BooleanField(
         default=True,
         verbose_name="نمایش کارت به کارت",
+    )
+    bale_enabled = models.BooleanField(
+        default=False,
+        verbose_name="نمایش پرداخت با بله",
     )
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -45,6 +50,8 @@ class PaymentMethodSettings(models.Model):
             return self.gateway_enabled
         if method == PaymentMethodType.card_to_card.value:
             return self.card_to_card_enabled
+        if method == PaymentMethodType.bale.value:
+            return self.bale_enabled
         return False
 
     def get_enabled_methods(self):
@@ -60,6 +67,8 @@ class PaymentMethodSettings(models.Model):
                     PaymentMethodType.card_to_card.label,
                 )
             )
+        if self.bale_enabled:
+            enabled.append((PaymentMethodType.bale.value, PaymentMethodType.bale.label))
         return enabled
 
 
@@ -79,12 +88,39 @@ class PaymentModel(models.Model):
         default=PaymentStatusType.awaiting_payment.value,
     )
 
+    # Bale wallet bot payment
+    link_token = models.CharField(
+        max_length=64, null=True, blank=True, unique=True, db_index=True
+    )
+    link_token_expires_at = models.DateTimeField(null=True, blank=True)
+    bale_chat_id = models.CharField(max_length=64, null=True, blank=True)
+    bale_invoice_message_id = models.BigIntegerField(null=True, blank=True)
+    bale_pre_checkout_id = models.CharField(max_length=128, null=True, blank=True)
+    bale_telegram_payment_charge_id = models.CharField(
+        max_length=255, null=True, blank=True, unique=True
+    )
+    bale_provider_payment_charge_id = models.CharField(
+        max_length=255, null=True, blank=True
+    )
+
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         label = PaymentMethodType(self.method).label
         return f"{label} — {self.authority_id[:24]}"
+
+    @property
+    def amount_rial(self) -> int:
+        """Shop amounts are in Toman; Bale API expects Rial."""
+        return int(self.amount) * 10
+
+    def is_link_token_valid(self) -> bool:
+        from django.utils import timezone
+
+        if not self.link_token or not self.link_token_expires_at:
+            return False
+        return timezone.now() <= self.link_token_expires_at
 
 
 RECEIPT_SOCIAL_PLATFORMS = (

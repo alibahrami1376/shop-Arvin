@@ -42,8 +42,14 @@ class CardToCardSettingsAdmin(admin.ModelAdmin):
 
 @admin.register(PaymentMethodSettings)
 class PaymentMethodSettingsAdmin(admin.ModelAdmin):
-    list_display = ("id", "gateway_enabled", "card_to_card_enabled", "updated_date")
-    fields = ("gateway_enabled", "card_to_card_enabled")
+    list_display = (
+        "id",
+        "gateway_enabled",
+        "card_to_card_enabled",
+        "bale_enabled",
+        "updated_date",
+    )
+    fields = ("gateway_enabled", "card_to_card_enabled", "bale_enabled")
 
     def has_add_permission(self, request):
         return not PaymentMethodSettings.objects.exists()
@@ -62,4 +68,20 @@ class PaymentModelAdmin(admin.ModelAdmin):
         "response_code",
         "status",
         "created_date",
+    )
+    list_filter = ("method", "status")
+    search_fields = (
+        "authority_id",
+        "link_token",
+        "bale_telegram_payment_charge_id",
+        "bale_provider_payment_charge_id",
+    )
+    readonly_fields = (
+        "link_token",
+        "link_token_expires_at",
+        "bale_chat_id",
+        "bale_invoice_message_id",
+        "bale_pre_checkout_id",
+        "bale_telegram_payment_charge_id",
+        "bale_provider_payment_charge_id",
     )

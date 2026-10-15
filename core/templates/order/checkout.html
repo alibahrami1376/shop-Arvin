@@ -528,12 +528,14 @@
                         <span class="checkout-choice__indicator" aria-hidden="true"></span>
                         <span class="checkout-choice__body">
                             <span class="checkout-choice__title">
-                                {% if value == 1 %}درگاه آنلاین (زرین‌پال){% else %}{{ label }}{% endif %}
+                                {% if value == 1 %}درگاه آنلاین (زرین‌پال){% elif value == 3 %}پرداخت با بله{% else %}{{ label }}{% endif %}
                             </span>
                             {% if value == 1 %}
                             <span class="checkout-choice__desc">پرداخت امن از طریق درگاه زرین‌پال</span>
                             {% elif value == 2 %}
                             <span class="checkout-choice__desc">واریز به حساب و ارسال رسید</span>
+                            {% elif value == 3 %}
+                            <span class="checkout-choice__desc">پرداخت سریع از طریق کیف‌پول بله</span>
                             {% endif %}
                         </span>
                     </label>
