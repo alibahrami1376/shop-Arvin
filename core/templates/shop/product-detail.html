@@ -12,6 +12,9 @@
 {% block content %}
 {% if is_mobile_site %}
 <section class="pdp-mobile" aria-label="جزئیات محصول">
+    <div class="container pdp-mobile__crumbs">
+        {% include "includes/breadcrumb.html" with breadcrumb_nav_class="mb-0" %}
+    </div>
     <div class="pdp-mobile__gallery">
         <div class="js-swiper-shop-product swiper pdp-mobile__swiper">
             <div class="swiper-wrapper">
