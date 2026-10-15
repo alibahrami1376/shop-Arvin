@@ -263,17 +263,24 @@ body.device-mobile .home-services-title {
 body.device-mobile .home-services-swiper {
     overflow: hidden;
     padding-bottom: 1.75rem;
+    /* Fixed height reserves space and cuts CLS from autoHeight slides */
+    height: 13.25rem;
+}
+
+body.device-mobile .home-services-swiper .swiper-wrapper {
+    height: 11.5rem;
 }
 
 body.device-mobile .home-services-swiper .swiper-slide {
-    height: auto;
+    height: 11.5rem;
     box-sizing: border-box;
 }
 
 body.device-mobile .home-services-swiper .home-service-card {
     padding: 1.15rem 1rem 1.05rem;
     margin-inline: 0.35rem;
-    min-height: 10.5rem;
+    height: 100%;
+    min-height: 0;
 }
 
 body.device-mobile .home-services-swiper .home-service-card__title {
@@ -303,18 +310,20 @@ body.device-mobile .home-services-pagination {
 }
 
 body.device-mobile .home-services-pagination .swiper-pagination-bullet {
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
     background: rgba(0, 0, 0, 0.18);
     opacity: 1;
     margin: 0 4px !important;
-    transition: width 0.25s ease, background-color 0.25s ease;
+    border-radius: 50%;
+    transform: scaleX(1);
+    transition: transform 0.25s ease, background-color 0.25s ease, opacity 0.25s ease;
 }
 
 body.device-mobile .home-services-pagination .swiper-pagination-bullet-active {
-    width: 20px;
-    border-radius: 4px;
     background: var(--color-soft-rose-gold, #e6b422);
+    transform: scaleX(2.4);
+    border-radius: 50%;
 }
 
 /* دنبال چی می‌گردی */
@@ -1117,10 +1126,12 @@ body.device-mobile .mobile-bottom-nav__center-btn i {
 }
 
 body.device-mobile .mobile-bottom-nav__cart-icon {
-    width: clamp(1.2rem, 5vw, 1.45rem);
-    height: clamp(1.2rem, 5vw, 1.45rem);
+    /* Fixed px — no vw clamp (avoids CLS on bottom nav) */
+    width: 24px;
+    height: 24px;
     object-fit: contain;
     display: block;
+    aspect-ratio: 1;
     /* تیره روی طلایی/قرمز هدر — در دارک‌مود گوشی هم خوانا می‌ماند */
     filter: brightness(0);
     forced-color-adjust: none;

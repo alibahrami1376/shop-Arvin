@@ -31,24 +31,34 @@
         document.body.classList.remove("has-pwa-install-banner");
     }
 
+    function runWhenIdle(fn) {
+        if (typeof window.requestIdleCallback === "function") {
+            window.requestIdleCallback(fn, { timeout: 4000 });
+            return;
+        }
+        window.setTimeout(fn, 1);
+    }
+
     function registerServiceWorker() {
         if (!("serviceWorker" in navigator)) return;
         window.addEventListener("load", function () {
-            navigator.serviceWorker
-                .register("/sw.js", { scope: "/" })
-                .then(function (registration) {
-                    registration.update();
-                })
-                .catch(function (err) {
-                    console.warn("PWA service worker registration failed:", err);
-                });
+            runWhenIdle(function () {
+                navigator.serviceWorker
+                    .register("/sw.js", { scope: "/" })
+                    .then(function (registration) {
+                        registration.update();
+                    })
+                    .catch(function (err) {
+                        console.warn("PWA service worker registration failed:", err);
+                    });
+            });
         });
     }
 
     window.addEventListener("beforeinstallprompt", function (e) {
         e.preventDefault();
         deferredPrompt = e;
-        showBanner();
+        runWhenIdle(showBanner);
     });
 
     if (installBtn) {
@@ -89,7 +99,7 @@
         if (desc) {
             desc.textContent = "از Share گزینه «افزودن به صفحه اصلی» را بزنید";
         }
-        showBanner();
+        runWhenIdle(showBanner);
     }
 
     registerServiceWorker();

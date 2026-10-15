@@ -1,8 +1,8 @@
 {% load static %}
 <img src="{% if site_branding.logo %}{{ site_branding.logo.url }}{% else %}{% static 'img/ghasetak.png' %}{% endif %}"
-     alt="{{ site_branding.get_logo_alt }}"
+     alt="{% if decorative %}{% else %}{{ site_branding.get_logo_alt }}{% endif %}"
      class="site-logo-img{% if extra_class %} {{ extra_class }}{% endif %}"
      width="{{ site_logo_width }}"
      height="{{ site_logo_height }}"
      data-eager
-     decoding="async"{% if lazy %} loading="lazy"{% else %} loading="eager" fetchpriority="high"{% endif %}>
+     decoding="async"{% if decorative %} aria-hidden="true"{% endif %}{% if lazy %} loading="lazy"{% else %} loading="eager" fetchpriority="high"{% endif %}>

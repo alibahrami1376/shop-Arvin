@@ -14,6 +14,16 @@ def product_card_image(source="image"):
     )
 
 
+def product_card_image_mobile(source="image"):
+    """Mobile home/grid cards — ~540×720 (3:4), enough for 2-col phones."""
+    return ImageSpecField(
+        source=source,
+        processors=[ResizeToFit(540, 720)],
+        format="WEBP",
+        options={"quality": 78},
+    )
+
+
 def product_detail_image(source="image"):
     """PDP main gallery — fit inside 1080×1440 (3:4), keep ratio, no crop."""
     return ImageSpecField(
@@ -84,4 +94,14 @@ def banner_display_image(source="image"):
         processors=[ResizeToFit(1920, 1080)],
         format="WEBP",
         options={"quality": 72},
+    )
+
+
+def banner_display_image_mobile(source="image"):
+    """Mobile LCP banner — ~824w WebP for phone viewports."""
+    return ImageSpecField(
+        source=source,
+        processors=[ResizeToFit(824, 464)],
+        format="WEBP",
+        options={"quality": 70},
     )

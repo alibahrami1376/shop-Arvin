@@ -1,9 +1,9 @@
 <footer class="site-footer site-footer--mobile">
     <div class="container site-footer__container py-3">
         <div class="text-center mb-2">
-            <a class="navbar-brand site-footer__brand site-footer__brand--mobile d-inline-flex align-items-center justify-content-center flex-wrap gap-2" href="{% url 'website:index' %}" aria-label="{{ site_branding.get_logo_alt }}">
+            <a class="navbar-brand site-footer__brand site-footer__brand--mobile d-inline-flex align-items-center justify-content-center flex-wrap gap-2" href="{% url 'website:index' %}">
                 <span class="site-footer__store-name site-footer__store-name--mobile">{{ site_branding.get_logo_alt }}</span>
-                {% include "includes/partials/site-logo-img.html" with extra_class="site-footer__logo-img site-footer__logo-img--mobile" lazy=True %}
+                {% include "includes/partials/site-logo-img.html" with extra_class="site-footer__logo-img site-footer__logo-img--mobile" lazy=True decorative=True %}
             </a>
         </div>
         <div class="text-center mb-2">

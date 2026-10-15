@@ -2,7 +2,12 @@
 
 
 class NoCacheHtmlMiddleware:
-    """Prevent browser from serving stale HTML when switching mobile/desktop."""
+    """
+    HTML caching headers.
+
+    Layout switch (?site=mobile|desktop) must not be bfcache'd with wrong layout.
+    Public HTML uses must-revalidate without no-store so bfcache can work.
+    """
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -10,11 +15,20 @@ class NoCacheHtmlMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         content_type = response.get("Content-Type", "")
-        if "text/html" in content_type:
+        if "text/html" not in content_type:
+            return response
+
+        layout_switch = request.GET.get("site") in ("mobile", "desktop") or getattr(
+            request, "site_layout_cookie", None
+        )
+        response["Vary"] = "Cookie, User-Agent, Sec-CH-UA-Mobile"
+        if layout_switch:
             response["Cache-Control"] = "no-cache, no-store, must-revalidate"
             response["Pragma"] = "no-cache"
             response["Expires"] = "0"
-            response["Vary"] = "Cookie, User-Agent, Sec-CH-UA-Mobile"
+        else:
+            # Allow bfcache; still revalidate personalized HTML.
+            response["Cache-Control"] = "private, max-age=0, must-revalidate"
         return response
 
 

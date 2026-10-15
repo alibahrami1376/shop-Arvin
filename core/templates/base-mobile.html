@@ -36,8 +36,8 @@
 </head>
 
 <body class="device-mobile {% block body_class %}has-mobile-bottom-nav{% endblock body_class %}">
-    <script src="{% static 'js/layout-sync.js' %}"></script>
-    <script src="{% static 'js/defer-images.js' %}"></script>
+    <script src="{% static 'js/layout-sync.js' %}" defer></script>
+    <script src="{% static 'js/defer-images.js' %}" defer></script>
 
     {% include 'includes/layout/header-mobile.html' %}
 

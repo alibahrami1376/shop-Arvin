@@ -29,7 +29,7 @@
                     {% include "website/partials/home-service-card.html" with icon_class="bi-headset" title="خدمات پس از فروش" description="پشتیبانی ۲۴ ساعته و مشاوره رایگان" %}
                 </div>
             </div>
-            <div class="swiper-pagination home-services-pagination" aria-hidden="true"></div>
+            <div class="swiper-pagination home-services-pagination" role="presentation"></div>
         </div>
         {% else %}
         <div class="row row-cols-1 row-cols-md-3 g-3 g-lg-4 home-services-grid">
@@ -91,17 +91,37 @@
 <section class="home-dual-banner section" aria-label="{% if is_mobile_site %}پیشنهادها{% else %}پیشنهادها و تخفیف‌ها{% endif %}">
     <div class="container">
         <div class="home-dual-banner__grid"{% if not is_mobile_site %} dir="ltr"{% endif %}>
-            <a href="{% url 'shop:product-grid' %}" class="home-dual-banner__link">
-                <img src="{% static 'img/900x900/img2.webp' %}" alt="{% if is_mobile_site %}پیشنهاد ویژه{% else %}پیشنهاد ویژه فروشگاه آروین{% endif %}" class="home-dual-banner__img" width="1200" height="600" loading="lazy">
+            <a href="{% url 'shop:product-grid' %}" class="home-dual-banner__link" aria-label="{% if is_mobile_site %}پیشنهاد ویژه{% else %}پیشنهاد ویژه فروشگاه آروین{% endif %}">
+                <img
+                    src="{% if is_mobile_site %}{% static 'img/900x900/mobile/img2.webp' %}{% else %}{% static 'img/900x900/img2.webp' %}{% endif %}"
+                    srcset="{% static 'img/900x900/mobile/img2.webp' %} 800w, {% static 'img/900x900/img2.webp' %} 1734w"
+                    sizes="{% if is_mobile_site %}100vw{% else %}(max-width: 768px) 100vw, 600px{% endif %}"
+                    alt="{% if is_mobile_site %}پیشنهاد ویژه{% else %}پیشنهاد ویژه فروشگاه آروین{% endif %}"
+                    class="home-dual-banner__img"
+                    width="{% if is_mobile_site %}800{% else %}1200{% endif %}"
+                    height="{% if is_mobile_site %}418{% else %}600{% endif %}"
+                    loading="lazy"
+                    decoding="async"
+                >
             </a>
-            <a href="{% url 'shop:product-grid' %}" class="home-dual-banner__link">
-                <img src="{% static 'img/900x900/img3.webp' %}" alt="{% if is_mobile_site %}پرفروش‌ها{% else %}محصولات پرطرفدار آروین{% endif %}" class="home-dual-banner__img" width="1200" height="600" loading="lazy">
+            <a href="{% url 'shop:product-grid' %}" class="home-dual-banner__link" aria-label="{% if is_mobile_site %}پرفروش‌ها{% else %}محصولات پرطرفدار آروین{% endif %}">
+                <img
+                    src="{% if is_mobile_site %}{% static 'img/900x900/mobile/img3.webp' %}{% else %}{% static 'img/900x900/img3.webp' %}{% endif %}"
+                    srcset="{% static 'img/900x900/mobile/img3.webp' %} 800w, {% static 'img/900x900/img3.webp' %} 1774w"
+                    sizes="{% if is_mobile_site %}100vw{% else %}(max-width: 768px) 100vw, 600px{% endif %}"
+                    alt="{% if is_mobile_site %}پرفروش‌ها{% else %}محصولات پرطرفدار آروین{% endif %}"
+                    class="home-dual-banner__img"
+                    width="{% if is_mobile_site %}800{% else %}1200{% endif %}"
+                    height="{% if is_mobile_site %}400{% else %}600{% endif %}"
+                    loading="lazy"
+                    decoding="async"
+                >
             </a>
         </div>
     </div>
 </section>
 <!-- End دو بنر -->
-{% show_home_product_strip bestseller_products "پرفروش‌ترین‌ها" "bestseller" "section-alt" %}
+{% show_home_product_strip bestseller_products "پرفروش‌ترین‌ها" "bestseller" "section-alt" mobile_carousel=True %}
 {% include "includes/home-latest-blog.html" with posts=latest_posts only %}
 {% endblock content %}
 {% block extra_js %}
@@ -229,6 +249,16 @@
             pagination: {
                 el: servicesEl.querySelector('.home-services-pagination'),
                 clickable: true,
+            },
+            on: {
+                init: function (swiper) {
+                    var bullets = swiper.pagination && swiper.pagination.bullets;
+                    if (!bullets) return;
+                    bullets.forEach(function (el) {
+                        el.setAttribute('tabindex', '-1');
+                        el.setAttribute('aria-hidden', 'true');
+                    });
+                },
             },
         });
     });

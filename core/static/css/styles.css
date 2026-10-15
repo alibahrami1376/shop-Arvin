@@ -92,7 +92,7 @@
     font-family: 'Font Awesome 6 Brands';
     font-style: normal;
     font-weight: 400;
-    font-display: block;
+    font-display: swap;
     src: url('../fonts/fontawesome/fa-brands-400.woff2') format('woff2');
 }
 
@@ -100,7 +100,7 @@
     font-family: 'Font Awesome 6 Free';
     font-style: normal;
     font-weight: 900;
-    font-display: block;
+    font-display: swap;
     src: url('../fonts/fontawesome/fa-solid-900.woff2') format('woff2');
 }
 
@@ -109,7 +109,7 @@
     font-family: 'Font Awesome 5 Brands';
     font-style: normal;
     font-weight: 400;
-    font-display: block;
+    font-display: swap;
     src: url('../fonts/fontawesome/fa-brands-400.woff2') format('woff2');
 }
 
@@ -117,7 +117,7 @@
     font-family: 'Font Awesome 5 Free';
     font-style: normal;
     font-weight: 900;
-    font-display: block;
+    font-display: swap;
     src: url('../fonts/fontawesome/fa-solid-900.woff2') format('woff2');
 }
 
@@ -130,10 +130,11 @@
     font-display: swap;
 }
 
-/* هدر سایت (نوار بالا) — Vazir v16.1.0 Bold */
+/* هدر سایت (نوار بالا) — Vazir v16.1.0 Bold (woff2 first) */
 @font-face {
     font-family: 'VazirHeader';
-    src: url('../fonts/vazir-font-v16.1.0/Vazir-Bold.ttf') format('truetype');
+    src: url('../fonts/vazir-font-v16.1.0/Vazir-Bold.woff2') format('woff2'),
+         url('../fonts/vazir-font-v16.1.0/Vazir-Bold.woff') format('woff');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -1113,11 +1114,11 @@ body.has-pwa-install-banner.has-mobile-bottom-nav .js-go-to.go-to {
     width: 50%;
 }
 
-/* CTA Button in Header */
+/* CTA Button in Header — text #4A372C on #E6B422 meets ~4.5:1 contrast */
 .btn-primary {
     background: var(--color-soft-rose-gold);
     border: none;
-    color: var(--color-dusty-rose);
+    color: #4a372c;
     padding: 0.5rem 1.5rem;
     border-radius: var(--radius-full);
     font-weight: 400;
@@ -1534,11 +1535,26 @@ footer .text-muted {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.25rem;
+    gap: 0.5rem;
 }
 
 .site-footer--mobile .site-footer__social .list-inline-item {
     margin: 0;
+}
+
+.site-footer--mobile .site-footer__social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(107, 78, 61, 0.2);
+    color: var(--text-secondary);
+    background: transparent;
+    text-decoration: none;
 }
 
 .site-logo-img {
@@ -2549,14 +2565,15 @@ a:hover {
     background: rgba(107, 78, 61, 0.28) !important;
     opacity: 1 !important;
     margin: 0 6px !important;
-    transition: var(--transition-smooth) !important;
     border-radius: 50% !important;
+    transform: scaleX(1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, opacity 0.3s ease !important;
 }
 
 .banner-pagination .swiper-pagination-bullet-active {
     background: var(--color-soft-rose-gold) !important;
-    width: 30px !important;
-    border-radius: var(--radius-full) !important;
+    transform: scaleX(2.5);
+    border-radius: 50% !important;
 }
 
 /* Swiper Fade Effect */

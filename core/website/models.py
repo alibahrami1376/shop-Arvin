@@ -1,19 +1,18 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.templatetags.static import static
 from django_ckeditor_5.fields import CKEditor5Field
-
-from website.logo_validation import SITE_LOGO_HEIGHT, SITE_LOGO_WIDTH
-from core.imagekit_specs import banner_display_image
 from shop.image_urls import safe_imagekit_url
 
+from core.imagekit_specs import banner_display_image, banner_display_image_mobile
+from website.logo_validation import SITE_LOGO_HEIGHT, SITE_LOGO_WIDTH
 
 # fetching user model
 User = get_user_model()
 
+
 # defining the status of items to be saved or released
 class ContactModel(models.Model):
-
     full_name = models.CharField(max_length=200)
     email = models.EmailField(default=None, null=True)
     phone_number = models.CharField(max_length=200, blank=True, null=True)
@@ -24,7 +23,7 @@ class ContactModel(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-created_date']
+        ordering = ["-created_date"]
 
     def __str__(self):
         return self.full_name
@@ -68,22 +67,30 @@ class HomeBanner(models.Model):
         (3, "سبک ۳"),
     )
     GRADIENT_STYLES = {
-        1: "linear-gradient(135deg, rgba(232, 180, 160, 0.15), rgba(212, 165, 165, 0.15))",
-        2: "linear-gradient(135deg, rgba(245, 230, 211, 0.2), rgba(232, 180, 160, 0.15))",
-        3: "linear-gradient(135deg, rgba(212, 165, 165, 0.15), rgba(245, 230, 211, 0.2))",
+        1: (
+            "linear-gradient(135deg, rgba(232, 180, 160, 0.15),"
+            " rgba(212, 165, 165, 0.15))"
+        ),
+        2: (
+            "linear-gradient(135deg, rgba(245, 230, 211, 0.2),"
+            " rgba(232, 180, 160, 0.15))"
+        ),
+        3: (
+            "linear-gradient(135deg, rgba(212, 165, 165, 0.15),"
+            " rgba(245, 230, 211, 0.2))"
+        ),
     }
 
     title = models.CharField(max_length=200, verbose_name="عنوان")
     subtitle = models.TextField(blank=True, verbose_name="متن توضیح")
-    button_text = models.CharField(
-        max_length=100, blank=True, verbose_name="متن دکمه"
-    )
+    button_text = models.CharField(max_length=100, blank=True, verbose_name="متن دکمه")
     image = models.FileField(
         upload_to="banners/home/",
         verbose_name="تصویر یا GIF",
         help_text="فرمت‌های JPG، PNG، WEBP و GIF",
     )
     image_display = banner_display_image("image")
+    image_display_mobile = banner_display_image_mobile("image")
     image_alt = models.CharField(
         max_length=200, blank=True, verbose_name="متن alt تصویر"
     )
@@ -138,6 +145,18 @@ class HomeBanner(models.Model):
             except Exception:
                 return ""
         return safe_imagekit_url(self, "image_display", "image")
+
+    @property
+    def image_display_mobile_url(self):
+        """Mobile-sized WebP (~824w); GIF stays original."""
+        if not self.image:
+            return ""
+        if self.is_gif:
+            try:
+                return self.image.url
+            except Exception:
+                return ""
+        return safe_imagekit_url(self, "image_display_mobile", "image")
 
     @property
     def background_gradient(self):
@@ -218,7 +237,10 @@ class LegalPage(models.Model):
             page_type=page_type,
             defaults={
                 "title": cls.PageType(page_type).label,
-                "content": f"<p>متن {cls.PageType(page_type).label} را از پنل مدیریت ویرایش کنید.</p>",
+                "content": (
+                    f"<p>متن {cls.PageType(page_type).label}"
+                    " را از پنل مدیریت ویرایش کنید.</p>"
+                ),
             },
         )
         return obj
@@ -244,16 +266,24 @@ class ContactPageSettings(models.Model):
         default="شنبه تا پنجشنبه: ۹ صبح تا ۶ عصر",
         verbose_name="ساعات کاری",
     )
-    instagram_link = models.CharField(max_length=500, blank=True, verbose_name="لینک اینستاگرام")
-    telegram_link = models.CharField(max_length=500, blank=True, verbose_name="لینک تلگرام")
-    linkedin_link = models.CharField(max_length=500, blank=True, verbose_name="لینک لینکدین")
+    instagram_link = models.CharField(
+        max_length=500, blank=True, verbose_name="لینک اینستاگرام"
+    )
+    telegram_link = models.CharField(
+        max_length=500, blank=True, verbose_name="لینک تلگرام"
+    )
+    linkedin_link = models.CharField(
+        max_length=500, blank=True, verbose_name="لینک لینکدین"
+    )
     bale_link = models.CharField(
         max_length=500,
         blank=True,
         verbose_name="لینک بله",
         help_text="مثال: https://ble.ir/username",
     )
-    rubika_link = models.CharField(max_length=500, blank=True, verbose_name="لینک روبیکا")
+    rubika_link = models.CharField(
+        max_length=500, blank=True, verbose_name="لینک روبیکا"
+    )
     bale_channel_link = models.CharField(
         max_length=500,
         blank=True,
@@ -308,18 +338,26 @@ class ContactPageSettings(models.Model):
 
 
 class SiteWideSocialSettings(models.Model):
-    """لینک شبکه‌های اجتماعی در فوتر و سایر بخش‌های عمومی سایت (جدا از بلوک صفحهٔ تماس با ما)."""
+    """لینک شبکه‌های اجتماعی فوتر (جدا از صفحهٔ تماس با ما)."""
 
-    instagram_link = models.CharField(max_length=500, blank=True, verbose_name="لینک اینستاگرام")
-    telegram_link = models.CharField(max_length=500, blank=True, verbose_name="لینک تلگرام")
-    linkedin_link = models.CharField(max_length=500, blank=True, verbose_name="لینک لینکدین")
+    instagram_link = models.CharField(
+        max_length=500, blank=True, verbose_name="لینک اینستاگرام"
+    )
+    telegram_link = models.CharField(
+        max_length=500, blank=True, verbose_name="لینک تلگرام"
+    )
+    linkedin_link = models.CharField(
+        max_length=500, blank=True, verbose_name="لینک لینکدین"
+    )
     bale_link = models.CharField(
         max_length=500,
         blank=True,
         verbose_name="لینک بله",
         help_text="مثال: https://ble.ir/username",
     )
-    rubika_link = models.CharField(max_length=500, blank=True, verbose_name="لینک روبیکا")
+    rubika_link = models.CharField(
+        max_length=500, blank=True, verbose_name="لینک روبیکا"
+    )
     updated_date = models.DateTimeField(auto_now=True)
 
     class Meta:

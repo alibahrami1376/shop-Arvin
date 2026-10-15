@@ -8,6 +8,7 @@ from meta.models import ModelMeta
 
 from core.imagekit_specs import (
     product_card_image,
+    product_card_image_mobile,
     product_detail_image,
     product_gallery_thumb_image,
     product_thumb_image,
@@ -157,6 +158,9 @@ class ProductModel(ModelMeta, models.Model):
     image_card = product_card_image("image")
     image_card_from_upload = product_card_image("card_image")
     image_card_from_crop = product_card_image("card_image_crop")
+    image_card_mobile = product_card_image_mobile("image")
+    image_card_mobile_from_upload = product_card_image_mobile("card_image")
+    image_card_mobile_from_crop = product_card_image_mobile("card_image_crop")
     image_detail = product_detail_image("image")
     image_detail_from_crop = product_detail_image("image_crop")
     image_thumb = product_thumb_image("image")
@@ -286,6 +290,19 @@ class ProductModel(ModelMeta, models.Model):
         if self.card_image:
             return safe_imagekit_url(self, "image_card_from_upload", "card_image")
         return safe_imagekit_url(self, "image_card", "image")
+
+    @property
+    def image_card_mobile_url(self):
+        """Mobile card (~540×720): same source priority as image_card_url."""
+        if self.card_image_crop:
+            return safe_imagekit_url(
+                self, "image_card_mobile_from_crop", "card_image_crop"
+            )
+        if self.card_image:
+            return safe_imagekit_url(
+                self, "image_card_mobile_from_upload", "card_image"
+            )
+        return safe_imagekit_url(self, "image_card_mobile", "image")
 
     @property
     def image_detail_url(self):

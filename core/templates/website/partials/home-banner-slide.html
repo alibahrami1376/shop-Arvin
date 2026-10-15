@@ -4,14 +4,21 @@
         href="{{ banner.link }}"
         class="home-banner-slide__link"
         {% if banner.link|slice:":4" == "http" %}target="_blank" rel="noopener noreferrer"{% endif %}
+        {% if banner.button_text or banner.title %}aria-label="{% if banner.button_text %}{{ banner.button_text }}{% if banner.title %} — {{ banner.title }}{% endif %}{% else %}{{ banner.title }}{% endif %}"{% endif %}
     >
     {% endif %}
     <article class="home-banner-slide{% if not banner.subtitle and not banner.button_text %} home-banner-slide--full{% endif %}" style="background: {{ banner.background_gradient }};">
         <div class="home-banner-slide__media">
             <img
-                src="{{ banner.image_display_url }}"
+                src="{% if is_mobile_site %}{{ banner.image_display_mobile_url|default:banner.image_display_url }}{% else %}{{ banner.image_display_url }}{% endif %}"
+                {% if not banner.is_gif and banner.image_display_mobile_url and banner.image_display_url %}
+                srcset="{{ banner.image_display_mobile_url }} 824w, {{ banner.image_display_url }} 1920w"
+                sizes="{% if is_mobile_site %}100vw{% else %}(max-width: 768px) 100vw, 1200px{% endif %}"
+                {% endif %}
                 alt="{{ banner.image_alt|default:banner.title }}"
                 class="home-banner-slide__img"
+                width="{% if is_mobile_site %}824{% else %}1920{% endif %}"
+                height="{% if is_mobile_site %}464{% else %}1080{% endif %}"
                 {% if is_first %}data-eager loading="eager" fetchpriority="high"{% else %}loading="lazy" fetchpriority="low"{% endif %}
                 decoding="async"
             >
