@@ -39,17 +39,7 @@ class ThousandSeparatedDecimalField(forms.DecimalField):
 class ProductForm(forms.ModelForm):
     clear_image_crop = forms.BooleanField(
         required=False,
-        label="حذف برش دیتیل و استفاده از فایل اصلی",
-        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
-    )
-    clear_card_image_crop = forms.BooleanField(
-        required=False,
-        label="حذف برش کارت و استفاده از فایل کارت/اصلی",
-        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
-    )
-    clear_card_image = forms.BooleanField(
-        required=False,
-        label="حذف تصویر کارت (بازگشت به تصویر اصلی بدون برش)",
+        label="حذف برش و استفاده از فایل اصلی",
         widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
     )
     description = forms.CharField(
@@ -87,9 +77,6 @@ class ProductForm(forms.ModelForm):
             "image",
             "image_crop",
             "image_alt",
-            "card_image",
-            "card_image_crop",
-            "card_image_alt",
         ]
 
     def __init__(self, *args, **kwargs):
@@ -103,7 +90,7 @@ class ProductForm(forms.ModelForm):
         )
         self.fields["tags"].widget.attrs["class"] = "form-control"
         self.fields["tags"].required = False
-        for name in ("image", "image_crop", "card_image", "card_image_crop"):
+        for name in ("image", "image_crop"):
             self.fields[name].widget.attrs["class"] = "form-control"
             self.fields[name].required = False
         self.fields["image"].required = False
@@ -111,11 +98,6 @@ class ProductForm(forms.ModelForm):
         self.fields["image_alt"].widget.attrs["placeholder"] = (
             "توضیح کوتاه عکس برای دسترسی‌پذیری"
         )
-        self.fields["card_image_alt"].widget.attrs["class"] = "form-control"
-        self.fields["card_image_alt"].widget.attrs["placeholder"] = (
-            "اگر خالی باشد از alt تصویر اصلی استفاده می‌شود"
-        )
-        self.fields["card_image_alt"].required = False
         self.fields["brief_description"].widget.attrs["class"] = "form-control"
         self.fields["stock"].widget.attrs["class"] = "form-control"
         self.fields["stock"].widget.attrs["type"] = "number"
@@ -126,10 +108,6 @@ class ProductForm(forms.ModelForm):
             "form-control js-crop-file d-none"
         )
         self.fields["image_crop"].widget.attrs["data-crop-for"] = "detail"
-        self.fields["card_image_crop"].widget.attrs["class"] = (
-            "form-control js-crop-file d-none"
-        )
-        self.fields["card_image_crop"].widget.attrs["data-crop-for"] = "card"
 
     def clean(self):
         cleaned = super().clean()
@@ -146,16 +124,6 @@ class ProductForm(forms.ModelForm):
         if self.cleaned_data.get("clear_image_crop") and instance.image_crop:
             instance.image_crop.delete(save=False)
             instance.image_crop = None
-        if self.cleaned_data.get("clear_card_image_crop") and instance.card_image_crop:
-            instance.card_image_crop.delete(save=False)
-            instance.card_image_crop = None
-        if self.cleaned_data.get("clear_card_image"):
-            if instance.card_image:
-                instance.card_image.delete(save=False)
-                instance.card_image = None
-            if instance.card_image_crop:
-                instance.card_image_crop.delete(save=False)
-                instance.card_image_crop = None
         if commit:
             instance.save()
             self.save_m2m()

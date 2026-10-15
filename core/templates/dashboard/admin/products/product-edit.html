@@ -33,15 +33,52 @@
     }
 
     .product-images-panel__title {
-        font-size: 0.95rem;
+        font-size: 1rem;
         font-weight: 700;
-        margin-bottom: 0.35rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
     }
 
-    .product-images-panel__hint {
-        font-size: 0.78rem;
-        color: #6c757d;
-        margin-bottom: 0.85rem;
+    .product-images-alert {
+        display: flex;
+        gap: 0.65rem;
+        align-items: flex-start;
+        border: 1px solid #e6b422;
+        background: #fff8e6;
+        color: #5c4a1f;
+        border-radius: 0.5rem;
+        padding: 0.85rem 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .product-images-alert__icon {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        background: #e6b422;
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.95rem;
+        line-height: 1.5rem;
+        text-align: center;
+    }
+
+    .product-images-alert__body {
+        font-size: 0.82rem;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .product-images-alert__body strong {
+        font-weight: 700;
+    }
+
+    .product-images-alert__body ul {
+        margin: 0.35rem 0 0;
+        padding-inline-start: 1.1rem;
     }
 
     .product-preview-grid {
@@ -223,107 +260,84 @@
                     {{form.description}}
                 </div>
 
-                <div class="col-12">
-                    <hr class="my-3">
-                    <h5 class="mb-3">تصاویر محصول</h5>
-                </div>
-
-                {# —— Detail image —— #}
-                <div class="col-lg-6 mb-3">
-                    <div class="product-images-panel h-100">
-                        <p class="product-images-panel__title">تصویر اصلی دیتیل</p>
-                        <p class="product-images-panel__hint">نسبت ۳:۴ — پیشنهادی ۱۰۸۰×۱۴۴۰. فایل اصلی محفوظ می‌ماند.</p>
-                        <label class="form-label">آپلود تصویر اصلی</label>
-                        {{ form.image }}
-                        <label class="form-label mt-3">متن جایگزین (alt)</label>
-                        {{ form.image_alt }}
-                        {{ form.image_crop }}
-
-                        <div id="js-crop-detail-stage" class="product-crop-stage" hidden>
-                            <div class="product-crop-stage__canvas">
-                                <img id="js-crop-detail-img" alt="برش دیتیل">
-                            </div>
-                            <div class="d-flex flex-wrap gap-2 mb-2">
-                                <button type="button" class="btn btn-sm btn-primary" id="js-crop-detail-apply">اعمال برش</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" id="js-crop-detail-reset">لغو برش</button>
-                            </div>
-                            <p class="small text-muted mb-0" id="js-crop-detail-status"></p>
-                        </div>
-
-                        {% if object.image_crop %}
-                        <div class="form-check mt-3">
-                            {{ form.clear_image_crop }}
-                            <label class="form-check-label" for="id_clear_image_crop">{{ form.clear_image_crop.label }}</label>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                {# —— Card image —— #}
-                <div class="col-lg-6 mb-3">
-                    <div class="product-images-panel h-100">
-                        <p class="product-images-panel__title">تصویر کارت محصول</p>
-                        <p class="product-images-panel__hint">نسبت ۳:۴ — پیشنهادی ۱۰۸۰×۱۴۴۰. اگر آپلود نشود از تصویر اصلی بدون برش استفاده می‌شود.</p>
-                        <label class="form-label">آپلود تصویر کارت (اختیاری)</label>
-                        {{ form.card_image }}
-                        <label class="form-label mt-3">متن جایگزین (alt) کارت</label>
-                        {{ form.card_image_alt }}
-                        {{ form.card_image_crop }}
-
-                        <div id="js-crop-card-stage" class="product-crop-stage" hidden>
-                            <div class="product-crop-stage__canvas">
-                                <img id="js-crop-card-img" alt="برش کارت">
-                            </div>
-                            <div class="d-flex flex-wrap gap-2 mb-2">
-                                <button type="button" class="btn btn-sm btn-primary" id="js-crop-card-apply">اعمال برش</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" id="js-crop-card-reset">لغو برش</button>
-                            </div>
-                            <p class="small text-muted mb-0" id="js-crop-card-status"></p>
-                        </div>
-
-                        {% if object.card_image_crop %}
-                        <div class="form-check mt-2">
-                            {{ form.clear_card_image_crop }}
-                            <label class="form-check-label" for="id_clear_card_image_crop">{{ form.clear_card_image_crop.label }}</label>
-                        </div>
-                        {% endif %}
-                        {% if object.card_image %}
-                        <div class="form-check mt-1">
-                            {{ form.clear_card_image }}
-                            <label class="form-check-label" for="id_clear_card_image">{{ form.clear_card_image.label }}</label>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                {# —— Live / saved previews —— #}
                 <div class="col-12 mb-3">
+                    <hr class="my-3">
                     <div class="product-images-panel">
-                        <p class="product-images-panel__title">پیش‌نمایش کارت و دیتیل</p>
-                        <p class="product-images-panel__hint">قبل از ذخیره، با انتخاب فایل جدید پیش‌نمایش به‌روز می‌شود. بعد از ذخیره، خروجی واقعی سایت نشان داده می‌شود.</p>
-                        <div class="product-preview-grid">
-                            <div class="product-preview-box">
-                                <p class="product-preview-box__label">دیتیل (۳:۴)</p>
-                                <div class="product-preview-box__frame product-preview-box__frame--detail">
-                                    {% if object.image_detail_url %}
-                                    <img id="js-preview-detail-img" src="{{ object.image_detail_url }}" alt="{{ object.get_image_alt }}">
-                                    <p id="js-preview-detail-empty" class="product-preview-box__empty" hidden>فایلی انتخاب نشده</p>
-                                    {% else %}
-                                    <img id="js-preview-detail-img" alt="" hidden>
-                                    <p id="js-preview-detail-empty" class="product-preview-box__empty">فایلی انتخاب نشده</p>
-                                    {% endif %}
-                                </div>
+                        <p class="product-images-panel__title">
+                            <span class="product-images-alert__icon" aria-hidden="true">!</span>
+                            تصاویر محصول
+                        </p>
+
+                        <div class="product-images-alert" role="note">
+                            <span class="product-images-alert__icon" aria-hidden="true">!</span>
+                            <div class="product-images-alert__body">
+                                <strong>برای نمایش درست در کل سایت، عکس را با این مشخصات آپلود کنید:</strong>
+                                <ul>
+                                    <li><strong>نسبت تصویر:</strong> عمودی ۳:۴ (عرض به ارتفاع)</li>
+                                    <li><strong>سایز پیشنهادی:</strong> ۱۰۸۰×۱۴۴۰ پیکسل (حداقل حدود ۵۴۰×۷۲۰)</li>
+                                    <li><strong>فرمت:</strong> JPG یا WebP — حجم معقول (ترجیحاً زیر ۱٫۵ مگابایت)</li>
+                                    <li><strong>محتوا:</strong> محصول کامل داخل کادر باشد؛ متن/لوگوی مهم به لبه‌ها نچسبد</li>
+                                    <li>با یک عکس صحیح، هم <strong>کارت لیست/هوم</strong> و هم <strong>صفحه جزئیات</strong> درست نمایش داده می‌شود</li>
+                                    <li>عکس‌های اضافی گالری اسلایدر جزئیات را پایین همین صفحه اضافه کنید (همان نسبت ۳:۴)</li>
+                                </ul>
                             </div>
-                            <div class="product-preview-box">
-                                <p class="product-preview-box__label">کارت (۳:۴)</p>
-                                <div class="product-preview-box__frame product-preview-box__frame--card">
-                                    {% if object.image_card_url %}
-                                    <img id="js-preview-card-img" src="{{ object.image_card_url }}" alt="{{ object.get_card_image_alt }}">
-                                    <p id="js-preview-card-empty" class="product-preview-box__empty" hidden>بدون کارت جدا → از اصلی</p>
-                                    {% else %}
-                                    <img id="js-preview-card-img" alt="" hidden>
-                                    <p id="js-preview-card-empty" class="product-preview-box__empty">بدون کارت جدا → از اصلی</p>
-                                    {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">آپلود تصویر اصلی محصول</label>
+                                {{ form.image }}
+                                <label class="form-label mt-3">متن جایگزین (alt)</label>
+                                {{ form.image_alt }}
+                                {{ form.image_crop }}
+
+                                <div id="js-crop-detail-stage" class="product-crop-stage" hidden>
+                                    <div class="product-crop-stage__canvas">
+                                        <img id="js-crop-detail-img" alt="برش تصویر">
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2 mb-2">
+                                        <button type="button" class="btn btn-sm btn-primary" id="js-crop-detail-apply">اعمال برش ۳:۴</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" id="js-crop-detail-reset">لغو برش</button>
+                                    </div>
+                                    <p class="small text-muted mb-0" id="js-crop-detail-status"></p>
+                                </div>
+
+                                {% if object.image_crop %}
+                                <div class="form-check mt-3">
+                                    {{ form.clear_image_crop }}
+                                    <label class="form-check-label" for="id_clear_image_crop">{{ form.clear_image_crop.label }}</label>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <p class="fw-semibold mb-2">پیش‌نمایش نمایش در سایت</p>
+                                <p class="small text-muted mb-3">با انتخاب فایل جدید، پیش‌نمایش قبل از ذخیره به‌روز می‌شود.</p>
+                                <div class="product-preview-grid">
+                                    <div class="product-preview-box">
+                                        <p class="product-preview-box__label">صفحه جزئیات</p>
+                                        <div class="product-preview-box__frame product-preview-box__frame--detail">
+                                            {% if object.image_detail_url %}
+                                            <img id="js-preview-detail-img" src="{{ object.image_detail_url }}" alt="{{ object.get_image_alt }}">
+                                            <p id="js-preview-detail-empty" class="product-preview-box__empty" hidden>فایلی انتخاب نشده</p>
+                                            {% else %}
+                                            <img id="js-preview-detail-img" alt="" hidden>
+                                            <p id="js-preview-detail-empty" class="product-preview-box__empty">فایلی انتخاب نشده</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="product-preview-box">
+                                        <p class="product-preview-box__label">کارت لیست / هوم</p>
+                                        <div class="product-preview-box__frame product-preview-box__frame--card">
+                                            {% if object.image_card_url %}
+                                            <img id="js-preview-card-img" src="{{ object.image_card_url }}" alt="{{ object.get_image_alt }}">
+                                            <p id="js-preview-card-empty" class="product-preview-box__empty" hidden>فایلی انتخاب نشده</p>
+                                            {% else %}
+                                            <img id="js-preview-card-img" alt="" hidden>
+                                            <p id="js-preview-card-empty" class="product-preview-box__empty">فایلی انتخاب نشده</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -351,7 +365,7 @@
         enctype="multipart/form-data">
         {% csrf_token %}
         <div class="card-body border-bottom">
-            <p class="small text-muted mb-3">چند تصویر اضافه کنید. بعد از ثبت می‌توانید ترتیب را با کشیدن کارت‌ها عوض کنید.</p>
+            <p class="small text-muted mb-3">عکس‌های اضافی اسلایدر جزئیات — همان نسبت <strong>۳:۴</strong> و سایز پیشنهادی <strong>۱۰۸۰×۱۴۴۰</strong>. بعد از ثبت می‌توانید ترتیب را با کشیدن عوض کنید.</p>
             <div class="row align-items-end">
                 <div class="col-md-5 mb-3">
                     <label class="form-label">تصویر گالری</label>

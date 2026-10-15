@@ -1,23 +1,156 @@
 {% extends dashboard_admin_base_template %}
-
+{% load static %}
 
 {% block title %}ایجاد محصول - پنل ادمین{% endblock title %}
+
+{% block extra_css_no_compress %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+{% endblock %}
 
 {% block extra_css %}
 <style>
     .small-primary-button {
         padding: 3px 10px;
-        background-color: #007bff; 
-        color: white; 
-        border: none; 
-        cursor: pointer; 
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
         font-size: 10px;
-        border-radius: 5px; 
+        border-radius: 5px;
     }
-    
+
     .small-primary-button:hover,
     .small-primary-button:focus {
         background-color: #0056b3;
+    }
+
+    .product-images-panel {
+        border: 1px solid rgba(74, 55, 44, 0.1);
+        border-radius: 0.6rem;
+        padding: 1rem;
+        background: #faf8f5;
+        margin-bottom: 1rem;
+    }
+
+    .product-images-panel__title {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .product-images-alert {
+        display: flex;
+        gap: 0.65rem;
+        align-items: flex-start;
+        border: 1px solid #e6b422;
+        background: #fff8e6;
+        color: #5c4a1f;
+        border-radius: 0.5rem;
+        padding: 0.85rem 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .product-images-alert__icon {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        background: #e6b422;
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.95rem;
+        line-height: 1.5rem;
+        text-align: center;
+    }
+
+    .product-images-alert__body {
+        font-size: 0.82rem;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .product-images-alert__body strong {
+        font-weight: 700;
+    }
+
+    .product-images-alert__body ul {
+        margin: 0.35rem 0 0;
+        padding-inline-start: 1.1rem;
+    }
+
+    .product-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .product-preview-box {
+        background: #fff;
+        border: 1px solid rgba(74, 55, 44, 0.12);
+        border-radius: 0.5rem;
+        padding: 0.65rem;
+    }
+
+    .product-preview-box__label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+    }
+
+    .product-preview-box__frame {
+        background: #f7f3ee;
+        border-radius: 0.4rem;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-inline: auto;
+    }
+
+    .product-preview-box__frame--detail {
+        aspect-ratio: 3 / 4;
+        max-width: 11rem;
+    }
+
+    .product-preview-box__frame--card {
+        aspect-ratio: 3 / 4;
+        max-width: 10rem;
+    }
+
+    .product-preview-box__frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    .product-preview-box__empty {
+        font-size: 0.75rem;
+        color: #888;
+        padding: 1.5rem 0.5rem;
+        text-align: center;
+    }
+
+    .product-crop-stage {
+        margin-top: 0.75rem;
+        background: #fff;
+        border: 1px dashed rgba(74, 55, 44, 0.2);
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+    }
+
+    .product-crop-stage__canvas {
+        max-height: 22rem;
+        margin-bottom: 0.65rem;
+    }
+
+    .product-crop-stage__canvas img {
+        display: block;
+        max-width: 100%;
     }
 
     .image-formset-row {
@@ -25,12 +158,10 @@
         padding: 10px;
         border: 1px solid #e0e0e0;
         border-radius: 5px;
+        background: #fff;
     }
 </style>
-
 {% endblock %}
-
-
 
 {% block breadcrumb %}
 <nav aria-label="breadcrumb">
@@ -53,7 +184,7 @@
         <h5 class="card-header-title">ایجاد محصول</h5>
     </div>
 
-    <form action="." method="post" enctype="multipart/form-data">
+    <form action="." method="post" enctype="multipart/form-data" id="js-product-create-form">
         {% csrf_token %}
         <div class="card-body">
             <div class="row">
@@ -102,18 +233,76 @@
                     {{form.description}}
                 </div>
 
-                <div class="col-md-12 mb-3">
-                    <label for="validationValidFileInput1">تصویر اصلی محصول</label>
-                    {{form.image}}
-                </div>
-                <div class="col-md-12 mb-3">
-                    <label>متن alt تصویر اصلی</label>
-                    {{form.image_alt}}
-                    <p class="small text-muted mb-0">اگر خالی باشد، عنوان محصول استفاده می‌شود.</p>
+                <div class="col-12 mb-3">
+                    <hr class="my-3">
+                    <div class="product-images-panel">
+                        <p class="product-images-panel__title">
+                            <span class="product-images-alert__icon" aria-hidden="true">!</span>
+                            تصاویر محصول
+                        </p>
+
+                        <div class="product-images-alert" role="note">
+                            <span class="product-images-alert__icon" aria-hidden="true">!</span>
+                            <div class="product-images-alert__body">
+                                <strong>برای نمایش درست در کل سایت، عکس را با این مشخصات آپلود کنید:</strong>
+                                <ul>
+                                    <li><strong>نسبت تصویر:</strong> عمودی ۳:۴ (عرض به ارتفاع)</li>
+                                    <li><strong>سایز پیشنهادی:</strong> ۱۰۸۰×۱۴۴۰ پیکسل (حداقل حدود ۵۴۰×۷۲۰)</li>
+                                    <li><strong>فرمت:</strong> JPG یا WebP — حجم معقول (ترجیحاً زیر ۱٫۵ مگابایت)</li>
+                                    <li><strong>محتوا:</strong> محصول کامل داخل کادر باشد؛ متن/لوگوی مهم به لبه‌ها نچسبد</li>
+                                    <li>با یک عکس صحیح، هم <strong>کارت لیست/هوم</strong> و هم <strong>صفحه جزئیات</strong> درست نمایش داده می‌شود</li>
+                                    <li>عکس‌های اضافی گالری را در همین فرم پایین اضافه کنید (همان نسبت ۳:۴)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">آپلود تصویر اصلی محصول</label>
+                                {{ form.image }}
+                                <label class="form-label mt-3">متن جایگزین (alt)</label>
+                                {{ form.image_alt }}
+                                {{ form.image_crop }}
+
+                                <div id="js-crop-detail-stage" class="product-crop-stage" hidden>
+                                    <div class="product-crop-stage__canvas">
+                                        <img id="js-crop-detail-img" alt="برش تصویر">
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2 mb-2">
+                                        <button type="button" class="btn btn-sm btn-primary" id="js-crop-detail-apply">اعمال برش ۳:۴</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" id="js-crop-detail-reset">لغو برش</button>
+                                    </div>
+                                    <p class="small text-muted mb-0" id="js-crop-detail-status"></p>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <p class="fw-semibold mb-2">پیش‌نمایش نمایش در سایت</p>
+                                <p class="small text-muted mb-3">با انتخاب فایل، پیش‌نمایش قبل از ذخیره به‌روز می‌شود.</p>
+                                <div class="product-preview-grid">
+                                    <div class="product-preview-box">
+                                        <p class="product-preview-box__label">صفحه جزئیات</p>
+                                        <div class="product-preview-box__frame product-preview-box__frame--detail">
+                                            <img id="js-preview-detail-img" alt="" hidden>
+                                            <p id="js-preview-detail-empty" class="product-preview-box__empty">فایلی انتخاب نشده</p>
+                                        </div>
+                                    </div>
+                                    <div class="product-preview-box">
+                                        <p class="product-preview-box__label">کارت لیست / هوم</p>
+                                        <div class="product-preview-box__frame product-preview-box__frame--card">
+                                            <img id="js-preview-card-img" alt="" hidden>
+                                            <p id="js-preview-card-empty" class="product-preview-box__empty">فایلی انتخاب نشده</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col-md-12 mb-3">
-                    <label>تصاویر اضافی محصول</label>
+                    <label>تصاویر اضافی گالری (اختیاری)</label>
+                    <p class="small text-muted mb-2">همان نسبت <strong>۳:۴</strong> و سایز پیشنهادی <strong>۱۰۸۰×۱۴۴۰</strong> — برای اسلایدر صفحه جزئیات.</p>
                     {{ image_formset.management_form }}
                     <div id="image-formset-container">
                         {% for image_form in image_formset %}
@@ -150,4 +339,9 @@
         return titleStr;
     }
 </script>
+{% endblock %}
+
+{% block extra_js_no_compress %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'js/admin-product-images.js' %}"></script>
 {% endblock %}

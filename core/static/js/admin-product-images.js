@@ -7,18 +7,6 @@
     return file ? URL.createObjectURL(file) : "";
   }
 
-  function initPreview(input, imgEl, emptyEl) {
-    if (!input || !imgEl) return;
-    input.addEventListener("change", function () {
-      var file = input.files && input.files[0];
-      if (!file) return;
-      var url = fileToURL(file);
-      imgEl.src = url;
-      imgEl.hidden = false;
-      if (emptyEl) emptyEl.hidden = true;
-    });
-  }
-
   function bindCropper(opts) {
     var sourceInput = document.querySelector(opts.sourceSelector);
     var cropInput = document.querySelector(opts.cropSelector);
@@ -71,6 +59,13 @@
         previewImg.hidden = false;
       }
       if (previewEmpty) previewEmpty.hidden = true;
+      var cardImg = document.getElementById("js-preview-card-img");
+      var cardEmpty = document.getElementById("js-preview-card-empty");
+      if (cardImg) {
+        cardImg.src = url;
+        cardImg.hidden = false;
+      }
+      if (cardEmpty) cardEmpty.hidden = true;
     });
 
     if (applyBtn) {
@@ -97,6 +92,13 @@
               previewImg.hidden = false;
             }
             if (previewEmpty) previewEmpty.hidden = true;
+            var cardImg = document.getElementById("js-preview-card-img");
+            var cardEmpty = document.getElementById("js-preview-card-empty");
+            if (cardImg) {
+              cardImg.src = previewURL;
+              cardImg.hidden = false;
+            }
+            if (cardEmpty) cardEmpty.hidden = true;
             setStatus("برش اعمال شد. فایل اصلی جداگانه ذخیره می‌شود.");
           },
           "image/jpeg",
@@ -157,17 +159,31 @@
     });
   }
 
+  function syncBothPreviews(file) {
+    var detailImg = document.getElementById("js-preview-detail-img");
+    var detailEmpty = document.getElementById("js-preview-detail-empty");
+    var cardImg = document.getElementById("js-preview-card-img");
+    var cardEmpty = document.getElementById("js-preview-card-empty");
+    if (!file) return;
+    var url = fileToURL(file);
+    [detailImg, cardImg].forEach(function (img) {
+      if (!img) return;
+      img.src = url;
+      img.hidden = false;
+    });
+    [detailEmpty, cardEmpty].forEach(function (el) {
+      if (el) el.hidden = true;
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
-    initPreview(
-      document.getElementById("id_image"),
-      document.getElementById("js-preview-detail-img"),
-      document.getElementById("js-preview-detail-empty")
-    );
-    initPreview(
-      document.getElementById("id_card_image"),
-      document.getElementById("js-preview-card-img"),
-      document.getElementById("js-preview-card-empty")
-    );
+    var mainInput = document.getElementById("id_image");
+    if (mainInput) {
+      mainInput.addEventListener("change", function () {
+        var file = mainInput.files && mainInput.files[0];
+        syncBothPreviews(file);
+      });
+    }
 
     bindCropper({
       sourceSelector: "#id_image",
@@ -183,22 +199,6 @@
       outputWidth: 1080,
       outputHeight: 1440,
       name: "detail",
-    });
-
-    bindCropper({
-      sourceSelector: "#id_card_image",
-      cropSelector: "#id_card_image_crop",
-      stageSelector: "#js-crop-card-stage",
-      imgSelector: "#js-crop-card-img",
-      applySelector: "#js-crop-card-apply",
-      resetSelector: "#js-crop-card-reset",
-      statusSelector: "#js-crop-card-status",
-      previewSelector: "#js-preview-card-img",
-      previewEmptySelector: "#js-preview-card-empty",
-      aspectRatio: 3 / 4,
-      outputWidth: 1080,
-      outputHeight: 1440,
-      name: "card",
     });
 
     initGallerySort();
