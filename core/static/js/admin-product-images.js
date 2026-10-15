@@ -195,9 +195,9 @@
       statusSelector: "#js-crop-card-status",
       previewSelector: "#js-preview-card-img",
       previewEmptySelector: "#js-preview-card-empty",
-      aspectRatio: 1,
-      outputWidth: 800,
-      outputHeight: 800,
+      aspectRatio: 3 / 4,
+      outputWidth: 1080,
+      outputHeight: 1440,
       name: "card",
     });
 

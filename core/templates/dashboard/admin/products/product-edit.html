@@ -80,7 +80,7 @@
     }
 
     .product-preview-box__frame--card {
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 3 / 4;
         max-width: 10rem;
     }
 
@@ -263,7 +263,7 @@
                 <div class="col-lg-6 mb-3">
                     <div class="product-images-panel h-100">
                         <p class="product-images-panel__title">تصویر کارت محصول</p>
-                        <p class="product-images-panel__hint">نسبت مربع ۱:۱ — پیشنهادی ۸۰۰×۸۰۰. اگر آپلود نشود از تصویر اصلی بدون برش استفاده می‌شود.</p>
+                        <p class="product-images-panel__hint">نسبت ۳:۴ — پیشنهادی ۱۰۸۰×۱۴۴۰. اگر آپلود نشود از تصویر اصلی بدون برش استفاده می‌شود.</p>
                         <label class="form-label">آپلود تصویر کارت (اختیاری)</label>
                         {{ form.card_image }}
                         <label class="form-label mt-3">متن جایگزین (alt) کارت</label>
@@ -315,7 +315,7 @@
                                 </div>
                             </div>
                             <div class="product-preview-box">
-                                <p class="product-preview-box__label">کارت (۱:۱)</p>
+                                <p class="product-preview-box__label">کارت (۳:۴)</p>
                                 <div class="product-preview-box__frame product-preview-box__frame--card">
                                     {% if object.image_card_url %}
                                     <img id="js-preview-card-img" src="{{ object.image_card_url }}" alt="{{ object.get_card_image_alt }}">

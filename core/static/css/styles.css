@@ -2966,7 +2966,7 @@ section.home-product-strip.section + section.home-product-strip.section {
 }
 
 .home-product-strip .card-img-top {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 3 / 4;
     object-fit: contain;
     background-color: #f0eeeb;
     transition: transform 0.35s ease;
@@ -3263,7 +3263,7 @@ section.home-product-strip.section + section.home-product-strip.section {
 
 .similar-products__media {
     display: block;
-    aspect-ratio: 540 / 720;
+    aspect-ratio: 3 / 4;
     overflow: hidden;
     background: #f0eeeb;
 }
