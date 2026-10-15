@@ -3,15 +3,11 @@ from blog.models import Post, PostImageModel
 from blog.models import Tag as BlogTag
 from django import forms
 from django.forms import inlineformset_factory
-from django.utils import timezone
 from django_ckeditor_5.widgets import CKEditor5Widget
+from website.jalali_utils import format_jalali_datetime, parse_jalali_datetime
 
-_DATETIME_LOCAL_INPUT_FORMATS = (
-    "%Y-%m-%dT%H:%M",
-    "%Y-%m-%dT%H:%M:%S",
-    "%Y-%m-%d %H:%M:%S",
-    "%Y-%m-%d %H:%M",
-)
+_JALALI_DT_PLACEHOLDER = "1403/01/15 - 14:30"
+_JALALI_DT_ERROR = f"تاریخ را به صورت شمسی وارد کنید (مثال: {_JALALI_DT_PLACEHOLDER})."
 
 
 class BlogCategoryForm(forms.ModelForm):
@@ -40,6 +36,20 @@ class BlogPostForm(forms.ModelForm):
     content = forms.CharField(
         label=Post._meta.get_field("content").verbose_name,
         widget=CKEditor5Widget(config_name="extends"),
+    )
+    published_date = forms.CharField(
+        label=Post._meta.get_field("published_date").verbose_name,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": _JALALI_DT_PLACEHOLDER,
+                "autocomplete": "off",
+                "dir": "ltr",
+                "inputmode": "numeric",
+                "aria-describedby": "blog-published-date-help",
+            },
+        ),
     )
 
     class Meta:
@@ -75,25 +85,18 @@ class BlogPostForm(forms.ModelForm):
         self.fields["status"].widget.attrs.setdefault("class", "form-check-input")
         self.fields["url"].required = False
 
-        pub = self.fields["published_date"]
-        pub.required = False
-        pub.input_formats = list(_DATETIME_LOCAL_INPUT_FORMATS)
-        pub.widget = forms.DateTimeInput(
-            format="%Y-%m-%dT%H:%M",
-            attrs={
-                "type": "datetime-local",
-                "class": "form-control",
-                "step": "60",
-                "autocomplete": "off",
-                "aria-describedby": "blog-published-date-help",
-            },
-        )
         inst = self.instance
-        if inst.pk and inst.published_date:
-            dt = inst.published_date
-            if timezone.is_aware(dt):
-                dt = timezone.localtime(dt)
-            self.initial["published_date"] = dt.strftime("%Y-%m-%dT%H:%M")
+        if inst.pk:
+            self.initial["published_date"] = format_jalali_datetime(inst.published_date)
+
+    def clean_published_date(self):
+        raw = self.cleaned_data.get("published_date")
+        if raw in (None, ""):
+            return None
+        try:
+            return parse_jalali_datetime(raw)
+        except ValueError as exc:
+            raise forms.ValidationError(_JALALI_DT_ERROR) from exc
 
     def clean_slug(self):
         from blog.utils import unique_post_slug

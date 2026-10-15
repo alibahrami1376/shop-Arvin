@@ -314,20 +314,3 @@
         {% endif %}
     </div>
 </div>
-
-<script>
-    (function () {
-        var timeEl = document.getElementById("adminDashboardCurrentTime");
-        if (!timeEl) return;
-        function pad(value) {
-            return String(value).padStart(2, "0");
-        }
-        function updateClock() {
-            var now = new Date();
-            var formatted = now.getFullYear() + "/" + pad(now.getMonth() + 1) + "/" + pad(now.getDate()) + " - " + pad(now.getHours()) + ":" + pad(now.getMinutes());
-            timeEl.textContent = formatted;
-        }
-        updateClock();
-        window.setInterval(updateClock, 60000);
-    })();
-</script>

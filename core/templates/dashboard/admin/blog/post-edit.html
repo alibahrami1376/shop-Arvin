@@ -9,9 +9,6 @@
     #{{ form.published_date.id_for_label }} {
         min-height: 2.75rem;
     }
-    #published-date-addon.cursor-pointer {
-        cursor: pointer;
-    }
     .blog-image-formset-row {
         margin-bottom: 10px;
         padding: 10px;
@@ -89,10 +86,13 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label mb-1" for="{{ form.published_date.id_for_label }}">تاریخ و زمان انتشار</label>
                     <div class="input-group input-group-merge">
-                        <span class="input-group-text cursor-pointer" id="published-date-addon" role="button" tabindex="0" title="باز کردن تقویم" aria-label="باز کردن تقویم و ساعت"><i class="bi-calendar3-event" aria-hidden="true"></i></span>
+                        <span class="input-group-text" id="published-date-addon" aria-hidden="true"><i class="bi-calendar3-event"></i></span>
                         {{ form.published_date }}
                     </div>
-                    <div class="form-text" id="blog-published-date-help">با کلیک روی فیلد، تقویم و ساعت مرورگر باز می‌شود (دقیقه به دقیقه).</div>
+                    <div class="form-text" id="blog-published-date-help">فرمت: سال/ماه/روز - ساعت:دقیقه (شمسی)، مثال: 1403/01/15 - 14:30</div>
+                    {% if form.published_date.errors %}
+                    <div class="invalid-feedback d-block">{{ form.published_date.errors|striptags }}</div>
+                    {% endif %}
                 </div>
                 <div class="col-md-6 mb-3">
                     <label>دسته‌بندی‌ها</label>
@@ -123,26 +123,4 @@
 </div>
 {% endblock %}
 
-{% block extra_js %}
-<script>
-    (function () {
-        var inp = document.getElementById("{{ form.published_date.id_for_label }}");
-        var addon = document.getElementById("published-date-addon");
-        if (!inp || !addon) return;
-        function openPicker() {
-            if (typeof inp.showPicker === "function") {
-                inp.showPicker();
-            } else {
-                inp.focus();
-            }
-        }
-        addon.addEventListener("click", openPicker);
-        addon.addEventListener("keydown", function (e) {
-            if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                openPicker();
-            }
-        });
-    })();
-</script>
-{% endblock %}
+{% block extra_js %}{% endblock %}

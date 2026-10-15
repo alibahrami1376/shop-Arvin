@@ -50,8 +50,12 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label>تاریخ انقضا</label>
-                    {{form.expiration_date}}
+                    <label class="form-label mb-1" for="{{ form.expiration_date.id_for_label }}">تاریخ انقضا</label>
+                    {{ form.expiration_date }}
+                    <div class="form-text" id="coupon-expiration-date-help">فرمت: سال/ماه/روز - ساعت:دقیقه (شمسی)، مثال: 1403/01/15 - 14:30</div>
+                    {% if form.expiration_date.errors %}
+                    <div class="invalid-feedback d-block">{{ form.expiration_date.errors|striptags }}</div>
+                    {% endif %}
                 </div>
 
             </div>
