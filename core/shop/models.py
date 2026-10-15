@@ -110,17 +110,55 @@ class ProductModel(ModelMeta, models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(allow_unicode=True, unique=True)
     image = models.ImageField(
-        default="/default/product-image.png", upload_to="product/img/"
+        default="/default/product-image.png",
+        upload_to="product/img/",
+        verbose_name="تصویر اصلی دیتیل",
+        help_text="نسبت پیشنهادی ۳:۴ — مثلاً ۱۰۸۰×۱۴۴۰. فایل اصلی محفوظ می‌ماند.",
+    )
+    image_crop = models.ImageField(
+        upload_to="product/img-crop/",
+        blank=True,
+        null=True,
+        verbose_name="برش دستی تصویر دیتیل",
+        help_text="اختیاری؛ در صورت وجود برای نمایش دیتیل استفاده می‌شود.",
     )
     image_alt = models.CharField(
         max_length=200,
         blank=True,
         default="",
-        verbose_name="متن alt تصویر",
+        verbose_name="متن جایگزین (alt) تصویر اصلی",
         help_text="اگر خالی باشد، عنوان محصول استفاده می‌شود.",
     )
+    card_image = models.ImageField(
+        upload_to="product/card/",
+        blank=True,
+        null=True,
+        verbose_name="تصویر کارت محصول",
+        help_text=(
+            "نسبت مربع ۱:۱ — پیشنهادی ۸۰۰×۸۰۰. "
+            "اگر خالی باشد از تصویر اصلی بدون برش استفاده می‌شود."
+        ),
+    )
+    card_image_crop = models.ImageField(
+        upload_to="product/card-crop/",
+        blank=True,
+        null=True,
+        verbose_name="برش دستی تصویر کارت",
+        help_text="اختیاری؛ در صورت وجود برای کارت لیست/هوم استفاده می‌شود.",
+    )
+    card_image_alt = models.CharField(
+        max_length=200,
+        blank=True,
+        default="",
+        verbose_name="متن جایگزین (alt) تصویر کارت",
+        help_text="اگر خالی باشد، alt تصویر اصلی یا عنوان محصول استفاده می‌شود.",
+    )
+    # ImageKit specs (generated); display URLs prefer crop / dedicated card when set.
     image_card = product_card_image("image")
+    image_card_from_upload = product_card_image("card_image")
+    image_card_from_crop = product_card_image("card_image_crop")
     image_detail = product_detail_image("image")
+    image_detail_from_crop = product_detail_image("image_crop")
     image_thumb = product_thumb_image("image")
     description = models.TextField()
     brief_description = models.TextField(null=True, blank=True)
@@ -242,10 +280,18 @@ class ProductModel(ModelMeta, models.Model):
 
     @property
     def image_card_url(self):
+        """Card: dedicated crop → dedicated upload → main image (no forced crop)."""
+        if self.card_image_crop:
+            return safe_imagekit_url(self, "image_card_from_crop", "card_image_crop")
+        if self.card_image:
+            return safe_imagekit_url(self, "image_card_from_upload", "card_image")
         return safe_imagekit_url(self, "image_card", "image")
 
     @property
     def image_detail_url(self):
+        """Detail: manual crop when set, otherwise original main image."""
+        if self.image_crop:
+            return safe_imagekit_url(self, "image_detail_from_crop", "image_crop")
         return safe_imagekit_url(self, "image_detail", "image")
 
     @property
@@ -254,6 +300,12 @@ class ProductModel(ModelMeta, models.Model):
 
     def get_image_alt(self):
         return (self.image_alt or "").strip() or self.title
+
+    def get_card_image_alt(self):
+        custom = (self.card_image_alt or "").strip()
+        if custom:
+            return custom
+        return self.get_image_alt()
 
     def get_description_html(self):
         from django.utils.safestring import mark_safe
@@ -275,6 +327,11 @@ class ProductImageModel(models.Model):
         verbose_name="متن alt تصویر",
         help_text="اگر خالی باشد، alt تصویر اصلی یا عنوان محصول استفاده می‌شود.",
     )
+    sort_order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="ترتیب نمایش",
+        db_index=True,
+    )
     file_detail = product_detail_image("file")
     file_thumb = product_gallery_thumb_image("file")
 
@@ -282,7 +339,7 @@ class ProductImageModel(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["-created_date"]
+        ordering = ["sort_order", "id"]
 
     @property
     def file_detail_url(self):

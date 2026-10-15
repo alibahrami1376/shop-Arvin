@@ -5,20 +5,20 @@ from imagekit.processors import ResizeToFill, ResizeToFit
 
 
 def product_card_image(source="image"):
-    """List / home card — portrait 3:4 (540×720), keep ratio, no crop."""
+    """List / home card — square box max 800×800, keep ratio (no crop)."""
     return ImageSpecField(
         source=source,
-        processors=[ResizeToFit(540, 720)],
+        processors=[ResizeToFit(800, 800)],
         format="WEBP",
         options={"quality": 82},
     )
 
 
 def product_detail_image(source="image"):
-    """PDP main gallery — fit inside 540×720, keep ratio, no crop."""
+    """PDP main gallery — fit inside 1080×1440 (3:4), keep ratio, no crop."""
     return ImageSpecField(
         source=source,
-        processors=[ResizeToFit(540, 720)],
+        processors=[ResizeToFit(1080, 1440)],
         format="WEBP",
         options={"quality": 85},
     )

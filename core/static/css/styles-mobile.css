@@ -345,7 +345,7 @@ body.device-mobile .home-product-strip__title {
 
 body.device-mobile .home-product-strip:not(.home-product-strip--mobile-carousel) .card-img-top {
     width: 100%;
-    aspect-ratio: 540 / 720;
+    aspect-ratio: 1 / 1;
     object-fit: contain;
 }
 
@@ -405,7 +405,7 @@ body.device-mobile .home-product-card {
 
 body.device-mobile .home-product-card__img-wrap {
     display: block;
-    aspect-ratio: 540 / 720;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     background: #f8f5f2;
 }
@@ -1665,7 +1665,7 @@ body.device-mobile .shop-product-card {
 
 body.device-mobile .shop-product-card__img-wrap {
     display: block;
-    aspect-ratio: 540 / 720;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     background: #f8f5f2;
 }
